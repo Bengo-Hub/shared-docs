@@ -43,10 +43,11 @@ Every frontend uses the same flow:
    https://accounts.codevertexitsolutions.com/login
      ?return_to=<full-authorize-url>
      &tenant=<slug>
+   (auth-api does **not** pass client_id/redirect_uri as separate params; they are only inside return_to.)
          ↓
 5. auth-ui handles login/register (email+password, Google, GitHub, Microsoft)
          ↓
-6. auth-ui redirects back to return_to (the full authorize URL)
+6. auth-ui redirects back to return_to (the full authorize URL). This **must** be a **full page redirect** (window.location.href), not a client-side router.push, so the browser sends the session cookie to sso and the redirect loop is avoided. auth-ui validates return_to with isValidReturnUrl (allows same-origin relative paths and absolute URLs starting with NEXT_PUBLIC_API_URL / SSO issuer).
          ↓
 7. auth-api now has authenticated user → generates auth code
    Redirects to: <redirect_uri>?code=<auth-code>&state=<csrf-token>
@@ -251,6 +252,15 @@ logout(): void  // Clears state + redirects to SSO logout
 ---
 
 ## Service-Specific Notes
+
+### auth-ui (login/register only): direct vs service-originated entry
+
+| Entry | URL | After login |
+|-------|-----|-------------|
+| **Direct** | User opens `/login` (no `return_to`). | Redirect to `/dashboard` or valid relative `return_to` via `router.push`. |
+| **Service-originated** | auth-api redirects to `/login?return_to=<full_sso_authorize_url>&tenant=...`. auth-api does **not** pass `client_id`/`redirect_uri` as separate params. | auth-ui must do a **full page redirect** (`window.location.href = return_to`) so the browser sends the session cookie to sso. Then auth-api sees the cookie, issues the auth code, and redirects to the service callback. |
+
+auth-ui validates `return_to` with `isValidReturnUrl` (allows relative paths and absolute URLs starting with `NEXT_PUBLIC_API_URL` or fallback `https://sso.codevertexitsolutions.com`). Set `NEXT_PUBLIC_API_URL` to the SSO base so the sso authorize URL is accepted. See auth-ui README Environment section.
 
 ### ordering-frontend
 - Client ID: `ordering-ui`
