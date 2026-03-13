@@ -117,11 +117,26 @@ Frontends must consume backend response keys as returned (camelCase in JSON). Mi
 
 ---
 
+## 8. Frontend UX standards (March 2026)
+
+User display, PWA install prompt, theme, fonts, and sidebar/navigation are standardized across Next.js frontends and documented in shared-docs:
+
+- **[FRONTEND-USER-DISPLAY.md](./FRONTEND-USER-DISPLAY.md):** Canonical user shape (`displayName`, `email`, `roles`); no hardcoded fallbacks ("Super Admin", "Administrator"); show profile only when authenticated. Applied to treasury-ui, pos-ui, notifications-ui, inventory-ui, subscriptions-ui, logistics-ui, cafe-website headers.
+- **[PWA-INSTALL-PROMPT.md](./PWA-INSTALL-PROMPT.md):** 30-minute dismiss cooldown, hide when already installed (standalone), `appinstalled` listener. Applied to auth-ui, treasury-ui, pos-ui, inventory-ui, notifications-ui, subscriptions-ui, rider-app; ordering-frontend is the reference.
+- **[THEME-TOKENS.md](./THEME-TOKENS.md):** Light mode (auth-ui base), dark mode (cafe-website style), typography (Geist + Geist Mono). Reference values documented; apps use `darkMode: 'class'` and shared variable names.
+- **[SIDEBAR-NAV-PATTERN.md](./SIDEBAR-NAV-PATTERN.md):** Desktop sidebar visible from `lg`/`md`; mobile: hamburger opens overlay drawer with same nav links; close on overlay click and route change. Applied to treasury-ui, pos-ui, inventory-ui, subscriptions-ui (notifications-ui and logistics-ui already had responsive sidebar/drawer).
+
+---
+
 ## References
 
 - [sso-integration-guide.md](./sso-integration-guide.md)
 - [login-flow-contract.md](./login-flow-contract.md)
 - [SSO-AUTHENTICATED-REQUESTS-AND-401.md](./SSO-AUTHENTICATED-REQUESTS-AND-401.md)
+- [FRONTEND-USER-DISPLAY.md](./FRONTEND-USER-DISPLAY.md)
+- [PWA-INSTALL-PROMPT.md](./PWA-INSTALL-PROMPT.md)
+- [THEME-TOKENS.md](./THEME-TOKENS.md)
+- [SIDEBAR-NAV-PATTERN.md](./SIDEBAR-NAV-PATTERN.md)
 - [TRINITY-AUTHORIZATION-PATTERN.md](./TRINITY-AUTHORIZATION-PATTERN.md)
 - [e2e-gap-analysis.md](./e2e-gap-analysis.md)
 - Auth-ui E2E: [auth-ui/docs/e2eTests/](../auth-service/auth-ui/docs/e2eTests/)
