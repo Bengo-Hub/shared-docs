@@ -98,7 +98,7 @@ To keep the ecosystem maintainable, **every frontend and backend that integrates
 |------|-------------|
 | **1. Login entry** | Redirect to SSO authorize URL with PKCE (`code_challenge`, `code_verifier`, `state`). Pass `tenant` only when the user is already in a tenant context (e.g. path `/{orgSlug}/menu` → pass `orgSlug`). When the user lands on auth-ui directly (no `?tenant=`), auth-ui sends **no tenant**; auth-api resolves tenant from the user's primary org. |
 | **2. Callback** | Exchange `code` + `code_verifier` at `POST /api/v1/token`. Store `access_token`, `refresh_token`, `expires_at`. Attach token getter to the API client so **every** request sends `Authorization: Bearer <token>`. |
-| **3. Tenant context** | After first successful profile response, store `tenant_id` and `tenant_slug` (from SSO or service `/me`) in localStorage. Send `X-Tenant-ID` and optionally `X-Tenant-Slug` on **every** request to tenant-scoped backends. |
+| **3. Tenant context** | After first successful profile response, store `tenant_id` and `tenant_slug` (from SSO or service `/me`) in localStorage. Send `X-Tenant-ID` (must be the **tenant UUID** from auth-api, not a slug or custom string like `tenant-urban-loft`) and `X-Tenant-Slug` on **every** request to tenant-scoped backends. Backends expect `X-Tenant-ID` to be a valid UUID. |
 | **4. Profile** | Prefer service's own `GET /api/v1/{tenant}/auth/me` (or equivalent) so roles/permissions match that service. If the service returns 404 (user not yet synced), fall back to SSO `GET /api/v1/auth/me` with the access token and map the response so the UI still shows authenticated state. |
 | **5. 401 handling** | Register a global handler (e.g. axios interceptor): on 401, clear session and redirect to SSO login or app login page. |
 
@@ -141,6 +141,8 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 | `cafe-website` | cafe-website | `https://theurbanloftcafe.com/auth/callback` | Yes (PKCE) |
 
 **The seed uses upsert** — re-running it fixes misconfigured redirect URIs automatically. For tenant-aware apps, seed includes both `/{tenant}/auth/callback` and `/auth/callback` so either pattern works.
+
+**CORS and X-Tenant-ID:** auth-api (and any backend that accepts `X-Tenant-ID`) must include `X-Tenant-ID` in `Access-Control-Allow-Headers` (app CORS and ingress annotations). Otherwise frontends that send the tenant UUID header (e.g. after loading profile from `/me`) will get a CORS preflight failure. See [devops-k8s-ingress-cors.md](./devops-k8s-ingress-cors.md).
 
 **Production domains (from devops-k8s/apps/*/values.yaml ingress host):** Only these domains are configured; CORS and OAuth use this list only (no alternate domains).
 

@@ -89,6 +89,8 @@ Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resourc
 
 **JIT tenant sync:** All Go backends must sync the tenant from auth-api when the request carries a tenant slug (e.g. from JWT or path). If the slug is present and the tenant is missing locally, the service should fetch and upsert the tenant from auth-api before processing the request. This avoids "tenant not found" after SSO login when the token was minted for a tenant (via `?tenant=` on the authorize URL).
 
+**Tenant ID format:** Frontends must send `X-Tenant-ID` as the **tenant UUID** from auth-api (e.g. from GET `/api/v1/auth/me` response `tenant_id`). Do not send a slug or custom string (e.g. `tenant-urban-loft`). Auth-api and all SSO-integrated backends must include `X-Tenant-ID` in CORS `Access-Control-Allow-Headers` (app and ingress) so browser preflights succeed.
+
 **Auth/me caching:** Auth-api caches GET `/api/v1/auth/me` in Redis by user ID with TTL = token expiry. Frontends should use TanStack Query (or similar) with a TTL aligned to token lifetime so the first read is fast and DB load is reduced.
 
 **Claims best practices:** Keep claims in the token stable (e.g. user ID, tenant, roles, permissions). Avoid putting volatile or rarely used data in the token; services can resolve fine-grained rules from role/claims locally.
