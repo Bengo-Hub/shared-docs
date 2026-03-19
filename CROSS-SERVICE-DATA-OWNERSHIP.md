@@ -1,116 +1,216 @@
 # Cross-Service Data Ownership & User Management
 
-**Last updated:** March 2026 — JWT + JIT and service-specific onboarding reflected in Authentication & SSO section.
+**Last updated:** March 2026 — Aligned with current architecture: no data duplication; each service stores only its own data; references via REST, events, or gRPC.
 
 ## Overview
 
-This document defines the architecture pattern for data ownership and user management across microservices in the BengoBox platform. Each service owns and manages all data related to its domain, while other services reference data via IDs and tenant mapping.
+This document is the **canonical** definition of data ownership across BengoBox microservices. It ensures **no data duplication**: each service stores only the data it owns; any need for another service’s data is satisfied by **reference IDs** and access via **REST**, **events (NATS)**, or **gRPC** — never by copying entities into another service’s database.
+
+---
+
+## Expected Architecture: No Data Duplication
+
+- **Single store per entity:** Each entity (e.g. Product Master, orders, riders, payments) has exactly one owning service. That service is the only place that creates, updates, and stores that data.
+- **Reference only elsewhere:** Other services store only **references** (e.g. `inventory_item_id`, `rider_id`, `payment_id`) and optionally minimal **snapshots** for audit (e.g. amount at time of payment). They do **not** store a full copy of the entity.
+- **Access via integration:** To read or act on another service’s data, a service calls that service’s **REST** or **gRPC** APIs, or reacts to **NATS events** it publishes. Catalog/projection caches (e.g. POS Sales Catalog, ordering catalog cache) are **synced from the owner** (inventory-api), not authored locally. Core inventory master data (Items, Categories, Warehouses) is accessible via **public GET endpoints** to facilitate auto-discovery and synchronization.
+- **Auth is always available:** Tenant and user identity come from auth-api; all services use the same tenant UUID from auth. Other services may require a subscription check before use (subscriptions-api).
 
 ---
 
 ## Core Principles
 
-1. **Single Source of Truth**: Each service owns and manages all data related to its domain
-2. **Reference Only**: Other services store only reference IDs, never duplicate data
-3. **Tenant Service Availability**: Check tenant subscription plan before creating/referencing data in another service
-4. **SSO Authentication**: All users authenticate via auth-service (SSO), service-specific data stored locally
-5. **Service Independence**: Services can operate standalone or in combination based on tenant subscription
+1. **Single Source of Truth**: Each service owns and manages all data related to its domain; no other service duplicates that data.
+2. **Reference Only**: Other services store only reference IDs (and optional audit snapshots), never full copies of entities they do not own.
+3. **Access via REST / events / gRPC**: To use another service’s data, call its API or consume its events; do not replicate tables.
+4. **Tenant Service Availability**: Check tenant subscription (subscriptions-api) before creating or referencing data in a dependent service (except auth-api, which is always available).
+5. **SSO Authentication**: All users authenticate via auth-service (SSO); service-specific data (e.g. rider profile, loyalty) is stored only in the owning service.
+6. **Service Independence**: Services can operate standalone or in combination based on tenant subscription.
+1.  **Single Source of Truth**: Each service owns and manages all data related to its domain; no other service duplicates that data.
+2.  **Reference Only**: Other services store only reference IDs (and optional audit snapshots), never full copies of entities they do not own.
+3.  **Access via REST / events / gRPC**: To use another service’s data, call its API or consume its events; do not replicate tables.
+4.  **Tenant Service Availability**: Check tenant subscription (subscriptions-api) before creating or referencing data in a dependent service (except auth-api, which is always available).
+5.  **SSO Authentication**: All users authenticate via auth-service (SSO); service-specific data (e.g. rider profile, loyalty) is stored only in the owning service.
+6.  **Service Independence**: Services can operate standalone or in combination based on tenant subscription.
 
 ---
 
+## Canonical Data Ownership Matrix
+
+| Domain | Owner Service | Data/Entities | Integration Pattern |
+|-------|---------------|---------------|---------------------|
+| **Identity** | `auth-api` | Users, Tenants, **Outlets**, Roles | SSO (JWT), `user_id`/`outlet_id` refs. Auto-provisions downstream (Inventory Warehouses, Ordering Outlets) via NATS events. |
+| **Product Master** | `inventory-api` | Items (SKUs), BOM, Recipes, **Units**, **Categories**, **Variants** | REST (GET), `sku`/`product_id` refs |
+| **Sales Catalog** | `pos-api` | Catalogs, Modifier Groups, Local Prices | Sync from Inventory, NATS `CatalogUpdated` |
+| **Orders (Online)** | `ordering-backend` | Carts, Online Orders, Loyalty, **Catalog Projection** | Projection of Global Catalog, NATS Events |
+| **Logistics** | `logistics-api` | Riders, Tasks, Proof of Delivery | REST, Webhooks, `rider_id` refs |
+| **Payments** | `treasury-api` | Intents, Transactions, Refunds, Taxes | REST, Webhooks, `payment_intent_id` refs |
+| **Subscription plans, tenant entitlements** | subscriptions-api | All services: check plan before using inventory, POS, logistics, treasury, etc. |
+| **Notification templates, delivery status, channel preferences** | notifications-api | Other services: trigger via events or API; store only `notification_message_id` etc. if needed |
+| **IoT devices, telemetry, alerts** | iot-service-api | inventory-api (e.g. temperature/compliance), notifications; optional POS/inventory hardware integration |
+
+---
+
+## Item Lifecycle & "Use Case" Flexibility
+
+To support a wide range of business models (Hospitality, Retail, Warehouse), the system employs a tiered data model:
+
+### 1. Master Product (`inventory-api`)
+- **Authority**: Owns the physical definition (Name, SKU, Base UoM, Recipe/BOM).
+- **Flexibility**: Stores the `use_case` (Retail vs Hospitality) at the Outlet level.
+
+### 2. Sales Catalog (`pos-api`)
+- **Authority**: Owns the **Menu/Catalog**. Defines how Master Products are sold at a specific **Outlet**.
+- **Data**: Modifiers, POS-specific Categories, Button positions, Outlet Prices.
+- **Integration**: Publishes `pos.menu.updated` when the sales interface changes.
+
+### 3. Fulfillment Projection (`ordering-backend`)
+- **Authority**: Owns the **Online Storefront** presentation.
+- **Data**: Read-only projection of the POS Menu, augmented with online-only flags (e.g., `featured_on_web`).
+- **Integration**: Zero-authority for master data; hydrates local cache via NATS events.
+
+## Generalization: `cafe_id` vs `outlet_id`
+All services must use the generic `outlet_id` to refer to physical/logical locations. A "Cafe" is simply an outlet with a `Hospitality` use case. This allows the same services to manage "Warehouses" (Stock use case) or "Electronics Stores" (Retail use case).
+
 ## Data Ownership by Service
 
-### Auth-Service
-**Owns**:
+### Auth-Service (auth-api)
+**Owns** (only store here; no duplication elsewhere):
 - User identity (email, password, phone, status)
-- **Tenant definitions and UUIDs** — auth-api is the single source of truth for tenant identity; all services MUST use the same tenant UUID for a given tenant (DB-generated in auth-api seed, never generated per-service)
+- **Tenant definitions and UUIDs** — single source of truth for tenant identity; all services use the same tenant UUID (from auth-api seed/JWT)
 - Tenant membership and roles
 - Sessions and MFA
-- OAuth accounts
+- OAuth client registry and consent
 
-**Other Services Reference**:
-- `auth_service_user_id` (UUID) - Reference to auth-service user
-- Tenant ID (UUID) from JWT or from auth-api events — use this UUID when storing tenant_id locally; do not create new UUIDs for the same tenant
-- Identity data synced via events: `auth.user.created`, `auth.user.updated`, `auth.user.deactivated`
+**Other services reference** (no copy of user/tenant data):
+- `tenant_id` (UUID) from JWT or auth-api events
+- `auth_service_user_id` / `user_id` (UUID)
+- Identity updates via events: `auth.user.created`, `auth.user.updated`, `auth.user.deactivated`, `auth.tenant.*`
 
-### Logistics-Service
+---
+
+### Inventory-Service (inventory-api)
+**Owns** (single source of truth for product master and stock):
+- **Units of measure (UoM)** — core shared, no tenant_id; one global unit list
+- **Items (SKU master)** — tenant-scoped
+- **Product categories** (item categories) — tenant-scoped
+- **Recipes and BOM** (recipe_ingredients) — tenant-scoped
+- Warehouses, inventory_balances, reservations, consumptions
+- Stock adjustments, low-stock state
+
+**Other services do not store** items, units, or recipes; they reference by `inventory_item_id`, `sku`, `recipe_id` and get data via REST (e.g. GET /items, GET /units, GET /recipes) or events. Ordering and POS may keep a **read-only projection/cache** of catalog synced from inventory.
+
+**Other services reference**: `inventory_item_id`, `inventory_sku`, `recipe_id`, `reservation_id`; catalog and units via inventory-api APIs or sync.
+
+---
+
+### Ordering-Service (ordering-backend)
+**Owns** (order lifecycle and cafe context only):
+- Online orders, order_items, carts, cart_items
+- Cafe/outlet context (cafes, outlets) as used by ordering
+- Promo codes, redemptions, loyalty accounts and transactions
+- Cafe-specific user preferences/roles for ordering UX
+
+**Catalog (catalog_items, catalog_categories):** Not owned as master. Either (A) **no local tables** — catalog read from inventory-api (proxy or frontend calls inventory), or (B) **read-only cache/projection** synced from inventory-api (all catalog writes go to inventory-api). `ordering-backend` pulls public core master data from `inventory-api`. Ordering stores only `item_id`/`sku`/`recipe_id` references.
+
+**Does not store (reference only):** Payment intents, payments, payment methods, refunds (treasury-api); notification events/templates/subscriptions (notifications-api); proof of delivery, logistics events (logistics-api). Ordering keeps only `payment_intent_id` on Order and uses treasury client for intent create/get; notifications and payments modules use stub/treasury-only repositories.
+
+**Other services reference**: `order_id`, `cafe_id`; logistics and treasury use order refs for tasks and payments.
+
+---
+
+### POS-Service (pos-api)
+**Owns** (sales and shift context only):
+- POS orders, pos_order_lines, cash_drawers, tenders, price_books, price_book_items
+- **catalog_items** as **projection/cache** from inventory-api (not product master; sync or pull from inventory-api)
+- POS connections, outlets, sessions
+
+**Does not own**: Units, items, or recipes — obtained from inventory-api via REST or sync. Stock consumption reported to inventory-api via REST (POST /consumption) or event (`pos.sale.finalized`).
+
+**Other services reference**: `pos_order_id`, `pos_outlet_id`, `pos_connection_id`.
+
+---
+
+### Treasury-Service (treasury-api)
+**Owns** (single source of truth for money and tax):
+- Payment intents, transactions, payment methods
+- Refunds, payouts, settlements, invoices
+- Taxes, payment gateway config, chart of accounts, ledger
+
+**Other services** store only payment references and minimal snapshots (e.g. amount at payment time); they do not duplicate treasury entities.
+
+**Other services reference**: `payment_intent_id`, `payment_id`, `payout_id`; payment status via webhooks or events.
+
+---
+
+### Logistics-Service (logistics-api)
 **Owns**:
-- Rider profiles (KYC, documents, vehicle info)
-- Fleet members (riders, drivers)
-- Delivery tasks
-- Shifts and availability
-- Telemetry and location data
-- Proof of delivery
-- Rider earnings and payouts
+- Rider/fleet member profiles (KYC, documents, vehicle)
+- Delivery tasks, shifts, availability
+- Telemetry and location, proof of delivery
+- Rider earnings and payouts (logistics-side)
 
-**Other Services Reference**:
-- `rider_id` (UUID) - Reference to logistics-service fleet member
-- `logistics_task_id` (UUID) - Reference to delivery task
-- All rider queries go to logistics-service APIs: `GET /v1/{tenant}/fleet-members`
+**Other services reference**: `rider_id`, `logistics_task_id`; rider/task data via logistics APIs (e.g. GET /fleet-members, POST /tasks).
 
-### Inventory-Service
+---
+
+### Subscriptions-Service (subscriptions-api)
 **Owns**:
-- Inventory items (SKUs, stock levels, locations)
-- Warehouses (code, name, address, is_default)
-- Inventory balances (on_hand, available, reserved per item per warehouse)
-- Reservations (order-linked stock holds with status: pending/confirmed/released/consumed)
-- Consumptions (stock deductions with order reference and idempotency)
-- Recipes and BOMs
-- Stock adjustments and movements
-- Low-stock alerts
+- Subscription plans, plan features, tier limits
+- Tenant subscriptions, usage, billing state
 
-**Other Services Reference**:
-- `inventory_sku` (String) - Reference to inventory item
-- `inventory_item_id` (UUID) - Reference to inventory item
-- `reservation_id` (UUID) - Reference to stock reservation
-- All inventory queries go to inventory-service APIs (8 endpoints implemented Feb 2026)
+**Other services** do not store plan or entitlement data; they check subscription/entitlement via subscriptions-api before using inventory, POS, logistics, treasury, etc.
 
-### POS-Service
+---
+
+### Notifications-Service (notifications-api)
 **Owns**:
-- POS connections and credentials
-- POS outlets and locations
-- POS orders and tickets
-- Settlement data
-
-**Other Services Reference**:
-- `pos_connection_id` (UUID) - Reference to POS connection
-- `pos_outlet_id` (UUID) - Reference to POS outlet
-- `pos_order_id` (String) - Reference to POS order
-
-### Treasury-Service
-**Owns**:
-- Payment intents and transactions
-- Payment methods
-- Refunds
-- Payouts and settlements
-- Invoices
-
-**Other Services Reference**:
-- `payment_intent_id` (UUID) - Reference to payment intent
-- `payment_id` (UUID) - Reference to payment
-- `payout_id` (UUID) - Reference to payout
-
-### Notifications-Service
-**Owns**:
-- Notification templates
-- Message delivery status
+- Notification templates, delivery status
 - Channel preferences (per user, per tenant)
 
-**Other Services Reference**:
-- `notification_template_id` (UUID) - Reference to template
-- `notification_message_id` (UUID) - Reference to sent message
+**Other services reference**: trigger sends via API or events; store only message/template IDs if needed for audit.
 
-### Ordering-Service
+---
+
+### IoT-Service (iot-service-api)
 **Owns**:
-- Cafe-specific user data (preferences, cafe roles, loyalty points)
-- Menu items and categories (references inventory SKUs)
-- Orders and carts
-- Promo codes and redemptions
-- Loyalty accounts and transactions
+- Devices, telemetry, rules, alerts
 
-**Other Services Reference**:
-- `order_id` (UUID) - Reference to cafe order
-- `cafe_id` (UUID) - Reference to cafe outlet
+**Consumers**: inventory-api (e.g. temperature/compliance), notifications; optional POS/inventory hardware (terminals, scanners, scales, KDS) documented in architecture/integrations.
+
+---
+
+## Entities That Must Not Exist in Non-Owner Services (No Duplication, No Legacy)
+
+The following entities belong to a single owner. **No other service may store them.** Remove any such tables and logic from non-owner services; use references (IDs) and API/event calls only.
+
+| Entity / Table(s) | Owner | Must NOT exist in |
+|-------------------|-------|--------------------|
+| Proof of delivery (signature, photo, OTP, recipient, rating) | **logistics-api** | ordering-backend, pos-api |
+| Delivery task lifecycle events (task created, assigned, completed) | **logistics-api** | ordering-backend (no `logistics_events` table) |
+| Notification templates, notification events, notification subscriptions | **notifications-api** | ordering-backend, pos-api, inventory-api |
+| Payment intents, payments, payment methods, refunds, treasury webhook events | **treasury-api** | ordering-backend, pos-api (only refs on order: e.g. `payment_intent_id` UUID, `payment_status`) |
+| Product master (items, units, recipes, BOM, product categories) | **inventory-api** | ordering-backend, pos-api (only projection/cache synced from inventory; no authoring) |
+| Rider/fleet member profiles, KYC, vehicles, shifts | **logistics-api** | ordering-backend (only `rider_id`, `logistics_task_id` refs in order_assignments) |
+| Tenant and user identity (full profile, sessions, MFA, OAuth) | **auth-api** | ordering-backend, pos-api (only `tenant_id`, `user_id` refs; minimal JIT cache allowed for FK only) |
+
+**Ordering-backend cleanup (target state):**
+- **Remove** (schemas + all associated logic): `proof_of_delivery`, `logistics_events`, `notification_templates`, `notification_events`, `notification_subscriptions`, `payment_intents`, `payments`, `payment_methods`, `refunds`, `treasury_events`.
+- **Keep** (refs only): `order_assignments` with `logistics_task_id`, `rider_id` (no PoD edge); `orders` with `payment_intent_id` (UUID), `payment_status`, and optional amount snapshot for display; trigger notifications via notifications-api API or events; get payment details from treasury-api when needed.
+- **Catalog:** `catalog_items` / `catalog_categories` only as read-only cache synced from inventory-api, or remove and proxy inventory-api for catalog (see plan).
+
+**Logistics-api (owner):** Already has `proof_of_delivery` (task_id, fleet_member_id, signature_url, photo_url, etc.). ERD documents it. No ordering-backend copy.
+
+**Notifications-api (owner):** Owns templates and delivery logs. Ordering and others send via API/events; no local template tables.
+
+**Treasury-api (owner):** Owns payment intents, payments, refunds. Ordering and POS store only `payment_intent_id` and status on order; no local payment/refund tables.
+
+---
+
+## How Data Is Accessed (No Duplication)
+
+- **REST:** Primary for reads and commands: catalog (GET items/units/recipes from inventory-api), reserve/consume (ordering → inventory-api), payments (ordering/pos → treasury-api), rider/task (ordering → logistics-api), JWT validation (all → auth-api).
+- **NATS events:** For async sync and lifecycle: order lifecycle (`ordering.order.*`), stock/reservation (`inventory.stock.updated`, `inventory.reservation.confirmed`), sale finalised (`pos.sale.finalized` → inventory backflush), auth sync (`auth.user.*`, `auth.tenant.*`). Consumers must be idempotent.
+- **gRPC (optional):** For low-latency calls where needed (e.g. stock check before add-to-cart); document in each service’s architecture.md if introduced.
 
 ---
 
@@ -118,16 +218,20 @@ This document defines the architecture pattern for data ownership and user manag
 
 | Publisher | Event Subject | Subscriber | Action |
 |:---|:---|:---|:---|
-| Auth Service | `auth.user.created` | Ordering Service | Create local user reference |
-| Auth Service | `auth.user.updated` | Ordering Service | Sync profile changes |
-| Auth Service | `auth.user.deactivated` | Ordering Service | Deactivate local user |
-| Auth Service | `auth.tenant.created` | Ordering Service | Initialize tenant data |
-| Auth Service | `auth.tenant.updated` | Ordering Service | Sync tenant changes |
-| Ordering Service | `ordering.order.ready` | Logistics Service | Auto-create delivery task |
-| Treasury Service | Payment webhooks (HTTP) | Ordering Service | Update order payment status |
-| Logistics Service | Delivery webhooks (HTTP) | Ordering Service | Update order delivery status |
+| Auth Service | `auth.user.created` | Ordering, Subscriptions, Notifications | Create local user ref / trial / welcome |
+| Auth Service | `auth.user.updated` | Ordering | Sync profile |
+| Auth Service | `auth.user.deactivated` | Ordering | Deactivate local user |
+| Auth Service | `auth.tenant.created` | Ordering, Subscriptions | Init tenant / trial |
+| Auth Service | `auth.tenant.updated` | Ordering | Sync tenant |
+| Ordering Service | `ordering.order.created` | Inventory (reserve), Notifications, Treasury | Reserve stock, confirm, payment intent |
+| Ordering Service | `ordering.order.ready` | Logistics | Create delivery task |
+| Ordering Service | `ordering.order.completed` | Inventory | Consume reservation |
+| Inventory Service | `inventory.stock.updated`, `inventory.stock.low` | Ordering (optional) | Availability / out-of-stock flags |
+| POS Service | `pos.sale.finalized` | Inventory | Backflush / consumption |
+| Treasury Service | Payment webhooks (HTTP) | Ordering | Update order payment status |
+| Logistics Service | Delivery webhooks (HTTP) | Ordering | Update order delivery status |
 
-**Note**: Inventory and notifications services use synchronous REST calls from the ordering service, not NATS events.
+**Note:** Catalog and units are read via REST from inventory-api; ordering and POS do not duplicate product master. Event subjects follow `domain.entity.action` (e.g. `ordering.order.created`). See each service’s `integrations.md` for full event catalog.
 
 ---
 
@@ -152,27 +256,24 @@ This document defines the architecture pattern for data ownership and user manag
 
 3. **Rider Creation Flow**:
 
-   **From Cafe Service**:
+   **From Ordering / Cafe UI** (ordering-backend; cafe-website and ordering-frontend call ordering-backend):
    ```
-   1. User initiates rider onboarding in cafe UI
+   1. User initiates rider onboarding in cafe/ordering UI
    2. Check tenant has logistics service enabled:
-      GET /api/v1/tenants/{tenant_id}/services
+      GET /api/v1/tenants/{tenant_id}/services (subscriptions-api)
       → Verify "logistics" in enabled_services
    3. If not enabled: Show error "Logistics service not available. Upgrade plan."
    4. If enabled, choose one:
       Option A - API Push:
-        - POST /api/v1/cafe/riders/onboard (cafe-backend)
-        - Cafe-backend pushes to logistics-service:
+        - POST to ordering-backend → ordering-backend calls logistics-api:
           POST /v1/{tenant}/fleet-members
-        - Logistics-service creates rider in auth-service (if needed)
+        - Logistics-api creates rider (auth user if needed)
         - Returns rider_id
-        - Cafe stores rider_id reference
-      
+        - Ordering-backend stores only rider_id reference
       Option B - UI Redirect:
-        - Redirect to: https://logistics.codevertexitsolutions.com/{tenant_slug}/riders/onboard?return_url={cafe_url}
+        - Redirect to logistics UI for onboarding
         - User authenticates with auth-service (SSO)
-        - User completes onboarding in logistics-service UI
-        - Logistics-service redirects back with rider_id
+        - Logistics-api stores rider profile; redirect back with rider_id
    ```
 
    **Standalone Logistics Service**:
@@ -180,27 +281,26 @@ This document defines the architecture pattern for data ownership and user manag
    1. User goes directly to logistics-service UI
    2. User authenticates via auth-service (SSO)
    3. User completes rider onboarding
-   4. All rider data stored in logistics-service
-   5. No cafe-service involvement
+   4. All rider data stored in logistics-service (no duplication in ordering-backend)
+   5. No ordering-backend involvement
    ```
 
 ### Pattern 2: Tenant Service Availability Check
 
-**Before creating/referencing data in another service:**
+**Before creating/referencing data in another service** (except auth-api, which is always available):
 
 ```go
 // Pseudo-code example
 func createRider(ctx context.Context, tenantID uuid.UUID, riderData RiderData) error {
-    // 1. Check tenant has logistics service enabled
+    // 1. Check tenant has logistics service enabled (subscriptions-api)
     tenant, err := subscriptionService.GetTenantServices(ctx, tenantID)
     if err != nil {
         return err
     }
-    
     if !contains(tenant.EnabledServices, "logistics") {
         return ErrServiceNotAvailable("Logistics service not enabled for this tenant")
     }
-    
+
     // 2. Verify tenant exists in logistics-service
     exists, err := logisticsService.TenantExists(ctx, tenantID)
     if err != nil {
@@ -209,15 +309,15 @@ func createRider(ctx context.Context, tenantID uuid.UUID, riderData RiderData) e
     if !exists {
         return ErrTenantNotFound("Tenant not found in logistics-service")
     }
-    
-    // 3. Create rider in logistics-service
+
+    // 3. Create rider in logistics-service (only owner stores rider data)
     riderID, err := logisticsService.CreateFleetMember(ctx, tenantID, riderData)
     if err != nil {
         return err
     }
-    
-    // 4. Store only reference ID locally
-    return cafeRepo.StoreRiderReference(ctx, tenantID, riderID)
+
+    // 4. Store only reference ID locally (no duplication of rider profile)
+    return orderingRepo.StoreRiderReference(ctx, tenantID, riderID)
 }
 ```
 
@@ -283,85 +383,93 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 
 ## Examples
 
-### Example 1: Creating a Rider from Ordering Service
+### Example 1: Creating a Rider from Ordering / Cafe
 
-**Scenario**: Tenant has cafe-service and logistics-service enabled
+**Scenario**: Tenant has ordering and logistics enabled
 
-1. User clicks "Become a Rider" in cafe UI
-2. Cafe-frontend checks tenant services: `GET /api/v1/tenants/{tenant_id}/services`
+1. User clicks "Become a Rider" in cafe/ordering UI
+2. Frontend checks tenant services: `GET /api/v1/tenants/{tenant_id}/services` (subscriptions-api)
 3. If logistics enabled:
-   - Option A: Submit form to cafe-backend → pushes to logistics-service API
-   - Option B: Redirect to logistics-service UI for self-onboarding
-4. Logistics-service creates rider user in auth-service (if not exists)
-5. Logistics-service stores rider profile locally
-6. Returns `rider_id` to cafe service
-7. Cafe service stores `rider_id` reference
+   - Option A: Submit to ordering-backend → ordering-backend calls logistics-api (no rider data stored in ordering DB)
+   - Option B: Redirect to logistics UI for self-onboarding
+4. Logistics-api creates rider (and auth user if needed); stores all rider data
+5. Returns `rider_id` to ordering-backend
+6. Ordering-backend stores only `rider_id` reference (no duplication of rider profile)
 
 ### Example 2: Standalone Logistics Service
 
-**Scenario**: Tenant only has logistics-service (no cafe-service)
+**Scenario**: Tenant only has logistics (no ordering)
 
 1. User goes to logistics-service UI
 2. User authenticates via auth-service (SSO)
 3. User completes rider onboarding
 4. All rider data stored in logistics-service
-5. No cafe-service involvement needed
+5. No ordering-backend involvement
 
 ### Example 3: Order Assignment with Rider
 
 **Scenario**: Assign rider to order
 
-1. Cafe service queries available riders: `GET /v1/{tenant}/fleet-members?status=available`
-2. Logistics-service returns rider list (all data from logistics-service)
-3. Cafe service selects rider and stores `rider_id` in `order_assignments` table
-4. Cafe service creates delivery task: `POST /v1/{tenant}/tasks` with `order_id` and `rider_id`
-5. Logistics-service manages task lifecycle (assignment, acceptance, completion)
-6. Cafe service consumes events: `logistics.task.assigned`, `logistics.task.completed`
+1. Ordering-backend queries riders via logistics-api: `GET /v1/{tenant}/fleet-members?status=available`
+2. Logistics-api returns rider list (data stays in logistics; ordering does not copy it)
+3. Ordering-backend stores only `rider_id` in order_assignments
+4. Ordering-backend creates delivery task: `POST /v1/{tenant}/tasks` with `order_id`, `rider_id`
+5. Logistics-api owns task lifecycle; ordering-backend consumes events: `logistics.task.assigned`, `logistics.task.completed`
 
 ---
 
-## Event Subscription Matrix (Added February 2026)
-
-Shows which services publish events and which services consume them:
+## Event Subscription Matrix (Detail)
 
 | Publisher | Event | Subscribers |
 |:---|:---|:---|
-| auth-service | `user.created` | subscription-service (trial provision), notifications-service (welcome email) |
-| auth-service | `tenant.created` | subscription-service (trial provisioning), notifications-service (onboarding email) |
-| auth-service | `user.password_changed` | notifications-service (security alert) |
-| subscription-service | `subscription.activated` | auth-service (JWT refresh with product claims) |
-| subscription-service | `subscription.upgraded` | auth-service (JWT refresh), notifications-service (upgrade confirmation) |
-| subscription-service | `subscription.cancelled` | auth-service (JWT refresh), notifications-service (cancellation notice) |
-| ordering-service | `order.created` | logistics-service (task creation), notifications-service (order confirmation), treasury-service (payment intent) |
-| ordering-service | `order.confirmed` | notifications-service (customer notification) |
-| logistics-service | `task.completed` | ordering-service (order status update), notifications-service (delivery confirmation) |
-| logistics-service | `task.assigned` | notifications-service (rider assignment notification) |
-| treasury-service | `payment.completed` | ordering-service (order confirmation), notifications-service (receipt) |
+| auth-service | `auth.user.created` | subscription-service (trial), notifications-service (welcome) |
+| auth-service | `auth.tenant.created` | subscription-service (trial), notifications-service (onboarding) |
+| auth-service | `auth.user.password_changed` | notifications-service (security alert) |
+| subscription-service | `subscription.activated` | auth-service (JWT refresh), notifications-service |
+| subscription-service | `subscription.upgraded` / `cancelled` | auth-service, notifications-service |
+| ordering-service | `ordering.order.created` | inventory (reserve), logistics (task), notifications, treasury |
+| ordering-service | `ordering.order.ready` | logistics-service (delivery task) |
+| ordering-service | `ordering.order.completed` | inventory (consume), notifications |
+| inventory-service | `inventory.stock.updated`, `inventory.stock.low` | ordering (optional availability) |
+| pos-service | `pos.sale.finalized` | inventory-service (backflush/consumption) |
+| logistics-service | `logistics.task.completed`, `task.assigned` | ordering-service, notifications-service |
+| treasury-service | Payment webhooks / `payment.completed` | ordering-service, notifications-service |
 
 ---
 
 ## Best Practices
 
-1. **Always Check Service Availability**: Before creating/referencing data, verify tenant has service enabled
-2. **Store Only References**: Never duplicate data, always store reference IDs
-3. **Query When Needed**: Query owning service for data when needed, don't cache long-term
-4. **Use Events for Sync**: Subscribe to events from owning service for real-time updates
-5. **Handle Service Unavailability**: Gracefully handle cases where service is not available
-6. **Support Standalone Mode**: Services should work independently if tenant only has that service
+1. **No data duplication:** Each entity lives in one service only; others hold references (IDs) and optionally minimal snapshots for audit.
+2. **Check service availability:** Before creating or referencing data in another service, verify tenant has that service enabled (subscriptions-api); auth-api is always available.
+3. **Store only references:** Never copy full entities across services; store `*_id` and call the owning service’s API or consume its events when you need data.
+4. **Catalog from inventory:** Product master (items, units, recipes, categories) is owned by inventory-api; ordering and POS use REST or synced projection/cache only.
+5. **Use events for lifecycle sync:** Use NATS for order lifecycle, stock updates, and auth sync; keep consumers idempotent.
+6. **Support standalone mode:** Each service should work when it is the only one enabled for the tenant.
+
+---
+
+## Current State (Post-Cleanup Target)
+
+- **Ordering-backend:** No proof_of_delivery, logistics_events, notification_* tables, or payment/payment_intent/refund/treasury_events tables. Only refs on orders and order_assignments; catalog from inventory (cache or proxy).
+- **Logistics-api:** Single source of truth for proof_of_delivery, tasks, riders; erd.md reflects this.
+- **Inventory-api:** Single source of truth for items, units, recipes, recipe_ingredients, warehouses, balances, reservations, consumptions; erd.md matches actual Ent schemas (no aspirational item_boms/item_uoms only; add item_categories when implemented).
+- **Notifications-api:** Owns templates and delivery; no template storage in ordering or POS.
+- **Treasury-api:** Owns all payment entities; ordering/POS hold only payment_intent_id and status refs.
 
 ---
 
 ## Migration Notes
 
-- Legacy `riderprofile` and `riderdocument` schemas in cafe-backend are **deprecated** and **unused**
-- All rider data migration should go to logistics-service
-- Cafe-backend should only store `rider_id` references going forward
+- **No backward compatibility for wrong ownership.** Remove legacy or duplicate entities from non-owner services; do not keep them for compatibility.
+- Legacy `riderprofile` and `riderdocument` in ordering-backend are **removed**. All rider data is in logistics-api; ordering-backend stores only `rider_id` and `logistics_task_id` refs.
+- **Ordering-backend:** Remove ProofOfDelivery, LogisticsEvent, NotificationTemplate, NotificationEvent, NotificationSubscription, Payment, PaymentIntent, PaymentMethod, Refund, TreasuryEvent schemas and all related handlers/repos; Order keeps payment_intent_id (UUID), payment_status; get PoD from logistics-api, payment details from treasury-api, send notifications via notifications-api.
+- Catalog/menu: Source of truth is inventory-api. Ordering-backend must not own menu_items/menu_categories as master — either remove and proxy inventory-api, or keep as read-only cache synced from inventory-api (see plan and service erd.md).
 
 ---
 
 ## References
 
-- [Auth-Service Integration](integrations.md#auth-service)
-- [Logistics-Service Integration](integrations.md#logistics-service)
-- [Entity Relationship Diagram](erd.md)
+- [Microservice Architecture for POS, Inventory, Orders](Microservice%20Architecture%20for%20POS,%20Inventory,%20Orders.md) — research and use cases per service
+- Per-service docs: each backend’s `docs/erd.md`, `docs/integrations.md`, `docs/architecture.md` reference this document for cross-service ownership
+- Auth: auth-api `docs/integrations.md`; Ordering: ordering-backend `docs/CROSS-SERVICE-DATA-OWNERSHIP.md` (service-specific extension)
 
