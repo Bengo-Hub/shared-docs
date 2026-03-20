@@ -37,6 +37,14 @@ Payments follow an **invoice-first** flow:
 ```
 
 - Use `payment_method: "pending"` (or omit) to create the intent **without** initiating any gateway. No redirect or STK is sent yet.
+- **`source_service` is REQUIRED** for equity tracking. Each service must use its canonical identifier:
+  - `ordering` — ordering-backend (online delivery orders)
+  - `pos` — pos-api (point-of-sale transactions)
+  - `subscriptions` — subscriptions-api (plan billing)
+  - `logistics` — logistics-api / truload (delivery/weighing fees)
+  - `cafe` — cafe-website (direct cafe orders)
+  - `isp` — isp-billing (ISP payments)
+- Treasury-api uses `source_service` to: track revenue per service, calculate equity holder allocations, generate per-service analytics.
 - **Response**: `intent_id`, `status`, `amount`, `currency`, `reference_id`, `reference_type`. The service stores or passes these to the frontend.
 
 **Optional**: If the service already knows the method (e.g. “paystack” or “mpesa”), it can send that and treasury-api will initiate the gateway immediately (existing behavior). For the shared pay page flow, use `"pending"`.
