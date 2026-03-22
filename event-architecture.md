@@ -53,6 +53,8 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `auth.user.logout` | Session revocation | user_id, session_id, tenant_id |
 | `auth.tenant.created` | Tenant creation (registration, admin) | tenant_id, name, slug, use_case, created_by |
 | `auth.tenant.branch.created` | Branch creation with tenant | tenant_id, name, is_default, use_case |
+| `auth.user.password_reset.requested` | Password reset requested | user_id, email, tenant_id |
+| `auth.user.password_reset.completed` | Password reset completed | user_id, email |
 
 ### ordering-backend (JetStream, stream: `ordering`)
 
@@ -86,6 +88,9 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `logistics.fleet.member_invited` | Rider invited to fleet | member_id, user_id, fleet_id, user_email, user_name |
 | `logistics.fleet.member_approved` | Rider application approved | member_id, user_id, fleet_id, user_email, user_name |
 | `logistics.fleet.member_suspended` | Rider suspended | member_id, user_id, fleet_id, user_email, user_name |
+| `logistics.task.assigned` | Task assigned to fleet member | task_id, tracking_code, external_reference, fleet_member_id, status |
+| `logistics.task.{status}` | Task status changed | task_id, tracking_code, status, previous_status, source_service |
+| `logistics.task.completed` | Delivery completed (PoD submitted) | task_id, tracking_code, external_reference, fleet_member_id |
 
 ### treasury-api (JetStream, stream: `treasury`)
 
@@ -94,6 +99,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `treasury.payment.created` | Payment intent created | intent_id, reference_id, reference_type, amount, currency, payment_method, status |
 | `treasury.payment.succeeded` | Gateway callback success | intent_id, reference_id, amount, currency, provider, provider_reference, fee, customer_email |
 | `treasury.payment.failed` | Gateway callback failure | intent_id, reference_id, amount, currency, provider, customer_email |
+| `treasury.payout.completed` | Payout settlement processed | reference, gross_amount, fee, net_amount, currency, transfer_code, transaction_count |
 
 ### subscriptions-api (JetStream, stream: `subscription`)
 
@@ -104,6 +110,14 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `subscription.downgraded` | Plan tier decreased | tenant_id, new_plan_code, old_plan_id, direction |
 | `subscription.cancelled` | Subscription cancelled | tenant_id, reason |
 | `subscription.renewed` | Subscription renewed | tenant_id |
+
+### pos-api (JetStream, stream: `pos`)
+
+| Subject | Trigger | Key Payload Fields |
+|---------|---------|-------------------|
+| `pos.order.created` | POS order created | order_id, order_number, outlet_id, total_amount, currency, item_count |
+| `pos.order.status_changed` | POS order status transition | order_id, order_number, previous_status, new_status |
+| `pos.payment.recorded` | Payment recorded against POS order | (planned) |
 
 ---
 
@@ -117,7 +131,8 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | Fleet Lifecycle | `logistics` | `logistics.fleet.>` | rider_invite, rider_onboarding_approved, rider_suspended |
 | Inventory Stock | `inventory` | `inventory.>` | low_stock_alert, stock_out |
 | Subscription Lifecycle | `subscription` | `subscription.>` | subscription_created, subscription_upgraded, subscription_downgraded, subscription_cancelled, subscription_renewed |
-| Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed |
+| Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payout_completed |
+| Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
 | Auth Welcome | plain NATS | `auth.user.created` | welcome email |
 | Identity Sync | plain NATS | `auth.user.*`, `auth.tenant.*` | (no notification — DB sync only) |
 
@@ -187,3 +202,4 @@ All services use the transactional outbox pattern from `github.com/Bengo-Hub/sha
 | `notifications-inventory-stock` | `inventory` | `inventory.>` |
 | `notifications-subscription-lifecycle` | `subscription` | `subscription.>` |
 | `notifications-treasury-payments` | `treasury` | `treasury.>` |
+| `notifications-logistics-delivery` | `logistics` | `logistics.task.>` |
