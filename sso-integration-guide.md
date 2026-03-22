@@ -1,7 +1,7 @@
 # BengoBox SSO Integration Guide
 
 **Last Updated**: March 2026
-**Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
+**Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **JIT role assignment** now maps global JWT roles to service-level roles on first login across all backends (treasury, inventory, pos, logistics, notifications). **Subscription enforcement** added to ordering-backend (mutations), projects-api; notifications-api uses plan-based email rate limiting instead. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
 
 ---
 
@@ -15,7 +15,7 @@ BengoBox uses a single centralised SSO (Single Sign-On) service for all authenti
 | **auth-ui** (login/register UI) | `accounts.codevertexitsolutions.com` | User-facing login/register forms |
 | All other frontends | `*.codevertexitsolutions.com` | Consume SSO tokens |
 
-**Progress (March 2026):** Auth-api issues JWT with `roles` and `permissions` (canonical codes: e.g. `catalog:view`, `catalog:manage`). Login/register/refresh responses return `roles` and `permissions` only at the top level (not duplicated under `user`). Authorize URL supports `tenant=<slug>`; token exchange prefers that tenant when the user is a member. GET `/api/v1/auth/me` is cached in Redis by user ID with TTL = token expiry (or 24h) to reduce DB load; frontends should use TanStack Query with a similar TTL (e.g. 5 min–24h). Ordering-backend (and other Go backends) use JIT tenant sync and JIT user provisioning. OAuth clients: `pos-ui` and tenant-aware redirect URIs for pos-ui, subscriptions-ui, treasury-ui, notifications-ui. Public menu endpoints (`/menu/*`) documented and used by cafe-website. Docs updated: JWT claims, JIT, tenant-in-URL, auth/me cache, service-specific registration, public vs protected, debugging table.
+**Progress (March 2026):** Auth-api issues JWT with `roles` and `permissions` (canonical codes: e.g. `catalog:view`, `catalog:manage`). Login/register/refresh responses return `roles` and `permissions` only at the top level (not duplicated under `user`). Authorize URL supports `tenant=<slug>`; token exchange prefers that tenant when the user is a member. GET `/api/v1/auth/me` is cached in Redis by user ID with TTL = token expiry (or 24h) to reduce DB load; frontends should use TanStack Query with a similar TTL (e.g. 5 min–24h). Ordering-backend (and other Go backends) use JIT tenant sync and JIT user provisioning. OAuth clients: `pos-ui` and tenant-aware redirect URIs for pos-ui, subscriptions-ui, treasury-ui, notifications-ui. Public menu endpoints (`/menu/*`) documented and used by cafe-website. **JIT role assignment:** All backends now map global JWT roles (superuser, admin, staff) to service-level roles during JIT provisioning (e.g. superuser → finance_admin in treasury, inventory_admin in inventory, pos_admin in POS). **Subscription enforcement:** ordering-backend (mutations), logistics-api (mutations), treasury-api, inventory-api, pos-api, projects-api enforce RequireActiveSubscription; core services (auth-api, subscriptions-api, notifications-api) do not. **Notifications rate limiting:** Email sending is rate-limited by plan via `max_emails_per_day` from JWT SubscriptionLimits (Redis sliding window, returns 429). **Treasury-ui platform fix:** AuthProvider now checks `superuser` role and `isPlatformOwner` flag (was incorrectly checking `super_admin`). Docs updated: JWT claims, JIT role assignment, subscription enforcement, rate limiting, debugging table.
 
 ---
 
@@ -408,6 +408,9 @@ notifications-api subscribes → creates notification preferences
 | Duplicate `roles`/`permissions` in login response | Legacy response shape | Fixed: auth-api returns them only at top level, not under `user` |
 | "client not found" or "invalid_redirect" for pos-ui/subs/treasury/notifications | Wrong client_id or redirect_uri not in seed | Ensure auth-api seed includes `pos-ui` and tenant-aware redirect URIs; re-run seed |
 | 404 on `/auth/me` or stuck on "Syncing your profile" | Frontend calling service API (e.g. booksapi) for profile | Call **SSO** `GET /api/v1/auth/me` with Bearer token; see treasury-ui `lib/auth/api.ts` and `useMe.ts` |
+| "Access denied" on treasury-ui /platform page | AuthProvider checking wrong role name (`super_admin` instead of `superuser`) | Fixed: AuthProvider now checks `isPlatformOwner` and `superuser` role from SSO /me response |
+| User has no local service roles after first login | JIT provisioning created user but didn't assign roles | Fixed: All backends now map JWT roles to service-level roles during JIT (e.g. superuser → finance_admin) |
+| 429 on notifications /messages endpoint | Email rate limit exceeded for subscription plan | Check `max_emails_per_day` in JWT SubscriptionLimits; upgrade plan or wait for daily reset |
 
 ---
 

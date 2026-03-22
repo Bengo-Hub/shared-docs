@@ -93,7 +93,12 @@ Each domain service implements its own fine-grained permission system stored in 
 
 **RBAC module per service** (`internal/modules/rbac/`): service.go, repository.go, repository_ent.go, models.go — provides EnsureUserFromToken (JIT), HasPermission, HasRole, AssignRole, RevokeRole.
 
-**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscription) → JIT user provisioning → Route-level RequirePermission/RequireAnyPermission.
+**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscription) → JIT user provisioning (with role assignment from JWT) → Route-level RequirePermission/RequireAnyPermission.
+
+**Subscription enforcement by service (March 2026):**
+- **Enforced:** treasury-api, inventory-api, pos-api (all routes), ordering-backend (mutations only), logistics-api (mutations only), projects-api
+- **NOT enforced (core services, free in all plans):** auth-api (token authority), subscriptions-api (subscription authority), notifications-api (core messaging). Notifications uses **plan-based email rate limiting** (`max_emails_per_day` from JWT `SubscriptionLimits`) instead of subscription gating.
+- Superuser always bypasses subscription enforcement.
 
 **Example service-level permissions:**
 - `treasury.payments.add`, `treasury.payments.view`, `treasury.payments.manage`
@@ -106,7 +111,7 @@ Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes iss
 
 **Superuser bypass:** All permission checks (both JWT-level and service-level) are bypassed for users with the `superuser` role. Platform owner (`is_platform_owner`) bypasses tenant isolation and platform route restrictions.
 
-**Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists.
+**Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. **JIT must also assign a default service-level role** based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (pos_admin), logistics-api (admin), notifications-api (super_admin).
 
 **JIT tenant sync:** All Go backends must sync the tenant from auth-api when the request carries a tenant slug (e.g. from JWT or path). If the slug is present and the tenant is missing locally, the service should fetch and upsert the tenant from auth-api before processing the request. This avoids "tenant not found" after SSO login when the token was minted for a tenant (via `?tenant=` on the authorize URL).
 
