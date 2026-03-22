@@ -78,12 +78,33 @@ Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resourc
 - Business rule enforcement
 - Data ownership and isolation
 
-**Example Permissions** (must match canonical codes issued by Auth-Service in JWT):
-- `orders:create` - Create orders
-- `orders:view:own` - View own orders only
-- `orders:view:all` - View all orders (admin)
-- `riders:manage` - Manage riders
-- `catalog:view`, `catalog:manage` - View/edit menu catalog
+**Service-Level Permission System (Django-style RBAC):**
+
+Each domain service implements its own fine-grained permission system stored in its database. Permission codes follow the format `{service}.{module}.{action}` with Django-style actions: `add`, `view`, `view_own`, `change`, `change_own`, `delete`, `delete_own`, `manage`, `manage_own`.
+
+**Ent schemas per service** (following the treasury-api reference pattern):
+- `{Service}Permission` — permission_code (unique), module, action, resource, description
+- `{Service}Role` — tenant-scoped roles with role_code, is_system_role flag
+- `RolePermission` — many-to-many junction table (role_id + permission_id)
+- `UserRoleAssignment` — tenant_id, user_id, role_id, assigned_by, expires_at
+- `{Service}User` — JIT-provisioned local user ref with auth_service_user_id, sync_status
+- `RateLimitConfig` — DB-loaded rate limit settings per service
+- `ServiceConfig` — key-value config with platform defaults and per-tenant overrides
+
+**RBAC module per service** (`internal/modules/rbac/`): service.go, repository.go, repository_ent.go, models.go — provides EnsureUserFromToken (JIT), HasPermission, HasRole, AssignRole, RevokeRole.
+
+**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscription) → JIT user provisioning → Route-level RequirePermission/RequireAnyPermission.
+
+**Example service-level permissions:**
+- `treasury.payments.add`, `treasury.payments.view`, `treasury.payments.manage`
+- `ordering.orders.add`, `ordering.catalog.change`, `ordering.config.manage`
+- `logistics.tasks.add`, `logistics.fleet.manage`, `logistics.zones.view`
+- `notifications.templates.change`, `notifications.providers.manage`
+
+**Relationship to Layer 1 (auth-service) permissions:**
+Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes issued in JWT by auth-service. Layer 3 service-level codes (e.g. `ordering.catalog.view`) are fine-grained codes managed locally by each service. Both can coexist: the shared-auth-client `RequirePermission` middleware checks `claims.Permissions` (from JWT), while the service RBAC module checks local DB permissions via `rbacService.HasPermission()`.
+
+**Superuser bypass:** All permission checks (both JWT-level and service-level) are bypassed for users with the `superuser` role. Platform owner (`is_platform_owner`) bypasses tenant isolation and platform route restrictions.
 
 **Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists.
 

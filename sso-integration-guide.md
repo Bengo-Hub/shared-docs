@@ -321,6 +321,8 @@ Auth-api must issue access tokens that contain everything microservices need to 
 
 Services validate the JWT (signature, issuer, audience, expiry) and read `roles` and `permissions` from the token to authorize. GET /me should return the same roles and permissions for UI and for services that prefer to call /me.
 
+**Service-level permissions (Layer 3):** In addition to global JWT permissions, each domain service maintains its own fine-grained permission system in its database (see TRINITY-AUTHORIZATION-PATTERN.md). Service-level permission codes use the format `{service}.{module}.{action}` (e.g. `treasury.payments.add`, `ordering.orders.view`). The shared-auth-client library provides `RequirePermission()` middleware that checks `claims.Permissions` from the JWT, while each service's RBAC module provides local DB-backed permission checks via `rbacService.HasPermission()`. Both layers are enforced; superuser role bypasses all checks.
+
 ---
 
 ## Just-in-Time (JIT) Provisioning
