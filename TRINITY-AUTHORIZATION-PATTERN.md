@@ -580,6 +580,27 @@ if claims.roles.includes("superuser") || user.is_platform_owner:
     → allow reading/writing any tenant's data
 ```
 
+### Backend Tenant Override for Platform Owners
+
+All tenant-scoped handlers support `?tenantId=<uuid>` query parameter for platform owners (March 2026). The standard pattern:
+
+```go
+func getTenantID(r *http.Request) (uuid.UUID, error) {
+    ctx := r.Context()
+    // Platform owner can target any tenant via query param
+    if httpware.IsPlatformOwner(ctx) {
+        if q := r.URL.Query().Get("tenantId"); q != "" {
+            return uuid.Parse(q)
+        }
+    }
+    // Standard resolution: httpware context → headers → JWT claims
+    tenantIDStr := httpware.GetTenantID(ctx)
+    return uuid.Parse(tenantIDStr)
+}
+```
+
+**Frontend pattern:** Platform owner UIs do NOT send `X-Tenant-ID`/`X-Tenant-Slug` headers. Instead, a centralized `TenantFilter` component lets the platform owner select a tenant, and the selected ID is passed as `?tenantId=` on API calls. When "All Tenants" is selected, no `tenantId` param is sent and the backend returns cross-tenant data for list endpoints.
+
 ### Auth-API Seed Logic
 The auth-api seed creates the `codevertex` tenant first, then creates Codevertex-owned users (e.g. `admin@codevertex.dev`) with `superuser` membership. All other tenants are then seeded as business clients.
 

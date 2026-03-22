@@ -440,6 +440,32 @@ if (user.is_platform_owner || user.roles.includes('superuser')) {
 // Otherwise enforce tenant_id === request.tenant_id
 ```
 
+### Backend: Platform Owner Tenant Override (`?tenantId=`)
+
+All Go backend services support a `?tenantId=<uuid>` query parameter on tenant-scoped endpoints for platform owners. This allows cross-tenant drill-down without requiring tenant headers.
+
+**Pattern (implemented in all services — March 2026):**
+```go
+// In each handler's tenant resolution function:
+ctx := r.Context()
+if httpware.IsPlatformOwner(ctx) {
+    if q := r.URL.Query().Get("tenantId"); q != "" {
+        return uuid.Parse(q) // override to target tenant
+    }
+}
+// Fallback: httpware context → JWT claims
+tenantIDStr := httpware.GetTenantID(ctx)
+```
+
+**Frontend behaviour:**
+- Platform owner UIs (orgSlug `codevertex`) skip `X-Tenant-ID`/`X-Tenant-Slug` headers (apiClient `setPlatformOwner(true)`)
+- A `TenantFilter` dropdown in the header lets platform owners select a specific tenant
+- Selected tenant is passed as `?tenantId=<uuid>` on API calls
+- When no tenant is selected ("All Tenants"), the backend returns data across all tenants (for list endpoints) or requires explicit selection (for mutations/config)
+
+**Services implementing this pattern:**
+- treasury-api, inventory-api, logistics-api, pos-api, subscriptions-api, ordering-backend, notifications-api
+
 ---
 
 ## Multi-Step Account Registration
