@@ -111,6 +111,13 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `subscription.cancelled` | Subscription cancelled | tenant_id, reason |
 | `subscription.renewed` | Subscription renewed | tenant_id |
 
+### ticketing-api (JetStream, stream: `ticketing`)
+
+| Subject | Trigger | Key Payload Fields |
+|---------|---------|-------------------|
+| `ticketing.ticket.assigned` | Ticket assigned to agent | ticket_id, ticket_number, subject, agent_id, priority |
+| `ticketing.ticket.resolved` | Ticket resolved | ticket_id, ticket_number, subject |
+
 ### pos-api (JetStream, stream: `pos`)
 
 | Subject | Trigger | Key Payload Fields |
@@ -131,9 +138,13 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | Fleet Lifecycle | `logistics` | `logistics.fleet.>` | rider_invite, rider_onboarding_approved, rider_suspended |
 | Inventory Stock | `inventory` | `inventory.>` | low_stock_alert, stock_out |
 | Subscription Lifecycle | `subscription` | `subscription.>` | subscription_created, subscription_upgraded, subscription_downgraded, subscription_cancelled, subscription_renewed |
-| Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payout_completed |
+| Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payment_receipt, payout_completed |
 | Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
+| POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt |
+| Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
+| Projects | `projects` | `project.>` | project_milestone_reached |
 | Auth Welcome | plain NATS | `auth.user.created` | welcome email |
+| Auth Password Reset | plain NATS | `auth.user.password_reset.requested` | password_reset email |
 | Identity Sync | plain NATS | `auth.user.*`, `auth.tenant.*` | (no notification — DB sync only) |
 
 ### ordering-backend
@@ -203,3 +214,6 @@ All services use the transactional outbox pattern from `github.com/Bengo-Hub/sha
 | `notifications-subscription-lifecycle` | `subscription` | `subscription.>` |
 | `notifications-treasury-payments` | `treasury` | `treasury.>` |
 | `notifications-logistics-delivery` | `logistics` | `logistics.task.>` |
+| `notifications-pos-orders` | `pos` | `pos.>` |
+| `notifications-ticketing` | `ticketing` | `ticketing.>` |
+| `notifications-projects` | `projects` | `project.>` |
