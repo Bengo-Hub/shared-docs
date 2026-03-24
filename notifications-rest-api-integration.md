@@ -4,7 +4,7 @@
 
 ## Overview
 
-Non-Go services (TruLoad/.NET, ERP/Python, Cafe/Python) that don't use NATS can send notifications via the notifications-api REST endpoint. Go services should prefer the NATS event-driven pattern documented in [event-architecture.md](./event-architecture.md).
+Non-Go services (TruLoad/.NET, ERP/Python) that don't use NATS can send notifications via the notifications-api REST endpoint. Go services should prefer the NATS event-driven pattern documented in [event-architecture.md](./event-architecture.md).
 
 ---
 

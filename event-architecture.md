@@ -1,6 +1,6 @@
 # BengoBox Event Architecture
 
-**Last Updated:** March 2026
+**Last Updated:** March 24, 2026 — Added: ordering.order.refunded/scheduled/rated, logistics.task.eta_updated, treasury.refund.completed. All events now include `notification` block with explicit target (customer/tenant_admin/staff/rider) and recipient details.
 **Status:** Production — All MVP backend services publish and consume events via NATS JetStream with transactional outbox pattern.
 
 ---
@@ -67,6 +67,9 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `ordering.order.completed` | Order delivered/completed | order_id, customer_id, total_amount, completed_at |
 | `ordering.order.cancelled` | Order cancelled | order_id, customer_id, reason, cancelled_by |
 | `ordering.order.for_pickup` | POS pickup order | order_id, customer_name, customer_phone, items |
+| `ordering.order.refunded` | Order refunded | order_id, customer_id, amount, reason, notification{target=customer} |
+| `ordering.order.scheduled` | Scheduled order created | order_id, scheduled_for, customer_email, notification{target=customer} |
+| `ordering.order.rated` | Customer rated order | order_id, outlet_id, rating, comment |
 
 ### inventory-api (JetStream, stream: `inventory`)
 
@@ -91,6 +94,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `logistics.task.assigned` | Task assigned to fleet member | task_id, tracking_code, external_reference, fleet_member_id, status |
 | `logistics.task.{status}` | Task status changed | task_id, tracking_code, status, previous_status, source_service |
 | `logistics.task.completed` | Delivery completed (PoD submitted) | task_id, tracking_code, external_reference, fleet_member_id |
+| `logistics.task.eta_updated` | ETA recalculated for active delivery | task_id, tracking_code, external_reference, eta_minutes, distance_km, rider_lat, rider_lng |
 
 ### treasury-api (JetStream, stream: `treasury`)
 
@@ -100,6 +104,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `treasury.payment.succeeded` | Gateway callback success | intent_id, reference_id, amount, currency, provider, provider_reference, fee, customer_email |
 | `treasury.payment.failed` | Gateway callback failure | intent_id, reference_id, amount, currency, provider, customer_email |
 | `treasury.payout.completed` | Payout settlement processed | reference, gross_amount, fee, net_amount, currency, transfer_code, transaction_count |
+| `treasury.refund.completed` | Refund processed | intent_id, transaction_id, reference_id, amount, currency, source_service, reason, notification{target=customer} |
 
 ### subscriptions-api (JetStream, stream: `subscription`)
 
