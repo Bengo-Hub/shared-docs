@@ -14,12 +14,14 @@ The POS service serves as the primary interface for physical transactions and hi
 
 | Use Case Category | Specific Implementation | Specialized Functional Requirements |
 | :---- | :---- | :---- |
-| **Hospitality** | Cafés, Restaurants, Bars | Table management, split billing, kitchen display system (KDS) integration, seat-based ordering.14 |
-| **Retail** | Supermarkets, Grocery, Electronics | High-speed barcode scanning, integrated weighing scales, serial number tracking, warranty registration.12 |
+| **Hospitality** | Cafés, Restaurants, Bars | Table management, split billing, kitchen display system (KDS) with KDSStation/KDSTicket routing, seat-based ordering.14 |
+| **Retail** | Supermarkets, Grocery, Electronics | High-speed barcode scanning, integrated weighing scales, serial number tracking (SerialNumberLog), warranty registration.12 |
 | **Quick Service** | Food Courts, Kiosks | Order number queuing, multi-stall coordination, self-service UI flows.12 |
 | **E-commerce POS** | Pop-up Stores, Mobile Sales | Offline-first synchronization, mobile payment terminal (mPOS) integration.12 |
+| **Services / Salons** | Hair Salons, Spas, Clinics | Appointment scheduling, staff assignment with commission tracking (StaffMember, CommissionRecord), duration-based items.  |
+| **Multi-Display** | All outlet types | Configurable display modes (list/card/image_grid) via OutletSetting, barcode scanner toggle, KDS and appointment toggles. |
 
-**Data Ownership in POS:** The POS service is the sole owner of "Sales Transactions" and "Shift Sessions." While it utilizes item data from the Inventory service, it maintains its own "Sales Catalog" projection.17 This projection includes localized attributes such as UI display colors, button positions for touchscreen terminals, and POS-specific categories that may differ from warehouse taxonomies.15 Crucially, the POS service owns the final calculated price at the time of sale, including applied discounts and taxes, which are treated as immutable records for financial auditing.6
+**Data Ownership in POS:** The POS service is the sole owner of "Sales Transactions" and "Shift Sessions." While it utilizes item data from the Inventory service, it maintains its own "Sales Catalog" projection.17 This projection includes localized attributes such as UI display colors, button positions for touchscreen terminals, and POS-specific categories that may differ from warehouse taxonomies.15 CatalogItem now carries inventory_item_id, item_type (product/service/bundle), compliance flags (age_verification, controlled_substance), duration_minutes for service items, cost_price, and tags. The POS service also owns KDS routing (KDSStation, KDSTicket), appointment scheduling, staff member profiles with commission rates, serial number logs, and commission records. Crucially, the POS service owns the final calculated price at the time of sale, including applied discounts and taxes, which are treated as immutable records for financial auditing.6
 
 ## **The Inventory Service: Resource Management and Physical Goods**
 
@@ -27,11 +29,15 @@ The Inventory service acts as the core repository for all tangible and intangibl
 
 | Use Case Category | Specific Implementation | Specialized Functional Requirements |
 | :---- | :---- | :---- |
-| **Warehousing** | Distribution Centers, Store Back-rooms | Bin and zone management, stock takes, inter-branch transfers (IBTs), FIFO/LIFO tracking.19 |
-| **Manufacturing** | Bakeries, Central Kitchens | Multi-level BOM, raw material conversion, batch/lot tracking, expiry management.18 |
-| **Service Sector** | Professional Services, Labor | Non-depleting stock types, duration-based pricing, resource scheduling.9 |
+| **Warehousing** | Distribution Centers, Store Back-rooms | Bin and zone management, stock takes, inter-branch transfers via StockTransfer/StockTransferLine, FIFO/LIFO tracking.19 |
+| **Manufacturing** | Bakeries, Central Kitchens | Multi-level BOM, raw material conversion, batch/lot tracking via InventoryLot with expiry, expiry management.18 |
+| **Retail** | Supermarkets, Electronics, Pharmacies | Barcode/barcode_type on Items and Variants, compliance flags (age_verification, controlled_substance, perishable), serial number and warranty tracking. |
+| **Service Sector** | Professional Services, Labor | Non-depleting stock types, duration-based pricing (duration_minutes), resource scheduling.9 |
+| **Procurement** | All industries | Supplier management, PurchaseOrder/PurchaseOrderLine workflow, auto-reorder (auto_reorder_enabled on InventoryBalance). |
+| **Bundling / Kitting** | Retail, Wholesale | Bundle/BundleComponent for pre-packaged kits with component quantities and pricing. |
+| **Custom Metadata** | All industries | CustomFieldDefinition/CustomFieldValue for structured per-item/category metadata; VariantAttribute for structured variant matrix. |
 
-**Data Ownership in Inventory:** This service owns the "Product Master" (SKU), "Units of Measure" (UoM), "Stock Levels," and "BOM/Recipe Structures".18 It is the single source of truth for the physical quantity of any item.6 Any other service requiring stock data must either query the Inventory service via gRPC or maintain a local eventually-consistent cache updated via event streams.8
+**Data Ownership in Inventory:** This service owns the "Product Master" (SKU), "Units of Measure" (UoM), "Stock Levels," "BOM/Recipe Structures" (now with total_cost, cost_per_portion, target_margin_percent, suggested_price), "Hierarchical Categories" (parent_id, depth, path, slug, icon, sort_order), "InventoryLots" (batch/lot tracking with expiry), "Bundles/BundleComponents," "Suppliers," "PurchaseOrders," "StockTransfers," "Warranties," "CustomFieldDefinitions/Values," and "VariantAttributes."18 Items now carry barcode, barcode_type, compliance flags, weight_kg, dimensions_cm, and duration_minutes. ItemVariants carry attributes map, barcode, image_url, cost_price, weight_kg. It is the single source of truth for the physical quantity of any item.6 Any other service requiring stock data must either query the Inventory service via gRPC or maintain a local eventually-consistent cache updated via event streams.8
 
 ## **The Order Service: Online Fulfillment and Lifecycle Orchestration**
 
@@ -39,11 +45,13 @@ The Order service manages non-immediate sales transactions, primarily originatin
 
 | Use Case Category | Specific Implementation | Specialized Functional Requirements |
 | :---- | :---- | :---- |
-| **Online Retail** | E-commerce Stores | Shopping cart persistence, shipping address management, delivery carrier integration.2 |
+| **Online Retail** | E-commerce Stores | Shopping cart persistence, shipping address management, delivery carrier integration (preferred_carrier on Order).2 |
 | **Food Delivery** | Mobile Apps, Web Ordering | Real-time prep status, courier assignment, geofencing-based notifications.24 |
 | **B2B Ordering** | Wholesale Portals | Credit limit checks, bulk discount tiers, recurring subscription orders.2 |
+| **Service Booking** | Salon/Spa/Clinic appointments | Appointment scheduling (appointment_id, staff_preference_id on Order), service duration tracking (service_start_time, duration_minutes on OrderItem). |
+| **Age-Restricted** | Alcohol, Tobacco, Pharmacy | Age verification enforcement via CatalogOverride (requires_age_verification), item_type and variant_options on overrides. |
 
-**Data Ownership in Order Service:** The Order service owns the "Order Lifecycle" (Pending, Paid, Processing, Shipped) and "Customer Order History".7 It acts as an orchestrator, coordinating between the Inventory service for stock reservations and the Payment service for transaction finalization.22
+**Data Ownership in Order Service:** The Order service owns the "Order Lifecycle" (Pending, Paid, Processing, Shipped) and "Customer Order History".7 Orders now carry appointment_id, staff_preference_id, and preferred_carrier. OrderItems carry item_type, service_start_time, and duration_minutes for service-based orders. CatalogOverride includes requires_age_verification, item_type, and variant_options. It acts as an orchestrator, coordinating between the Inventory service for stock reservations and the Payment service for transaction finalization.22
 
 ## **Advanced Multi-Tenancy and Multi-Outlet Engineering**
 
@@ -96,11 +104,19 @@ When an item is created, it follows a structured propagation path across the eco
 
 | Entity Concept | Owner Service | Data Stored | Downstream Usage |
 | :---- | :---- | :---- | :---- |
-| **Product Master (SKU)** | Inventory | SKU, Name, Base UoM, Dimensions, Barcode.18 | Reference ID for POS and Order services.17 |
-| **Stock Level** | Inventory | Quantity on Hand, Reserved Quantity, Bin Location.19 | Queried by Order service for fulfillment.8 |
-| **Menu Item / POS Item** | POS | Local Name, Modifiers (e.g., "Add Cheese"), UI Category, Local Price.15 | Used for immediate sales at terminals.12 |
-| **Fulfillment Item** | Order | Shipping Weight, Tax Class, Warehouse Source.2 | Used for logistics and online checkout.2 |
-| **BOM / Recipe** | Inventory | Ingredient List, Quantities, Wastage Factor, Preparation Steps.18 | Used to calculate stock depletion on sales.18 |
+| **Product Master (SKU)** | Inventory | SKU, Name, Base UoM, Dimensions, Barcode, barcode_type, compliance flags, weight_kg, duration_minutes.18 | Reference ID for POS and Order services.17 |
+| **Stock Level** | Inventory | Quantity on Hand, Reserved Quantity, Bin Location, reorder_quantity, preferred_supplier_id, auto_reorder_enabled.19 | Queried by Order service for fulfillment.8 |
+| **Lot / Batch** | Inventory | lot_number, expiry_date, received_date, supplier_id, quantity. | Tracked for perishable/pharmaceutical compliance. |
+| **Menu Item / POS Item** | POS | Local Name, Modifiers, UI Category, Local Price, item_type, compliance flags, duration_minutes, cost_price, tags.15 | Used for immediate sales at terminals.12 |
+| **KDS Ticket** | POS | station_id, order_id, items, status, priority. | Routed to kitchen display stations for prep. |
+| **Appointment** | POS | customer, staff_member, service items, start/end time, status. | Scheduled service delivery at outlets. |
+| **Fulfillment Item** | Order | Shipping Weight, Tax Class, Warehouse Source, item_type, service_start_time, duration_minutes.2 | Used for logistics and online checkout.2 |
+| **BOM / Recipe** | Inventory | Ingredient List, Quantities, Wastage Factor, Preparation Steps, total_cost, cost_per_portion, target_margin_percent, suggested_price.18 | Used to calculate stock depletion on sales.18 |
+| **Bundle** | Inventory | bundle items, component quantities, pricing, active status. | Pre-packaged kits sold as single items. |
+| **Supplier** | Inventory | name, contact, lead_time, payment_terms, rating. | Referenced by PurchaseOrders and InventoryBalance. |
+| **Purchase Order** | Inventory | supplier_id, lines (item, qty, price), status, expected_date. | Procurement workflow from supplier. |
+| **Stock Transfer** | Inventory | source/destination warehouse, lines (item, qty), status. | Inter-warehouse movement tracking. |
+| **Warranty** | Inventory | serial_number, item_id, start/end date, terms. | Serial number warranty tracking. |
 
 ## **Advanced Bill of Materials (BOM) and Recipe Logic**
 
@@ -222,11 +238,21 @@ To prevent overselling online, the Order service implements "Soft Reservations."
 | Requirement | Implementation Detail | Data Owner | Integration Point |
 | :---- | :---- | :---- | :---- |
 | **Multi-Tenancy** | PostgreSQL RLS / Schema-per-tenant.28 | Infrastructure Layer | Middleware Context.29 |
-| **Menu Items** | Local catalog overrides and modifiers.15 | POS Service | Inventory Event Sync.22 |
-| **Stock Levels** | Real-time counts per outlet.19 | Inventory Service | gRPC Sync Queries.35 |
-| **BOM/Recipes** | Multi-level material hierarchies.18 | Inventory Service | POS Sale Event (Backflush).18 |
-| **Online Orders** | State machine for fulfillment lifecycle.2 | Order Service | Kafka Message Bus.7 |
+| **Menu Items** | Local catalog overrides, modifiers, item_type, compliance flags.15 | POS Service | Inventory Event Sync.22 |
+| **Stock Levels** | Real-time counts per outlet with auto-reorder.19 | Inventory Service | gRPC Sync Queries.35 |
+| **BOM/Recipes** | Multi-level material hierarchies with costing (cost_per_portion, margin).18 | Inventory Service | POS Sale Event (Backflush).18 |
+| **Lot Tracking** | Batch/lot tracking with expiry dates (InventoryLot). | Inventory Service | Compliance & expiry alerts. |
+| **Online Orders** | State machine for fulfillment lifecycle, appointment/service booking support.2 | Order Service | NATS JetStream.7 |
 | **Units (UoM)** | Conversion matrices (e.g., Box to Unit).18 | Inventory Service | Shared Domain Logic.34 |
+| **KDS** | Kitchen Display System with station routing and ticket lifecycle. | POS Service | Real-time order prep tracking. |
+| **Appointments** | Service scheduling with staff assignment and commission tracking. | POS Service | Ordering appointment_id refs. |
+| **Procurement** | Supplier management, PurchaseOrder workflow, auto-reorder. | Inventory Service | Supplier/PO REST APIs. |
+| **Bundles** | Pre-packaged kits (Bundle/BundleComponent). | Inventory Service | POS/Ordering catalog sync. |
+| **Split Payments** | PaymentSplit across multiple methods. | Treasury Service | POS/Ordering payment refs. |
+| **Settlements** | Merchant settlement processing (Settlement/SettlementLine). | Treasury Service | Gateway reconciliation. |
+| **Installments** | Buy-now-pay-later (InstallmentPlan/Installment). | Treasury Service | Ordering payment refs. |
+| **Dynamic Pricing** | Distance/weight/time/surge/flat pricing rules. | Logistics Service | Task pricing calculation. |
+| **Rider Shifts** | Shift management with zone assignment. | Logistics Service | Fleet scheduling. |
 
 ## **Operational Resilience and Scaling**
 
@@ -248,7 +274,7 @@ Recognizing that physical stores often face internet outages, the POS service is
 
 ## **Conclusion: A Unified Future for Commerce**
 
-The architecture detailed in this report provides a robust, expert-level solution for the complex demands of modern POS, Inventory, and Order management. By strictly adhering to the principles of microservice autonomy, data ownership, and event-driven integration, the system avoids the pitfalls of monolithic coupling while providing the flexibility needed to support diverse industries—from high-end restaurants and bakeries to large-scale electronic retailers and e-commerce marketplaces.1
+The architecture detailed in this report provides a robust, expert-level solution for the complex demands of modern POS, Inventory, and Order management. By strictly adhering to the principles of microservice autonomy, data ownership, and event-driven integration, the system avoids the pitfalls of monolithic coupling while providing the flexibility needed to support diverse industries—from high-end restaurants and bakeries to large-scale electronic retailers, pharmacies, salons/spas, clinics, warehouses, and e-commerce marketplaces. The multi-industry revamp adds comprehensive support for: hierarchical product categories, barcode scanning, compliance enforcement (age verification, controlled substances, perishables), batch/lot tracking with expiry, supplier management and procurement, bundle/kit assembly, kitchen display systems, appointment-based service scheduling with staff commission tracking, dynamic delivery pricing, split payments, merchant settlements, gateway reconciliation, and buy-now-pay-later installment plans.1
 
 The choice of Go as the primary backend language ensures that the system is not only fast and efficient but also maintainable and scalable.3 Through the implementation of advanced multi-tenancy patterns and a sophisticated understanding of item lifecycles—including BOM, recipes, and hierarchical outlet management—this framework empowers enterprises to operate with unparalleled operational clarity and agility.18 As the retail and hospitality industries continue to converge, this unified architectural approach serves as a durable foundation for future innovation and growth.
 

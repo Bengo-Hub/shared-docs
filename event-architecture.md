@@ -1,6 +1,6 @@
 # BengoBox Event Architecture
 
-**Last Updated:** March 24, 2026 — Added: ordering.order.refunded/scheduled/rated, logistics.task.eta_updated, treasury.refund.completed. All events now include `notification` block with explicit target (customer/tenant_admin/staff/rider) and recipient details.
+**Last Updated:** March 25, 2026 — Multi-industry revamp: Added inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due. Previous (March 24): ordering.order.refunded/scheduled/rated, logistics.task.eta_updated, treasury.refund.completed. All events include `notification` block with explicit target (customer/tenant_admin/staff/rider) and recipient details.
 **Status:** Production — All MVP backend services publish and consume events via NATS JetStream with transactional outbox pattern.
 
 ---
@@ -70,6 +70,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `ordering.order.refunded` | Order refunded | order_id, customer_id, amount, reason, notification{target=customer} |
 | `ordering.order.scheduled` | Scheduled order created | order_id, scheduled_for, customer_email, notification{target=customer} |
 | `ordering.order.rated` | Customer rated order | order_id, outlet_id, rating, comment |
+| `ordering.booking.created` | Service booking/appointment order created | order_id, appointment_id, staff_preference_id, service_start_time, duration_minutes |
 
 ### inventory-api (JetStream, stream: `inventory`)
 
@@ -77,8 +78,13 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 |---------|---------|-------------------|
 | `inventory.item.created` | New item created | id, sku, name, category_name, is_active |
 | `inventory.item.updated` | Item updated | id, sku, name, category_name, is_active |
+| `inventory.category.created` | New category created | id, name, slug, parent_id, depth, path |
+| `inventory.category.updated` | Category updated | id, name, slug, parent_id, depth, path |
 | `inventory.stock.low` | Available stock <= reorder level | item_id, sku, name, available, reorder_level, warehouse_id |
 | `inventory.stock.out` | Available stock reaches zero | item_id, sku, name, available, warehouse_id |
+| `inventory.lot.expiring_soon` | Lot approaching expiry date | lot_id, item_id, sku, lot_number, expiry_date, warehouse_id, quantity_remaining |
+| `inventory.purchase_order.received` | Purchase order goods received | purchase_order_id, supplier_id, lines, warehouse_id, received_at |
+| `inventory.transfer.shipped` | Stock transfer dispatched | transfer_id, source_warehouse_id, destination_warehouse_id, lines, shipped_at |
 | `inventory.unit.created` | New unit created | id, name, abbreviation |
 | `reservation.confirmed` | Stock reservation created | order_id, warehouse_id, items |
 | `reservation.released` | Reservation cancelled | order_id, reason |
@@ -105,6 +111,8 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `treasury.payment.failed` | Gateway callback failure | intent_id, reference_id, amount, currency, provider, customer_email |
 | `treasury.payout.completed` | Payout settlement processed | reference, gross_amount, fee, net_amount, currency, transfer_code, transaction_count |
 | `treasury.refund.completed` | Refund processed | intent_id, transaction_id, reference_id, amount, currency, source_service, reason, notification{target=customer} |
+| `treasury.settlement.completed` | Merchant settlement batch processed | settlement_id, tenant_id, total_amount, currency, line_count, settled_at |
+| `treasury.installment.due` | Installment payment due date approaching | installment_plan_id, installment_id, customer_id, amount, currency, due_date, notification{target=customer} |
 
 ### subscriptions-api (JetStream, stream: `subscription`)
 
@@ -130,6 +138,9 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `pos.order.created` | POS order created | order_id, order_number, outlet_id, total_amount, currency, item_count |
 | `pos.order.status_changed` | POS order status transition | order_id, order_number, previous_status, new_status |
 | `pos.payment.recorded` | Payment recorded against POS order | (planned) |
+| `pos.kds.ticket.ready` | KDS ticket marked ready for pickup/serve | ticket_id, station_id, order_id, outlet_id, ready_at |
+| `pos.appointment.created` | Appointment scheduled | appointment_id, outlet_id, staff_member_id, customer_id, service_items, start_time, end_time |
+| `pos.appointment.completed` | Appointment service completed | appointment_id, outlet_id, staff_member_id, completed_at, total_amount |
 
 ---
 
@@ -139,13 +150,13 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 
 | Consumer | Stream | Subjects | Notifications Triggered |
 |----------|--------|----------|------------------------|
-| Order Status | `ordering` | `ordering.order.>` | order_placed, order_ready, order_out_for_delivery, order_delivered, order_cancelled |
+| Order Status | `ordering` | `ordering.order.>` | order_placed, order_ready, order_out_for_delivery, order_delivered, order_cancelled, booking_created |
 | Fleet Lifecycle | `logistics` | `logistics.fleet.>` | rider_invite, rider_onboarding_approved, rider_suspended |
-| Inventory Stock | `inventory` | `inventory.>` | low_stock_alert, stock_out |
+| Inventory Stock | `inventory` | `inventory.>` | low_stock_alert, stock_out, lot_expiring_soon, purchase_order_received, transfer_shipped, category_created |
 | Subscription Lifecycle | `subscription` | `subscription.>` | subscription_created, subscription_upgraded, subscription_downgraded, subscription_cancelled, subscription_renewed |
-| Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payment_receipt, payout_completed |
+| Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payment_receipt, payout_completed, settlement_completed, installment_due |
 | Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
-| POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt |
+| POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt, kds_ticket_ready, appointment_created, appointment_completed |
 | Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
 | Projects | `projects` | `project.>` | project_milestone_reached |
 | Auth Welcome | plain NATS | `auth.user.created` | welcome email |
@@ -167,6 +178,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 |----------|----------|--------|
 | Branch Sync | `auth.tenant.branch.created` | Auto-create Warehouse from branch |
 | Order Lifecycle | `ordering.order.completed/cancelled` | Auto-consume/release reservations |
+| POS Sale | `pos.sale.finalized` | Backflush stock, update lot quantities |
 
 ### logistics-api
 
@@ -191,7 +203,8 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 
 | Consumer | Subjects | Action |
 |----------|----------|--------|
-| Inventory Sync | `inventory.item.created/updated` | Create/update CatalogItem projection |
+| Inventory Sync | `inventory.item.created/updated` | Create/update CatalogItem projection (with item_type, compliance flags) |
+| Category Sync | `inventory.category.created/updated` | Sync hierarchical categories for catalog |
 
 ---
 

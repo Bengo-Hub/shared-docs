@@ -1,6 +1,6 @@
 # Cross-Service Data Ownership & User Management
 
-**Last updated:** March 2026 — Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
+**Last updated:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
 
 ## Overview
 
@@ -39,11 +39,11 @@ This document is the **canonical** definition of data ownership across BengoBox 
 | Domain | Owner Service | Data/Entities | Integration Pattern |
 |-------|---------------|---------------|---------------------|
 | **Identity** | `auth-api` | Users, Tenants, **Outlets**, Roles | SSO (JWT), `user_id`/`outlet_id` refs. Auto-provisions downstream (Inventory Warehouses, Ordering Outlets) via NATS events. |
-| **Product Master** | `inventory-api` | Items (SKUs), BOM, Recipes, **Units**, **Categories**, **Variants** | REST (GET), `sku`/`product_id` refs |
-| **Sales Catalog** | `pos-api` | Catalogs, Modifier Groups, Local Prices | Sync from Inventory, NATS `CatalogUpdated` |
-| **Orders (Online)** | `ordering-backend` | Carts, Online Orders, Loyalty, **Catalog Projection** | Projection of Global Catalog, NATS Events |
-| **Logistics** | `logistics-api` | Riders, Tasks, Proof of Delivery | REST, Webhooks, `rider_id` refs |
-| **Payments** | `treasury-api` | Intents, Transactions, Refunds, Taxes | REST, Webhooks, `payment_intent_id` refs |
+| **Product Master** | `inventory-api` | Items (SKUs), BOM, Recipes, **Units**, **Categories** (hierarchical), **Variants**, **CustomFieldDefinition/Value**, **InventoryLot**, **VariantAttribute**, **Bundle/BundleComponent**, **Supplier**, **PurchaseOrder/Line**, **StockTransfer/Line**, **Warranty** | REST (GET), `sku`/`product_id` refs |
+| **Sales Catalog** | `pos-api` | Catalogs, Modifier Groups, Local Prices, **KDSStation/KDSTicket**, **Appointment**, **StaffMember**, **SerialNumberLog**, **CommissionRecord** | Sync from Inventory, NATS `CatalogUpdated` |
+| **Orders (Online)** | `ordering-backend` | Carts, Online Orders, Loyalty, **Catalog Projection**, Booking/Appointment refs | Projection of Global Catalog, NATS Events |
+| **Logistics** | `logistics-api` | Riders, Tasks, Proof of Delivery, **PricingRule**, **RiderShift** | REST, Webhooks, `rider_id` refs |
+| **Payments** | `treasury-api` | Intents, Transactions, Refunds, Taxes, **PaymentSplit**, **Settlement/SettlementLine**, **ReconciliationRun**, **InstallmentPlan/Installment** | REST, Webhooks, `payment_intent_id` refs |
 | **Subscription plans, tenant entitlements** | subscriptions-api | All services: check plan before using inventory, POS, logistics, treasury, etc. |
 | **Notification templates, delivery status, channel preferences** | notifications-api | Other services: trigger via events or API; store only `notification_message_id` etc. if needed |
 | **IoT devices, telemetry, alerts** | iot-service-api | inventory-api (e.g. temperature/compliance), notifications; optional POS/inventory hardware integration |
@@ -100,24 +100,34 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 ### Inventory-Service (inventory-api)
 **Owns** (single source of truth for product master and stock):
 - **Units of measure (UoM)** — core shared, no tenant_id; one global unit list
-- **Items (SKU master)** — tenant-scoped
-- **Product categories** (item categories) — tenant-scoped
-- **Recipes and BOM** (recipe_ingredients) — tenant-scoped
-- Warehouses, inventory_balances, reservations, consumptions
+- **Items (SKU master)** — tenant-scoped; now includes barcode, barcode_type, compliance flags (age_verification, controlled_substance, perishable, serial_numbers, lots), weight_kg, dimensions_cm, duration_minutes
+- **ItemVariants** — attributes map, barcode, image_url, cost_price, weight_kg
+- **Product categories** (ItemCategory) — tenant-scoped; now hierarchical with parent_id, depth, path, slug, icon, sort_order
+- **Recipes and BOM** (recipe_ingredients) — tenant-scoped; Recipe now includes total_cost, cost_per_portion, target_margin_percent, suggested_price
+- Warehouses, inventory_balances (now with reorder_quantity, preferred_supplier_id, auto_reorder_enabled), reservations, consumptions
 - Stock adjustments, low-stock state
+- **CustomFieldDefinition / CustomFieldValue** — structured metadata per item/category (NEW)
+- **InventoryLot** — batch/lot tracking with expiry dates (NEW)
+- **VariantAttribute** — structured variant matrix definitions (NEW)
+- **Bundle / BundleComponent** — pre-packaged kits (NEW)
+- **Supplier** — vendor management (NEW)
+- **PurchaseOrder / PurchaseOrderLine** — procurement workflow (NEW)
+- **StockTransfer / StockTransferLine** — inter-warehouse transfers (NEW)
+- **Warranty** — serial number warranty tracking (NEW)
 
-**Other services do not store** items, units, or recipes; they reference by `inventory_item_id`, `sku`, `recipe_id` and get data via REST (e.g. GET /items, GET /units, GET /recipes) or events. Ordering and POS may keep a **read-only projection/cache** of catalog synced from inventory.
+**Other services do not store** items, units, recipes, lots, suppliers, or purchase orders; they reference by `inventory_item_id`, `sku`, `recipe_id`, `lot_id`, `supplier_id` and get data via REST (e.g. GET /items, GET /units, GET /recipes, GET /lots, GET /suppliers) or events. Ordering and POS may keep a **read-only projection/cache** of catalog synced from inventory.
 
-**Other services reference**: `inventory_item_id`, `inventory_sku`, `recipe_id`, `reservation_id`; catalog and units via inventory-api APIs or sync.
+**Other services reference**: `inventory_item_id`, `inventory_sku`, `recipe_id`, `reservation_id`, `lot_id`, `supplier_id`, `purchase_order_id`, `transfer_id`, `warranty_id`; catalog and units via inventory-api APIs or sync.
 
 ---
 
 ### Ordering-Service (ordering-backend)
 **Owns** (order lifecycle and cafe context only):
-- Online orders, order_items, carts, cart_items
+- Online orders (now with appointment_id, staff_preference_id, preferred_carrier), order_items (now with item_type, service_start_time, duration_minutes), carts, cart_items
 - Cafe/outlet context (cafes, outlets) as used by ordering
 - Promo codes, redemptions, loyalty accounts and transactions
 - Cafe-specific user preferences/roles for ordering UX
+- **CatalogOverride** — now with requires_age_verification, item_type, variant_options
 
 **Catalog (catalog_items, catalog_categories):** Not owned as master. Either (A) **no local tables** — catalog read from inventory-api (proxy or frontend calls inventory), or (B) **read-only cache/projection** synced from inventory-api (all catalog writes go to inventory-api). `ordering-backend` pulls public core master data from `inventory-api`. Ordering stores only `item_id`/`sku`/`recipe_id` references.
 
@@ -130,35 +140,48 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 ### POS-Service (pos-api)
 **Owns** (sales and shift context only):
 - POS orders, pos_order_lines, cash_drawers, tenders, price_books, price_book_items
-- **catalog_items** as **projection/cache** from inventory-api (not product master; sync or pull from inventory-api)
+- **catalog_items** as **projection/cache** from inventory-api (not product master; sync or pull from inventory-api); CatalogItem now includes inventory_item_id, item_type, compliance flags, duration_minutes, cost_price, tags
+- **OutletSetting** — display_mode (list/card/image_grid), show_barcode_scanner, enable_kds, enable_appointments
+- **ModifierGroup** / **Modifier** — now with inventory_modifier_group_id / inventory_modifier_option_id for sync from inventory
 - POS connections, outlets, sessions
+- **KDSStation / KDSTicket** — Kitchen Display System routing and ticket lifecycle (NEW)
+- **Appointment** — salon/service scheduling (NEW)
+- **StaffMember** — staff with commission rates, service assignments (NEW)
+- **SerialNumberLog** — serial number tracking at POS (NEW)
+- **CommissionRecord** — commission tracking per staff member (NEW)
 
 **Does not own**: Units, items, or recipes — obtained from inventory-api via REST or sync. Stock consumption reported to inventory-api via REST (POST /consumption) or event (`pos.sale.finalized`).
 
-**Other services reference**: `pos_order_id`, `pos_outlet_id`, `pos_connection_id`.
+**Other services reference**: `pos_order_id`, `pos_outlet_id`, `pos_connection_id`, `appointment_id`, `staff_member_id`.
 
 ---
 
 ### Treasury-Service (treasury-api)
 **Owns** (single source of truth for money and tax):
-- Payment intents, transactions, payment methods
-- Refunds, payouts, settlements, invoices
+- Payment intents (now with allow_split), transactions, payment methods
+- Refunds, payouts, invoices
 - Taxes, payment gateway config, chart of accounts, ledger
+- **PaymentSplit** — split payments across multiple methods (NEW)
+- **Settlement / SettlementLine** — merchant settlement processing (NEW)
+- **ReconciliationRun** — gateway reconciliation (NEW)
+- **InstallmentPlan / Installment** — buy-now-pay-later support (NEW)
 
 **Other services** store only payment references and minimal snapshots (e.g. amount at payment time); they do not duplicate treasury entities.
 
-**Other services reference**: `payment_intent_id`, `payment_id`, `payout_id`; payment status via webhooks or events.
+**Other services reference**: `payment_intent_id`, `payment_id`, `payout_id`, `settlement_id`, `installment_plan_id`; payment status via webhooks or events.
 
 ---
 
 ### Logistics-Service (logistics-api)
 **Owns**:
-- Rider/fleet member profiles (KYC, documents, vehicle)
-- Delivery tasks, shifts, availability
+- Rider/fleet member profiles (KYC, documents, vehicle); FleetMember now includes specialization_tags, has_cold_storage, max_weight_capacity_kg
+- Delivery tasks (expanded task_type: food_delivery, retail_delivery, outlet_transfer, commercial_courier, drop_shipping; now with package_weight_kg, package_dimensions_cm, temperature_control, fragile/heavy flags, carrier_id), availability
 - Telemetry and location, proof of delivery
 - Rider earnings and payouts (logistics-side)
+- **PricingRule** — dynamic pricing: distance/weight/time/surge/flat rate rules (NEW)
+- **RiderShift** — shift management with zone assignment (NEW)
 
-**Other services reference**: `rider_id`, `logistics_task_id`; rider/task data via logistics APIs (e.g. GET /fleet-members, POST /tasks).
+**Other services reference**: `rider_id`, `logistics_task_id`, `pricing_rule_id`, `shift_id`; rider/task data via logistics APIs (e.g. GET /fleet-members, POST /tasks).
 
 ---
 
@@ -198,7 +221,11 @@ The following entities belong to a single owner. **No other service may store th
 | Delivery task lifecycle events (task created, assigned, completed) | **logistics-api** | ordering-backend (no `logistics_events` table) |
 | Notification templates, notification events, notification subscriptions | **notifications-api** | ordering-backend, pos-api, inventory-api |
 | Payment intents, payments, payment methods, refunds, treasury webhook events | **treasury-api** | ordering-backend, pos-api (only refs on order: e.g. `payment_intent_id` UUID, `payment_status`) |
+| PaymentSplit, Settlement, ReconciliationRun, InstallmentPlan/Installment | **treasury-api** | ordering-backend, pos-api, logistics-api |
 | Product master (items, units, recipes, BOM, product categories) | **inventory-api** | ordering-backend, pos-api (only projection/cache synced from inventory; no authoring) |
+| CustomFieldDefinition/Value, InventoryLot, VariantAttribute, Bundle/Component, Supplier, PurchaseOrder, StockTransfer, Warranty | **inventory-api** | ordering-backend, pos-api, logistics-api, treasury-api |
+| KDSStation/Ticket, Appointment, StaffMember, SerialNumberLog, CommissionRecord | **pos-api** | ordering-backend, inventory-api, logistics-api (only refs e.g. `appointment_id`, `staff_member_id`) |
+| PricingRule, RiderShift | **logistics-api** | ordering-backend, pos-api, treasury-api |
 | Rider/fleet member profiles, KYC, vehicles, shifts | **logistics-api** | ordering-backend (only `rider_id`, `logistics_task_id` refs in order_assignments) |
 | Tenant and user identity (full profile, sessions, MFA, OAuth) | **auth-api** | ordering-backend, pos-api (only `tenant_id`, `user_id` refs; minimal JIT cache allowed for FK only) |
 
@@ -236,8 +263,17 @@ The following entities belong to a single owner. **No other service may store th
 | Ordering Service | `ordering.order.ready` | Logistics | Create delivery task |
 | Ordering Service | `ordering.order.completed` | Inventory | Consume reservation |
 | Inventory Service | `inventory.stock.updated`, `inventory.stock.low` | Ordering (optional) | Availability / out-of-stock flags |
+| Inventory Service | `inventory.category.created/updated` | POS, Ordering | Sync hierarchical categories |
+| Inventory Service | `inventory.lot.expiring_soon` | Notifications | Expiry alerts to tenant admins |
+| Inventory Service | `inventory.purchase_order.received` | Notifications | PO receipt confirmation |
+| Inventory Service | `inventory.transfer.shipped` | Notifications | Transfer dispatch notification |
 | POS Service | `pos.sale.finalized` | Inventory | Backflush / consumption |
+| POS Service | `pos.kds.ticket.ready` | Notifications | KDS ticket ready alert |
+| POS Service | `pos.appointment.created/completed` | Notifications, Ordering | Appointment lifecycle sync |
+| Ordering Service | `ordering.booking.created` | POS, Notifications | Service booking created |
 | Treasury Service | Payment webhooks (HTTP) | Ordering | Update order payment status |
+| Treasury Service | `treasury.settlement.completed` | Notifications | Settlement batch notification |
+| Treasury Service | `treasury.installment.due` | Notifications | Installment due reminder |
 | Logistics Service | Delivery webhooks (HTTP) | Ordering | Update order delivery status |
 
 **Note:** Catalog and units are read via REST from inventory-api; ordering and POS do not duplicate product master. Event subjects follow `domain.entity.action` (e.g. `ordering.order.created`). See each service’s `integrations.md` for full event catalog.
@@ -461,9 +497,11 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 
 - **Ordering-backend:** No proof_of_delivery, logistics_events, notification_* tables, or payment/payment_intent/refund/treasury_events tables. Only refs on orders and order_assignments; catalog from inventory (cache or proxy).
 - **Logistics-api:** Single source of truth for proof_of_delivery, tasks, riders; erd.md reflects this.
-- **Inventory-api:** Single source of truth for items, units, recipes, recipe_ingredients, warehouses, balances, reservations, consumptions; erd.md matches actual Ent schemas (no aspirational item_boms/item_uoms only; add item_categories when implemented).
+- **Inventory-api:** Single source of truth for items (with barcode/compliance/weight/dimensions), units, recipes (with costing), recipe_ingredients, warehouses, balances (with auto-reorder), reservations, consumptions, hierarchical categories, custom fields, lots, variant attributes, bundles, suppliers, purchase orders, stock transfers, warranties.
+- **POS-api:** Single source of truth for KDS stations/tickets, appointments, staff members, serial number logs, commission records; catalog items synced from inventory with compliance flags and item_type.
+- **Logistics-api:** Single source of truth for expanded task types (food_delivery, retail_delivery, outlet_transfer, commercial_courier, drop_shipping), pricing rules, rider shifts with zone assignment; fleet members with specialization and capacity.
 - **Notifications-api:** Owns templates and delivery; no template storage in ordering or POS.
-- **Treasury-api:** Owns all payment entities; ordering/POS hold only payment_intent_id and status refs.
+- **Treasury-api:** Owns all payment entities including split payments, settlements/lines, reconciliation runs, installment plans/installments; ordering/POS hold only payment_intent_id and status refs.
 
 ---
 
