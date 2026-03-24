@@ -1,6 +1,6 @@
 # Cross-Service Data Ownership & User Management
 
-**Last updated:** March 2026 — Aligned with current architecture: no data duplication; each service stores only its own data; references via REST, events, or gRPC.
+**Last updated:** March 2026 — Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
 
 ## Overview
 
@@ -75,8 +75,8 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 
 ### Auth-Service (auth-api)
 **Owns** (only store here; no duplication elsewhere):
-- User identity (email, password, phone, status)
-- **Tenant definitions and UUIDs** — single source of truth for tenant identity; all services use the same tenant UUID (from auth-api seed/JWT)
+- User identity (email, password, phone, status, full_name, avatar)
+- **Tenant definitions, UUIDs, and branding** — single source of truth for tenant identity, logo, brand colors, contact info, use case, subscription cache
 - Tenant membership and roles
 - Sessions and MFA
 - OAuth client registry and consent
@@ -85,6 +85,15 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - `tenant_id` (UUID) from JWT or auth-api events
 - `auth_service_user_id` / `user_id` (UUID)
 - Identity updates via events: `auth.user.created`, `auth.user.updated`, `auth.user.deactivated`, `auth.tenant.*`
+
+**Tenant data access pattern (March 2026):**
+- Downstream services store only: `id`, `slug`, `name`, `status`, `use_case`, `sync_status`, `last_sync_at`
+- All branding (logo, colors, contact info) is fetched from auth-api `GET /api/v1/tenants/by-slug/{slug}` and cached in Redis with key `tenant:{slug}` and JWT-aligned TTL (6 hours default) via `cache.GetTenantDetails()`
+- Frontend services use TanStack Query with staleTime = JWT TTL to cache tenant branding
+- **No service stores branding locally** — no `brand_colors`, `logo_url`, `contact_email`, `contact_phone`, `website`, `country`, `timezone`, `org_size`, `subscription_plan/status/expires_at/id`, `tier_limits`, `metadata` in downstream tenant tables
+- Subscription enforcement reads from JWT claims (`SubscriptionPlan`, `SubscriptionStatus`, `SubscriptionLimits`), not from tenant DB
+- **Branding editing**: Only auth-ui (`accounts.codevertexitsolutions.com/dashboard/settings?tab=branding`). All other frontends redirect to auth-ui for branding management
+- **Profile editing**: Common fields (name, email, avatar) managed at auth-ui. Role-specific fields (rider KYC, customer preferences) managed by owning service
 
 ---
 
