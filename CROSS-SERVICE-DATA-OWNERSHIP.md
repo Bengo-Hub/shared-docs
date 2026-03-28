@@ -1,6 +1,6 @@
 # Cross-Service Data Ownership & User Management
 
-**Last updated:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
+**Last updated:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories with icon field, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking; POS catalog sync handler enriched with full compliance/physical/service fields from inventory events (inventory_item_id FK, item_type, requires_age_verification, barcode, duration_minutes). Use case is per-outlet (not per-tenant) — a single tenant can have outlets with different use cases. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
 
 ## Overview
 
@@ -498,7 +498,7 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 - **Ordering-backend:** No proof_of_delivery, logistics_events, notification_* tables, or payment/payment_intent/refund/treasury_events tables. Only refs on orders and order_assignments; catalog from inventory (cache or proxy).
 - **Logistics-api:** Single source of truth for proof_of_delivery, tasks, riders; erd.md reflects this.
 - **Inventory-api:** Single source of truth for items (with barcode/compliance/weight/dimensions), units, recipes (with costing), recipe_ingredients, warehouses, balances (with auto-reorder), reservations, consumptions, hierarchical categories, custom fields, lots, variant attributes, bundles, suppliers, purchase orders, stock transfers, warranties.
-- **POS-api:** Single source of truth for KDS stations/tickets, appointments, staff members, serial number logs, commission records; catalog items synced from inventory with compliance flags and item_type.
+- **POS-api:** Single source of truth for KDS stations/tickets, appointments, staff members, serial number logs, commission records; catalog items synced from inventory via NATS events (inventory.item.created/updated) with full compliance flags, item_type, inventory_item_id FK, barcode, duration_minutes. Sync handler in `internal/modules/catalog/inventory_events.go`. POS ModifierGroups reference inventory via `inventory_modifier_group_id` FK.
 - **Logistics-api:** Single source of truth for expanded task types (food_delivery, retail_delivery, outlet_transfer, commercial_courier, drop_shipping), pricing rules, rider shifts with zone assignment; fleet members with specialization and capacity.
 - **Notifications-api:** Owns templates and delivery; no template storage in ordering or POS.
 - **Treasury-api:** Owns all payment entities including split payments, settlements/lines, reconciliation runs, installment plans/installments; ordering/POS hold only payment_intent_id and status refs.
@@ -511,6 +511,23 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 - Legacy `riderprofile` and `riderdocument` in ordering-backend are **removed**. All rider data is in logistics-api; ordering-backend stores only `rider_id` and `logistics_task_id` refs.
 - **Ordering-backend:** Remove ProofOfDelivery, LogisticsEvent, NotificationTemplate, NotificationEvent, NotificationSubscription, Payment, PaymentIntent, PaymentMethod, Refund, TreasuryEvent schemas and all related handlers/repos; Order keeps payment_intent_id (UUID), payment_status; get PoD from logistics-api, payment details from treasury-api, send notifications via notifications-api.
 - Catalog/menu: Source of truth is inventory-api. Ordering-backend must not own menu_items/menu_categories as master — either remove and proxy inventory-api, or keep as read-only cache synced from inventory-api (see plan and service erd.md).
+
+---
+
+## Shared Libraries (Uniformity)
+
+All Go services should use these shared libraries from `github.com/Bengo-Hub/`:
+
+| Library | Purpose | Version | Services |
+|---------|---------|---------|----------|
+| `httpware` | HTTP middleware, tenant/user context, CORS | v0.3.0 | All 7 services |
+| `shared-events` (events) | Transactional outbox, NATS publishing | v0.2.0 | All 7 services |
+| `auth-client` | JWT validation, JWKS, permissions middleware | v0.4.x | All 7 services |
+| `cache` | Redis tenant cache (branding, config) | v0.2.0 | ordering, inventory, logistics, notifications, subscriptions |
+| `service-client` | gRPC/REST inter-service client | v0.2.0 | ordering, notifications, treasury, subscriptions |
+| `pagination` | Cursor/offset pagination helpers | v0.1.0 | notifications (adopt in others as needed) |
+
+Frontend shared package: `@bengo-hub/shared-ui-lib` v0.1.0 — SSOLoginModal, TreasuryPaymentModal, TrackingIframeModal. Used by ordering-frontend, pos-ui, inventory-ui, cafe-website. All must pin to `#v0.1.0`.
 
 ---
 
