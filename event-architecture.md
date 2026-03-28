@@ -1,6 +1,6 @@
 # BengoBox Event Architecture
 
-**Last Updated:** March 25, 2026 — Multi-industry revamp: Added inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due. Previous (March 24): ordering.order.refunded/scheduled/rated, logistics.task.eta_updated, treasury.refund.completed. All events include `notification` block with explicit target (customer/tenant_admin/staff/rider) and recipient details.
+**Last Updated:** March 25, 2026 — Enriched inventory.item.created/updated event payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). POS catalog sync handler updated to consume full payload including inventory_item_id FK. Previous: Multi-industry revamp with inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due.
 **Status:** Production — All MVP backend services publish and consume events via NATS JetStream with transactional outbox pattern.
 
 ---
@@ -76,8 +76,8 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 
 | Subject | Trigger | Key Payload Fields |
 |---------|---------|-------------------|
-| `inventory.item.created` | New item created | id, sku, name, category_name, is_active |
-| `inventory.item.updated` | Item updated | id, sku, name, category_name, is_active |
+| `inventory.item.created` | New item created | id, sku, name, description, type, category_id, category_name, unit_id, unit_name, is_active, image_url, tags, barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes |
+| `inventory.item.updated` | Item updated | id, sku, name, description, type, category_id, category_name, unit_id, unit_name, is_active, image_url, tags, barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes |
 | `inventory.category.created` | New category created | id, name, slug, parent_id, depth, path |
 | `inventory.category.updated` | Category updated | id, name, slug, parent_id, depth, path |
 | `inventory.stock.low` | Available stock <= reorder level | item_id, sku, name, available, reorder_level, warehouse_id |
