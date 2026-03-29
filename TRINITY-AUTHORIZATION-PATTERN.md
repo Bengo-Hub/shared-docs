@@ -1,6 +1,6 @@
 # Trinity Authorization Pattern
 
-**Last updated:** March 2026 — Multi-step registration with org creation, platform-owner cross-tenant access, subscription enforcement post-login, subscription seed UUID resolution from auth-api, tenant-in-URL SSO token minting, and auth-api GET /me Redis cache (TTL = token expiry) implemented.
+**Last updated:** March 29, 2026 — Subscription enforcement changed to mutations-only across all services (pos-api, treasury-api, projects-api fixed). Frontend 403 discrimination added: subscription 403s show upgrade banners instead of redirecting to login. SubscriptionBanner + SubscriptionGate + useSubscription hook rolled out to all frontends. Platform owner bypass added to subscription middleware.
 
 ## Overview
 
@@ -93,12 +93,22 @@ Each domain service implements its own fine-grained permission system stored in 
 
 **RBAC module per service** (`internal/modules/rbac/`): service.go, repository.go, repository_ent.go, models.go — provides EnsureUserFromToken (JIT), HasPermission, HasRole, AssignRole, RevokeRole.
 
-**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscription) → JIT user provisioning (with role assignment from JWT) → Route-level RequirePermission/RequireAnyPermission.
+**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscriptionForMutations — mutations only) → JIT user provisioning (with role assignment from JWT) → Route-level RequirePermission/RequireAnyPermission.
 
-**Subscription enforcement by service (March 2026):**
-- **Enforced:** treasury-api, inventory-api, pos-api (all routes), ordering-backend (mutations only), logistics-api (mutations only), projects-api
+**Subscription enforcement by service (March 2026, updated March 29):**
+- **Enforced (mutations only):** treasury-api, inventory-api, pos-api, ordering-backend, logistics-api, projects-api — all use mutations-only enforcement: GET/HEAD/OPTIONS pass through, POST/PUT/PATCH/DELETE require active subscription.
 - **NOT enforced (core services, free in all plans):** auth-api (token authority), subscriptions-api (subscription authority), notifications-api (core messaging). Notifications uses **plan-based email rate limiting** (`max_emails_per_day` from JWT `SubscriptionLimits`) instead of subscription gating.
-- Superuser always bypasses subscription enforcement.
+- Superuser and platform owner always bypass subscription enforcement.
+
+**Subscription enforcement rules:**
+- Subscription NEVER blocks authentication or login. Users must always be able to log in regardless of subscription status.
+- Read operations (GET) are always allowed so users can view their data even with an expired subscription.
+- Mutation operations (POST/PUT/PATCH/DELETE) are blocked with HTTP 403 and response body `{"error":"...","code":"subscription_inactive","upgrade":true}`.
+- The `upgrade: true` field in the JSON response distinguishes subscription 403s from auth/permission 403s.
+- Frontends must discriminate subscription 403s from auth 403s: subscription 403 → show upgrade banner/toast, NOT redirect to login. Auth 403 → redirect to unauthorized page.
+
+**Frontend subscription gating pattern:**
+Each frontend implements lazy subscription loading via `useSubscription()` hook + `SubscriptionBanner` (persistent top banner) + `SubscriptionGate` (wraps gated features). Subscription info is fetched AFTER login from subscriptions-api; loading never blocks UI. Platform owners get automatic `active/enterprise` status.
 
 **Example service-level permissions:**
 - `treasury.payments.add`, `treasury.payments.view`, `treasury.payments.manage`
