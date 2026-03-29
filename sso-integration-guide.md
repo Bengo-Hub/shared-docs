@@ -454,6 +454,46 @@ Each frontend implements these subscription components:
 
 ---
 
+## useMe Hook Pattern (March 29, 2026)
+
+**Critical rule:** The `useMe` hook in ALL frontends MUST call SSO auth-api `GET /api/v1/auth/me` directly — NOT the service backend's `/auth/me`. The backend requires JIT sync via NATS which has a delay; calling it during login causes 401 loops.
+
+### Correct Pattern (all services):
+```typescript
+// In lib/auth/api.ts:
+const SSO_BASE_URL = process.env.NEXT_PUBLIC_SSO_URL || 'https://sso.codevertexitsolutions.com';
+
+export async function fetchProfile(accessToken: string): Promise<UserProfile> {
+  const res = await fetch(`${SSO_BASE_URL}/api/v1/auth/me`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) throw new Error(res.status === 401 ? 'Unauthorized' : 'SSO /me failed');
+  return res.json();
+}
+
+// In hooks/useMe.ts:
+export function useMe(enabled = true) {
+  const accessToken = useAuthStore((s) => s.session?.accessToken);
+  return useQuery({
+    queryKey: ['auth', 'me'],
+    queryFn: () => fetchProfile(accessToken!),
+    enabled: enabled && !!accessToken,
+    staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error) => {
+      if (error?.response?.status === 401 || error?.response?.status === 403) return false;
+      return failureCount < 2; // NEVER use `true` — causes infinite loops
+    },
+  });
+}
+```
+
+### Anti-patterns to avoid:
+- `fetchProfile()` calling backend `/api/v1/auth/me` or `auth/me` (JIT delay → 401 → loop)
+- `retry: true` or `retry: () => true` on non-401 errors (infinite request loops)
+- `useMe` returning `isError` that triggers SSO redirect without checking subscription 403
+
+---
+
 ## Debugging Common Issues
 
 | Symptom | Cause | Fix |
