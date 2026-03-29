@@ -1,7 +1,7 @@
 # BengoBox SSO Integration Guide
 
-**Last Updated**: March 2026
-**Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **JIT role assignment** now maps global JWT roles to service-level roles on first login across all backends (treasury, inventory, pos, logistics, notifications). **Subscription enforcement** added to ordering-backend (mutations), projects-api; notifications-api uses plan-based email rate limiting instead. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
+**Last Updated**: March 29, 2026
+**Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **JIT role assignment** now maps global JWT roles to service-level roles on first login across all backends (treasury, inventory, pos, logistics, notifications). **Subscription enforcement (March 29 fix):** ALL services now use mutations-only enforcement — GET requests pass through unconditionally; only POST/PUT/PATCH/DELETE require active subscription. Frontend 403 discrimination distinguishes subscription 403 (`code: subscription_inactive`, `upgrade: true`) from auth 403 to prevent login redirect loops. All frontends implement `SubscriptionBanner` + `SubscriptionGate` + `useSubscription()` hook for UI-level gating. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
 
 ---
 
@@ -394,6 +394,66 @@ notifications-api subscribes → creates notification preferences
 
 ---
 
+## Subscription Gating (Post-Login, Never Blocks Auth)
+
+**Principle:** Subscription NEVER blocks login. Users must always be able to authenticate. Subscription is enforced AFTER login on mutations, UI elements, and action buttons.
+
+### Backend Enforcement Pattern
+
+All Go services use mutations-only enforcement via inline middleware (same pattern as ordering-backend):
+
+```go
+api.Use(func(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // GET/HEAD/OPTIONS always pass through
+        if r.Method == http.MethodGet || r.Method == http.MethodHead || r.Method == http.MethodOptions {
+            next.ServeHTTP(w, r)
+            return
+        }
+        claims, ok := authclient.ClaimsFromContext(r.Context())
+        if !ok { next.ServeHTTP(w, r); return }
+        if claims.IsSuperuser() || claims.IsPlatformOwner || claims.IsSubscriptionActive() {
+            next.ServeHTTP(w, r); return
+        }
+        // Returns {"error":"...","code":"subscription_inactive","upgrade":true}
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusForbidden)
+        _, _ = w.Write([]byte(`{"error":"Your subscription is not active.","code":"subscription_inactive","upgrade":true}`))
+    })
+})
+```
+
+### Frontend 403 Discrimination
+
+Frontends MUST distinguish subscription 403s from auth 403s using the `code` and `upgrade` fields:
+
+```typescript
+// In API client error interceptor:
+if (error.response?.status === 403) {
+  const data = error.response?.data;
+  if (data?.code === 'subscription_inactive' || data?.upgrade === true) {
+    // Subscription issue — show upgrade toast/banner, do NOT redirect to login
+    onSubscription403Callback(data);
+  }
+}
+
+// In auth-provider 403 handling:
+if (isError && statusCode === 403) {
+  const data = (error as any)?.response?.data;
+  if (data?.code === 'subscription_inactive' || data?.upgrade === true) return; // Skip redirect
+  router.replace(`/${orgSlug}/unauthorized`); // Only redirect for permission 403
+}
+```
+
+### Frontend UI Components
+
+Each frontend implements these subscription components:
+- **`useSubscription()`** hook — lazy-loads subscription info after auth, returns `isActive`, `hasFeature()`, `isPastDue`, `isExpired`, etc.
+- **`<SubscriptionBanner />`** — persistent top banner for trial expiry, past due, expired states. Never blocks access.
+- **`<SubscriptionGate feature="..." />`** — wraps content requiring specific features; shows upgrade prompt when gated.
+
+---
+
 ## Debugging Common Issues
 
 | Symptom | Cause | Fix |
@@ -414,6 +474,9 @@ notifications-api subscribes → creates notification preferences
 | "Access denied" on treasury-ui /platform page | AuthProvider checking wrong role name (`super_admin` instead of `superuser`) | Fixed: AuthProvider now checks `isPlatformOwner` and `superuser` role from SSO /me response |
 | User has no local service roles after first login | JIT provisioning created user but didn't assign roles | Fixed: All backends now map JWT roles to service-level roles during JIT (e.g. superuser → finance_admin) |
 | 429 on notifications /messages endpoint | Email rate limit exceeded for subscription plan | Check `max_emails_per_day` in JWT SubscriptionLimits; upgrade plan or wait for daily reset |
+| Redirect to login after SSO login (subscription) | Backend returns 403 `subscription_inactive` on GET; frontend treats as auth error | Fix: backend must use mutations-only enforcement; frontend must check `data.code === 'subscription_inactive'` before redirecting |
+| 403 on GET with expired subscription | Service uses `RequireActiveSubscription()` on all routes | Fix: use inline mutations-only middleware (skip GET/HEAD/OPTIONS) |
+| Toast "subscription inactive" on every page load | Subscription 403 interceptor fires on read requests | Fix: backend should only enforce on mutations; if already fixed, clear browser cache |
 
 ---
 
