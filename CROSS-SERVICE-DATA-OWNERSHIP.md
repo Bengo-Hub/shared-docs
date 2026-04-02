@@ -165,10 +165,20 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - **Settlement / SettlementLine** — merchant settlement processing (NEW)
 - **ReconciliationRun** — gateway reconciliation (NEW)
 - **InstallmentPlan / Installment** — buy-now-pay-later support (NEW)
+- **Quotations / QuotationLines** — sales quotations and line items (from ERP finance)
+- **Expenses / ExpenseCategories / ExpenseClaims** — expense tracking and claims (from ERP finance)
+- **TaxCodes / TaxPeriods / TaxFilings** — tax configuration and compliance (from ERP finance)
+- **eTIMSDevices / eTIMSInvoices** — KRA eTIMS device registration and invoice transmission (from ERP finance)
+- **Budgets / BudgetLines** — budget management (from ERP finance)
+- **ApprovalWorkflows / ApprovalSteps / ApprovalRecords** — approval workflows for financial entities (from ERP finance)
+- **VendorBills / VendorBillLines** — vendor bill management (from ERP finance)
+- **BankAccounts / BankStatements / BankStatementLines / ReconciliationRules** — banking and reconciliation (from ERP finance)
+- **Forecasts / ForecastDataPoints** — cash flow forecasting (from ERP finance)
+- **EquityTransactions / DividendDeclarations / ShareholderReports** — equity management (from ERP finance)
 
 **Other services** store only payment references and minimal snapshots (e.g. amount at payment time); they do not duplicate treasury entities.
 
-**Other services reference**: `payment_intent_id`, `payment_id`, `payout_id`, `settlement_id`, `installment_plan_id`; payment status via webhooks or events.
+**Other services reference**: `payment_intent_id`, `payment_id`, `payout_id`, `settlement_id`, `installment_plan_id`, `quotation_id`, `expense_id`, `budget_id`, `vendor_bill_id`, `bank_account_id`; payment status via webhooks or events.
 
 ---
 
@@ -228,6 +238,15 @@ The following entities belong to a single owner. **No other service may store th
 | PricingRule, RiderShift | **logistics-api** | ordering-backend, pos-api, treasury-api |
 | Rider/fleet member profiles, KYC, vehicles, shifts | **logistics-api** | ordering-backend (only `rider_id`, `logistics_task_id` refs in order_assignments) |
 | Tenant and user identity (full profile, sessions, MFA, OAuth) | **auth-api** | ordering-backend, pos-api (only `tenant_id`, `user_id` refs; minimal JIT cache allowed for FK only) |
+| Quotations, quotation lines | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
+| Expenses, expense categories, expense claims | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
+| Tax codes, tax periods, tax filings, eTIMS devices, eTIMS invoices | **treasury-api** | erp (remove after migration), pos-api, inventory-api |
+| Budgets, budget lines | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
+| Approval workflow config for financial entities (approval workflows, steps, records) | **treasury-api** | erp (generic approvals module stays for non-financial workflows; financial approval config migrates to treasury) |
+| Vendor bills, vendor bill lines | **treasury-api** | erp (remove after migration), inventory-api |
+| Bank accounts, bank statements, bank statement lines, reconciliation rules | **treasury-api** | erp (remove after migration) |
+| Forecasts, forecast data points | **treasury-api** | erp (remove after migration) |
+| Equity transactions, dividend declarations, shareholder reports | **treasury-api** | erp (remove after migration) |
 
 **Ordering-backend cleanup (target state):**
 - **Remove** (schemas + all associated logic): `proof_of_delivery`, `logistics_events`, `notification_templates`, `notification_events`, `notification_subscriptions`, `payment_intents`, `payments`, `payment_methods`, `refunds`, `treasury_events`.
@@ -274,6 +293,20 @@ The following entities belong to a single owner. **No other service may store th
 | Treasury Service | Payment webhooks (HTTP) | Ordering | Update order payment status |
 | Treasury Service | `treasury.settlement.completed` | Notifications | Settlement batch notification |
 | Treasury Service | `treasury.installment.due` | Notifications | Installment due reminder |
+| Treasury Service | `treasury.invoice.created` | Notifications | Invoice created notification |
+| Treasury Service | `treasury.invoice.paid` | Notifications | Invoice payment confirmation |
+| Treasury Service | `treasury.invoice.overdue` | Notifications | Overdue invoice alert |
+| Treasury Service | `treasury.expense.submitted` | Notifications | Expense claim submitted for review |
+| Treasury Service | `treasury.expense.approved` | Notifications | Expense claim approved notification |
+| Treasury Service | `treasury.quotation.accepted` | Notifications | Quotation accepted notification |
+| Treasury Service | `treasury.etims.transmitted` | Notifications | eTIMS transmission confirmation |
+| Treasury Service | `treasury.budget.approved` | Projects, ERP | Budget approved — update project/ERP budget refs |
+| Treasury Service | `treasury.budget.rejected` | Projects, ERP | Budget rejected — notify requestor |
+| Subscriptions Service | `subscription.billing.renewal` | Treasury | Process subscription renewal payment |
+| Subscriptions Service | `subscription.billing.overage` | Treasury | Process overage charges |
+| Subscriptions Service | `subscription.billing.proration` | Treasury | Process proration adjustment |
+| ERP Service | `erp.payroll.processed` | Treasury | Create payroll payment journal entries |
+| ERP Service | `erp.purchase_order.received` | Treasury | Create vendor bill from received PO |
 | Logistics Service | Delivery webhooks (HTTP) | Ordering | Update order delivery status |
 
 **Note:** Catalog and units are read via REST from inventory-api; ordering and POS do not duplicate product master. Event subjects follow `domain.entity.action` (e.g. `ordering.order.created`). See each service’s `integrations.md` for full event catalog.
@@ -479,6 +512,19 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 | pos-service | `pos.sale.finalized` | inventory-service (backflush/consumption) |
 | logistics-service | `logistics.task.completed`, `task.assigned` | ordering-service, notifications-service |
 | treasury-service | Payment webhooks / `payment.completed` | ordering-service, notifications-service |
+| treasury-service | `treasury.invoice.created` | notifications-service (invoice notification) |
+| treasury-service | `treasury.invoice.paid` | notifications-service (payment confirmation) |
+| treasury-service | `treasury.invoice.overdue` | notifications-service (overdue alert) |
+| treasury-service | `treasury.expense.submitted` | notifications-service (expense review) |
+| treasury-service | `treasury.expense.approved` | notifications-service (expense approved) |
+| treasury-service | `treasury.quotation.accepted` | notifications-service (quotation accepted) |
+| treasury-service | `treasury.etims.transmitted` | notifications-service (eTIMS confirmation) |
+| treasury-service | `treasury.budget.approved` / `rejected` | projects-service, erp (budget lifecycle) |
+| subscription-service | `subscription.billing.renewal` | treasury-service (renewal payment) |
+| subscription-service | `subscription.billing.overage` | treasury-service (overage charges) |
+| subscription-service | `subscription.billing.proration` | treasury-service (proration adjustment) |
+| erp-service | `erp.payroll.processed` | treasury-service (payroll journal entries) |
+| erp-service | `erp.purchase_order.received` | treasury-service (vendor bill creation) |
 
 ---
 
