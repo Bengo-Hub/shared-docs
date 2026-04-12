@@ -96,7 +96,7 @@ Each domain service implements its own fine-grained permission system stored in 
 **Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscriptionForMutations — mutations only) → JIT user provisioning (with role assignment from JWT) → Route-level RequirePermission/RequireAnyPermission.
 
 **Subscription enforcement by service (March 2026, updated March 29):**
-- **Enforced (mutations only):** treasury-api, inventory-api, pos-api, ordering-backend, logistics-api, projects-api — all use mutations-only enforcement: GET/HEAD/OPTIONS pass through, POST/PUT/PATCH/DELETE require active subscription.
+- **Enforced (mutations only):** treasury-api, inventory-api, pos-api, ordering-backend, logistics-api, projects-api, marketflow-api — all use mutations-only enforcement: GET/HEAD/OPTIONS pass through, POST/PUT/PATCH/DELETE require active subscription.
 - **NOT enforced (core services, free in all plans):** auth-api (token authority), subscriptions-api (subscription authority), notifications-api (core messaging). Notifications uses **plan-based email rate limiting** (`max_emails_per_day` from JWT `SubscriptionLimits`) instead of subscription gating.
 - Superuser and platform owner always bypass subscription enforcement.
 
@@ -115,13 +115,14 @@ Each frontend implements lazy subscription loading via `useSubscription()` hook 
 - `ordering.orders.add`, `ordering.catalog.change`, `ordering.config.manage`
 - `logistics.tasks.add`, `logistics.fleet.manage`, `logistics.zones.view`
 - `notifications.templates.change`, `notifications.providers.manage`
+- `marketflow.leads.add`, `marketflow.campaigns.manage`, `marketflow.chat.view`
 
 **Relationship to Layer 1 (auth-service) permissions:**
 Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes issued in JWT by auth-service. Layer 3 service-level codes (e.g. `ordering.catalog.view`) are fine-grained codes managed locally by each service. Both can coexist: the shared-auth-client `RequirePermission` middleware checks `claims.Permissions` (from JWT), while the service RBAC module checks local DB permissions via `rbacService.HasPermission()`.
 
 **Superuser bypass:** All permission checks (both JWT-level and service-level) are bypassed for users with the `superuser` role. Platform owner (`is_platform_owner`) bypasses tenant isolation and platform route restrictions.
 
-**Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. **JIT must also assign a default service-level role** based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (pos_admin), logistics-api (admin), notifications-api (super_admin).
+**Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. **JIT must also assign a default service-level role** based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (pos_admin), logistics-api (admin), notifications-api (super_admin), marketflow-api (marketflow_admin).
 
 **JIT tenant sync:** All Go backends must sync the tenant from auth-api when the request carries a tenant slug (e.g. from JWT or path). If the slug is present and the tenant is missing locally, the service should fetch and upsert the tenant from auth-api before processing the request. This avoids "tenant not found" after SSO login when the token was minted for a tenant (via `?tenant=` on the authorize URL).
 

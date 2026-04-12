@@ -153,6 +153,7 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 | `logistics-ui` | logistics-ui | `https://logistics.codevertexitsolutions.com/auth/callback` | Yes |
 | `auth-ui` | auth-ui | `https://accounts.codevertexitsolutions.com/auth/callback`, `https://sso.codevertexitsolutions.com/auth/callback` | Yes |
 | `cafe-website` | cafe-website | `https://theurbanloftcafe.com/auth/callback` | Yes (PKCE) |
+| `marketflow-ui` | marketflow-ui | `https://marketflow.codevertexitsolutions.com/auth/callback` and `/{tenant}/auth/callback` | Yes |
 
 **The seed uses upsert** — re-running it fixes misconfigured redirect URIs automatically. For tenant-aware apps, seed includes both `/{tenant}/auth/callback` and `/auth/callback` so either pattern works.
 
@@ -173,6 +174,9 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 | pos-ui | `pos.codevertexitsolutions.com` |
 | logistics-ui | `logistics.codevertexitsolutions.com` |
 | inventory-ui | `inventory.codevertexitsolutions.com` |
+| marketflow-ui | `marketflow.codevertexitsolutions.com` |
+| marketflow-api | `marketflowapi.codevertexitsolutions.com` |
+| marketflow-ai | `marketflowai.codevertexitsolutions.com` |
 | ticketing-ui | `ticketing.codevertexitsolutions.com` |
 | projects-ui | `projects.codevertexitsolutions.com` |
 
