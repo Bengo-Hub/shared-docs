@@ -1,1 +1,157 @@
- ssh -o ConnectTimeout=15 -o StrictHostKeyChecking=no mss-prod "echo '=== CPU ===' && nproc && cat /proc/cpuinfo | grep 'model name' | head -1 && echo '=== Memory ===' && free -h && echo '=== Disk ===' && df -h / && echo '=== K3s Nodes ===' && kubectl get nodes -o wide 2>/dev/null && echo '=== Namespaces ===' && kubectl get ns 2>/dev/null && echo '=== Pod Resource Usage ===' && kubectl top pods --all-namespaces --sort-by=memory 2>/dev/null | head -40 && echo '=== Node Resources ===' && kubectl top nodes 2>/dev/null && echo '=== Ingress ===' && kubectl get ingress --all-namespaces 2>/dev/null | head -30 && echo '=== Storage Classes ===' && kubectl get sc 2>/dev/null && echo '=== PVCs ===' && kubectl get pvc --all-namespaces 2>/dev/null"
+D:\Projects\Codevertex>  ssh -o ConnectTimeout=15 -o StrictHostKeyChecking=no mss-prod "echo '=== CPU ===' && nproc && cat /proc/cpuinfo | grep 'model name' | head -1 && echo '=== Memory ===' && free -h && echo '=== Disk ===' && df -h / && echo '=== K3s Nodes ===' && kubectl get nodes -o wide 2>/dev/null && echo '=== Namespaces ===' && kubectl get ns 2>/dev/null && echo '=== Pod Resource Usage ===' && kubectl top pods --all-namespaces --sort-by=memory 2>/dev/null | head -40 && echo '=== Node Resources ===' && kubectl top nodes 2>/dev/null && echo '=== Ingress ===' && kubectl get ingress --all-namespaces 2>/dev/null | head -30 && echo '=== Storage Classes ===' && kubectl get sc 2>/dev/null && echo '=== PVCs ===' && kubectl get pvc --all-namespaces 2>/dev/null"
+=== CPU ===
+12
+model name      : AMD EPYC Processor (with IBPB)
+=== Memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            47Gi        10Gi        30Gi       315Mi       6.9Gi        36Gi
+Swap:             0B          0B          0B
+=== Disk ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       484G  176G  309G  37% /
+=== K3s Nodes ===
+NAME              STATUS   ROLES           AGE    VERSION    INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+mss-prod-master   Ready    control-plane   145d   v1.30.14   77.237.232.66   <none>        Ubuntu 24.04.4 LTS   6.8.0-106-generic   containerd://2.2.2    
+=== Namespaces ===
+NAME                 STATUS   AGE
+argocd               Active   119d
+auth                 Active   119d
+cafe                 Active   119d
+calico-apiserver     Active   145d
+calico-system        Active   145d
+cert-manager         Active   145d
+default              Active   145d
+erp                  Active   119d
+food-delivery        Active   87d
+infra                Active   119d
+ingress-nginx        Active   145d
+inventory            Active   119d
+iot                  Active   119d
+isp-billing          Active   119d
+kube-node-lease      Active   145d
+kube-public          Active   145d
+kube-system          Active   145d
+local-path-storage   Active   119d
+logistics            Active   119d
+marketflow           Active   5d6h
+messaging            Active   119d
+notifications        Active   119d
+ordering             Active   119d
+pos                  Active   119d
+projects             Active   119d
+subscription         Active   119d
+subscriptions        Active   34d
+ticketing            Active   119d
+tigera-operator      Active   145d
+treasury             Active   119d
+truload              Active   119d
+=== Pod Resource Usage ===
+NAMESPACE            NAME                                                CPU(cores)   MEMORY(bytes)   
+kube-system          kube-apiserver-mss-prod-master                      319m         1127Mi
+infra                prometheus-prometheus-prometheus-0                  721m         1058Mi
+infra                prometheus-grafana-76f576675d-mq7wh                 21m          877Mi
+infra                postgresql-0                                        144m         481Mi
+argocd               argocd-application-controller-0                     23m          442Mi
+logistics            tileserver-7d64c7b958-r6fhz                         1m           333Mi
+ingress-nginx        ingress-nginx-controller-587b8cfbb7-lbvw2           7m           292Mi
+isp-billing          isp-billing-backend-747db55c64-whznn                5m           288Mi
+erp                  erp-api-app-78b667c8f5-jzh24                        10m          270Mi
+infra                superset-85549f7668-825xt                           3m           239Mi
+calico-system        calico-node-z79h7                                   134m         210Mi
+truload              truload-backend-6897965dc7-spbrg                    47m          181Mi
+kube-system          kube-controller-manager-mss-prod-master             70m          180Mi
+infra                superset-celerybeat-6bdd95f77c-w57bp                1m           174Mi
+kube-system          etcd-mss-prod-master                                201m         165Mi
+truload              truload-backend-6897965dc7-mcs8g                    48m          148Mi
+cafe                 cafe-website-65cb9cbdbb-xgklq                       7m           141Mi
+argocd               argocd-repo-server-bb96c5b4b-xkbtp                  1m           138Mi
+logistics            valhalla-fdd8f4bc5-9jk5s                            16m          109Mi
+infra                superset-worker-76c75d97f-q6ffl                     496m         101Mi
+infra                rabbitmq-0                                          12m          95Mi
+calico-apiserver     calico-apiserver-77bdff97dd-vw5ct                   6m           87Mi
+cert-manager         cert-manager-66798cd759-zznj4                       12m          78Mi
+truload              truload-frontend-app-8546d8d8b9-vjfjb               1m           77Mi
+truload              truload-frontend-app-8546d8d8b9-kw4hq               4m           76Mi
+isp-billing          isp-billing-frontend-95c788bc8-wlgsm                2m           76Mi
+cert-manager         cert-manager-cainjector-59fd9448b6-cgqz2            6m           76Mi
+kube-system          coredns-76954db598-wrm8q                            23m          73Mi
+calico-system        calico-kube-controllers-64c97998fb-h5d68            5m           73Mi
+infra                prometheus-kube-state-metrics-844874d7dd-rdfhw      11m          72Mi
+kube-system          kube-scheduler-mss-prod-master                      24m          72Mi
+erp                  erp-ui-app-c9bfb9845-wzrjj                          1m           63Mi
+kube-system          kube-proxy-p2c24                                    1m           63Mi
+calico-system        calico-typha-6895bccd76-dclt7                       4m           59Mi
+kube-system          vpa-recommender-54c76554b5-9k4d2                    10m          57Mi
+auth                 auth-ui-db95df66f-ntkh4                             2m           56Mi
+kube-system          vpa-updater-7d5f6fbf9b-zndw8                        1m           55Mi
+logistics            logistics-ui-74d9967db5-5cpz6                       2m           54Mi
+ordering             ordering-frontend-6c4d88447b-xv8z6                  3m           54Mi
+=== Node Resources ===
+NAME              CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+mss-prod-master   3447m        28%    12076Mi         25%
+=== Ingress ===
+NAMESPACE       NAME                        CLASS    HOSTS                                                                     ADDRESS   PORTS     AGE
+argocd          argocd-server               nginx    argocd.codevertexitsolutions.com                                                    80, 443   133d   
+auth            auth-api                    nginx    sso.codevertexitsolutions.com                                                       80, 443   19d    
+auth            auth-ui                     nginx    accounts.codevertexitsolutions.com                                                  80, 443   65d    
+cafe            cafe-website                nginx    theurbanloftcafe.com                                                                80, 443   65d    
+erp             erp-api-app                 nginx    erpapi.masterspace.co.ke,erpapi.codevertexitsolutions.com                           80, 443   91d    
+erp             erp-ui-app                  nginx    erp.masterspace.co.ke,erp.codevertexitsolutions.com                                 80, 443   91d    
+infra           prometheus-grafana          nginx    grafana.codevertexitsolutions.com                                                   80, 443   119d   
+infra           superset                    nginx    superset.codevertexitsolutions.com                                                  80, 443   51d    
+inventory       inventory-api               nginx    inventoryapi.codevertexitsolutions.com                                              80, 443   34d    
+inventory       inventory-ui                nginx    inventory.codevertexitsolutions.com                                                 80, 443   39d    
+iot             cm-acme-http-solver-kq7c7   <none>   iot.codevertexitsolutions.com                                                       80        25d    
+iot             iot-api                     nginx    iot.codevertexitsolutions.com                                                       80, 443   119d   
+isp-billing     isp-billing-backend         nginx    ispbillingapi.codevertexitsolutions.com                                             80, 443   61d    
+isp-billing     isp-billing-frontend        nginx    ispbilling.codevertexitsolutions.com                                                80, 443   61d    
+logistics       logistics-api               nginx    logisticsapi.codevertexitsolutions.com                                              80, 443   14d    
+logistics       logistics-ui                nginx    logistics.codevertexitsolutions.com                                                 80, 443   39d    
+logistics       rider-app                   nginx    riderapp.codevertexitsolutions.com                                                  80, 443   57d    
+logistics       tileserver                  nginx    tiles.codevertexitsolutions.com                                                     80, 443   24d    
+logistics       valhalla                    nginx    routing.codevertexitsolutions.com                                                   80, 443   24d    
+marketflow      marketflow-ai               nginx    marketflowai.codevertexitsolutions.com                                              80, 443   5d     
+marketflow      marketflow-api              nginx    marketflowapi.codevertexitsolutions.com                                             80, 443   5d6h   
+marketflow      marketflow-ui               nginx    marketflow.codevertexitsolutions.com                                                80, 443   3d5h   
+messaging       nats-monitoring             nginx    nats.codevertexitsolutions.com                                                      80, 443   23d    
+notifications   notifications-api           nginx    notificationsapi.codevertexitsolutions.com                                          80, 443   2d9h   
+notifications   notifications-ui            nginx    notifications.codevertexitsolutions.com                                             80, 443   21d    
+ordering        ordering-backend            nginx    orderingapi.codevertexitsolutions.com                                               80, 443   11d    
+ordering        ordering-frontend           nginx    ordersapp.codevertexitsolutions.com                                                 80, 443   80d    
+pos             pos-api                     nginx    posapi.codevertexitsolutions.com                                                    80, 443   34d    
+pos             pos-ui                      nginx    pos.codevertexitsolutions.com                                                       80, 443   118d   
+=== Storage Classes ===
+NAME                   PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+local-path (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  145d
+=== PVCs ===
+NAMESPACE    NAME                                                                                                             STATUS   VOLUME             
+                        CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+erp          erp-api-app-media                                                                                                Bound    pvc-d457b982-ba36-433e-85d9-75f31b773e3d   20Gi       RWO            local-path     <unset>                 91d
+infra        alertmanager-monitoring-kube-prometheus-alertmanager-db-alertmanager-monitoring-kube-prometheus-alertmanager-0   Bound    pvc-a775a974-ed94-4da3-9bb7-0841588d57d3   10Gi       RWO            local-path     <unset>                 133d
+infra        alertmanager-prometheus-alertmanager-db-alertmanager-prometheus-alertmanager-0                                   Bound    pvc-4ac60502-fae5-4203-9e62-40d161d6df27   10Gi       RWO            local-path     <unset>                 133d
+infra        alertmanager-prometheus-kube-prometheus-alertmanager-db-alertmanager-prometheus-kube-prometheus-alertmanager-0   Bound    pvc-3317e274-aded-4975-ac79-4a5c86cd2a30   10Gi       RWO            local-path     <unset>                 133d
+infra        data-postgresql-0                                                                                                Bound    pvc-5e04ce86-8a1b-4df1-905f-fced7b4f81c4   20Gi       RWO            local-path     <unset>                 121d
+infra        data-rabbitmq-0                                                                                                  Bound    pvc-5873c6fc-241b-4871-a3b5-6dd9366c103d   10Gi       RWO            local-path     <unset>                 133d
+infra        data-rabbitmq-1                                                                                                  Bound    pvc-454a448d-787d-4eeb-bb90-e52ee603e4f9   10Gi       RWO            local-path     <unset>                 124d
+infra        data-redis-master-0                                                                                              Bound    pvc-d2172e15-7b72-4d18-9d28-34812cd8b2e9   8Gi        RWO            local-path     <unset>                 121d
+infra        data-superset-postgresql-0                                                                                       Bound    pvc-c7d86018-e345-4685-8a8b-1b54fb4cfc68   8Gi        RWO            local-path     <unset>                 125d
+infra        monitoring-grafana                                                                                               Bound    pvc-2ce5c6d1-bde1-480a-af99-4f08a06d1cc9   10Gi       RWO            local-path     <unset>                 133d
+infra        postgresql-backup-pvc                                                                                            Bound    pvc-2ed84cee-36b8-4afa-80f6-6ebcfe5138db   5Gi        RWO            local-path     <unset>                 19d
+infra        prometheus-grafana                                                                                               Bound    pvc-e85f9bf4-26e3-4b2e-8daf-f0a432d4008f   10Gi       RWO            local-path     <unset>                 119d
+infra        prometheus-monitoring-kube-prometheus-prometheus-db-prometheus-monitoring-kube-prometheus-prometheus-0           Bound    pvc-b722a9ac-b339-48b6-8d4e-575b0a4aedc4   20Gi       RWO            local-path     <unset>                 133d
+infra        prometheus-prometheus-kube-prometheus-prometheus-db-prometheus-prometheus-kube-prometheus-prometheus-0           Bound    pvc-926212e0-a594-41e9-a071-f8512f9a4a71   20Gi       RWO            local-path     <unset>                 133d
+infra        prometheus-prometheus-prometheus-db-prometheus-prometheus-prometheus-0                                           Bound    pvc-5a048596-062c-4df6-9fe6-0dea9de8023c   20Gi       RWO            local-path     <unset>                 133d
+inventory    inventory-api-media                                                                                              Bound    pvc-8e3e1b0c-0f0e-4785-8924-2956b0e464a0   5Gi        RWO            local-path     <unset>                 21d
+logistics    logistics-api-media                                                                                              Bound    pvc-75680414-caf6-4ba4-9dd6-9fe081f0fc36   5Gi        RWO            local-path     <unset>                 14d
+logistics    tileserver-data                                                                                                  Bound    pvc-8abf7ac3-eb0c-4ec6-b6c5-2b39ec84f054   5Gi        RWO            local-path     <unset>                 24d
+logistics    tileserver-media                                                                                                 Bound    pvc-f3d8293e-4208-4a2a-a97b-3c8dca8b0014   5Gi        RWO            local-path     <unset>                 24d
+logistics    valhalla-data                                                                                                    Bound    pvc-6193af7d-2c20-4bbe-8cfa-5bff7e8a75e9   10Gi       RWO            local-path     <unset>                 24d
+logistics    valhalla-media                                                                                                   Bound    pvc-c0dbae2c-4dd1-4e84-ae47-fcd2b7d4f21e   10Gi       RWO            local-path     <unset>                 24d
+marketflow   ollama-data-ollama-0                                                                                             Bound    pvc-e1e8cee6-beff-4a57-b6a4-4a55a912bdff   5Gi        RWO            local-path     <unset>                 4d22h
+messaging    nats-js-nats-0                                                                                                   Bound    pvc-9c09378d-30b8-42dd-8ba3-7ad3c5e15a35   10Gi       RWO            local-path     <unset>                 119d
+messaging    nats-js-nats-1                                                                                                   Bound    pvc-2b3337fb-4ea7-4917-9148-f98d66aaba90   10Gi       RWO            local-path     <unset>                 129d
+messaging    nats-js-nats-2                                                                                                   Bound    pvc-36a3fb1a-498b-459b-88c2-e97a7826838a   10Gi       RWO            local-path     <unset>                 129d
+ordering     ordering-backend-media                                                                                           Bound    pvc-beb72c32-3462-4f32-809d-fbfe98861353   5Gi        RWO            local-path     <unset>                 11d
+truload      truload-backend-media                                                                                            Bound    pvc-e558fab9-3423-4c47-8d46-dd0a4ac8b51b   10Gi       RWO            local-path     <unset>                 43d
+truload      truload-backups                                                                                                  Bound    pvc-c93d872f-bad8-4520-8899-2461a5cce18e   20Gi       RWO            local-path     <unset>                 25d
+PS D:\Projects\Codevertex> 
