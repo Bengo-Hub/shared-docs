@@ -1,6 +1,6 @@
 # BengoBox SSO Integration Guide
 
-**Last Updated**: March 31, 2026
+**Last Updated**: May 20, 2026
 **Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **JIT role assignment** now maps global JWT roles to service-level roles on first login across all backends (treasury, inventory, pos, logistics, notifications). **Service-level auth/me enrichment (March 31 fix):** ordering-backend and treasury-api `/auth/me` endpoints now merge JWT claims with service-level RBAC roles/permissions from local DB (following notifications-api gold standard). Token refresh implemented in cafe-website (JSON body to POST /api/v1/auth/refresh). AUTH_AUDIENCE fixed to "codevertex" across all services. Media upload handlers now fall back to file extension for SVG/WebP detection. **Subscription enforcement (March 29 fix):** ALL services now use mutations-only enforcement — GET requests pass through unconditionally; only POST/PUT/PATCH/DELETE require active subscription. Frontend 403 discrimination distinguishes subscription 403 (`code: subscription_inactive`, `upgrade: true`) from auth 403 to prevent login redirect loops. All frontends implement `SubscriptionBanner` + `SubscriptionGate` + `useSubscription()` hook for UI-level gating. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
 
 ---
@@ -61,7 +61,16 @@ Every frontend uses the same flow:
    Poll service's own /me endpoint until user data is available
    (NATS events sync user from auth-service to each service's DB)
          ↓
-10. Redirect to destination based on user role/scenario
+10. Outlet selection (multi-outlet tenants only):
+   If token response includes `requiresOutletSelection: true`:
+   a. Store `ssoExchangeToken` in sessionStorage
+   b. Navigate to `/{orgSlug}/auth/select-outlet`
+   c. POST /api/v1/auth/select-outlet with { ssoExchangeToken, outletId }
+   d. Receive final JWT with outlet claims (outlet_id, outlet_code, outlet_use_case, is_hq_user)
+   Single-outlet tenants skip this step — outlet claims are embedded immediately.
+         ↓
+11. Redirect to destination based on user role/scenario
+   UI reads `outlet_use_case` from JWT to adapt sidebar and feature visibility.
 ```
 
 ---
@@ -99,7 +108,7 @@ To keep the ecosystem maintainable, **every frontend and backend that integrates
 | **1. Login entry** | Redirect to SSO authorize URL with PKCE (`code_challenge`, `code_verifier`, `state`). Pass `tenant` only when the user is already in a tenant context (e.g. path `/{orgSlug}/menu` → pass `orgSlug`). When the user lands on auth-ui directly (no `?tenant=`), auth-ui sends **no tenant**; auth-api resolves tenant from the user's primary org. |
 | **2. Callback** | Exchange `code` + `code_verifier` at `POST /api/v1/token`. Store `access_token`, `refresh_token`, `expires_at`. Attach token getter to the API client so **every** request sends `Authorization: Bearer <token>`. |
 | **3. Tenant context** | After first successful profile response, store `tenant_id` and `tenant_slug` (from SSO or service `/me`) in localStorage. Send `X-Tenant-ID` (must be the **tenant UUID** from auth-api, not a slug or custom string like `tenant-urban-loft`) and `X-Tenant-Slug` on **every** request to tenant-scoped backends. Backends expect `X-Tenant-ID` to be a valid UUID. |
-| **4. Profile** | Prefer service's own `GET /api/v1/{tenant}/auth/me` (or equivalent) so roles/permissions match that service. If the service returns 404 (user not yet synced), fall back to SSO `GET /api/v1/auth/me` with the access token and map the response so the UI still shows authenticated state. |
+| **4. Profile** | Two-step enrichment: (a) Call SSO `GET /api/v1/auth/me` → get user identity + global roles + auth-service permissions. (b) Call the service's own `/auth/me` (e.g. `GET /api/v1/{tenant}/pos/auth/me` for pos-ui) → get service-level role + service permissions (pos.*.* for pos-ui). Auth-api issues only auth-service permissions in the JWT; service permissions come exclusively from the service's local RBAC. Merge: use SSO identity (id, email, name, tenant) + service permissions for RBAC. If the service /auth/me returns 404 (user not yet JIT-provisioned), fall back to role inference from global JWT roles. |
 | **5. 401 handling** | Register a global 401 handler (e.g. axios interceptor) that (a) **attempts token refresh first** via `refreshAccessToken()` mutex (calls `POST /api/v1/auth/refresh` with `refresh_token` + `client_id`), (b) retries the original request with the new token, (c) only fires the logout callback if refresh fails or the retry still returns 401. The 401 callback must check `status !== 'syncing' && status !== 'loading'` and skip if within 15 seconds of successful auth (`lastAuthenticatedAt` grace period). When firing: clear TanStack query cache (`queryClient.clear()`), reset auth store, redirect to SSO logout. **Skip 401 for `/auth/me`** (JIT sync delay). Reference implementation: cafe-website `src/lib/api/client.ts` + `src/lib/auth/token-refresh.ts` + `src/components/providers/Providers.tsx`. |
 | **6. Tenant branding** | Fetch from auth-api `GET /api/v1/tenants/by-slug/{slug}` and cache with TanStack Query `staleTime: 6 * 60 * 60 * 1000` (6 hours, matching JWT TTL). Apply CSS variables (`--tenant-primary`, `--tenant-secondary`, `--tenant-logo-url`) from cached data. **Do NOT store branding locally or provide a branding editor** — redirect to auth-ui `/dashboard/settings?tab=branding`. |
 | **7. Profile management** | Common profile fields (name, email, avatar) → redirect to auth-ui `/dashboard/profile`. Keep only role-specific fields in the service's own profile page (e.g. rider KYC in rider-app, customer preferences in ordering-frontend). |
@@ -310,6 +319,13 @@ auth-ui validates `return_to` with `isValidReturnUrl` (allows relative paths and
 - Profile: Call **SSO** `GET /api/v1/auth/me` (Bearer token) — not treasury-api. Implemented in `lib/auth/api.ts` (`fetchProfile(accessToken)`) and `hooks/useMe.ts`. Treasury-api also exposes `GET /api/v1/auth/me` (JWT claims) as an optional fallback.
 - Source: `src/lib/auth/api.ts`, `src/store/auth.ts`, `src/hooks/useMe.ts`
 
+### pos-ui
+- Client ID: `pos-ui`
+- Callback: `/{orgSlug}/auth/callback`
+- Profile: **Two-step** — (1) Call **SSO** `GET /api/v1/auth/me` for identity + global roles. (2) Call **pos-api** `GET /api/v1/{tenant}/pos/auth/me` for POS-specific role + pos.*.* permissions. Merge: SSO identity + pos-api permissions. On SSO login, `fetchPosServiceProfile()` enriches the user profile stored in Zustand auth store.
+- PIN login: pos-api `GET /{tenant}/pos/auth/pin/profile` lists staff; `POST /auth/pin` validates PIN and issues a terminal JWT that already contains POS role + permissions (same RBAC as SSO flow).
+- Source: `src/lib/auth/api.ts`, `src/store/auth.ts`, `src/hooks/usePermissions.ts`, `src/lib/rbac/permissions.ts`
+
 ### inventory-ui
 - Client ID: `inventory-ui`
 - Callback: `/{orgSlug}/auth/callback`
@@ -334,6 +350,12 @@ Auth-api must issue access tokens that contain everything microservices need to 
 - `tenant_id`, `tenant_slug` — Tenant context.
 - `roles` — Array of tenant-scoped roles (e.g. `superuser`, `admin`, `staff`, `member`, `rider`).
 - `permissions` — Array of **canonical permission codes** derived from the SSO role–permission table (e.g. `catalog:view`, `catalog:manage`, `orders:read`, `orders:change`, `riders:read`).
+- `outlet_id` — UUID of the selected outlet (empty until outlet selection is completed).
+- `outlet_code` — Short code for the outlet (e.g. `BUSIA`, `HOSP`).
+- `outlet_use_case` — Use case of the outlet: `hospitality` | `retail` | `quick_service` | `pharmacy` | `services` | `logistics`.
+- `is_hq_user` — Boolean; HQ outlet users bypass outlet-scoped data filtering in downstream services.
+
+**Outlet claims** (added in shared-auth-client v0.6.0) are embedded after outlet selection. Services use `outlet_use_case` to gate access to use-case-specific routes via `RequireUseCase()` middleware. Platform owners (`IsPlatformOwner`) and users with `CanAccessAllOutlets()` bypass all outlet-scoped gating.
 
 **Canonical permission codes** are defined once in auth-api (seed) and used by all services. No service should define its own permission strings for cross-cutting authz; use the same codes (e.g. ordering-backend checks `catalog:view` / `catalog:manage`, and auth-api issues those same strings in the token and in GET /me).
 

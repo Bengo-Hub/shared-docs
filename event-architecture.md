@@ -55,6 +55,9 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `auth.tenant.branch.created` | Branch creation with tenant | tenant_id, name, is_default, use_case |
 | `auth.user.password_reset.requested` | Password reset requested | user_id, email, tenant_id |
 | `auth.user.password_reset.completed` | Password reset completed | user_id, email |
+| `auth.outlet.created` | New outlet created by tenant admin | outlet_id, tenant_id, tenant_slug, code, name, use_case, is_hq, address |
+| `auth.outlet.updated` | Outlet name/use_case/status changed | outlet_id, tenant_id, tenant_slug, code, name, use_case, is_hq, status |
+| `auth.outlet.archived` | Outlet deactivated | outlet_id, tenant_id, tenant_slug, code |
 
 ### ordering-backend (JetStream, stream: `ordering`)
 
