@@ -61,15 +61,30 @@ Every frontend uses the same flow:
    Poll service's own /me endpoint until user data is available
    (NATS events sync user from auth-service to each service's DB)
          ↓
-10. Outlet selection (multi-outlet tenants only):
-   If token response includes `requiresOutletSelection: true`:
+10. SSO outlet selection (multi-outlet tenants only):
+   If token response includes `requiresOutletSelection: true` (SSO-level flow):
    a. Store `ssoExchangeToken` in sessionStorage
    b. Navigate to `/{orgSlug}/auth/select-outlet`
    c. POST /api/v1/auth/select-outlet with { ssoExchangeToken, outletId }
    d. Receive final JWT with outlet claims (outlet_id, outlet_code, outlet_use_case, is_hq_user)
    Single-outlet tenants skip this step — outlet claims are embedded immediately.
          ↓
-11. Redirect to destination based on user role/scenario
+11. Service-level outlet preselection (ALL service frontends — pos-ui, inventory-ui, ordering-frontend, logistics-ui, treasury-ui, etc.):
+   After receiving the final JWT with outlet claims:
+   a. If `outlet_id` is non-empty AND `is_hq_user = false` (single-outlet staff):
+      → Auto-preselect outlet from JWT without showing UI selector
+      → Store outlet as `{service}-selected-outlet-id` in localStorage
+      → Call `apiClient.setOutletID(outlet_id)` so X-Outlet-ID header is sent on every request
+   b. If user IS HQ (`is_hq_user = true`) OR `outlet_id` is empty:
+      → Check localStorage for a previously selected outlet
+      → If stored outlet found: restore it via `apiClient.setOutletID(storedId)`, proceed
+      → If no stored outlet: redirect to `/{orgSlug}/auth/select-outlet` (service-level selector page)
+        The selector fetches from auth-api `GET /api/v1/tenants/{slug}/outlets` (no auth required)
+        Last-used outlet is moved to the top of the list (TruLoad pattern)
+        Single outlet → auto-selects, no UI shown
+   c. On page reload: rehydrate outlet from localStorage → `apiClient.setOutletID(storedId)`
+         ↓
+12. Redirect to destination based on user role/scenario
    UI reads `outlet_use_case` from JWT to adapt sidebar and feature visibility.
 ```
 
@@ -108,6 +123,7 @@ To keep the ecosystem maintainable, **every frontend and backend that integrates
 | **1. Login entry** | Redirect to SSO authorize URL with PKCE (`code_challenge`, `code_verifier`, `state`). Pass `tenant` only when the user is already in a tenant context (e.g. path `/{orgSlug}/menu` → pass `orgSlug`). When the user lands on auth-ui directly (no `?tenant=`), auth-ui sends **no tenant**; auth-api resolves tenant from the user's primary org. |
 | **2. Callback** | Exchange `code` + `code_verifier` at `POST /api/v1/token`. Store `access_token`, `refresh_token`, `expires_at`. Attach token getter to the API client so **every** request sends `Authorization: Bearer <token>`. |
 | **3. Tenant context** | After first successful profile response, store `tenant_id` and `tenant_slug` (from SSO or service `/me`) in localStorage. Send `X-Tenant-ID` (must be the **tenant UUID** from auth-api, not a slug or custom string like `tenant-urban-loft`) and `X-Tenant-Slug` on **every** request to tenant-scoped backends. Backends expect `X-Tenant-ID` to be a valid UUID. |
+| **3b. Outlet context** | After the service-level outlet preselection step (11 above), send `X-Outlet-ID` (outlet UUID) on every API request via `apiClient.setOutletID(outletId)`. Platform owners omit `X-Tenant-ID`/`X-Tenant-Slug` but still send `X-Outlet-ID` when an outlet is selected. Backends treat `X-Outlet-ID` as **optional** — requests without it pass through and return all data for the tenant. See **Outlet/Branch Context** section below. |
 | **4. Profile** | Two-step enrichment: (a) Call SSO `GET /api/v1/auth/me` → get user identity + global roles + auth-service permissions. (b) Call the service's own `/auth/me` (e.g. `GET /api/v1/{tenant}/pos/auth/me` for pos-ui) → get service-level role + service permissions (pos.*.* for pos-ui). Auth-api issues only auth-service permissions in the JWT; service permissions come exclusively from the service's local RBAC. Merge: use SSO identity (id, email, name, tenant) + service permissions for RBAC. If the service /auth/me returns 404 (user not yet JIT-provisioned), fall back to role inference from global JWT roles. |
 | **5. 401 handling** | Register a global 401 handler (e.g. axios interceptor) that (a) **attempts token refresh first** via `refreshAccessToken()` mutex (calls `POST /api/v1/auth/refresh` with `refresh_token` + `client_id`), (b) retries the original request with the new token, (c) only fires the logout callback if refresh fails or the retry still returns 401. The 401 callback must check `status !== 'syncing' && status !== 'loading'` and skip if within 15 seconds of successful auth (`lastAuthenticatedAt` grace period). When firing: clear TanStack query cache (`queryClient.clear()`), reset auth store, redirect to SSO logout. **Skip 401 for `/auth/me`** (JIT sync delay). Reference implementation: cafe-website `src/lib/api/client.ts` + `src/lib/auth/token-refresh.ts` + `src/components/providers/Providers.tsx`. |
 | **6. Tenant branding** | Fetch from auth-api `GET /api/v1/tenants/by-slug/{slug}` and cache with TanStack Query `staleTime: 6 * 60 * 60 * 1000` (6 hours, matching JWT TTL). Apply CSS variables (`--tenant-primary`, `--tenant-secondary`, `--tenant-logo-url`) from cached data. **Do NOT store branding locally or provide a branding editor** — redirect to auth-ui `/dashboard/settings?tab=branding`. |
@@ -228,6 +244,147 @@ After login, the JWT claims include `tenant_id` and `tenant_slug`. All service A
 2. **Profile source:** Frontends must load user/roles/permissions from **auth-api (SSO)** `GET /api/v1/auth/me` (Bearer token). Do not call the service’s own API for profile unless that service exposes a dedicated /auth/me (e.g. ordering-backend `GET /api/v1/{tenant}/auth/me` for its synced user). Treasury-ui, notifications-ui, subscriptions-ui, etc. call **SSO** for `/api/v1/auth/me`; treasury-api also exposes `GET /api/v1/auth/me` (JWT claims) as an optional fallback.
 3. Frontends should store `tenant_id` (e.g. in localStorage) after the first successful profile load and send it as `X-Tenant-ID` on subsequent requests; use `tenant_slug` in the URL path (e.g. `/api/v1/urban-loft/...`).
 4. When syncing users or tenants from events (e.g. NATS `auth.user.created`), downstream services must use the tenant UUID from the event (auth-api-issued), not generate a new one.
+
+---
+
+## Outlet/Branch Context
+
+Every SSO-integrated service frontend and backend supports outlet/branch-level scoping via the `X-Outlet-ID` header. This is optional on the backend — requests without the header return all tenant-scoped data.
+
+### JWT Outlet Claims
+
+Auth-api embeds outlet data in the access token after the select-outlet step:
+
+| Claim | Type | Description |
+|-------|------|-------------|
+| `outlet_id` | string UUID | Selected outlet. Empty for HQ/admin users. |
+| `outlet_code` | string | Short outlet code (e.g. `BUSIA`, `HOSP`). |
+| `outlet_use_case` | string | `hospitality` \| `retail` \| `quick_service` \| `pharmacy` \| `services` \| `logistics`. Controls sidebar modules. |
+| `is_hq_user` | bool | True for HQ users who can access all outlets. HQ users use `X-Outlet-ID` header for per-request drill-down. |
+
+### Frontend: Outlet Selector Flow
+
+```
+After SSO callback (JWT received)
+  ↓
+outlet_id in JWT && !is_hq_user?
+  → YES: auto-preselect outlet, skip selector, set apiClient.setOutletID(outlet_id)
+  → NO (HQ user or empty outlet_id):
+      stored outlet in localStorage?
+        → YES: restore + apiClient.setOutletID(storedId)
+        → NO:  redirect to /{orgSlug}/auth/select-outlet
+              (fetches GET /api/v1/tenants/{slug}/outlets from auth-api)
+              (auto-selects if single outlet, shows list if multiple)
+              (moves last-used outlet to top of list)
+```
+
+### Frontend: Nav Bar Filter Rules
+
+| User Type | Tenant Filter | Outlet Filter |
+|-----------|--------------|---------------|
+| **Platform owner** (`is_platform_owner = true`) | ✅ Dropdown (all tenants) | ✅ Dropdown (outlets of selected tenant) |
+| **Tenant HQ/admin** (`is_hq_user = true` or role = admin/manager) | ❌ Not shown | ✅ Dropdown ("All Outlets" default) |
+| **Regular staff** (`outlet_id` in JWT, `is_hq_user = false`) | ❌ Not shown | ✅ Read-only badge (their assigned outlet, no dropdown) |
+
+**Key files:**
+- Outlet filter component template: `inventory-service/inventory-ui/src/components/outlet-filter.tsx`
+- Outlet filter store template: `inventory-service/inventory-ui/src/store/outlet-filter.ts`
+- API client with X-Outlet-ID: `inventory-service/inventory-ui/src/lib/api/client.ts`
+- Select-outlet page template: `pos-service/pos-ui/src/app/[orgSlug]/auth/select-outlet/page.tsx`
+
+### Frontend: API Client Setup (all services)
+
+```typescript
+class ApiClient {
+  private outletId: string | null = null;
+
+  private handleRequest = (config) => {
+    // ... existing tenant headers ...
+    if (this.outletId) {
+      config.headers['X-Outlet-ID'] = this.outletId;
+    }
+    return config;
+  };
+
+  public setOutletID(outletId: string | null) {
+    this.outletId = outletId;
+  }
+}
+```
+
+**On page reload (rehydration):**
+```typescript
+useEffect(() => {
+  const stored = localStorage.getItem(`{service}-selected-outlet-id`);
+  if (stored) apiClient.setOutletID(stored);
+}, []);
+```
+
+### Frontend: localStorage Key Convention
+
+Each service uses its own localStorage key to avoid conflicts:
+- `pos-selected-outlet-id` (pos-ui)
+- `inventory-selected-outlet-id` (inventory-ui)
+- `ordering-selected-outlet-id` (ordering-frontend)
+- `logistics-selected-outlet-id` (logistics-ui)
+- `treasury-selected-outlet-id` (treasury-ui)
+- `marketflow-selected-outlet-id` (marketflow-ui)
+- `projects-selected-outlet-id` (projects-ui)
+
+### Backend: Outlet Context Middleware (all Go services)
+
+```go
+// Lightweight middleware — add to /{tenant} route group after TenantV2
+func OutletContext(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if outletID := httpware.OutletHeader(r); outletID != "" {
+            r = r.WithContext(httpware.WithOutletID(r.Context(), outletID))
+        }
+        next.ServeHTTP(w, r)  // always continues — outlet is optional
+    })
+}
+```
+
+**CORS**: All services must include `X-Outlet-ID` in `AllowedHeaders`:
+```go
+AllowedHeaders: []string{..., "X-Outlet-ID"},
+```
+
+### Backend: Optional Outlet Filtering
+
+```go
+// In any list handler — outlet filter is ALWAYS optional:
+outletID := httpware.GetOutletID(ctx) // empty string if not set
+q := client.Order.Query().Where(order.TenantID(tenantUUID))
+if outletID != "" {
+    if uid, err := uuid.Parse(outletID); err == nil {
+        q = q.Where(order.OutletIDEQ(uid))
+    }
+}
+// Never return an error if outlet ID is absent — this breaks platform admin calls
+```
+
+### Backend: Outlet List Endpoint (auth-api)
+
+Services and frontends fetch the tenant's outlet list from auth-api (no auth required):
+```
+GET /api/v1/tenants/{slug}/outlets
+Response: [{ id, code, name, use_case, is_hq, status, settings }]
+```
+
+Filter out `status = "archived"` outlets before showing in UI.
+
+### Services with Outlet Support
+
+| Service | Frontend | Backend | Outlet FK | Notes |
+|---------|----------|---------|-----------|-------|
+| POS | ✅ Full (select-outlet + header filter) | ✅ OutletContext middleware + outlet_id FK | ✅ orders, staff | Gold standard |
+| Inventory | ✅ Full | ✅ OutletContext middleware + warehouse outlet_id | ✅ warehouses | |
+| Ordering | ✅ Full | ✅ OutletContext middleware + outlet_id FK | ✅ orders | |
+| Logistics | ✅ Full | ✅ OutletContext middleware + outlet_id FK | ✅ tasks | |
+| Treasury | ✅ Full (TenantFilter + OutletFilter) | ✅ CORS + middleware | Optional | |
+| MarketFlow | ✅ OutletFilter in header | ✅ CORS + middleware | Optional | |
+| Projects | ✅ OutletFilter in header | ✅ CORS + middleware | Optional | |
 
 ---
 
@@ -554,6 +711,11 @@ export function useMe(enabled = true) {
 | Redirect to login after SSO login (subscription) | Backend returns 403 `subscription_inactive` on GET; frontend treats as auth error | Fix: backend must use mutations-only enforcement; frontend must check `data.code === 'subscription_inactive'` before redirecting |
 | 403 on GET with expired subscription | Service uses `RequireActiveSubscription()` on all routes | Fix: use inline mutations-only middleware (skip GET/HEAD/OPTIONS) |
 | Toast "subscription inactive" on every page load | Subscription 403 interceptor fires on read requests | Fix: backend should only enforce on mutations; if already fixed, clear browser cache |
+| Outlet selector shown for every login (single-outlet user) | Frontend not checking JWT `outlet_id` before redirecting to selector | Fix: in auth callback, auto-preselect from JWT `outlet_id` when `is_hq_user = false` |
+| X-Outlet-ID CORS preflight failure (403/500 from backend) | Service missing `X-Outlet-ID` in `AllowedHeaders` CORS config | Add `"X-Outlet-ID"` to CORS `AllowedHeaders` in the service router |
+| Backend returns all orders/tasks regardless of selected outlet | Outlet middleware not wired in router or outlet FK query not applied | Ensure `OutletContext` middleware is applied to `/{tenant}` group and list handlers call `httpware.GetOutletID(ctx)` |
+| Page reload loses outlet selection | Outlet not rehydrated from localStorage on mount | Add `useEffect` that reads `{service}-selected-outlet-id` from localStorage and calls `apiClient.setOutletID()` |
+| OutletFilter dropdown empty for platform owner | Outlet list fetched with wrong tenant slug (should use TenantFilter selection) | Pass `tenantFilterStore.selectedTenant?.slug` to the outlets fetch query in `OutletFilter` |
 
 ---
 

@@ -27,7 +27,9 @@ Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resourc
 - JWT token issuance with **roles** and **permissions** (canonical codes) from a single role–permission table
 - Session management
 
-**Canonical permission codes:** Auth-service defines one set of permission codes (e.g. `catalog:view`, `catalog:manage`, `orders:read`, `riders:read`) and issues them in the JWT access token and in GET /me. All microservices use these same codes for authorization; no service defines its own duplicate permission list for cross-cutting authz.
+**Auth-service permissions scope (Layer 1):** Auth-api issues only **auth-service permissions** in the JWT (e.g. `auth.users.view`, `auth.profile.change`). It does NOT issue service-specific permissions such as `pos.*.*`, `ordering.*.*`, `inventory.*.*`, etc. Service-level permissions are managed locally by each service (Layer 3) and are resolved via the service's own `/auth/me` endpoint after SSO login.
+
+**Global roles in JWT:** Auth-api issues global canonical roles (`superuser`, `admin`, `manager`, `cashier`, `waiter`, `kitchen`, `bar`, `receptionist`, `staff`, `member`, `rider`, `viewer`). Each service maps these global roles to its own service-level roles via JIT provisioning and the service `/auth/me` endpoint.
 
 **Example Roles**:
 - `superuser` - Full access across all services
@@ -93,7 +95,32 @@ Each domain service implements its own fine-grained permission system stored in 
 
 **RBAC module per service** (`internal/modules/rbac/`): service.go, repository.go, repository_ent.go, models.go — provides EnsureUserFromToken (JIT), HasPermission, HasRole, AssignRole, RevokeRole.
 
-**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscriptionForMutations — mutations only) → JIT user provisioning (with role assignment from JWT) → Route-level RequirePermission/RequireAnyPermission.
+**Middleware chain** (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscriptionForMutations — mutations only) → JIT user provisioning (with role assignment from JWT) → **Outlet context extraction** (`OutletContext` middleware: reads `X-Outlet-ID` header → stores in context via `httpware.WithOutletID()`; no-op if header absent) → Route-level RequirePermission/RequireAnyPermission.
+
+**Outlet context middleware (all services):**
+```go
+// Applied to /{tenant} route group after TenantV2 and before route handlers
+func OutletContext(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if outletID := httpware.OutletHeader(r); outletID != "" {
+            r = r.WithContext(httpware.WithOutletID(r.Context(), outletID))
+        }
+        next.ServeHTTP(w, r) // always continues — outlet is optional
+    })
+}
+```
+
+**Optional outlet filtering in handlers (all services):**
+```go
+outletID := httpware.GetOutletID(ctx)
+q := client.Entity.Query().Where(entity.TenantID(tenantUUID))
+if outletID != "" {
+    if uid, err := uuid.Parse(outletID); err == nil {
+        q = q.Where(entity.OutletIDEQ(uid))
+    }
+}
+// Outlet absence is NOT an error — platform admin calls omit it
+```
 
 **Subscription enforcement by service (March 2026, updated March 29):**
 - **Enforced (mutations only):** treasury-api, inventory-api, pos-api, ordering-backend, logistics-api, projects-api, marketflow-api — all use mutations-only enforcement: GET/HEAD/OPTIONS pass through, POST/PUT/PATCH/DELETE require active subscription.
@@ -122,9 +149,29 @@ Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes iss
 
 **Superuser bypass:** All permission checks (both JWT-level and service-level) are bypassed for users with the `superuser` role. Platform owner (`is_platform_owner`) bypasses tenant isolation and platform route restrictions.
 
-**Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. **JIT must also assign a default service-level role** based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (pos_admin), logistics-api (admin), notifications-api (super_admin), marketflow-api (marketflow_admin).
+**Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. **JIT must also assign a default service-level role** based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (admin), logistics-api (admin), notifications-api (super_admin), marketflow-api (marketflow_admin).
+
+**Service auth/me endpoint (Layer 3 enrichment):** Every domain service must expose `GET /{tenant}/auth/me` (or equivalent) that returns the user's **service-level role and fine-grained service permissions** merged from the local RBAC tables. Frontends call this endpoint immediately after SSO login (after getting SSO identity from auth-api `/api/v1/auth/me`) to obtain service-specific RBAC data:
+
+```
+1. SSO callback → exchange code → get access_token
+2. Call SSO GET /api/v1/auth/me → get user identity + global roles + auth.*.* perms
+3. Call service GET /{tenant}/{service}/auth/me → get service role + service.*.* perms
+   - Service maps global JWT roles to local service role via JIT
+   - Returns: { user_id, email, name, global_roles, service_role, permissions: [...] }
+4. Frontend stores merged profile: identity from SSO + permissions from service /auth/me
+5. Sidebar, page guards, action buttons check service permissions (pos.orders.add, etc.)
+```
+
+**Services implementing this pattern:**
+- pos-api: `GET /{tenant}/pos/auth/me` → returns pos_role + pos.*.* permissions
+- ordering-backend: `GET /{tenant}/auth/me` → ordering role + permissions (gold standard)
+- treasury-api: `GET /api/v1/auth/me` → finance role + permissions
+- notifications-api: `GET /{tenant}/auth/me` → notifications role + permissions
 
 **JIT tenant sync:** All Go backends must sync the tenant from auth-api when the request carries a tenant slug (e.g. from JWT or path). If the slug is present and the tenant is missing locally, the service should fetch and upsert the tenant from auth-api before processing the request. This avoids "tenant not found" after SSO login when the token was minted for a tenant (via `?tenant=` on the authorize URL).
+
+**Outlet/branch context (Layer 3 extension):** Services that support multi-outlet operations (ordering, inventory, logistics, POS, treasury) accept `X-Outlet-ID` (outlet UUID) as an optional header. When present, handlers filter their data to that outlet. When absent, all tenant-scoped data is returned. This allows platform owners and HQ admin users to see cross-outlet aggregates while individual staff see only their assigned outlet. CORS `AllowedHeaders` must include `X-Outlet-ID` on all services. See `sso-integration-guide.md` → **Outlet/Branch Context** section for frontend preselection rules and the select-outlet page pattern.
 
 **Tenant ID format:** Frontends must send `X-Tenant-ID` as the **tenant UUID** from auth-api (e.g. from GET `/api/v1/auth/me` response `tenant_id`). Do not send a slug or custom string (e.g. `tenant-urban-loft`). Auth-api and all SSO-integrated backends must include `X-Tenant-ID` in CORS `Access-Control-Allow-Headers` (app and ingress) so browser preflights succeed.
 
