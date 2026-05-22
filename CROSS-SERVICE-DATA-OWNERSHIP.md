@@ -39,6 +39,7 @@ This document is the **canonical** definition of data ownership across BengoBox 
 | Domain | Owner Service | Data/Entities | Integration Pattern |
 |-------|---------------|---------------|---------------------|
 | **Identity** | `auth-api` | Users, Tenants, **Outlets**, Roles | SSO (JWT), `user_id`/`outlet_id` refs. Auto-provisions downstream (Inventory Warehouses, Ordering Outlets) via NATS events. |
+| **CRM / Customer Relationship** | `marketflow-api` | Leads, Contacts, Deals, Pipelines, Accounts, Activities, Tasks, Campaigns, Funnels, NurtureSequences, ChatSessions, Meetings, CustomFields, AI Agents | REST (GET), `crm_contact_id` refs, NATS events |
 | **Product Master** | `inventory-api` | Items (SKUs), BOM, Recipes, **Units**, **Categories** (hierarchical), **Variants**, **CustomFieldDefinition/Value**, **InventoryLot**, **VariantAttribute**, **Bundle/BundleComponent**, **Supplier**, **PurchaseOrder/Line**, **StockTransfer/Line**, **Warranty** | REST (GET), `sku`/`product_id` refs |
 | **Sales Catalog** | `pos-api` | Catalogs, Modifier Groups, Local Prices, **KDSStation/KDSTicket**, **Appointment**, **StaffMember**, **SerialNumberLog**, **CommissionRecord** | Sync from Inventory, NATS `CatalogUpdated` |
 | **Orders (Online)** | `ordering-backend` | Carts, Online Orders, Loyalty, **Catalog Projection**, Booking/Appointment refs | Projection of Global Catalog, NATS Events |
@@ -94,6 +95,51 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - Subscription enforcement reads from JWT claims (`SubscriptionPlan`, `SubscriptionStatus`, `SubscriptionLimits`), not from tenant DB
 - **Branding editing**: Only auth-ui (`accounts.codevertexitsolutions.com/dashboard/settings?tab=branding`). All other frontends redirect to auth-ui for branding management
 - **Profile editing**: Common fields (name, email, avatar) managed at auth-ui. Role-specific fields (rider KYC, customer preferences) managed by owning service
+
+---
+
+### CRM Service (marketflow-api)
+**Owns** (single source of truth for all customer relationship data):
+- **Lead** — potential customers/recruits captured via ads, funnels, chat, manual entry
+- **Contact** — known customers/partners with full profile, lifecycle stage, account link
+- **Deal / Opportunity** — sales pipeline records with value, stage, probability, close date
+- **Pipeline / PipelineStage** — tenant-configurable sales pipeline with ordered stages
+- **Account** — company/organization-level records linked to contacts
+- **Activity** — unified timeline of all interactions per entity (emails, calls, notes, meetings, SMS, WhatsApp)
+- **Task** — follow-up reminders and action items linked to leads/contacts/deals
+- **Campaign** — Meta/TikTok/Google/manual marketing campaigns
+- **Funnel** — multi-step landing pages for lead capture and qualification
+- **NurtureSequence** — automated multi-channel follow-up sequences (email/SMS/WhatsApp)
+- **ChatSession** — AI chatbot conversations (web widget, WhatsApp, funnel)
+- **ScheduledMeeting** — Cal.com meeting bookings linked to leads/contacts
+- **CustomFieldDef / CustomFieldValue** — per-tenant extensible fields for leads/contacts/deals
+- **LeadScoringRule** — configurable rule-based lead scoring conditions
+- **CustomAgent / AgentRun** — tenant-defined AI automation agents and their execution logs
+- **ShortLink** — URL shortener for tracking
+
+**Other services MUST NOT store** lead profiles, contact email/phone/name, deal records, activity logs, pipeline data, or any CRM entity. They store only `crm_contact_id` (nullable UUID) as a reference FK.
+
+**Cross-service reference pattern:**
+- `pos-api` LoyaltyAccount and Appointment: add nullable `crm_contact_id` UUID FK
+- `ordering-backend` Order: add nullable `crm_contact_id` UUID FK
+- `treasury-api` PaymentIntent: add nullable `crm_contact_id` UUID FK
+- `ticketing-api` Ticket: add nullable `crm_contact_id` and `crm_lead_id` UUID FKs
+- All FKs are **nullable** — existing records function without CRM; linkage is opt-in
+
+**Integration pattern (no duplication):**
+- `marketflow-worker` subscribes to `ordering.order.created`, `pos.sale.finalized`, `treasury.payment.succeeded`, `pos.appointment.completed` — when `crm_contact_id` is set on the event payload, logs an Activity on the CRM contact timeline
+- Other services query contact details via `GET /api/v1/contacts/{crm_contact_id}` on marketflow-api using `X-API-Key: INTERNAL_SERVICE_KEY` when they need contact name/email for display
+- `GET /api/v1/contacts/{id}/360` on marketflow-api aggregates cross-service data (orders from ordering-backend, payments from treasury-api, loyalty from pos-api) in one response
+
+**Events published by marketflow-api (via NATS outbox):**
+- `crm.lead.created`, `crm.lead.qualified`, `crm.lead.converted`
+- `crm.contact.created`, `crm.contact.updated`, `crm.contact.enriched`
+- `crm.deal.created`, `crm.deal.stage_moved`, `crm.deal.won`, `crm.deal.lost`
+- `crm.activity.logged`
+- `crm.task.created`, `crm.task.overdue`
+- `crm.agent.action_taken`
+
+**Other services reference**: `crm_contact_id`, `crm_lead_id`; contact/deal data via marketflow-api REST when needed.
 
 ---
 
@@ -180,6 +226,23 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 
 **Other services reference**: `payment_intent_id`, `payment_id`, `payout_id`, `settlement_id`, `installment_plan_id`, `quotation_id`, `expense_id`, `budget_id`, `vendor_bill_id`, `bank_account_id`; payment status via webhooks or events.
 
+#### Quotation ↔ CRM Customer Integration Pattern (May 2026)
+
+Quotations in treasury-api reference CRM customers from marketflow-api. The ownership rule:
+
+- **CRM (marketflow-api) owns** all customer/contact data: name, email, phone, address, company, lifecycle stage, custom fields.
+- **treasury-api stores** a nullable `customer_id` UUID FK (the CRM Contact UUID) on `Quotation`. It also caches `customer_name` and `customer_email` as snapshot strings directly on the quotation row for display/export without requiring a live CRM lookup.
+
+**Integration pattern for quotation creation:**
+1. UI calls `GET /api/v1/marketflow/{tenant}/contacts?search=<query>` (S2S with `X-API-Key: INTERNAL_SERVICE_KEY`) to search CRM contacts.
+2. User selects a contact → UI populates `customer_id` (UUID), `customer_name`, `customer_email` in the form.
+3. UI posts `POST /api/v1/{tenant}/quotations` with all three fields.
+4. treasury-api stores them; `customer_id` is the authoritative FK.
+
+**Access pattern for display:** treasury-api returns `customer_name` and `customer_email` from the quotation row (snapshot). For live CRM data (phone, address, 360 view), call `GET /api/v1/marketflow/{tenant}/contacts/{customer_id}`.
+
+**Services that must NOT store customer master data:** treasury-api, pos-api, ordering-backend, logistics-api, inventory-api. These services store only `crm_contact_id` (nullable UUID FK) and optional snapshot fields (`customer_name`, `customer_email`) for audit/display.
+
 ---
 
 ### Logistics-Service (logistics-api)
@@ -247,6 +310,7 @@ The following entities belong to a single owner. **No other service may store th
 | Bank accounts, bank statements, bank statement lines, reconciliation rules | **treasury-api** | erp (remove after migration) |
 | Forecasts, forecast data points | **treasury-api** | erp (remove after migration) |
 | Equity transactions, dividend declarations, shareholder reports | **treasury-api** | erp (remove after migration) |
+| Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks | **marketflow-api** | ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only `crm_contact_id` nullable FK) |
 
 **Ordering-backend cleanup (target state):**
 - **Remove** (schemas + all associated logic): `proof_of_delivery`, `logistics_events`, `notification_templates`, `notification_events`, `notification_subscriptions`, `payment_intents`, `payments`, `payment_methods`, `refunds`, `treasury_events`.
