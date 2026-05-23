@@ -243,6 +243,58 @@ Quotations in treasury-api reference CRM customers from marketflow-api. The owne
 
 **Services that must NOT store customer master data:** treasury-api, pos-api, ordering-backend, logistics-api, inventory-api. These services store only `crm_contact_id` (nullable UUID FK) and optional snapshot fields (`customer_name`, `customer_email`) for audit/display.
 
+#### Financial Documents ↔ Cross-Service Integration Patterns (May 2026)
+
+All financial document types (Quotation, Invoice, Proforma Invoice, Credit Note, Sales Order, Delivery Challan, Payment Receipt) in treasury-api follow these data ownership rules for cross-service references:
+
+**Line Items ↔ Inventory-API (Product Catalog)**
+- **inventory-api owns** all product master data: item name, SKU, description, unit of measure, cost price, tax rate, images, variants.
+- **treasury-api stores** a nullable `item_id` UUID FK (inventory-api `inventory_item_id`) and `sku` string on each line item.
+- `rate` (unit price), `tax_rate`, and `description` on the line item are **snapshot values** captured at the time the document is created — they do not change if the inventory item is later updated.
+- **Integration pattern:** treasury-ui calls `GET /api/v1/{tenant}/inventory?search=<query>` (inventory-api) to search products in the line items combobox. Selecting a product auto-fills rate and tax_rate from the current inventory master; these values are then submitted as part of the document and stored as snapshots.
+- **treasury-api must NOT** mirror or sync inventory items locally. Line item `item_id` is the authoritative reference; live product data is fetched from inventory-api on demand.
+
+**Delivery Challan Conversion ↔ Logistics-API**
+- **logistics-api owns** all delivery task data: task lifecycle, proof of delivery, rider assignment, tracking, dispatch notes.
+- When a quotation is converted to a delivery challan, treasury-api calls `POST /api/v1/{tenant}/tasks` on logistics-api (S2S with `X-API-Key: INTERNAL_SERVICE_KEY`) with the quotation line items, shipping details, and source document reference.
+- **treasury-api stores** the returned `logistics_task_id` UUID on the quotation as a reference.
+- treasury-api does **NOT** store delivery task lifecycle, rider details, proof of delivery, or tracking status. These are fetched from logistics-api when needed.
+- NATS event `treasury.quotation.delivery_challan_created` is published with `{quotation_id, logistics_task_id, tenant_id}`.
+
+**Sales Order Conversion ↔ Ordering-Backend**
+- **ordering-backend owns** all sales order/online order data including order lifecycle, fulfillment state, and customer-facing order status.
+- When a quotation is converted to a sales order, treasury-api calls `POST /api/v1/{tenant}/orders` on ordering-backend (S2S with `X-API-Key: INTERNAL_SERVICE_KEY`) with the quotation line items, customer reference, and source quotation ID.
+- **treasury-api stores** the returned `order_id` UUID on the quotation as a reference.
+- treasury-api does **NOT** store order lifecycle, fulfillment, or cart data. These are owned by ordering-backend.
+- NATS event `treasury.quotation.converted_to_order` is published with `{quotation_id, order_id, tenant_id}`.
+
+**Payment Receipts ↔ Banking Accounts**
+- Bank accounts (for the "Deposited To" field in Payment Receipts) are owned by **treasury-api** itself (`BankAccounts` entity). No cross-service reference needed — treasury-api queries its own bank accounts.
+- `GET /{tenant}/banking/accounts` is the endpoint treasury-ui calls to populate the "Deposited To" dropdown in the RecordPaymentModal.
+
+**Financial Document Public Share Links**
+- Public share pages (`/q/{token}`, `/i/{token}`) serve document data via a `public_token` UUID field stored on each document row.
+- Public endpoints (`GET /api/v1/public/quotations/{token}`, `GET /api/v1/public/invoices/{token}`) do not require authentication and are rendered as Next.js server components.
+- PDF/CSV/XLSX exports for authenticated users use blob download (TruLoad pattern): `GET /{tenant}/quotations/{id}/pdf` returns bytes; the client creates an object URL and triggers `<a>.click()`. Public pages use direct `<a href>` to treasury-api public endpoints.
+
+**Document Email/WhatsApp Delivery ↔ Notifications-API**
+- treasury-api does **NOT** directly send email or WhatsApp messages. On `SendQuotation` / `SendInvoice`, treasury-api publishes NATS events:
+  - `treasury.quotation.sent` — `{quotation_id, tenant_id, recipient_email, public_token}`
+  - `treasury.invoice.sent` — `{invoice_id, tenant_id, recipient_email, public_token}`
+- notifications-api subscribes to these events and delivers the email/WhatsApp using the appropriate template (`quotation_sent`, `invoice_sent`).
+- For payment reminders: treasury-ui "Send Reminder" action triggers `POST /{tenant}/invoices/{id}/send-reminder` → treasury-api publishes `treasury.invoice.reminder_sent` → notifications-api delivers.
+
+**Summary of Cross-Service References on Financial Documents:**
+
+| Field on Document | Owner Service | Reference Type |
+|-------------------|---------------|----------------|
+| `customer_id` | marketflow-api | Nullable UUID FK + `customer_name/email/phone` snapshot |
+| line item `item_id` | inventory-api | Nullable UUID FK + rate/tax_rate/description snapshot |
+| line item `sku` | inventory-api | String snapshot (authoritative via `item_id`) |
+| `logistics_task_id` (on quotation after DC conversion) | logistics-api | Nullable UUID FK |
+| `order_id` (on quotation after SO conversion) | ordering-backend | Nullable UUID FK |
+| `bank_account_id` (on payment receipt) | treasury-api (self) | Internal FK |
+
 ---
 
 ### Logistics-Service (logistics-api)
@@ -362,7 +414,12 @@ The following entities belong to a single owner. **No other service may store th
 | Treasury Service | `treasury.invoice.overdue` | Notifications | Overdue invoice alert |
 | Treasury Service | `treasury.expense.submitted` | Notifications | Expense claim submitted for review |
 | Treasury Service | `treasury.expense.approved` | Notifications | Expense claim approved notification |
+| Treasury Service | `treasury.quotation.sent` | Notifications | Quotation email/WhatsApp delivery (recipient_email, public_token) |
 | Treasury Service | `treasury.quotation.accepted` | Notifications | Quotation accepted notification |
+| Treasury Service | `treasury.quotation.delivery_challan_created` | Logistics, Notifications | Delivery challan created from quotation (logistics_task_id ref) |
+| Treasury Service | `treasury.quotation.converted_to_order` | Ordering, Notifications | Quotation converted to sales order (order_id ref) |
+| Treasury Service | `treasury.invoice.sent` | Notifications | Invoice email/WhatsApp delivery (recipient_email, public_token) |
+| Treasury Service | `treasury.invoice.reminder_sent` | Notifications | Payment reminder delivery |
 | Treasury Service | `treasury.etims.transmitted` | Notifications | eTIMS transmission confirmation |
 | Treasury Service | `treasury.budget.approved` | Projects, ERP | Budget approved — update project/ERP budget refs |
 | Treasury Service | `treasury.budget.rejected` | Projects, ERP | Budget rejected — notify requestor |
@@ -581,7 +638,12 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 | treasury-service | `treasury.invoice.overdue` | notifications-service (overdue alert) |
 | treasury-service | `treasury.expense.submitted` | notifications-service (expense review) |
 | treasury-service | `treasury.expense.approved` | notifications-service (expense approved) |
+| treasury-service | `treasury.quotation.sent` | notifications-service (quotation email/WhatsApp delivery) |
 | treasury-service | `treasury.quotation.accepted` | notifications-service (quotation accepted) |
+| treasury-service | `treasury.quotation.delivery_challan_created` | logistics-service (task created from quotation), notifications-service |
+| treasury-service | `treasury.quotation.converted_to_order` | ordering-backend (order created from quotation), notifications-service |
+| treasury-service | `treasury.invoice.sent` | notifications-service (invoice email/WhatsApp delivery) |
+| treasury-service | `treasury.invoice.reminder_sent` | notifications-service (payment reminder) |
 | treasury-service | `treasury.etims.transmitted` | notifications-service (eTIMS confirmation) |
 | treasury-service | `treasury.budget.approved` / `rejected` | projects-service, erp (budget lifecycle) |
 | subscription-service | `subscription.billing.renewal` | treasury-service (renewal payment) |
