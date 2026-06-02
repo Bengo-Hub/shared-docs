@@ -160,8 +160,11 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - **PurchaseOrder / PurchaseOrderLine** — procurement workflow (NEW)
 - **StockTransfer / StockTransferLine** — inter-warehouse transfers (NEW)
 - **Warranty** — serial number warranty tracking (NEW)
+- **Hospitality SERVICE items** — Items with `use_case` ∈ {`HOSPITALITY_ROOM`, `HOSPITALITY_FACILITY`, `CONFERENCE`, `SALON_SERVICE`, `AMENITY`} are the **master** for room-types, conference halls, facilities, and amenities, including their rates (via `ItemPricing`), `meal_plan` (RO/BB/HB/FB/AI), occupancy basis and capacity. pos-api references these by `inventory_item_id` and projects price via catalog sync. (NEW — June 2026)
+- **Conference / event packages** — modeled as `Bundle` (parent SERVICE Item) + `BundleComponent` rows (meal periods, AV, stationery, consumables, sessions). `package_type` ∈ {`ROOM_RATE_PLAN`, `DDR`, `RDR`, `HALF_BOARD`, `FULL_BOARD`, `HALL_HIRE_ONLY`, `SERVICE_SESSIONS`}; `price_basis` ∈ {`per_delegate_per_day`, `per_person_sharing`, `flat`, `per_session`}. This **replaces** any pricing/package authoring in pos-api (`Room.rate_per_night`, `Facility.rate_per_session`, `ServicePackage.price`). (NEW — June 2026)
+- **ItemPricing outlet override** — `outlet_id` (nullable) + `tier_basis` (nightly/per_session/per_delegate_per_day/peak/off_peak) for outlet-level and seasonal rate tiers. (NEW — June 2026)
 
-**Other services do not store** items, units, recipes, lots, suppliers, or purchase orders; they reference by `inventory_item_id`, `sku`, `recipe_id`, `lot_id`, `supplier_id` and get data via REST (e.g. GET /items, GET /units, GET /recipes, GET /lots, GET /suppliers) or events. Ordering and POS may keep a **read-only projection/cache** of catalog synced from inventory.
+**Other services do not store** items, units, recipes, lots, suppliers, purchase orders, **or hospitality rates/packages**; they reference by `inventory_item_id`, `sku`, `recipe_id`, `lot_id`, `supplier_id` and get data via REST (e.g. GET /items, GET /units, GET /recipes, GET /lots, GET /suppliers) or events. Ordering and POS may keep a **read-only projection/cache** of catalog synced from inventory.
 
 **Other services reference**: `inventory_item_id`, `inventory_sku`, `recipe_id`, `reservation_id`, `lot_id`, `supplier_id`, `purchase_order_id`, `transfer_id`, `warranty_id`; catalog and units via inventory-api APIs or sync.
 
@@ -195,8 +198,13 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - **StaffMember** — staff with commission rates, service assignments (NEW)
 - **SerialNumberLog** — serial number tracking at POS (NEW)
 - **CommissionRecord** — commission tracking per staff member (NEW)
+- **Hotel operations** — `Room`/`RoomGuest` (guest stay, check-in/out), `RoomBooking` (multi-room group header), `RoomFolioItem` (folio charges), `RoomAmenity` assignment, `Facility`/`FacilityBooking`, `HousekeepingTask`. These hold **operational state only** (status, occupancy, guest data); rates and room-type/facility/amenity masters live in inventory-api (referenced via `inventory_item_id`). (NEW — June 2026)
+- **EventBooking (BEO)** — conference/wedding/party bookings referencing an inventory `Bundle` (`inventory_bundle_id`) for the package master. (NEW — June 2026)
+- **MealEntitlement** — meal-card/voucher issuance & redemption per delegate × conference-day × meal-period (one-time `issued→redeemed` with validity window). The *template* of included meals lives on the inventory Bundle; redemption backflushes meal BOM to inventory. (NEW — June 2026)
+- **Happy-hour promotions** — `Promotion`/`PromotionRule` extended with `promo_kind=happy_hour`, daily `window_start`/`window_end`, `days_of_week`, `outlet_id`, `auto_apply`, and category/item scoping that **references inventory category ids** (synced via `inventory.category.*`). Happy hour is a sales-pricing operation on the projection, not a product master. (NEW — June 2026)
+- **Guest ID document** — `RoomGuest.id_document_url` stores only an **object-storage key** (PII; never the blob). The file lives in object storage with presigned, expiring access.
 
-**Does not own**: Units, items, or recipes — obtained from inventory-api via REST or sync. Stock consumption reported to inventory-api via REST (POST /consumption) or event (`pos.sale.finalized`).
+**Does not own**: Units, items, recipes, **room-type/facility/amenity masters, conference/event package definitions, or any hospitality rate** — obtained from inventory-api via REST or sync. Guest contact identity converges on marketflow-api CRM (`crm_contact_id`). Stock consumption reported to inventory-api via REST (POST /consumption) or event (`pos.sale.finalized`).
 
 **Other services reference**: `pos_order_id`, `pos_outlet_id`, `pos_connection_id`, `appointment_id`, `staff_member_id`.
 
@@ -350,6 +358,8 @@ The following entities belong to a single owner. **No other service may store th
 | Product master (items, units, recipes, BOM, product categories) | **inventory-api** | ordering-backend, pos-api (only projection/cache synced from inventory; no authoring) |
 | CustomFieldDefinition/Value, InventoryLot, VariantAttribute, Bundle/Component, Supplier, PurchaseOrder, StockTransfer, Warranty | **inventory-api** | ordering-backend, pos-api, logistics-api, treasury-api |
 | KDSStation/Ticket, Appointment, StaffMember, SerialNumberLog, CommissionRecord | **pos-api** | ordering-backend, inventory-api, logistics-api (only refs e.g. `appointment_id`, `staff_member_id`) |
+| Room/RoomGuest/RoomBooking/RoomFolioItem, Facility/FacilityBooking, EventBooking, MealEntitlement, HousekeepingTask (hotel **operations**) | **pos-api** | inventory-api, ordering-backend (only refs e.g. `room_guest_id`, `event_booking_id`) |
+| Room-type/facility/amenity masters & **rates**, conference/event **package** definitions (room/facility pricing must NOT be authored in pos-api) | **inventory-api** | pos-api stores only `inventory_item_id`/`inventory_bundle_id` refs + synced price snapshot |
 | PricingRule, RiderShift | **logistics-api** | ordering-backend, pos-api, treasury-api |
 | Rider/fleet member profiles, KYC, vehicles, shifts | **logistics-api** | ordering-backend (only `rider_id`, `logistics_task_id` refs in order_assignments) |
 | Tenant and user identity (full profile, sessions, MFA, OAuth) | **auth-api** | ordering-backend, pos-api (only `tenant_id`, `user_id` refs; minimal JIT cache allowed for FK only) |
@@ -399,12 +409,18 @@ The following entities belong to a single owner. **No other service may store th
 | Ordering Service | `ordering.order.completed` | Inventory | Consume reservation |
 | Inventory Service | `inventory.stock.updated`, `inventory.stock.low` | Ordering (optional) | Availability / out-of-stock flags |
 | Inventory Service | `inventory.category.created/updated` | POS, Ordering | Sync hierarchical categories |
+| Inventory Service | `inventory.bundle.created/updated` | POS | Project conference/event packages & rate plans into POS catalog |
 | Inventory Service | `inventory.lot.expiring_soon` | Notifications | Expiry alerts to tenant admins |
 | Inventory Service | `inventory.purchase_order.received` | Notifications | PO receipt confirmation |
 | Inventory Service | `inventory.transfer.shipped` | Notifications | Transfer dispatch notification |
 | POS Service | `pos.sale.finalized` | Inventory | Backflush / consumption |
 | POS Service | `pos.kds.ticket.ready` | Notifications | KDS ticket ready alert |
 | POS Service | `pos.appointment.created/completed` | Notifications, Ordering | Appointment lifecycle sync |
+| POS Service | `hotel.booking.created` | Notifications | Multi-room booking confirmation |
+| POS Service | `conference.event.booked` | Notifications | Conference/event (BEO) booked |
+| POS Service | `conference.mealcard.issued` | Notifications | Delegate meal cards generated |
+| POS Service | `conference.mealcard.redeemed` | Inventory, Notifications | Meal voucher redeemed → backflush meal BOM |
+| POS Service | `pos.inventory.consumption.failed` | Notifications | Backflush failure alert (retry queue) |
 | Ordering Service | `ordering.booking.created` | POS, Notifications | Service booking created |
 | Treasury Service | Payment webhooks (HTTP) | Ordering | Update order payment status |
 | Treasury Service | `treasury.settlement.completed` | Notifications | Settlement batch notification |
