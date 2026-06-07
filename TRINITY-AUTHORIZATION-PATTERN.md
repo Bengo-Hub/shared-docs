@@ -210,30 +210,9 @@ Response:
 
 ### 2. JWT Claims Extension (Subscription-Service)
 
-```typescript
-// Auth-service enriches JWT with subscription data
-// Before issuing token, auth-service calls subscription-service:
+Auth-api calls `GET /api/v1/tenants/{tenant_id}/subscription` on subscriptions-api (with `X-API-Key: INTERNAL_SERVICE_KEY`) to fetch subscription data at token issuance. The subscription fields are embedded directly in the JWT using short `sub_*` key names.
 
-GET /api/v1/{tenant_id}/subscription/claims
-
-Response:
-{
-  "subscription_features": [
-    "customer_portal",
-    "loyalty_program",
-    "multi_outlet"
-  ],
-  "subscription_limits": {
-    "max_riders": 15,
-    "max_orders_per_day": 1000,
-    "max_admins": 3
-  },
-  "subscription_status": "active",
-  "subscription_plan": "growth"
-}
-
-// Auth-service includes this in JWT claims
-```
+**Endpoint**: `GET /api/v1/tenants/{tenant_id}/subscription` (S2S, API key auth)
 
 ### 3. Enhanced JWT Token
 
@@ -243,62 +222,63 @@ Response:
   "tenant_id": "tenant-uuid",
   "email": "user@example.com",
   "roles": ["admin", "user"],
-  "subscription_features": [
+  "sub_plan": "ORDERING-GROWTH-MONTHLY",
+  "sub_status": "ACTIVE",
+  "sub_features": [
     "customer_portal",
     "loyalty_program",
     "multi_outlet"
   ],
-  "subscription_limits": {
+  "sub_limits": {
     "max_riders": 15,
     "max_orders_per_day": 1000,
     "max_admins": 3
   },
-  "subscription_status": "active",
-  "subscription_plan": "growth",
+  "sub_expires": 1751328000,
   "exp": 1234567890,
   "iat": 1234567890
 }
 ```
 
+> **Key names**: `sub_plan`, `sub_status`, `sub_features`, `sub_limits`, `sub_expires` — NOT `subscription_plan`, `subscription_features`, etc. The `sub_*` prefix is the canonical JWT form. The long names exist only in internal DB columns and admin API responses.
+
 ### 4. Request Authorization (Domain Service)
 
-```typescript
-// User makes request to domain service
-POST /api/v1/{tenant}/orders
-Authorization: Bearer {jwt-token}
-
-// Domain service validates authorization:
-
-// Step 1: Validate JWT (RBAC check)
-const claims = validateJWT(token);
-if (!claims) {
-  return 401 Unauthorized;
+```go
+// Domain service validates authorization (Go — using shared-auth-client)
+claims, ok := authclient.ClaimsFromContext(r.Context())
+if !ok {
+    http.Error(w, "unauthorized", 401)
+    return
 }
 
-// Step 2: Check service-specific RBAC permissions
-if (!hasPermission(claims.roles, "orders:create")) {
-  return 403 Forbidden("Insufficient permissions");
+// Step 1: RBAC — check service-specific permissions from local RBAC
+if !rbacService.HasPermission(ctx, claims.UserID, "ordering.orders.add") {
+    http.Error(w, `{"error":"forbidden"}`, 403)
+    return
 }
 
-// Step 3: Check subscription features (Licensing)
-if (!claims.subscription_features.includes("customer_portal")) {
-  return 403 Forbidden("Feature not available on current plan");
+// Step 2: Licensing — subscription gate (already applied by mutations-only middleware)
+// claims.IsSubscriptionActive() || claims.IsSuperuser() || claims.IsPlatformOwner
+
+// Step 3: Feature check from JWT claims (no HTTP call needed)
+hasFeature := false
+for _, f := range claims.SubscriptionFeatures {
+    if f == "customer_portal" { hasFeature = true; break }
+}
+if !hasFeature {
+    http.Error(w, `{"error":"feature not available on current plan"}`, 403)
+    return
 }
 
-// Step 4: Check resource limits (Licensing)
-const todayOrders = await getTodayOrderCount(tenantId);
-if (todayOrders >= claims.subscription_limits.max_orders_per_day) {
-  // Allow with overage tracking
-  await subscriptionService.ReportOverage(tenantId, "order_count", 1);
-  // Or reject if hard limit
-  // return 403 Forbidden("Daily order limit exceeded");
+// Step 4: Limit check from JWT claims
+maxOrders := claims.SubscriptionLimits["max_orders_per_day"]
+if maxOrders > 0 && todayOrders >= maxOrders {
+    http.Error(w, `{"error":"daily order limit exceeded"}`, 403)
+    return
 }
 
-// Step 5: Check domain-specific business rules (Resources)
-if (isOrderValid(requestData)) {
-  // Create order
-  return createOrder(requestData);
-}
+// Step 5: Create order
 ```
 
 ---
