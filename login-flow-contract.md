@@ -1,6 +1,6 @@
 # Login Flow Contract (SSO)
 
-**Last updated:** March 2026
+**Last updated:** May 2026
 
 This document defines the canonical login flow contract for all frontends that integrate with BengoBox SSO (auth-api/auth-ui). It aligns with [sso-integration-guide.md](sso-integration-guide.md) and [TRINITY-AUTHORIZATION-PATTERN.md](TRINITY-AUTHORIZATION-PATTERN.md).
 
@@ -104,3 +104,34 @@ Backends are built to support **both platform scope and tenant scope**. Frontend
 - **Tenant users:** Component hidden or not rendered; tenant is fixed from auth context and headers.
 
 This keeps “show tenant filter vs not” and “send tenant headers vs not” consistent and maintainable across services.
+
+---
+
+## 7. Embedded SSO via SSOLoginModal (Iframe)
+
+For services that want to trigger login without a full-page redirect to `accounts.codevertexitsolutions.com`, the **`@bengo-hub/shared-ui-lib`** provides `SSOLoginModal` — a React component that embeds auth-ui in a modal iframe.
+
+```tsx
+import { SSOLoginModal } from “@bengo-hub/shared-ui-lib/auth”;
+
+<SSOLoginModal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  onLoginSuccess={(result) => {
+    // result.accessToken, result.refreshToken, result.user
+    handleLoginSuccess(result);
+  }}
+  onLoginFailed={(err) => handleError(err)}
+/>
+```
+
+**postMessage events** (from iframe → parent):
+- `auth:login_success` — login succeeded; includes token payload
+- `auth:login_failed` — login failed
+- `auth:resize` — iframe height changed (handled automatically)
+
+The modal auto-closes after a successful login. Tenant context can be passed as a prop to pre-scope the auth-ui login form.
+
+**Current version**: `@bengo-hub/shared-ui-lib` **v0.1.5**
+
+> **Note**: auth-ui and treasury-ui are the **providers** of iframe content — they do not use `SSOLoginModal` or `TreasuryPaymentModal` themselves. These components are for **consumer** services.

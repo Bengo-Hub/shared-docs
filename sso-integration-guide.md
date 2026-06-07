@@ -820,7 +820,7 @@ curl -X POST https://sso.codevertexitsolutions.com/api/v1/admin/clients \
   -d '{
     "client_id": "my-new-service",
     "name": "My New Service",
-    "redirect_uris": ["https://mynewservice.codevertexitsolutions.com/callback"],
+    "redirect_uris": ["https://my-new-service.example.com/callback"],
     "scopes": ["openid", "profile", "email"],
     "public": true
   }'

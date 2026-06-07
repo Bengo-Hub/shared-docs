@@ -1,6 +1,6 @@
 # Cross-Service Data Ownership & User Management
 
-**Last updated:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories with icon field, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking; POS catalog sync handler enriched with full compliance/physical/service fields from inventory events (inventory_item_id FK, item_type, requires_age_verification, barcode, duration_minutes). Use case is per-outlet (not per-tenant) — a single tenant can have outlets with different use cases. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
+**Last updated:** 2026-06-07 — Retail-POS revamp: loyalty SoT → pos-api (ordering becomes a client); treasury gains AR `CustomerBalance` + AP `VendorBalance` (supplier opening/advance), supplier rebate credit notes, and a `cost_center` dimension; inventory gains a `StockBreakdown` (bulk→unit) op; pos services module gains `RepairJob`. See `/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md`. **Prior:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories with icon field, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking; POS catalog sync handler enriched with full compliance/physical/service fields from inventory events (inventory_item_id FK, item_type, requires_age_verification, barcode, duration_minutes). Use case is per-outlet (not per-tenant) — a single tenant can have outlets with different use cases. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
 
 ## Overview
 
@@ -42,12 +42,26 @@ This document is the **canonical** definition of data ownership across BengoBox 
 | **CRM / Customer Relationship** | `marketflow-api` | Leads, Contacts, Deals, Pipelines, Accounts, Activities, Tasks, Campaigns, Funnels, NurtureSequences, ChatSessions, Meetings, CustomFields, AI Agents | REST (GET), `crm_contact_id` refs, NATS events |
 | **Product Master** | `inventory-api` | Items (SKUs), BOM, Recipes, **Units**, **Categories** (hierarchical), **Variants**, **CustomFieldDefinition/Value**, **InventoryLot**, **VariantAttribute**, **Bundle/BundleComponent**, **Supplier**, **PurchaseOrder/Line**, **StockTransfer/Line**, **Warranty** | REST (GET), `sku`/`product_id` refs |
 | **Sales Catalog** | `pos-api` | Catalogs, Modifier Groups, Local Prices, **KDSStation/KDSTicket**, **Appointment**, **StaffMember**, **SerialNumberLog**, **CommissionRecord** | Sync from Inventory, NATS `CatalogUpdated` |
-| **Orders (Online)** | `ordering-backend` | Carts, Online Orders, Loyalty, **Catalog Projection**, Booking/Appointment refs | Projection of Global Catalog, NATS Events |
+| **Orders (Online)** | `ordering-backend` | Carts, Online Orders, **Catalog Projection**, Booking/Appointment refs (loyalty now read/written via pos-api, not owned here — 2026-06-07) | Projection of Global Catalog, NATS Events |
 | **Logistics** | `logistics-api` | Riders, Tasks, Proof of Delivery, **PricingRule**, **RiderShift** | REST, Webhooks, `rider_id` refs |
 | **Payments** | `treasury-api` | Intents, Transactions, Refunds, Taxes, **PaymentSplit**, **Settlement/SettlementLine**, **ReconciliationRun**, **InstallmentPlan/Installment** | REST, Webhooks, `payment_intent_id` refs |
 | **Subscription plans, tenant entitlements** | subscriptions-api | All services: check plan before using inventory, POS, logistics, treasury, etc. |
 | **Notification templates, delivery status, channel preferences** | notifications-api | Other services: trigger via events or API; store only `notification_message_id` etc. if needed |
 | **IoT devices, telemetry, alerts** | iot-service-api | inventory-api (e.g. temperature/compliance), notifications; optional POS/inventory hardware integration |
+| **Loyalty & Referrals** | `pos-api` | LoyaltyProgram, LoyaltyAccount, LoyaltyTransaction, **Referral** — keyed on `crm_contact_id`; ordering-backend is a client (2026-06-07) | REST, `pos.loyalty.*` events |
+| **AR / AP balances** | `treasury-api` | **CustomerBalance** (credit sale, ageing, statements), **VendorBalance** (supplier opening/advance, ageing), supplier **rebate** credit notes, **cost_center** (2026-06-07) | REST, `customer_balance`/`vendor_balance` refs |
+| **Procurement breakdown** | `inventory-api` | **StockBreakdown** (bulk→retail uom-explode; cost carried parent→child) (2026-06-07) | event `inventory.stock.broken_down` |
+| **Repair / job-card** | `pos-api` (services module) | **RepairJob** (intake→diagnosis→parts→settle); parts from inventory, payment via treasury (2026-06-07) | REST, `pos.repair.*` events |
+
+### Retail POS Revamp — ownership deltas (2026-06-07)
+Driven by the retail-POS competitive audit (`/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md`). Deltas to the canonical model:
+1. **Loyalty SoT = pos-api** (was split pos + ordering). pos owns LoyaltyProgram/Account/Transaction + new **Referral**, keyed on `crm_contact_id` so online (ordering) + in-store (pos) earn into ONE balance. **ordering-backend stops owning loyalty** and calls pos loyalty endpoints (keeps refs only).
+2. **AR/AP balances = treasury-api**: new **CustomerBalance** (credit-sale posting, ageing 0-30/31-60/61-90/90+, statements, dunning) and **VendorBalance** (AP subledger). **Supplier opening/advance balances live in treasury AP, NOT on inventory `supplier`** (inventory supplier stays a procurement master reference).
+3. **Supplier rebates = treasury** vendor credit notes (inventory may flag a rebate accrual on PO lines). **cost_center** = treasury dimension on expense/journal lines.
+4. **Breakdown (bulk→unit) = inventory-api** `StockBreakdown` (multi-UoM explode carrying cost parent→child; IAS-2 FIFO/moving-average), distinct from BOM production.
+5. **Repair/job-card = pos-api services module** (not a new service, not ticketing-service).
+6. New/used events: `pos.loyalty.earned`, `pos.loyalty.redeemed`, `pos.referral.rewarded`, `inventory.stock.broken_down`, `inventory.goods_receipt.posted` → treasury (GR/IR accrual + 3-way match), `treasury.customer_balance.updated`, `pos.repair.*`.
+7. CRM unchanged: marketflow remains customer SoT; pos adds in-register contact search/create via marketflow S2S; **Customer Groups = marketflow segments**.
 
 ---
 
@@ -174,7 +188,7 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 **Owns** (order lifecycle and cafe context only):
 - Online orders (now with appointment_id, staff_preference_id, preferred_carrier), order_items (now with item_type, service_start_time, duration_minutes), carts, cart_items
 - Cafe/outlet context (cafes, outlets) as used by ordering
-- Promo codes, redemptions, loyalty accounts and transactions
+- Promo codes, redemptions (loyalty accounts/transactions are now owned by **pos-api**; ordering reads/writes via pos loyalty API — see 2026-06-07 retail revamp)
 - Cafe-specific user preferences/roles for ordering UX
 - **CatalogOverride** — now with requires_age_verification, item_type, variant_options
 
@@ -198,6 +212,8 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - **StaffMember** — staff with commission rates, service assignments (NEW)
 - **SerialNumberLog** — serial number tracking at POS (NEW)
 - **CommissionRecord** — commission tracking per staff member (NEW)
+- **LoyaltyProgram / LoyaltyAccount / LoyaltyTransaction / Referral** — in-store + cross-channel loyalty **SoT**, keyed on `crm_contact_id`; ordering-backend reads/writes via pos loyalty API and does not own a second balance (2026-06-07)
+- **RepairJob** (services module) — repair/job-card lifecycle (intake→diagnosis→parts→settle); parts referenced from inventory, settled via treasury (2026-06-07)
 - **Hotel operations** — `Room`/`RoomGuest` (guest stay, check-in/out), `RoomBooking` (multi-room group header), `RoomFolioItem` (folio charges), `RoomAmenity` assignment, `Facility`/`FacilityBooking`, `HousekeepingTask`. These hold **operational state only** (status, occupancy, guest data); rates and room-type/facility/amenity masters live in inventory-api (referenced via `inventory_item_id`). (NEW — June 2026)
 - **EventBooking (BEO)** — conference/wedding/party bookings referencing an inventory `Bundle` (`inventory_bundle_id`) for the package master. (NEW — June 2026)
 - **MealEntitlement** — meal-card/voucher issuance & redemption per delegate × conference-day × meal-period (one-time `issued→redeemed` with validity window). The *template* of included meals lives on the inventory Bundle; redemption backflushes meal BOM to inventory. (NEW — June 2026)
@@ -219,6 +235,9 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - **Settlement / SettlementLine** — merchant settlement processing (NEW)
 - **ReconciliationRun** — gateway reconciliation (NEW)
 - **InstallmentPlan / Installment** — buy-now-pay-later support (NEW)
+- **CustomerBalance** — AR running balance, ageing, statements, **credit-sale** posting (keyed on `crm_contact_id`) (2026-06-07)
+- **VendorBalance** — AP running balance, supplier **opening/advance balance**, ageing, statements; supplier master stays in inventory-api (2026-06-07)
+- **Supplier rebate / vendor credit notes** + **cost_center** dimension on expense/journal lines (2026-06-07)
 - **Quotations / QuotationLines** — sales quotations and line items (from ERP finance)
 - **Expenses / ExpenseCategories / ExpenseClaims** — expense tracking and claims (from ERP finance)
 - **TaxCodes / TaxPeriods / TaxFilings** — tax configuration and compliance (from ERP finance)

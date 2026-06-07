@@ -1,6 +1,6 @@
 # Payment Workflow (Invoice-First, Shared Pay Page)
 
-**Last Updated**: March 2026  
+**Last Updated**: May 2026  
 **Applies to**: All services that collect payments (ordering, subscription, cafe-website, treasury-ui). Treasury-api is the single source for payment intents and gateway orchestration.
 
 ---
@@ -146,6 +146,36 @@ After Paystack (or other redirect-based gateways) complete, the user lands on a 
 
 ---
 
+## 8. Embedded Payment via TreasuryPaymentModal (Iframe)
+
+For services that want to trigger payment without redirecting to treasury-ui directly, the **`@bengo-hub/shared-ui-lib`** provides `TreasuryPaymentModal` — a React component that embeds treasury-ui in a modal iframe.
+
+```tsx
+import { TreasuryPaymentModal } from "@bengo-hub/shared-ui-lib/payments";
+
+<TreasuryPaymentModal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  intentId={intentId}          // from treasury-api POST .../intents response
+  customerEmail={user.email}
+  onPaymentSuccess={(result) => handleSuccess(result)}
+  onPaymentFailed={(err) => handleError(err)}
+/>
+```
+
+**postMessage events** (from iframe → parent):
+- `treasury:payment_initiated` — gateway flow started
+- `treasury:payment_confirmed` — payment succeeded
+- `treasury:payment_failed` — payment failed
+- `treasury:resize` — iframe height changed (handled automatically)
+
+**Paystack redirect URL** (v0.1.5+) includes `intent_id` and `amount` as query params so the callback page can verify and display the correct order details.
+
+**Current version**: `@bengo-hub/shared-ui-lib` **v0.1.5**  
+**Services using it**: ordering-frontend, pos-ui, cafe-website, subscriptions-ui, notifications-ui, inventory-ui, truload-frontend
+
+---
+
 ## References
 
 - [Paystack callback page](paystack-callback-page.md)
@@ -153,3 +183,4 @@ After Paystack (or other redirect-based gateways) complete, the user lands on a 
 - [Treasury API integrations](../finance-service/treasury-api/docs/integrations.md)
 - Treasury-ui pay page: `finance-service/treasury-ui/src/app/(public)/pay/page.tsx`
 - Payment modals: `finance-service/treasury-ui/src/components/payments/`
+- TreasuryPaymentModal: `shared/shared-ui-lib/src/components/payments/treasury-payment-modal.tsx`

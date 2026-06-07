@@ -477,7 +477,7 @@ cors.Options{
 cors.Options{
     AllowedOrigins: []string{
         "https://accounts.codevertexitsolutions.com",
-        "https://orderapp.codevertexitsolutions.com",
+        "https://ordersapp.codevertexitsolutions.com",
         "https://pos.codevertexitsolutions.com",
         // Add all frontend origins
     },

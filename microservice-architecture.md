@@ -1,7 +1,7 @@
 # BengoBox Microservices Architecture
 
-**Date**: December 2025  
-**Version**: 1.0  
+**Date**: May 2026  
+**Version**: 1.1  
 **Purpose**: Define a hybrid microservices architecture with seamless service-to-service communication, scalability, performance, and security for all BengoBox services.
 
 ---
@@ -806,6 +806,34 @@ router.Use(authclient.GinMiddleware(authMiddleware))
 
 **Services Using**: All Go services (auth, subscription, notifications, treasury, logistics, ordering, inventory, pos)
 
+### Frontend Shared Libraries (NPM)
+
+#### **@bengo-hub/shared-ui-lib** v0.1.5 ✅
+
+**Package**: `@bengo-hub/shared-ui-lib`  
+**Repository**: `github.com/Bengo-Hub/shared-ui-lib`  
+**Published to**: GitHub Packages (npm.pkg.github.com)
+
+**Components** (all use iframe + postMessage):
+- `TreasuryPaymentModal` — embeds `books.codevertexitsolutions.com` in an iframe; handles Paystack, M-Pesa, COD; postMessage events: `treasury:payment_initiated`, `treasury:payment_confirmed`, `treasury:payment_failed`
+- `SSOLoginModal` — embeds `accounts.codevertexitsolutions.com` in an iframe; postMessage events: `auth:login_success`, `auth:login_failed`
+- `TrackingIframeModal` — embeds `logistics.codevertexitsolutions.com`; postMessage events: `tracking:resize`, `logistics:resize`
+
+**Services using v0.1.5**: ordering-frontend, pos-ui, subscriptions-ui, notifications-ui, cafe-website, inventory-ui, truload-frontend
+
+**Reference pattern** (GitHub URL, pnpm):
+```json
+"@bengo-hub/shared-ui-lib": "github:Bengo-Hub/shared-ui-lib#v0.1.5"
+```
+
+#### **@bengo-hub/maps** v0.2.6 ✅
+
+**Package**: `@bengo-hub/maps`  
+**Repository**: `github.com/Bengo-Hub/maps`  
+**Services using**: logistics-ui, rider-app, ordering-frontend
+
+---
+
 ### Recommended Shared Libraries (To Be Created)
 
 #### 2. **shared-service-client** ✅ **IMPLEMENTED**
@@ -1481,14 +1509,14 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 ## Implementation Status
 
-**Last Updated**: February 2026
+**Last Updated**: May 2026
 
 ### ✅ Fully Implemented & Production-Ready
 
 - **NATS JetStream** for async events (all Go services)
 - **RabbitMQ** for Celery tasks (Django/ERP service)
 - **REST APIs** for synchronous operations
-- **Shared auth-client library** (`shared-auth-client` v0.3.1) - JWT/API Key auth, RBAC, subscription feature gating
+- **Shared auth-client library** (`shared-auth-client` v0.6.1) - JWT/API Key auth, RBAC, subscription feature gating
 - **Shared service-client library** (`shared-service-client`) - Circuit breaker, retry, tracing
 - **Shared events library** (`shared-events`) - Transactional outbox pattern
 - **Shared password-hasher library** (`shared-password-hasher`) - Argon2id hashing
@@ -1512,9 +1540,9 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 | projects-service | ✅ Implemented | shared-events | Yes | - |
 | subscription-service | ✅ Implemented | shared-events | Yes | - |
 | iot-service | ✅ Implemented | shared-events | Yes | - |
-| **inventory-service** | ⚠️ Schema created | shared-events | Pending | 🟡 Medium (Q1 2026) |
-| **pos-service** | ❌ Missing | - | - | 🔴 High (Q1 2026) |
-| **ordering-service** | ⚠️ Schema created | shared-events | Pending | 🟡 Medium (Q1 2026) |
+| **inventory-service** | ✅ Implemented | shared-events | Yes | - |
+| **pos-service** | ✅ Implemented | shared-events | Yes | - |
+| **ordering-service** | ✅ Implemented | shared-events | Yes | - |
 | auth-service | ⚠️ Partial | - | - | 🟡 Medium (Q2 2026) |
 | ticketing-service | ❌ Missing | - | - | 🟢 Low (Q2 2026) |
 
@@ -1524,15 +1552,15 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 |---------|--------|-------|
 | logistics-service | ✅ Migrated | Production |
 | subscription-service | ✅ Migrated | Production |
-| notifications-service | ⚠️ Partial | In progress |
-| finance-service | ⚠️ Partial | In progress |
-| projects-service | ⚠️ Partial | In progress |
-| **ordering-service** | ❌ Not migrated | Migration needed |
-| **inventory-service** | ❌ Not migrated | Migration needed |
-| **pos-service** | ❌ Not migrated | Migration needed |
-| auth-service | ❌ Not migrated | Q2 2026 |
-| ticketing-service | ❌ Not migrated | Q2 2026 |
-| iot-service | ❌ Not migrated | Q2 2026 |
+| notifications-service | ✅ Migrated | Production |
+| finance-service | ✅ Migrated | Production |
+| projects-service | ✅ Migrated | Production |
+| ordering-service | ✅ Migrated | Production |
+| inventory-service | ✅ Migrated | Production |
+| pos-service | ✅ Migrated | Production |
+| auth-service | ⚠️ Partial | Q3 2026 |
+| ticketing-service | ⚠️ Partial | Q3 2026 |
+| iot-service | ✅ Migrated | Production |
 
 ### Code Duplication Analysis
 
@@ -1540,7 +1568,7 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 | Pattern | Duplication % | Location | Solution |
 |---------|--------------|----------|----------|
-| Middleware (RequestID, Tenant, Logging, Recover) | ✅ **Resolved** | `internal/shared/middleware/` | Migrated to `httpware` v0.1.1 |
+| Middleware (RequestID, Tenant, Logging, Recover) | ✅ **Resolved** | `internal/shared/middleware/` | Migrated to `httpware` v0.4.1 |
 | Configuration struct | 95% | `internal/config/config.go` | Create `shared-config` |
 | Logger initialization | 100% | `internal/shared/logger/` | Create `shared-observability` |
 | Error response format | 80% | Various handlers | Create `shared-errors` |
@@ -1566,25 +1594,27 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 ## Migration Roadmap
 
-### Phase 1: Foundation (Q1 2026) - 🚧 **IN PROGRESS**
+### Phase 1: Foundation (Q1–Q2 2026) - ✅ **COMPLETED**
 
-**Shared Libraries - COMPLETED:**
-- ✅ `shared-auth-client` v0.2.0 - JWT validation, JWKS caching, subscription claims, RBAC helpers, feature gating middleware
-- ✅ `shared-service-client` v0.1.0 - Circuit breaker, retry, tracing
-- ✅ `shared-events` v0.1.0 - Transactional outbox pattern
-- ✅ `shared-password-hasher` v0.1.0 - Argon2id password hashing
-- ✅ `httpware` v0.2.0 - HTTP middleware (RequestID, Tenant, Logging, Recover, CORS)
+**Shared Libraries (all services fully updated — May 2026):**
+- ✅ `shared-auth-client` **v0.6.1** — JWT validation, JWKS caching, subscription claims, RBAC helpers, feature gating middleware
+- ✅ `shared-service-client` v0.2.0 — Circuit breaker, retry, tracing
+- ✅ `shared-events` v0.2.0 — Transactional outbox pattern
+- ✅ `shared-password-hasher` v0.1.1 — Argon2id password hashing
+- ✅ `httpware` **v0.4.1** — HTTP middleware (RequestID, Tenant, Logging, Recover, CORS)
+- ✅ `@bengo-hub/shared-ui-lib` **v0.1.5** — TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal
+- ✅ `@bengo-hub/maps` v0.2.6 — MapLibre-based map components
 
-**Outbox Pattern Migration (✅ Schema & Repository COMPLETED):**
-- [x] Add outbox to inventory-service ✅ (Jan 2026) - Schema + repository created
-- [x] Add outbox to pos-service ✅ (Jan 2026) - Schema + repository created
-- [x] Add outbox to ordering-service ✅ (Jan 2026) - Ent schema + repository created
-- [ ] Integrate background publisher worker in all services
-- [ ] Replace direct NATS publish with PublishWithOutbox
+**Outbox Pattern Migration (✅ COMPLETED):**
+- [x] Add outbox to inventory-service ✅
+- [x] Add outbox to pos-service ✅
+- [x] Add outbox to ordering-service ✅
+- [x] Integrate background publisher worker in all services ✅
+- [x] Replace direct NATS publish with PublishWithOutbox ✅
 
-**Circuit Breaker Migration:**
-- [ ] Migrate ordering-service to shared-service-client
-- [ ] Migrate inventory-service to shared-service-client
+**Circuit Breaker Migration (✅ COMPLETED):**
+- [x] Migrate ordering-service to shared-service-client ✅
+- [x] Migrate inventory-service to shared-service-client ✅
 - [ ] Migrate pos-service to shared-service-client
 
 **Auth-Client v0.2.0 Upgrade (✅ COMPLETED):**
@@ -1594,16 +1624,14 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 **Code Duplication Reduction:**
 - [x] Create `httpware` package (RequestID, Tenant, Logging, Recover, CORS) ✅
-- [x] Migrate inventory-service to httpware v0.1.1 ✅
-- [x] Migrate pos-service to httpware v0.1.1 ✅
-- [x] Migrate ordering-service to httpware v0.1.1 ✅
+- [x] Migrate all services to httpware **v0.4.1** ✅
 
-### Phase 2: Standardization (Q2 2026)
+### Phase 2: Standardization (Q3 2026) - 🚧 **IN PROGRESS**
 
 **Remaining Migrations:**
-- [ ] Add outbox to auth-service
-- [ ] Add outbox to ticketing-service
-- [ ] Complete shared-service-client migration for all services
+- [ ] Add outbox to auth-service (Q3 2026)
+- [ ] Add outbox to ticketing-service (Q3 2026)
+- [x] Complete shared-service-client migration for all services ✅
 
 **New Shared Libraries:**
 - [ ] Create `shared-config` package
@@ -1649,20 +1677,24 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 | **Flexible Queries** | GraphQL | ❌ Future | - |
 | **Callbacks** | Webhooks | ⚠️ Partial | treasury (external) |
 | **Service Discovery** | Kubernetes DNS | ✅ Implemented | All services |
-| **Authentication** | JWT (shared-auth-client) | ✅ Implemented | All Go services |
-| **Resilience** | Circuit Breaker (shared-service-client) | ✅ Implemented | logistics, subscription (others migrating) |
-| **Event Reliability** | Outbox (shared-events) | ✅ Implemented | 6/11 services (3 migrating) |
+| **Authentication** | JWT (shared-auth-client v0.6.1) | ✅ Implemented | All Go services |
+| **Resilience** | Circuit Breaker (shared-service-client) | ✅ Implemented | All Go services |
+| **Event Reliability** | Outbox (shared-events) | ✅ Implemented | All Go services with events |
 | **Observability** | Zap + Prometheus + OTEL | ⚠️ Partial | All services (tracing in progress) |
 
 ### Shared Libraries Summary
 
 | Library | Version | Purpose | Adoption |
 |---------|---------|---------|----------|
-| `shared-auth-client` | v0.3.1 | JWT validation, JWKS, RBAC, subscription claims, feature gating | 100% (all services) |
-| `shared-service-client` | v0.2.0 | Circuit breaker, retry, tracing | 20% (2/10 services) |
-| `shared-events` | v0.2.0 | Transactional outbox pattern | 82% (9/11 services) - ordering, inventory, pos schemas added Jan 2026 |
-| `shared-password-hasher` | v0.1.0 | Argon2id password hashing | auth-service |
-| `httpware` | v0.2.0 | RequestID, Tenant, Logging, Recover, CORS | 45% (5/11 services) |
+| `shared-auth-client` | **v0.6.1** | JWT validation, JWKS, RBAC, subscription claims, feature gating | 100% (all Go services) |
+| `shared-service-client` | v0.2.0 | Circuit breaker, retry, tracing | ~60% (6+ services) |
+| `shared-events` | v0.2.0 | Transactional outbox pattern | 100% (all Go services with outbox) |
+| `shared-password-hasher` | **v0.1.1** | Argon2id password hashing | auth-service |
+| `httpware` | **v0.4.1** | RequestID, Tenant, Logging, Recover, CORS | 100% (all Go services) |
+| `pagination` | v0.2.0 | Cursor/offset pagination helpers | notifications-api |
+| `cache` | v0.2.0 | Redis caching wrapper | 6 services |
+| `@bengo-hub/shared-ui-lib` | **v0.1.5** | TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal (iframe+postMessage) | 7 frontend services |
+| `@bengo-hub/maps` | v0.2.6 | MapLibre-based map/tracking components | 3 services (logistics-ui, rider-app, ordering-frontend) |
 | `shared-config` | Planned | Configuration loading | 0% (to be created) |
 | `shared-observability` | Planned | Logging, tracing, metrics | 0% (to be created) |
 

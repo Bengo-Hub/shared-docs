@@ -238,3 +238,29 @@ All services use the transactional outbox pattern from `github.com/Bengo-Hub/sha
 | `notifications-pos-orders` | `pos` | `pos.>` |
 | `notifications-ticketing` | `ticketing` | `ticketing.>` |
 | `notifications-projects` | `projects` | `project.>` |
+
+---
+
+## MarketFlow CRM Events
+
+| Publisher | Event Subject | Subscriber | Action |
+|:---|:---|:---|:---|
+| marketflow-api | `crm.lead.created` | marketflow-worker, notifications-api | Enroll in welcome nurture sequence, trigger lead scorer agent |
+| marketflow-api | `crm.lead.qualified` | marketflow-worker, notifications-api | Enroll in qualified nurture sequence, notify FBO owner |
+| marketflow-api | `crm.lead.converted` | marketflow-worker, ordering-backend (optional) | Update contact lifecycle stage, notify |
+| marketflow-api | `crm.contact.created` | marketflow-worker | Trigger ContactEnricher background agent |
+| marketflow-api | `crm.contact.updated` | marketflow-worker | Re-run lead scoring if applicable |
+| marketflow-api | `crm.contact.enriched` | notifications-api | Notify FBO of enrichment completion |
+| marketflow-api | `crm.deal.created` | marketflow-worker | Log activity, start deal tracking |
+| marketflow-api | `crm.deal.stage_moved` | marketflow-worker, notifications-api | Update deal activity log, trigger stage-based automation |
+| marketflow-api | `crm.deal.won` | marketflow-worker, notifications-api, treasury-api (optional) | Celebrate + trigger invoice/order flow |
+| marketflow-api | `crm.deal.lost` | marketflow-worker, notifications-api | Log loss reason, trigger re-engagement if applicable |
+| marketflow-api | `crm.activity.logged` | marketflow-worker | Re-calculate lead score (if entity is lead) |
+| marketflow-api | `crm.task.created` | notifications-api | Send task reminder to assigned user |
+| marketflow-api | `crm.task.overdue` | notifications-api | Send overdue task alert to assigned user |
+| marketflow-api | `crm.agent.action_taken` | (audit log only) | Stored in AgentRun; used for agent analytics |
+| marketflow-api | `crm.agent.run_requested` | marketflow-worker | Execute custom agent (Loop invocation) |
+| ordering-backend | `ordering.order.created` | marketflow-worker | If `crm_contact_id` present: log Order Activity on CRM contact timeline |
+| pos-api | `pos.sale.finalized` | marketflow-worker | If `crm_contact_id` present: increment contact.total_orders, log Activity |
+| pos-api | `pos.appointment.completed` | marketflow-worker | If `crm_contact_id` present: log Appointment Activity on CRM contact |
+| treasury-api | `treasury.payment.succeeded` | marketflow-worker | If `crm_contact_id` present: log Payment Activity on CRM contact timeline |

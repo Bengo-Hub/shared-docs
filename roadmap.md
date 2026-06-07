@@ -750,3 +750,17 @@ This roadmap outlines the implementation order for all BengoBox microservices, p
 - [Subscription Service Integrations](../subscription-service/docs/integrations.md)
 - [Cafe Website Plan](../Cafe/cafe-website/docs/plan.md)
 
+
+---
+
+## Retail POS Revamp (2026-06-07)
+
+Competitive audit of jampos + godigital vs Codevertex microservices → phased retail-POS revamp.
+Full plan: `/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md` (+ companion audit, gap-matrix,
+and web-research docs). Phases: **P1** treasury AR/AP balances + GR→bill 3-way match + inventory
+breakdowns · **P2** pos-ui retail register surfaces (pricing profile, parked sales, credit sale,
+return-by-invoice, M-Pesa C2B cashier reconcile, cheque/bank/advance tenders, add-expense) · **P3**
+loyalty consolidation (pos SoT, ordering client) + referrals + bulk SMS · **P4** inventory-ui
+procurement/production/asset + reports · **P5** cost centers/recurring expenses/P&L + supplier
+rebates + repair module (+ optional card-terminal). Ownership deltas recorded in
+`CROSS-SERVICE-DATA-OWNERSHIP.md` (2026-06-07).
