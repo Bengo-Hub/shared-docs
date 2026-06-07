@@ -1,6 +1,6 @@
 # Subscription Gating Guide
 
-**Last Updated:** March 29, 2026
+**Last Updated:** 2026-05-25
 
 ## Principles
 
@@ -110,30 +110,74 @@ setSubscriptionInfo: (info: Record<string, unknown> | null) => void;
 
 Do NOT persist `subscriptionInfo` in Zustand's `partialize` — fetch fresh each session.
 
-### API Client: 403 Discrimination
+### API Client: 403 Discrimination + 5xx Server Errors
 
-Each frontend's API client must add a subscription-403 interceptor alongside the existing 401 handler:
+Each frontend must implement a central error handler (`src/lib/api/error-handler.ts`) and wire callbacks in the API client:
 
 ```typescript
-// Axios-based:
+// src/lib/api/error-handler.ts
+export type SubscriptionErrorCode =
+  | 'subscription_inactive' | 'subscription_expired'
+  | 'feature_not_available' | 'usage_limit_exceeded'
+  | 'device_limit_reached'  | 'plan_upgrade_required';
+
+export function isSubscriptionError(data: any): boolean {
+  if (data?.upgrade === true) return true; // legacy shape
+  return SUBSCRIPTION_CODES.has(data?.code);
+}
+```
+
+```typescript
+// Axios-based API client (src/lib/api/client.ts):
 private onSubscription403Callback: ((data: any) => void) | null = null;
+private onServerErrorCallback: ((status: number, message: string) => void) | null = null;
 
 public setOnSubscription403(callback: ((data: any) => void) | null) {
     this.onSubscription403Callback = callback;
 }
+public setOnServerError(callback: ((status: number, message: string) => void) | null) {
+    this.onServerErrorCallback = callback;
+}
 
 private handleError = (error: any) => {
-    if (error.response?.status === 401 && this.on401Callback) {
-        this.on401Callback();
-    }
-    if (error.response?.status === 403 && this.onSubscription403Callback) {
+    // 403 — subscription gating
+    if (error.response?.status === 403) {
         const data = error.response?.data;
-        if (data?.code === 'subscription_inactive' || data?.upgrade === true) {
+        if (isSubscriptionError(data) && this.onSubscription403Callback) {
             this.onSubscription403Callback(data);
         }
     }
+    // 5xx — server error toast
+    if (error.response?.status >= 500 && this.onServerErrorCallback) {
+        const data = error.response?.data;
+        const message = data?.message ?? data?.error ?? 'A server error occurred. Please try again.';
+        this.onServerErrorCallback(error.response.status, message);
+    }
     return Promise.reject(error);
 };
+```
+
+Wire both callbacks in the auth provider using **sonner** toast:
+
+```typescript
+// src/providers/auth-provider.tsx
+useEffect(() => {
+  apiClient.setOnSubscription403((data) => {
+    toast.error('Subscription limit reached', {
+      description: subscriptionErrorMessage(data),
+      duration: 8000,
+      action: { label: 'Upgrade plan', onClick: () => router.push(`/${orgSlug}/settings/billing`) },
+    });
+  });
+  return () => apiClient.setOnSubscription403(null);
+}, [orgSlug, router]);
+
+useEffect(() => {
+  apiClient.setOnServerError((_status, message) => {
+    toast.error('Server error', { description: message, duration: 6000 });
+  });
+  return () => apiClient.setOnServerError(null);
+}, []);
 ```
 
 ### Auth Provider: Skip Redirect for Subscription 403
@@ -149,9 +193,31 @@ if (isError && statusCode === 403) {
 // CORRECT: skip redirect for subscription 403
 if (isError && statusCode === 403) {
   const data = (error as any)?.response?.data;
-  if (data?.code === 'subscription_inactive' || data?.upgrade === true) return;
+  if (isSubscriptionError(data)) return;  // show toast instead
   router.replace('/unauthorized');
 }
+```
+
+### Sensitive Action Confirmation
+
+All delete, deactivate, force-close, revoke, and other destructive actions must use a confirm dialog — **never `window.confirm()`**.
+
+```typescript
+// Each frontend must have (or copy from pos-ui):
+// src/components/ui/confirm-dialog.tsx
+
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+
+const [open, setOpen] = useState(false);
+<ConfirmDialog
+  open={open}
+  onOpenChange={setOpen}
+  title="Delete item?"
+  description="This cannot be undone."
+  confirmLabel="Delete"
+  variant="danger"    // 'danger' | 'warning' | 'info'
+  onConfirm={handleDelete}
+/>
 ```
 
 ### useSubscription() Hook
@@ -162,6 +228,8 @@ The hook:
 3. Fetches from `NEXT_PUBLIC_SUBSCRIPTIONS_API_URL/api/v1/subscription` with Bearer token + tenant headers
 4. Returns `null` on error (fail-open — never blocks UI)
 5. Exposes: `isActive`, `isPastDue`, `isExpired`, `needsSubscription`, `hasFeature(code)`, `getLimit(key)`
+
+> **JWT claims**: The JWT embeds subscription data as `sub_plan`, `sub_status`, `sub_features`, `sub_limits`, `sub_expires`. The hook reads from the live subscriptions-api response (not the JWT), so it reflects the latest plan state even before token refresh.
 
 ### SubscriptionBanner
 
