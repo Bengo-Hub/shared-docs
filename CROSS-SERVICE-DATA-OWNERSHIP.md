@@ -52,6 +52,7 @@ This document is the **canonical** definition of data ownership across BengoBox 
 | **AR / AP balances** | `treasury-api` | **CustomerBalance** (credit sale, ageing, statements), **VendorBalance** (supplier opening/advance, ageing), supplier **rebate** credit notes, **cost_center** (2026-06-07) | REST, `customer_balance`/`vendor_balance` refs |
 | **Procurement breakdown** | `inventory-api` | **StockBreakdown** (bulk→retail uom-explode; cost carried parent→child) (2026-06-07) | event `inventory.stock.broken_down` |
 | **Repair / job-card** | `pos-api` (services module) | **RepairJob** (intake→diagnosis→parts→settle); parts from inventory, payment via treasury (2026-06-07) | REST, `pos.repair.*` events |
+| **Financial documents** | `treasury-api` | **Invoices, Quotations, proforma, Sales Credit-Notes (eTIMS), AP vendor credit-notes** — pos NEVER duplicates these (2026-06-09) | S2S create from pos context (return→`/s2s/{t}/invoices/{id}/create-credit-note`; cart→quotation) |
 
 ### Retail POS Revamp — ownership deltas (2026-06-07)
 Driven by the retail-POS competitive audit (`/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md`). Deltas to the canonical model:
@@ -59,6 +60,7 @@ Driven by the retail-POS competitive audit (`/.claude/plans/_audit-parts/retail-
 2. **AR/AP balances = treasury-api**: new **CustomerBalance** (credit-sale posting, ageing 0-30/31-60/61-90/90+, statements, dunning) and **VendorBalance** (AP subledger). **Supplier opening/advance balances live in treasury AP, NOT on inventory `supplier`** (inventory supplier stays a procurement master reference).
 3. **Supplier rebates = treasury** vendor credit notes (inventory may flag a rebate accrual on PO lines). **cost_center** = treasury dimension on expense/journal lines.
 4. **Breakdown (bulk→unit) = inventory-api** `StockBreakdown` (multi-UoM explode carrying cost parent→child; IAS-2 FIFO/moving-average), distinct from BOM production.
+5. **Financial documents = treasury-api (2026-06-09)**: invoices, **quotations**, **sales credit-notes** (eTIMS VAT reversal, `invoice_type=credit_note` via `invoicing.CreateCreditNote`). pos NEVER defines a parallel quotation/credit-note entity (one was built + discarded) — it CREATES them via S2S from a pos context (return → `POST /s2s/{tenant}/invoices/{id}/create-credit-note`; "Save as Quotation" from a cart → treasury quotation S2S). **UI rule: pos-ui LINKS to treasury-ui / inventory-ui / marketflow-ui pages (external redirect; the target service enforces its own RBAC) — never recreate another service's pages; only the pos↔service integration ACTION lives in pos-ui.**
 5. **Repair/job-card = pos-api services module** (not a new service, not ticketing-service).
 6. New/used events: `pos.loyalty.earned`, `pos.loyalty.redeemed`, `pos.referral.rewarded`, `inventory.stock.broken_down`, `inventory.goods_receipt.posted` → treasury (GR/IR accrual + 3-way match), `treasury.customer_balance.updated`, `pos.repair.*`.
 7. CRM unchanged: marketflow remains customer SoT; pos adds in-register contact search/create via marketflow S2S; **Customer Groups = marketflow segments**.
