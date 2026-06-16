@@ -145,6 +145,17 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `pos.appointment.created` | Appointment scheduled | appointment_id, outlet_id, staff_member_id, customer_id, service_items, start_time, end_time |
 | `pos.appointment.completed` | Appointment service completed | appointment_id, outlet_id, staff_member_id, completed_at, total_amount |
 
+### isp-billing-backend (JetStream, stream: `isp`)
+
+Notifications + messaging-credit billing are centralized in notifications-api; isp-billing only PUBLISHES these domain events (transactional outbox → NATS). notifications-api consumes them and renders `ispbilling/*` templates, gating SMS on the tenant's SMS-credit balance and WhatsApp on an active subscription.
+
+| Subject | Trigger | Key Payload Fields |
+|---------|---------|-------------------|
+| `isp.subscriber.created` | Hotspot/PPPoE package purchased | tenant_id, customer_name, phone, email, username, password, package_name, package_type, expiry_at, amount |
+| `isp.payment.received` | Customer payment confirmed | tenant_id, customer_name, phone, email, amount, currency, package_name, expiry_at |
+| `isp.subscription.renewed` | Subscription renewed | tenant_id, customer_name, phone, email, package_name, package_type, expiry_at |
+| `isp.subscription.expiring` | Subscription nearing expiry | tenant_id, customer_name, phone, email, package_name, expiry_at, days_remaining |
+
 ---
 
 ## Consumers by Service
@@ -160,6 +171,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payment_receipt, payout_completed, settlement_completed, installment_due |
 | Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
 | POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt, kds_ticket_ready, appointment_created, appointment_completed |
+| ISP Billing | `isp` | `isp.>` | subscription_credentials (sms+whatsapp; gated on SMS credits / WhatsApp subscription), payment_received, subscription_renewal, subscription_expiring |
 | Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
 | Projects | `projects` | `project.>` | project_milestone_reached |
 | Auth Welcome | plain NATS | `auth.user.created` | welcome email |

@@ -100,6 +100,18 @@ Either:
 |----------|-----------|----------|
 | `cafe/cafe_contact_form` | name, email, message, submitted_at | Contact form submission |
 
+### ISP Billing (`ispbilling/*`)
+
+Triggered via the `isp.*` events (see event-architecture.md), not direct REST calls. SMS is gated on the tenant's SMS-credit balance and WhatsApp on an active WhatsApp subscription (both centralized in notifications-api); when the tenant lacks credits/subscription that channel is skipped.
+
+| Template | Variables | Use Case |
+|----------|-----------|----------|
+| `ispbilling/subscription_credentials` | customer_name, username, password, package_name, package_type, expiry_at | Send hotspot/PPPoE login credentials after purchase (sms + whatsapp + email) |
+| `ispbilling/payment_received` | customer_name, amount, currency, package_name, expiry_at | Payment confirmation (sms + email) |
+| `ispbilling/subscription_renewal` | customer_name, package_name, package_type, expiry_at | Renewal confirmation |
+| `ispbilling/isp_subscription_expiring` | customer_name, package_name, expiry_at, days_remaining | Expiry reminder |
+| `ispbilling/low_credit_alert` | tenant_name, balance, threshold | Tenant SMS-credit low-balance alert |
+
 ### Generic (Any Service)
 
 | Template | Variables | Use Case |
