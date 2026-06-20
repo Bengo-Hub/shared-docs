@@ -114,7 +114,7 @@ deactivated by the seed.
 | Percentage | **1.5%** | Mirrors the M-Pesa till rate; merchants grasp it instantly |
 | Floor (min) | **KES 2** | Covers processing on very small transactions |
 | Cap (max) | **KES 250** | Protects the merchant on large-ticket sales |
-| One-time setup | **KES 3,000** | POS + eTIMS onboarding (the only upfront cost) |
+| One-time setup | **KES 5,000** | POS + eTIMS onboarding (the only upfront cost) |
 | Applies to | POS transactions across all three lines (POS/Duka/Dawa) | |
 
 **Worked examples:** KES 100 sale → KES 2 (floor; 1.5% would be 1.5). KES 2,000 sale → KES 30 (1.5%).
@@ -152,25 +152,25 @@ Tiers are grouped by the tenant's **monthly turnover**, smallest first: **Flex �
 Enterprise**. Implementation fees were cut to the market-competitive **5k / 10k / 20k** band (local
 competitors increasingly bundle or waive setup to win deals). **Every tier files KRA eTIMS** — including
 Starter — since eTIMS is mandatory and a primary marketing hook. The **Flex** row is the service charge
-from §4 (no monthly fee, online payments only); setup is the KES 3,000 Flex onboarding.
+from §4 (no monthly fee, online payments only); setup is the KES 5,000 Flex onboarding.
 
 ### 5.1 Codevertex POS (Hospitality — hotels, restaurants, bars)
 
 | Tier | Revenue band (≈ /month) | Monthly | Implementation | One-time License | Annual Support |
 |---|---|---|---|---|---|
-| **Flex (PAYG)** | starting out / variable | 1.5% (min 2 / cap 250) | 3,000 | — | — |
+| **Flex (PAYG)** | starting out / variable | 1.5% (min 2 / cap 250) | 5,000 | — | — |
 | Starter | up to ~300k | 2,500 | 5,000 | 45,000 | 9,000 |
-| Professional | ~300k – 2M | 5,000 | 10,000 | 95,000 | 19,000 |
-| Hospitality | ~2M+ | 9,500 | 20,000 | 150,000 | 30,000 |
+| Professional | ~300k – 2M | 4,000 | 10,000 | 95,000 | 19,000 |
+| Hospitality | ~2M+ | 6,500 | 20,000 | 150,000 | 30,000 |
 
 ### 5.2 Codevertex Duka (General retail — shops, supermarkets, hardware)
 
 | Tier | Revenue band (≈ /month) | Monthly | Implementation | One-time License | Annual Support |
 |---|---|---|---|---|---|
-| **Flex (PAYG)** | starting out / variable | 1.5% (min 2 / cap 250) | 3,000 | — | — |
+| **Flex (PAYG)** | starting out / variable | 1.5% (min 2 / cap 250) | 5,000 | — | — |
 | Starter | up to ~300k | 2,500 | 5,000 | 45,000 | 9,000 |
-| Professional | ~300k – 2M | 5,000 | 10,000 | 90,000 | 18,000 |
-| Enterprise | ~2M+ | 9,500 | 20,000 | 150,000 | 30,000 |
+| Professional | ~300k – 2M | 4,500 | 10,000 | 90,000 | 18,000 |
+| Enterprise | ~2M+ | 7,500 | 20,000 | 150,000 | 30,000 |
 
 ### 5.3 Codevertex Dawa (Pharmacy — chemists, pharmacies, dispensaries)
 
@@ -178,10 +178,10 @@ Priced with a modest premium for compliance depth (batch/expiry, PPB controls, N
 
 | Tier | Revenue band (≈ /month) | Monthly | Implementation | One-time License | Annual Support |
 |---|---|---|---|---|---|
-| **Flex (PAYG)** | starting out / variable | 1.5% (min 2 / cap 250) | 3,000 | — | — |
-| Starter | up to ~300k | 3,500 | 6,000 | 55,000 | 11,000 |
-| Professional | ~300k – 2M | 6,000 | 12,000 | 110,000 | 22,000 |
-| Enterprise | ~2M+ | 11,000 | 22,000 | 165,000 | 33,000 |
+| **Flex (PAYG)** | starting out / variable | 1.5% (min 2 / cap 250) | 5,000 | — | — |
+| Starter | up to ~300k | 1,500 | 6,000 | 55,000 | 11,000 |
+| Professional | ~300k – 2M | 3,000 | 12,000 | 110,000 | 22,000 |
+| Enterprise | ~2M+ | 6,000 | 22,000 | 165,000 | 33,000 |
 
 ### 5.4 Hardware bundles (optional — customer can BYOD)
 
