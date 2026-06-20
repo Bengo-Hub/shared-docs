@@ -17,9 +17,12 @@ market shows:
 - **One-time licenses (90k–350k)** sat **above** the Kenyan market band of **KES 30k–150k** and have
   been **repositioned down** (value-competitive posture).
 - The market has a large **micro-business segment** that cannot afford a subscription or a license but
-  will pay a **small per-sale commission** (the way they already pay M-Pesa/Paystack). We introduce a
-  **PAYG service charge of 1% of each sale, floored at KES 2 and capped at KES 50**, which **replaces**
-  the subscription for that tenant.
+  will pay a **small per-sale commission** (the way they already pay M-Pesa/Paystack). We introduce
+  **Codevertex Flex — a PAYG service charge of 1.5% of each sale, floored at KES 10 and capped at KES
+  250** (anchored to the ~1.5% M-Pesa till rate merchants already know), which **replaces** the
+  subscription for that tenant. A **>60-day dormancy fee** prevents idle-account clutter.
+- Tiers are now **grouped by monthly revenue band** (Flex → Starter → Professional → Enterprise) and
+  **implementation fees cut to 5k/10k/20k** to match local competitors that bundle/waive setup.
 - Inconsistent annual-support figures were normalized (the old Hospitality T3 support of 18k was below
   its own T2 of 32k — a typo).
 
@@ -52,12 +55,14 @@ sets — this is the competitive advantage to lead with in the higher tiers.
 | IntaSend / Flutterwave | ~1.5% – 3.8% |
 | Pesapal | 3% – 5.5% (highest) |
 
-Our **1% software commission sits below the gateway fee the merchant already pays**, so the all-in cost
-to a micro-merchant stays reasonable while the platform earns predictably. This is defensible and
-market-aware.
+Our **Flex service charge of 1.5%** is set to **match the M-Pesa business-till rate (~1.5%)** merchants
+already pay, so the rate feels familiar and easy to reason about while the platform earns predictably as
+the merchant grows. (An earlier draft used 1% / min 2 / cap 50; the 2026 market review revised this up to
+the M-Pesa-anchored 1.5% / min 10 / cap 250.)
 
 *Sources: cuteprofit (restaurant POS cost 2026), eliteteqpos (POS cost guide 2026), iosoftsolutions,
-posmart, nids, medsoftwares (pharmacy 2026), creativekigen & transfer.co.ke (gateway fees), pesapal.*
+posmart, nids, medsoftwares (pharmacy 2026), creativekigen & transfer.co.ke (gateway fees), pesapal;
+plus a 2026 external market review (Kenyan POS pricing & PAYG benchmarking).*
 
 ---
 
@@ -92,20 +97,37 @@ confusion; keep them separate.
 
 ---
 
-## 4. PAYG service charge — design
+## 4. Codevertex Flex — PAYG service charge (revised per 2026 market research)
 
-**Chosen structure (Paystack-style): 1% of sale · minimum KES 2 · capped at KES 50 per transaction.**
+**Chosen structure: 1.5% of sale · minimum KES 10 · capped at KES 250 per transaction.** Branded
+**Codevertex Flex**, this is the smallest rung of the revenue-banded tier ladder (see §5). Seed:
+`SC_POS_FLEX` (`cmd/seed/service_charges.go`); the earlier `SC_POS_MICRO_1PCT` (1% / min 2 / cap 50) is
+deactivated by the seed.
+
+> **Rate rationale (revision):** an external market review recommended pricing the service charge to
+> *mirror the ~1.5% M-Pesa business-till rate* merchants already pay and understand, rather than the
+> earlier under-market 1%. The floor (KES 10) prevents losses on tiny tickets; the cap (KES 250) protects
+> the merchant on large-ticket sales. This is the M-Pesa-anchored "easy to understand" framing.
 
 | Parameter | Value | Rationale |
 |---|---|---|
-| Percentage | **1.0%** | Below every Kenyan gateway fee; merchant's all-in stays sane |
-| Floor (min) | **KES 2** | Tiny sales still cover platform processing |
-| Cap (max) | **KES 50** | Large baskets aren't over-charged; predictable ceiling |
-| Waiver | sales under ~KES 100 effectively pay only the KES 2 floor | Protects very small tickets |
-| Applies to | POS transactions (extendable to retail/pharmacy via the same plan) | |
+| Percentage | **1.5%** | Mirrors the M-Pesa till rate; merchants grasp it instantly |
+| Floor (min) | **KES 10** | Prevents losses on very small transactions |
+| Cap (max) | **KES 250** | Protects the merchant on large-ticket sales |
+| One-time setup | **KES 3,000** | POS + eTIMS onboarding (the only upfront cost) |
+| Applies to | POS transactions across all three lines (POS/Duka/Dawa) | |
 
-**Worked examples:** KES 80 sale → KES 2 (floor). KES 500 sale → KES 5 (1%). KES 2,000 sale → KES 20.
-KES 10,000 sale → KES 50 (cap). KES 50,000 sale → KES 50 (cap).
+**Worked examples:** KES 300 sale → KES 10 (floor). KES 2,000 sale → KES 30 (1.5%). KES 10,000 sale →
+KES 150. Sales above ~KES 16,700 → KES 250 (cap). KES 50,000 sale → KES 250 (cap).
+
+**Included features (Flex):** POS till, M-Pesa automation, KRA eTIMS invoicing, end-of-day sales reports.
+(A service-charge tenant is gating-exempt — `billing_mode = service_charge` — so features are unlocked;
+the list above is the marketed scope.)
+
+**Dormancy clause (risk control):** if a Flex account is idle for **> 60 days**, apply a small monthly
+platform-maintenance fee to keep it active. Prevents dormant-account clutter and overhead with zero
+recurring revenue. **Implementation-fee waiver:** waive the setup fee for clients who prepay 6–12 months
+of a monthly tier (cash-flow incentive to graduate off Flex).
 
 ### PAYG payment-method restriction (so the platform can actually collect)
 
@@ -124,39 +146,42 @@ the platform's revenue from them does not depend on intercepting each sale.
 
 ---
 
-## 5. Revised pricing — POS product lines
+## 5. Revised pricing — POS product lines (revenue-banded ladder)
 
-> **Micro / PAYG** rows have **no monthly fee** — the tenant pays only the 1% service charge (min 2 / cap
-> 50) and is restricted to online payment methods. Implementation is optional.
+Tiers are grouped by the tenant's **monthly turnover**, smallest first: **Flex → Starter → Professional →
+Enterprise**. Implementation fees were cut to the market-competitive **5k / 10k / 20k** band (local
+competitors increasingly bundle or waive setup to win deals). **Every tier files KRA eTIMS** — including
+Starter — since eTIMS is mandatory and a primary marketing hook. The **Flex** row is the service charge
+from §4 (no monthly fee, online payments only); setup is the KES 3,000 Flex onboarding.
 
 ### 5.1 Codevertex POS (Hospitality — hotels, restaurants, bars)
 
-| Tier | Monthly | Implementation | One-time License | Annual Support |
-|---|---|---|---|---|
-| **Micro / PAYG** | 1% (min 2 / cap 50) | 0 – 5,000 | — | — |
-| Starter | 2,500 | 10,000 | 45,000 | 9,000 |
-| Professional | 5,500 | 18,000 | 95,000 | 19,000 |
-| Hospitality | 9,500 | 30,000 | 150,000 | 30,000 |
+| Tier | Revenue band (≈ /month) | Monthly | Implementation | One-time License | Annual Support |
+|---|---|---|---|---|---|
+| **Flex (PAYG)** | starting out / variable | 1.5% (min 10 / cap 250) | 3,000 | — | — |
+| Starter | up to ~300k | 2,500 | 5,000 | 45,000 | 9,000 |
+| Professional | ~300k – 2M | 5,000 | 10,000 | 95,000 | 19,000 |
+| Hospitality | ~2M+ | 9,500 | 20,000 | 150,000 | 30,000 |
 
 ### 5.2 Codevertex Duka (General retail — shops, supermarkets, hardware)
 
-| Tier | Monthly | Implementation | One-time License | Annual Support |
-|---|---|---|---|---|
-| **Micro / PAYG** | 1% (min 2 / cap 50) | 0 – 5,000 | — | — |
-| Starter | 2,500 | 10,000 | 45,000 | 9,000 |
-| Professional | 5,500 | 18,000 | 90,000 | 18,000 |
-| Enterprise | 9,500 | 30,000 | 150,000 | 30,000 |
+| Tier | Revenue band (≈ /month) | Monthly | Implementation | One-time License | Annual Support |
+|---|---|---|---|---|---|
+| **Flex (PAYG)** | starting out / variable | 1.5% (min 10 / cap 250) | 3,000 | — | — |
+| Starter | up to ~300k | 2,500 | 5,000 | 45,000 | 9,000 |
+| Professional | ~300k – 2M | 5,000 | 10,000 | 90,000 | 18,000 |
+| Enterprise | ~2M+ | 9,500 | 20,000 | 150,000 | 30,000 |
 
 ### 5.3 Codevertex Dawa (Pharmacy — chemists, pharmacies, dispensaries)
 
-Priced slightly higher for compliance depth (batch/expiry, PPB controls, NHIF claims).
+Priced with a modest premium for compliance depth (batch/expiry, PPB controls, NHIF claims).
 
-| Tier | Monthly | Implementation | One-time License | Annual Support |
-|---|---|---|---|---|
-| **Micro / PAYG** | 1% (min 2 / cap 50) | 0 – 6,000 | — | — |
-| Starter | 3,500 | 12,000 | 55,000 | 11,000 |
-| Professional | 6,500 | 22,000 | 110,000 | 22,000 |
-| Enterprise | 11,000 | 35,000 | 165,000 | 33,000 |
+| Tier | Revenue band (≈ /month) | Monthly | Implementation | One-time License | Annual Support |
+|---|---|---|---|---|---|
+| **Flex (PAYG)** | starting out / variable | 1.5% (min 10 / cap 250) | 3,000 | — | — |
+| Starter | up to ~300k | 3,500 | 6,000 | 55,000 | 11,000 |
+| Professional | ~300k – 2M | 6,000 | 12,000 | 110,000 | 22,000 |
+| Enterprise | ~2M+ | 11,000 | 22,000 | 165,000 | 33,000 |
 
 ### 5.4 Hardware bundles (optional — customer can BYOD)
 
@@ -253,7 +278,7 @@ consumers (outlet → warehouse/outlet projection) stay ungated.
 ## 10. Implementation status & references
 
 - **Pricing data** lives in `subscriptions-api` seeds: `cmd/seed/plans_pos_lines.go` (the three POS
-  product lines), `cmd/seed/service_charges.go` (`SC_POS_MICRO_1PCT` PAYG), `cmd/seed/feature_catalog.go`
+  product lines), `cmd/seed/service_charges.go` (`SC_POS_FLEX` PAYG — supersedes `SC_POS_MICRO_1PCT`), `cmd/seed/feature_catalog.go`
   (pharmacy feature codes), and the per-service `plans_*.go`.
 - **Gating-sync fix** lives in the POS and ordering event consumers.
 - **PAYG payment restriction** lives in `treasury-api` gateway listing + POS/ordering tender lists.
