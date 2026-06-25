@@ -29,20 +29,20 @@ The **mechanism** now exists; the **call sites** still hardcode generic strings 
 2. Sweep `onError`/`catch` sites to `toast.error(await apiErrorMessage(e, '<fallback>'))`. Mechanical but large — prioritize: submit/save/delete mutations, PDF/preview surfaces, payment/checkout flows.
 3. Lint guard (optional): flag `toast.error('literal')` inside a `catch`/`onError` to prevent regressions.
 
-## 🔴 P1 — Outlet use-case gating must reach the storefront UI
+## ✅ P1 (done) — Outlet use-case gating reaches the storefront UI
 
-ordering-backend now accepts `?use_case=`, but **ordering-frontend doesn't pass it yet**.
-**TODO:** when an outlet is selected, pass `outlet.use_case` to `GET /catalog/categories?use_case=`. Until then the storefront shows all sellable categories (with items) — correct but not vertical-filtered.
+ordering-frontend now passes the browsed outlet's use_case to `GET /catalog/categories?use_case=` (`fetchCategories`/`useCategories` + `useOrderingConfig`). Backend gating is active end-to-end.
 
-## 🟠 P2 — ordering-frontend is NOT use-case-modular (pos-ui is)
+## 🟠 P2 — ordering-frontend use-case modularity (FOUNDATION SHIPPED)
 
-pos-ui: thin `/order` shell → `normalizeUseCase` → 5 per-use-case views over a shared `TerminalProvider`/`useTerminal` + config flags (`terminalConfigFor`). ordering-frontend: single generic catalog/cart/checkout for **all** verticals (only `dining-mode` + subscription-gate are use-case-aware). A hardware store, a restaurant, and a ticketing event get the identical layout/flow.
+**Shipped:** `src/lib/use-case-config.ts` (`OrderingProfile` + `orderingConfigFor` behavioural flags) + `useOrderingConfig()` (effective use_case: browsed outlet › selected outlet › tenant; the storefront analogue of pos-ui's `useTerminal().cfg`). `catalog-discovery` + `CatalogHero` are now cfg-driven (CTA label, search copy, dietary filters food-only, make/model surface, grid density, hero/headings). Catalog page slimmed to a thin shell.
 
-**TODO (mirror the pos-ui pattern — see memory `pos-terminal-modular-architecture`):**
-1. `src/lib/use-case-config.ts` — `OrderingProfile` (hospitality | quick_service | pharmacy | retail | ticketing | services) + `orderingConfigFor()` feature flags (product layout, fulfillment modes, cart display, checkout flow, search copy).
-2. Expose `orderingConfig` from a provider (extend `branding-provider` or new `OrderingProvider` ≈ `TerminalProvider`).
-3. Thin shells routing to per-use-case views: catalog listing, product detail, cart, checkout (ticketing skips address/fulfillment; retail shows specs/variants/stock; hospitality shows modifiers/courses; pharmacy search-first).
-4. Decompose the 567-line `catalog-discovery.tsx` and 380-line `checkout/page.tsx` into shared building blocks (behavior-preserving — lose no workflow, per memory rule).
+**Remaining (per-view divergence — see memory `pos-terminal-modular-architecture`):**
+1. Product detail page: per-profile (retail specs/variants, hospitality modifiers/courses, services time-slot picker, ticketing tier/seat selection).
+2. Checkout: generalize the `isTicketOnly` branch into a `bookingMode`-driven flow (ticketing skips address/fulfillment; services → appointment confirmation; pharmacy → Rx note).
+3. Cart item display per profile (tickets show QR, no qty spinner; retail show variant/stock).
+4. Decompose the 567-line `catalog-discovery.tsx` / 380-line `checkout/page.tsx` into shared building blocks (behavior-preserving — lose no workflow).
+5. Optional per-profile view files (`components/catalog/views/*`) once divergence justifies it; today MenuDiscovery self-adapts via cfg (faithful to pos-ui's thin-view-over-shared-shell pattern).
 
 ## 🟠 P2 — Inventory schema: largely robust, targeted e-commerce gaps
 
