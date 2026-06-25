@@ -16,18 +16,15 @@ _Audit date: 2026-06-25. Covers inventory-api/ui, pos-api/ui, ordering-backend/f
 
 ---
 
-## 🔴 P1 — Remaining toast sweep (explicitly requested: "apply across all toast logic")
+## ✅ P1 (done) — Toast sweep across all three UIs
 
-The **mechanism** now exists; the **call sites** still hardcode generic strings and ignore the error object. Counts:
+`apiErrorMessage` helper (Blob/string/object-aware) + axios-interceptor `normalizedMessage` added to inventory-ui, pos-ui, ordering-frontend. Call sites swept:
+- inventory-ui: ~50+ earlier batch converted (catch/onError → `apiErrorMessage`).
+- pos-ui: 57 files converted (0 remaining `onError: () =>`; 59 files import the helper).
+- ordering-frontend: ~30 sites across ~17 files (rest already used `parseApiError`).
+All tsc-clean, committed & pushed. Validation/business toasts intentionally left as-is.
 
-- inventory-ui: ~201 `toast.error(...)` across 53 files
-- pos-ui: ~177 across 63 files (has unused `error-handler.ts`)
-- ordering-frontend: ~80 across 20 files (already has `parseApiError` — best off)
-
-**TODO:**
-1. pos-ui & ordering-frontend: add the same axios-interceptor `normalizedMessage` + `apiErrorMessage` helper as inventory-ui (port `error-message.ts`).
-2. Sweep `onError`/`catch` sites to `toast.error(await apiErrorMessage(e, '<fallback>'))`. Mechanical but large — prioritize: submit/save/delete mutations, PDF/preview surfaces, payment/checkout flows.
-3. Lint guard (optional): flag `toast.error('literal')` inside a `catch`/`onError` to prevent regressions.
+**Remaining (optional):** an ESLint guard to flag `toast.error('literal')` inside `catch`/`onError` to prevent regressions; a few low-traffic stragglers may remain.
 
 ## ✅ P1 (done) — Outlet use-case gating reaches the storefront UI
 
@@ -37,24 +34,24 @@ ordering-frontend now passes the browsed outlet's use_case to `GET /catalog/cate
 
 **Shipped:** `src/lib/use-case-config.ts` (`OrderingProfile` + `orderingConfigFor` behavioural flags) + `useOrderingConfig()` (effective use_case: browsed outlet › selected outlet › tenant; the storefront analogue of pos-ui's `useTerminal().cfg`). `catalog-discovery` + `CatalogHero` are now cfg-driven (CTA label, search copy, dietary filters food-only, make/model surface, grid density, hero/headings). Catalog page slimmed to a thin shell.
 
+**Also shipped:** product detail page now cfg-driven (CTA label + make/model gating via `useOrderingConfig`). It already handled SERVICE appointments, variants, and modifiers.
+
 **Remaining (per-view divergence — see memory `pos-terminal-modular-architecture`):**
-1. Product detail page: per-profile (retail specs/variants, hospitality modifiers/courses, services time-slot picker, ticketing tier/seat selection).
-2. Checkout: generalize the `isTicketOnly` branch into a `bookingMode`-driven flow (ticketing skips address/fulfillment; services → appointment confirmation; pharmacy → Rx note).
-3. Cart item display per profile (tickets show QR, no qty spinner; retail show variant/stock).
-4. Decompose the 567-line `catalog-discovery.tsx` / 380-line `checkout/page.tsx` into shared building blocks (behavior-preserving — lose no workflow).
-5. Optional per-profile view files (`components/catalog/views/*`) once divergence justifies it; today MenuDiscovery self-adapts via cfg (faithful to pos-ui's thin-view-over-shared-shell pattern).
+1. Checkout: generalize the existing `isTicketOnly` branch to also skip fulfillment for a services-only cart (appointment confirmation) and a pharmacy Rx note. NOTE: checkout is content-driven (cart contents), which is safer than use_case for mixed-vertical tenants — keep that; do not regress the payment flow.
+2. Cart item display per profile (tickets show QR, no qty spinner; retail show variant/stock).
+3. Decompose the 567-line `catalog-discovery.tsx` / 380-line `checkout/page.tsx` into shared building blocks (behavior-preserving — lose no workflow).
+4. Optional per-profile view files (`components/catalog/views/*`) once divergence justifies it; today MenuDiscovery + product detail self-adapt via cfg (faithful to pos-ui's thin-view-over-shared-shell pattern).
 
 ## 🟠 P2 — Inventory schema: largely robust, targeted e-commerce gaps
 
 **Already present (good for retail/online):** `manufacturer`, `model`, `brand_id`/ItemBrand, `sku`, `barcode`+`barcode_type`, `weight_kg`, `dimensions_cm`, **ItemVariant** (attributes/sku/price/barcode/image), **VariantAttribute**, **ItemAsset** gallery (primary + order + video/3D), **CustomFieldDefinition** (per-category specs), **Warranty**, **ModifierGroup**, **Bundle**, multi-tier **ItemPricing**, lot/serial/balance tracking. → "make/model and related e-commerce features" **are** covered.
 
-**Gaps to add (additive — mind pos-api online auto-migrate gotcha; see memory `pos-migrations-additive-auto-migrate`):**
-- `gtin` / `mpn` (marketplace feeds), `condition` enum (NEW/REFURBISHED/USED/OPEN_BOX)
-- Item-level SEO: `slug`, `meta_title`, `meta_description`, `short_description`
-- `country_of_origin`, `hs_code` (customs / international)
-- Structured product specifications surface (beyond CustomFieldDefinition) for faceted search
-- Inventory policy flags: `allow_backorder`, `is_discontinued`, `show_stock_level`
-- Return policy: `is_returnable`, `return_window_days`
+**✅ Shipped (inventory-api):** additive Item fields `gtin`, `mpn`, `condition` (NEW/REFURBISHED/USED/OPEN_BOX), `slug`, `short_description`, `meta_title`, `meta_description`, `country_of_origin`, `hs_code`, `is_returnable`, `return_window_days`, `allow_backorder`, `is_discontinued` — wired through ItemDTO (read+create; update sets strings/condition conditionally, never clobbers the new bools). Columns are nullable/defaulted so the startup online auto-migrate applies them (no manual migration).
+
+**Remaining for these fields:**
+- inventory-ui: surface the new fields in the item create/edit form + detail view (and an explicit returnable/backorder toggle so the update path can set the bools).
+- ordering-frontend: show condition badge / specs / brand on product cards & detail for retail.
+- Still NOT added (lower priority): structured product specifications surface beyond `CustomFieldDefinition` for faceted search; `show_stock_level` flag.
 
 ## 🟡 P3 — Hardening / smaller items
 - pos-api & ordering use a **name-substring heuristic** for use-case gating. Long-term: drive off `Item.use_case` enum at source once item data is reliably tagged (currently defaults to RETAIL → risky to switch now).
