@@ -205,17 +205,21 @@ transaction/fee stream exists.
 | **ERP** (HR, payroll, procurement) | — | 15,000 | 30,000+ | — (implementation-heavy) |
 | **MarketFlow** (CRM / ads / AI) | 3,000 | 7,500 | 15,000 | Ads 5% (`SC_MARKETFLOW_ADS`) + AI credit packs (§8) |
 | **TruLoad** (weighbridge) | 4,000 | 9,000 | — | 10% of weighing/fine txns (`SC_TRULOAD_10PCT`) |
-| **ISP Billing** | 3,500 | 8,000 | 16,000 (optional flat tiers) | **DEFAULT: 3% of hotspot revenue, min KES 500/mo + KES 35 (~$0.25) per active PPPoE subscriber/mo** (`SC_ISP_BILLING`) |
+| **ISP Billing** (hotspot + PPPoE) | — single plan — | — | — | **KES 500/mo base + 3% of hotspot revenue above KES 10k/mo + KES 35/active PPPoE subscriber/mo** (`ISP_BILLING_STARTER`) |
 | **Projects & Invoicing** | 2,500 | 8,000 | — | — |
 
-> **ISP Billing pricing (Centipid-aligned, centipidbilling.com).** ISP providers default to PAY-AS-YOU-GROW:
-> the platform takes **3% of hotspot revenue with a KES 500/month minimum**, and PPPoE additionally bills
-> **KES 35 (~$0.25) per active subscriber/month**. One plan covers hotspot **and** PPPoE (unlimited
-> MikroTiks/users, vouchers, captive portal, remote WinBox, payment gateways, automated invoicing,
-> real-time notifications), 14-day free trial. SMS/WhatsApp are prepaid credit bundles (§8), not plan
-> limits. The flat Starter/Pro/Enterprise tiers above remain available for ISPs that prefer fixed monthly
-> billing. Seed: `SC_ISP_BILLING` (`cmd/seed/service_charges.go`) + `cmd/seed/plans_isp_billing.go` +
-> `max_pppoe_subscribers` (`cmd/seed/feature_catalog.go`).
+> **ISP Billing pricing (Centipid-aligned, centipidbilling.com).** ONE pay-as-you-grow plan for ISP
+> providers (covers hotspot **and** PPPoE), **no feature limits**. Monthly charge =
+> **KES 500 base (always)** + **3% of hotspot revenue, but only when monthly hotspot sales exceed
+> KES 10,000** (charged on the full sales amount, not the excess) + **KES 35 (~$0.25) per active PPPoE
+> subscriber/month** (always, threshold-independent). _Example:_ 12,000 hotspot sales → 500 + 3%×12,000 =
+> **KES 860** (+ PPPoE subscriber fees). Unlimited MikroTiks/users/customers/vouchers; captive portal,
+> remote WinBox, payment gateways, automated invoicing, real-time notifications; 14-day free trial.
+> SMS/WhatsApp are prepaid credit bundles (§8), not plan limits. The billing engine reads
+> `service_charge_percentage` / `service_charge_threshold` / `pppoe_per_subscriber_fee` from the plan's
+> `tier_limits`. Seed: `ISP_BILLING_STARTER` (`cmd/seed/plans_isp_billing.go`) + `max_pppoe_subscribers`
+> (`cmd/seed/feature_catalog.go`). The earlier flat tiers + `SC_ISP_BILLING` service charge are retired and
+> existing ISP subscriptions migrated to this plan.
 
 **Bundles** (`POS_SUITE_*`, `POWERSUITE_*`) remain available and combine product lines at a discount.
 
