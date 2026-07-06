@@ -45,3 +45,15 @@ Plan: `D:\Projects\Codevertex\.claude\plans\pos-qa-remediation-sprint.md`.
 6. Credit-sale return: 2,000 on account → return 800 (`changed_mind`) → forced `offset_invoice` → CustomerBalance 1,200 + ARTransaction lines on the statement; `defective` reason hides/blocks store credit.
 7. Exchange: dearer replacement → replacement order + top-up payment modal; cheaper → leftover refund; even → auto-completed replacement.
 8. OTP: approve a payout/vendor-bill/expense without a code → 428; request code → email; wrong ×3 → locked; correct → approved.
+
+## Live E2E results (codevertex-demo, 2026-07-06)
+
+PASSED against production after CI/CD rollout (pos-api `85abef2`, treasury-api `edfb677`):
+1. **DEF-001**: `POST /pos/orders` with `order_subtype:"draft"` → 201, status `draft`, subtype `retail` (was 500).
+2. **404 fix**: GET order by id AND by-number with a mismatched `X-Outlet-ID` → 200.
+3. **Partial semantics (pos)**: 200/371.20 cash payment → `paid_total=200`, order stays `draft` (the old double-count would have completed it at ≥185.60); `?payment_status=partial` contains it with badge `partial` (paid 200 / due 171.20); `due` filter excludes it; voiding the payment → `paid_total=0`, back in the `due` filter.
+4. **Partial semantics (treasury)**: 1,000 invoice + 400 (mpesa/ref) → `partial`/`amount_paid=400`; +700 cash → `overpaid`/1,100, status `paid` (cumulative — the old per-call compare kept it partial); void 700 → `partial`/400, invoice reopened to `sent`; payment rows persisted with method+reference.
+5. **Returns policy**: `defective` + `store_credit` → 422 rejected; `changed_mind` + `store_credit` → created (`on_account_sale=false` persisted); reject path OK; full initiate→approve→complete cycle settled a cash reversal in treasury (`treasury_refund_ref` recorded).
+6. **Fixed during E2E**: SSO principals (demo admin) were 403'd by the new order-read gate — JWTs carry no `pos.*` codes and no assignment rows exist; the middleware now falls back to the /auth/me role-code mapping (pos-api `abaec0f`). Seeded tender type `manual` added to the voidable set (`85abef2`).
+
+**E2E residue (demo tenant, books net zero):** pos order `POS-C4B537678A25` (fully returned/reversed, stock restored) + its payment/return/audit rows; treasury journal entries for the reversed payments and the deleted invoice `INV-260706-000014`'s two voided payment rows. Row-level deletion + the requested urban-loft transaction wipe need the psql-over-SSH admin path, which was blocked in this session — run per `postgres-topology-and-data-clearing` when authorized.
