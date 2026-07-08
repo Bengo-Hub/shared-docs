@@ -1,4 +1,4 @@
-# BengoBox Architecture Recommendations
+# Codevertex Architecture Recommendations
 
 **Document Version**: 1.0
 **Last Updated**: January 2026
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This document provides architecture recommendations for the BengoBox microservices ecosystem based on comprehensive analysis of all 11 Go services, their integration patterns, and cross-cutting concerns.
+This document provides architecture recommendations for the Codevertex microservices ecosystem based on comprehensive analysis of all 11 Go services, their integration patterns, and cross-cutting concerns.
 
 ### Key Recommendations
 
@@ -24,7 +24,7 @@ This document provides architecture recommendations for the BengoBox microservic
 
 ### 1.1 Dual Authentication Mandate
 
-Every microservice in BengoBox MUST support both authentication methods:
+Every microservice in Codevertex MUST support both authentication methods:
 
 | Auth Method | Use Case | Header | Validation |
 |-------------|----------|--------|------------|
@@ -88,7 +88,7 @@ func (c *InventoryClient) GetStock(ctx context.Context, itemID string) (*Stock, 
 
 ### 2.1 Trinity Authorization Pattern
 
-BengoBox uses a 3-layer authorization model ensuring complete access control:
+Codevertex uses a 3-layer authorization model ensuring complete access control:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -626,7 +626,7 @@ The subscription-service manages:
 
 ## 11. Conclusion
 
-This document establishes the architectural patterns for BengoBox microservices. Key takeaways:
+This document establishes the architectural patterns for Codevertex microservices. Key takeaways:
 
 1. **Dual auth is mandatory** - All services must support JWT + API Key
 2. **Subscription-service stays separate** - Domain boundaries are correct

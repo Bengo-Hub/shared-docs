@@ -2,7 +2,7 @@
 
 **Last updated:** May 2026
 
-This document defines the canonical login flow contract for all frontends that integrate with BengoBox SSO (auth-api/auth-ui). It aligns with [sso-integration-guide.md](sso-integration-guide.md) and [TRINITY-AUTHORIZATION-PATTERN.md](TRINITY-AUTHORIZATION-PATTERN.md).
+This document defines the canonical login flow contract for all frontends that integrate with Codevertex SSO (auth-api/auth-ui). It aligns with [sso-integration-guide.md](sso-integration-guide.md) and [TRINITY-AUTHORIZATION-PATTERN.md](TRINITY-AUTHORIZATION-PATTERN.md).
 
 ---
 

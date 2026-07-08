@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Trinity Authorization Pattern is a comprehensive authorization strategy that combines three layers of access control to provide robust, scalable, and flexible authorization across the entire BengoBox ecosystem.
+The Trinity Authorization Pattern is a comprehensive authorization strategy that combines three layers of access control to provide robust, scalable, and flexible authorization across the entire Codevertex ecosystem.
 
 ```
 Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resources (Domain Services)

@@ -1,8 +1,8 @@
-# BengoBox Microservices Architecture
+# Codevertex Microservices Architecture
 
 **Date**: May 2026  
 **Version**: 1.1  
-**Purpose**: Define a hybrid microservices architecture with seamless service-to-service communication, scalability, performance, and security for all BengoBox services.
+**Purpose**: Define a hybrid microservices architecture with seamless service-to-service communication, scalability, performance, and security for all Codevertex services.
 
 ---
 
@@ -27,7 +27,7 @@
 
 ## Overview
 
-BengoBox uses a **hybrid microservices architecture** that combines multiple communication patterns to optimize for different use cases:
+Codevertex uses a **hybrid microservices architecture** that combines multiple communication patterns to optimize for different use cases:
 
 - **Event-Driven Architecture (EDA)** via NATS JetStream for asynchronous, decoupled communication
 - **REST APIs** for synchronous, request-response operations
@@ -75,7 +75,7 @@ Distributed tracing, metrics, and structured logging.
 
 **Status**: ✅ **FULLY OPERATIONAL**
 
-BengoBox uses a **centralized DevOps repository** (`devops-k8s`) that provides shared infrastructure, deployment pipelines, and standardized configurations for all microservices.
+Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides shared infrastructure, deployment pipelines, and standardized configurations for all microservices.
 
 ### Infrastructure Services
 
@@ -1241,7 +1241,7 @@ ERP Service → RabbitMQ → Celery Workers
 
 ### Dual Authentication Support (JWT + API Key)
 
-All BengoBox microservices MUST support **dual authentication** - accepting either JWT Bearer tokens OR API Keys interchangeably. This enables:
+All Codevertex microservices MUST support **dual authentication** - accepting either JWT Bearer tokens OR API Keys interchangeably. This enables:
 
 1. **User Authentication (JWT)**: Interactive user sessions via OAuth2/OIDC flow
 2. **Service Authentication (API Key)**: Automated service-to-service calls, webhooks, cron jobs
@@ -1333,7 +1333,7 @@ type Claims struct {
 
 ### Trinity Authorization Pattern
 
-BengoBox uses a 3-layer authorization model:
+Codevertex uses a 3-layer authorization model:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -2024,7 +2024,7 @@ The notifications-service worker processes messages from NATS JetStream with ret
 
 ## Conclusion
 
-BengoBox's microservices architecture is built on **solid production-ready foundations** with a well-orchestrated centralized DevOps infrastructure:
+Codevertex's microservices architecture is built on **solid production-ready foundations** with a well-orchestrated centralized DevOps infrastructure:
 
 ### Strengths
 
@@ -2063,7 +2063,7 @@ BengoBox's microservices architecture is built on **solid production-ready found
 - **Scalable Foundation**: Kubernetes-native architecture with auto-scaling and GitOps
 - **Production-Ready**: Fully operational infrastructure with monitoring, logging, and observability
 
-This hybrid architecture ensures optimal communication patterns for each use case while maintaining scalability, performance, and security across all BengoBox microservices.
+This hybrid architecture ensures optimal communication patterns for each use case while maintaining scalability, performance, and security across all Codevertex microservices.
 
 ---
 

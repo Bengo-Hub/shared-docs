@@ -1,4 +1,4 @@
-# BengoBox Event Architecture
+# Codevertex Event Architecture
 
 **Last Updated:** March 25, 2026 — Enriched inventory.item.created/updated event payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). POS catalog sync handler updated to consume full payload including inventory_item_id FK. Previous: Multi-industry revamp with inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due.
 **Status:** Production — All MVP backend services publish and consume events via NATS JetStream with transactional outbox pattern.
