@@ -4,7 +4,7 @@
 
 ## Overview
 
-This document is the **canonical** definition of data ownership across BengoBox microservices. It ensures **no data duplication**: each service stores only the data it owns; any need for another service’s data is satisfied by **reference IDs** and access via **REST**, **events (NATS)**, or **gRPC** — never by copying entities into another service’s database.
+This document is the **canonical** definition of data ownership across Codevertex microservices. It ensures **no data duplication**: each service stores only the data it owns; any need for another service’s data is satisfied by **reference IDs** and access via **REST**, **events (NATS)**, or **gRPC** — never by copying entities into another service’s database.
 
 ---
 

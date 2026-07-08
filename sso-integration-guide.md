@@ -1,4 +1,4 @@
-# BengoBox SSO Integration Guide
+# Codevertex SSO Integration Guide
 
 **Last Updated**: May 20, 2026
 **Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **JIT role assignment** now maps global JWT roles to service-level roles on first login across all backends (treasury, inventory, pos, logistics, notifications). **Service-level auth/me enrichment (March 31 fix):** ordering-backend and treasury-api `/auth/me` endpoints now merge JWT claims with service-level RBAC roles/permissions from local DB (following notifications-api gold standard). Token refresh implemented in cafe-website (JSON body to POST /api/v1/auth/refresh). AUTH_AUDIENCE fixed to "codevertex" across all services. Media upload handlers now fall back to file extension for SVG/WebP detection. **Subscription enforcement (March 29 fix):** ALL services now use mutations-only enforcement — GET requests pass through unconditionally; only POST/PUT/PATCH/DELETE require active subscription. Frontend 403 discrimination distinguishes subscription 403 (`code: subscription_inactive`, `upgrade: true`) from auth 403 to prevent login redirect loops. All frontends implement `SubscriptionBanner` + `SubscriptionGate` + `useSubscription()` hook for UI-level gating. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
@@ -7,7 +7,7 @@
 
 ## Overview
 
-BengoBox uses a single centralised SSO (Single Sign-On) service for all authentication. Every frontend delegates login/register entirely to the SSO — no service handles passwords or sessions independently.
+Codevertex uses a single centralised SSO (Single Sign-On) service for all authentication. Every frontend delegates login/register entirely to the SSO — no service handles passwords or sessions independently.
 
 | Component | Domain | Role |
 |-----------|--------|------|

@@ -1,4 +1,4 @@
-# BengoBox Microservices Implementation Roadmap
+# Codevertex Microservices Implementation Roadmap
 
 **Date**: December 31, 2025
 **Last Updated**: February 14, 2026
@@ -25,7 +25,7 @@
 
 ## Executive Summary
 
-This roadmap outlines the implementation order for all BengoBox microservices, prioritized by dependencies and integration requirements. Services are grouped into implementation phases based on their dependencies on other services, ensuring that foundational services are implemented first before dependent services.
+This roadmap outlines the implementation order for all Codevertex microservices, prioritized by dependencies and integration requirements. Services are grouped into implementation phases based on their dependencies on other services, ensuring that foundational services are implemented first before dependent services.
 
 ---
 
