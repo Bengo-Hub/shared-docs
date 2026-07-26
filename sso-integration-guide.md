@@ -11,9 +11,9 @@ Codevertex uses a single centralised SSO (Single Sign-On) service for all authen
 
 | Component | Domain | Role |
 |-----------|--------|------|
-| **auth-api** (SSO server) | `sso.codevertexitsolutions.com` | Issues JWT tokens, manages sessions |
-| **auth-ui** (login/register UI) | `accounts.codevertexitsolutions.com` | User-facing login/register forms |
-| All other frontends | `*.codevertexitsolutions.com` | Consume SSO tokens |
+| **auth-api** (SSO server) | `sso.codevertexafrica.com` | Issues JWT tokens, manages sessions |
+| **auth-ui** (login/register UI) | `accounts.codevertexafrica.com` | User-facing login/register forms |
+| All other frontends | `*.codevertexafrica.com` | Consume SSO tokens |
 
 **Progress (March 2026):** Auth-api issues JWT with `roles` and `permissions` (canonical codes: e.g. `catalog:view`, `catalog:manage`). Login/register/refresh responses return `roles` and `permissions` only at the top level (not duplicated under `user`). Authorize URL supports `tenant=<slug>`; token exchange prefers that tenant when the user is a member. GET `/api/v1/auth/me` is cached in Redis by user ID with TTL = token expiry (or 24h) to reduce DB load; frontends should use TanStack Query with a similar TTL (e.g. 5 min–24h). Ordering-backend (and other Go backends) use JIT tenant sync and JIT user provisioning. OAuth clients: `pos-ui` and tenant-aware redirect URIs for pos-ui, subscriptions-ui, treasury-ui, notifications-ui. Public menu endpoints (`/menu/*`) documented and used by cafe-website. **JIT role assignment:** All backends now map global JWT roles (superuser, admin, staff) to service-level roles during JIT provisioning (e.g. superuser → finance_admin in treasury, inventory_admin in inventory, pos_admin in POS). **Subscription enforcement:** ordering-backend (mutations), logistics-api (mutations), treasury-api, inventory-api, pos-api, projects-api enforce RequireActiveSubscription; core services (auth-api, subscriptions-api, notifications-api) do not. **Notifications rate limiting:** Email sending is rate-limited by plan via `max_emails_per_day` from JWT SubscriptionLimits (Redis sliding window, returns 429). **Treasury-ui platform fix:** AuthProvider now checks `superuser` role and `isPlatformOwner` flag (was incorrectly checking `super_admin`). Docs updated: JWT claims, JIT role assignment, subscription enforcement, rate limiting, debugging table.
 
@@ -29,7 +29,7 @@ Every frontend uses the same flow:
 2. Frontend generates PKCE: code_verifier + code_challenge (SHA-256)
          ↓
 3. Frontend redirects to:
-   https://sso.codevertexitsolutions.com/api/v1/authorize
+   https://sso.codevertexafrica.com/api/v1/authorize
      ?response_type=code
      &client_id=<service-client-id>
      &redirect_uri=<callback-url>
@@ -40,7 +40,7 @@ Every frontend uses the same flow:
      &tenant=<slug>            ← optional, pre-selects tenant
          ↓
 4. auth-api detects user is not authenticated, redirects to:
-   https://accounts.codevertexitsolutions.com/login
+   https://accounts.codevertexafrica.com/login
      ?return_to=<full-authorize-url>
      &tenant=<slug>
    (auth-api does **not** pass client_id/redirect_uri as separate params; they are only inside return_to.)
@@ -94,11 +94,11 @@ Every frontend uses the same flow:
 
 **CORRECT:**
 ```
-POST https://sso.codevertexitsolutions.com/api/v1/token
-GET  https://sso.codevertexitsolutions.com/api/v1/authorize
-GET  https://sso.codevertexitsolutions.com/api/v1/auth/logout?post_logout_redirect_uri=<url>  (clears session cookie, redirects to allowlisted URL or accounts)
-POST https://sso.codevertexitsolutions.com/api/v1/auth/logout  (requires Bearer token; revokes session, returns JSON)
-GET  https://sso.codevertexitsolutions.com/.well-known/openid-configuration
+POST https://sso.codevertexafrica.com/api/v1/token
+GET  https://sso.codevertexafrica.com/api/v1/authorize
+GET  https://sso.codevertexafrica.com/api/v1/auth/logout?post_logout_redirect_uri=<url>  (clears session cookie, redirects to allowlisted URL or accounts)
+POST https://sso.codevertexafrica.com/api/v1/auth/logout  (requires Bearer token; revokes session, returns JSON)
+GET  https://sso.codevertexafrica.com/.well-known/openid-configuration
 ```
 
 **WRONG (will return 404):**
@@ -168,17 +168,17 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 
 | client_id | Frontend | Redirect URI pattern (production domain from devops-k8s values.yaml) | Public |
 |-----------|----------|----------------------------------------------------------------------|--------|
-| `ordering-ui` | ordering-frontend | `https://ordersapp.codevertexitsolutions.com/{tenant}/auth/callback` | Yes |
-| `rider-app` | rider-app | `https://riderapp.codevertexitsolutions.com/auth/callback` | Yes |
-| `notifications-ui` | notifications-ui | `https://notifications.codevertexitsolutions.com/auth/callback` and `/{tenant}/auth/callback` | Yes |
-| `pos-ui` | pos-ui | `https://pos.codevertexitsolutions.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
-| `inventory-ui` | inventory-ui | `https://inventory.codevertexitsolutions.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
-| `subscriptions-ui` | subscriptions-ui | `https://pricing.codevertexitsolutions.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
-| `treasury-ui` | treasury-ui | `https://books.codevertexitsolutions.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
-| `logistics-ui` | logistics-ui | `https://logistics.codevertexitsolutions.com/auth/callback` | Yes |
-| `auth-ui` | auth-ui | `https://accounts.codevertexitsolutions.com/auth/callback`, `https://sso.codevertexitsolutions.com/auth/callback` | Yes |
+| `ordering-ui` | ordering-frontend | `https://ordering.codevertexafrica.com/{tenant}/auth/callback` | Yes |
+| `rider-app` | rider-app | `https://riderapp.codevertexafrica.com/auth/callback` | Yes |
+| `notifications-ui` | notifications-ui | `https://notifications.codevertexafrica.com/auth/callback` and `/{tenant}/auth/callback` | Yes |
+| `pos-ui` | pos-ui | `https://pos.codevertexafrica.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
+| `inventory-ui` | inventory-ui | `https://inventory.codevertexafrica.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
+| `subscriptions-ui` | subscriptions-ui | `https://pricing.codevertexafrica.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
+| `treasury-ui` | treasury-ui | `https://books.codevertexafrica.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
+| `logistics-ui` | logistics-ui | `https://logistics.codevertexafrica.com/auth/callback` | Yes |
+| `auth-ui` | auth-ui | `https://accounts.codevertexafrica.com/auth/callback`, `https://sso.codevertexafrica.com/auth/callback` | Yes |
 | `cafe-website` | cafe-website | `https://theurbanloftcafe.com/auth/callback` | Yes (PKCE) |
-| `marketflow-ui` | marketflow-ui | `https://marketflow.codevertexitsolutions.com/auth/callback` and `/{tenant}/auth/callback` | Yes |
+| `marketflow-ui` | marketflow-ui | `https://marketflow.codevertexafrica.com/auth/callback` and `/{tenant}/auth/callback` | Yes |
 
 **The seed uses upsert** — re-running it fixes misconfigured redirect URIs automatically. For tenant-aware apps, seed includes both `/{tenant}/auth/callback` and `/auth/callback` so either pattern works.
 
@@ -188,24 +188,24 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 
 | App | Production host |
 |-----|-----------------|
-| auth-api (SSO) | `sso.codevertexitsolutions.com` |
-| auth-ui | `accounts.codevertexitsolutions.com` |
-| ordering-frontend | `ordersapp.codevertexitsolutions.com` |
+| auth-api (SSO) | `sso.codevertexafrica.com` |
+| auth-ui | `accounts.codevertexafrica.com` |
+| ordering-frontend | `ordering.codevertexafrica.com` |
 | cafe-website | `theurbanloftcafe.com` |
-| notifications-ui | `notifications.codevertexitsolutions.com` |
-| rider-app | `riderapp.codevertexitsolutions.com` |
-| subscriptions-ui | `pricing.codevertexitsolutions.com` |
-| treasury-ui | `books.codevertexitsolutions.com` |
-| pos-ui | `pos.codevertexitsolutions.com` |
-| logistics-ui | `logistics.codevertexitsolutions.com` |
-| inventory-ui | `inventory.codevertexitsolutions.com` |
-| marketflow-ui | `marketflow.codevertexitsolutions.com` |
-| marketflow-api | `marketflowapi.codevertexitsolutions.com` |
-| marketflow-ai | `marketflowai.codevertexitsolutions.com` |
-| ticketing-ui | `ticketing.codevertexitsolutions.com` |
-| projects-ui | `projects.codevertexitsolutions.com` |
+| notifications-ui | `notifications.codevertexafrica.com` |
+| rider-app | `riderapp.codevertexafrica.com` |
+| subscriptions-ui | `pricing.codevertexafrica.com` |
+| treasury-ui | `books.codevertexafrica.com` |
+| pos-ui | `pos.codevertexafrica.com` |
+| logistics-ui | `logistics.codevertexafrica.com` |
+| inventory-ui | `inventory.codevertexafrica.com` |
+| marketflow-ui | `marketflow.codevertexafrica.com` |
+| marketflow-api | `marketflowapi.codevertexafrica.com` |
+| marketflow-ai | `marketflowai.codevertexafrica.com` |
+| ticketing-ui | `ticketing.codevertexafrica.com` |
+| projects-ui | `projects.codevertexafrica.com` |
 
-**Do not use:** `treasury.codevertexitsolutions.com` or `subscriptions.codevertexitsolutions.com` for the UIs — use `books.codevertexitsolutions.com` (treasury-ui) and `pricing.codevertexitsolutions.com` (subscriptions-ui). Rider app host is `riderapp.codevertexitsolutions.com` (not `rider.`).
+**Do not use:** `treasury.codevertexafrica.com` or `subscriptions.codevertexafrica.com` for the UIs — use `books.codevertexafrica.com` (treasury-ui) and `pricing.codevertexafrica.com` (subscriptions-ui). Rider app host is `riderapp.codevertexafrica.com` (not `rider.`).
 
 ---
 
@@ -230,7 +230,7 @@ url.searchParams.set("tenant", orgSlug ?? "urban-loft");  // default tenant: urb
 2. It then resolves the tenant from the user's **primary_tenant_id** in the database (each user has a linked primary organisation).
 3. It verifies the user is a member of that tenant and continues the login flow.
 
-So **tenant users can log in directly from auth-ui** at `https://accounts.codevertexitsolutions.com/login` without any `?tenant=...` in the URL. The correct tenant is determined by the user's primary organisation in auth-api. Frontends (auth-ui) must send an empty or omitted `tenant_slug` when the user did not arrive via a tenant-specific link; do not default to a fixed slug (e.g. `codevertex`) or tenant users who belong only to another org would get "invalid credentials".
+So **tenant users can log in directly from auth-ui** at `https://accounts.codevertexafrica.com/login` without any `?tenant=...` in the URL. The correct tenant is determined by the user's primary organisation in auth-api. Frontends (auth-ui) must send an empty or omitted `tenant_slug` when the user did not arrive via a tenant-specific link; do not default to a fixed slug (e.g. `codevertex`) or tenant users who belong only to another org would get "invalid credentials".
 
 After login, the JWT claims include `tenant_id` and `tenant_slug`. All service APIs read these via:
 - `X-Tenant-ID` header (UUID)
@@ -446,7 +446,7 @@ logout(): void  // Clears state + redirects to SSO logout
 | **Direct** | User opens `/login` (no `return_to`). | Redirect to `/dashboard` or valid relative `return_to` via `router.push`. |
 | **Service-originated** | auth-api redirects to `/login?return_to=<full_sso_authorize_url>&tenant=...`. auth-api does **not** pass `client_id`/`redirect_uri` as separate params. | auth-ui must do a **full page redirect** (`window.location.href = return_to`) so the browser sends the session cookie to sso. Then auth-api sees the cookie, issues the auth code, and redirects to the service callback. |
 
-auth-ui validates `return_to` with `isValidReturnUrl` (allows relative paths and absolute URLs starting with `NEXT_PUBLIC_API_URL` or fallback `https://sso.codevertexitsolutions.com`). Set `NEXT_PUBLIC_API_URL` to the SSO base so the sso authorize URL is accepted. See auth-ui README Environment section.
+auth-ui validates `return_to` with `isValidReturnUrl` (allows relative paths and absolute URLs starting with `NEXT_PUBLIC_API_URL` or fallback `https://sso.codevertexafrica.com`). Set `NEXT_PUBLIC_API_URL` to the SSO base so the sso authorize URL is accepted. See auth-ui README Environment section.
 
 ### ordering-frontend
 - Client ID: `ordering-ui`
@@ -655,7 +655,7 @@ Each frontend implements these subscription components:
 ### Correct Pattern (all services):
 ```typescript
 // In lib/auth/api.ts:
-const SSO_BASE_URL = process.env.NEXT_PUBLIC_SSO_URL || 'https://sso.codevertexitsolutions.com';
+const SSO_BASE_URL = process.env.NEXT_PUBLIC_SSO_URL || 'https://sso.codevertexafrica.com';
 
 export async function fetchProfile(accessToken: string): Promise<UserProfile> {
   const res = await fetch(`${SSO_BASE_URL}/api/v1/auth/me`, {
@@ -778,7 +778,7 @@ tenantIDStr := httpware.GetTenantID(ctx)
 
 ## Multi-Step Account Registration
 
-All account creation is centralised in **auth-ui** (`accounts.codevertexitsolutions.com/signup`). All other services redirect unauthenticated users here.
+All account creation is centralised in **auth-ui** (`accounts.codevertexafrica.com/signup`). All other services redirect unauthenticated users here.
 
 ### Registration Steps
 1. **Account** — Full name, email, password
@@ -814,7 +814,7 @@ Add to `auth-api/cmd/seed/main.go` OAuth clients list and redeploy. Use for all 
 For new services added post-MVP without redeployment:
 ```bash
 # Requires valid superuser JWT
-curl -X POST https://sso.codevertexitsolutions.com/api/v1/admin/clients \
+curl -X POST https://sso.codevertexafrica.com/api/v1/admin/clients \
   -H "Authorization: Bearer <superuser-token>" \
   -H "Content-Type: application/json" \
   -d '{

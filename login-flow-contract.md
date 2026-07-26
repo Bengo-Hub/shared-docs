@@ -20,7 +20,7 @@ redirectToSSO(returnTo?: string, tenant?: string): Promise<void>
 handleSSOCallback(code: string, callbackUrl: string, tenantSlug?: string): Promise<void>
 ```
 
-- **Tenant-scoped UIs** (ordering, logistics, treasury, pos, inventory): When the user is on a route that includes `orgSlug` (e.g. `/[orgSlug]/dashboard`), pass that slug as `tenant` / `tenantSlug` so the authorize URL includes `?tenant=<slug>` and the token is minted for that org. Callback URL must match seed (e.g. `https://ordersapp.../urban-loft/auth/callback`).
+- **Tenant-scoped UIs** (ordering, logistics, treasury, pos, inventory): When the user is on a route that includes `orgSlug` (e.g. `/[orgSlug]/dashboard`), pass that slug as `tenant` / `tenantSlug` so the authorize URL includes `?tenant=<slug>` and the token is minted for that org. Callback URL must match seed (e.g. `https://ordering.../urban-loft/auth/callback`).
 - **Platform / mixed UIs** (notifications, subscriptions): Support both platform-level and tenant-level access. When in tenant context (e.g. route or selection), pass `tenant`; when at platform level, omit it. Backend and filters behave per section 3 below.
 
 ### Variant (treasury-ui, pos-ui, inventory-ui)
@@ -83,7 +83,7 @@ Backends are built to support **both platform scope and tenant scope**. Frontend
 
 ## 4. Build Authorize URL
 
-- **Authorize URL:** `GET https://sso.codevertexitsolutions.com/api/v1/authorize` with PKCE (`code_challenge`, `code_challenge_method=S256`), `client_id`, `redirect_uri`, `state`, and optional **`tenant`**.
+- **Authorize URL:** `GET https://sso.codevertexafrica.com/api/v1/authorize` with PKCE (`code_challenge`, `code_challenge_method=S256`), `client_id`, `redirect_uri`, `state`, and optional **`tenant`**.
 - When the frontend has a tenant context (e.g. from path or selection), pass `tenant` so auth-api mints the token for that org. When at platform level or no tenant context, omit `tenant`; auth-api may resolve from user’s primary org for direct login from auth-ui.
 - `redirect_uri` must match exactly one of the client’s redirect URIs in the seed (production domains in sso-integration-guide).
 
@@ -109,7 +109,7 @@ This keeps “show tenant filter vs not” and “send tenant headers vs not” 
 
 ## 7. Embedded SSO via SSOLoginModal (Iframe)
 
-For services that want to trigger login without a full-page redirect to `accounts.codevertexitsolutions.com`, the **`@bengo-hub/shared-ui-lib`** provides `SSOLoginModal` — a React component that embeds auth-ui in a modal iframe.
+For services that want to trigger login without a full-page redirect to `accounts.codevertexafrica.com`, the **`@bengo-hub/shared-ui-lib`** provides `SSOLoginModal` — a React component that embeds auth-ui in a modal iframe.
 
 ```tsx
 import { SSOLoginModal } from “@bengo-hub/shared-ui-lib/auth”;
