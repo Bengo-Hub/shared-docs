@@ -56,7 +56,7 @@ Token expires in 3600 seconds. Cache and refresh before expiry.
   "PartyA": "254708374149",
   "PartyB": "174379",
   "PhoneNumber": "254708374149",
-  "CallBackURL": "https://booksapi.codevertexitsolutions.com/api/v1/webhooks/mpesa/callback",
+  "CallBackURL": "https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/callback",
   "AccountReference": "OrderRef123",
   "TransactionDesc": "Payment for Order #123"
 }
@@ -134,8 +134,8 @@ password := base64.StdEncoding.EncodeToString([]byte(shortcode + passkey + times
 {
   "ShortCode": "600000",
   "ResponseType": "Completed",
-  "ConfirmationURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/confirmation",
-  "ValidationURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/validation"
+  "ConfirmationURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/confirmation",
+  "ValidationURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/validation"
 }
 ```
 
@@ -174,8 +174,8 @@ Must be registered once per production shortcode. Sandbox uses simulate.
   "PartyA": "600000",
   "PartyB": "254708374149",
   "Remarks": "Rider payout week 2026-W10",
-  "QueueTimeOutURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/b2c-timeout",
-  "ResultURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/b2c-result",
+  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-timeout",
+  "ResultURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-result",
   "Occasion": "WeeklyPayout"
 }
 ```
@@ -223,8 +223,8 @@ Must be registered once per production shortcode. Sandbox uses simulate.
   "PartyB": "600001",
   "AccountReference": "Invoice001",
   "Remarks": "Supplier payment",
-  "QueueTimeOutURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/b2b-timeout",
-  "ResultURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/b2b-result"
+  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-timeout",
+  "ResultURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-result"
 }
 ```
 
@@ -252,8 +252,8 @@ Must be registered once per production shortcode. Sandbox uses simulate.
   "TransactionID": "LHG31AA5TX",
   "PartyA": "600000",
   "IdentifierType": "4",
-  "ResultURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/txn-status-result",
-  "QueueTimeOutURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/txn-timeout",
+  "ResultURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-status-result",
+  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-timeout",
   "Remarks": "Status check",
   "Occasion": ""
 }
@@ -275,8 +275,8 @@ Must be registered once per production shortcode. Sandbox uses simulate.
   "Amount": "100",
   "ReceiverParty": "600000",
   "RecieverIdentifierType": "4",
-  "ResultURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/reversal-result",
-  "QueueTimeOutURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/timeout",
+  "ResultURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/reversal-result",
+  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout",
   "Remarks": "Duplicate payment reversal",
   "Occasion": ""
 }
@@ -297,8 +297,8 @@ Must be registered once per production shortcode. Sandbox uses simulate.
   "PartyA": "600000",
   "IdentifierType": "4",
   "Remarks": "Balance check",
-  "QueueTimeOutURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/timeout",
-  "ResultURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/balance-result"
+  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout",
+  "ResultURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/balance-result"
 }
 ```
 
@@ -317,7 +317,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
   "Amount": "500",
   "PartyA": "254708374149",
   "ReceiverPartyIdentifierType": "4",
-  "CallBackURL": "https://booksapi.codevertexitsolutions.com/webhooks/mpesa/ratiba",
+  "CallBackURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/ratiba",
   "AccountReference": "SubRef123",
   "TransactionDesc": "Monthly subscription",
   "Frequency": "3",

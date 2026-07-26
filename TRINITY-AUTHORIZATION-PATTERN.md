@@ -612,7 +612,7 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 ### Subscription and tenant sync
 - **Subscription-service must NOT create tenant subscriptions for the platform owner.** Only business (customer) organisations have subscriptions. The subscription-api seed excludes the platform owner slug so no `TenantSubscription` is created for Codevertex.
 - **All services that sync tenants** (in seed or at startup) **must sync the codevertex platform org** in addition to other default tenants, so the platform tenant row exists in each service DB (e.g. ordering-backend, inventory-api, subscriptions-api app, notifications-api seed).
-- **Platform org admin user:** Each service that maintains local user/role/permission data must sync or JIT-provision the platform admin user (auth-api super admin, e.g. `admin@codevertexitsolutions.com`) and assign **all permissions** in that service as the global admin user (e.g. superuser + admin roles in ordering-backend, finance_admin in treasury-api, admin role in logistics-api JIT).
+- **Platform org admin user:** Each service that maintains local user/role/permission data must sync or JIT-provision the platform admin user (auth-api super admin, e.g. `admin@codevertexafrica.com`) and assign **all permissions** in that service as the global admin user (e.g. superuser + admin roles in ordering-backend, finance_admin in treasury-api, admin role in logistics-api JIT).
 
 ### Token Claims
 `GET /api/v1/auth/me` returns `is_platform_owner: true` when the user's primary tenant slug is `codevertex`. Services should grant full read/write when this flag is set:
@@ -713,7 +713,7 @@ After successful login, **every frontend** (except auth-ui itself) must:
 ```bash
 TENANT_ID_URBAN_LOFT=<uuid-from-auth-api-db>
 TENANT_ID_CODEVERTEX=<uuid-from-auth-api-db>
-AUTH_API_URL=https://sso.codevertexitsolutions.com  # default
+AUTH_API_URL=https://sso.codevertexafrica.com  # default
 ```
 
 ### Run Order

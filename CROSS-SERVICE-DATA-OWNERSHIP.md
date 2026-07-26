@@ -109,7 +109,7 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - Frontend services use TanStack Query with staleTime = JWT TTL to cache tenant branding
 - **No service stores branding locally** — no `brand_colors`, `logo_url`, `contact_email`, `contact_phone`, `website`, `country`, `timezone`, `org_size`, `subscription_plan/status/expires_at/id`, `tier_limits`, `metadata` in downstream tenant tables
 - Subscription enforcement reads from JWT claims (`SubscriptionPlan`, `SubscriptionStatus`, `SubscriptionLimits`), not from tenant DB
-- **Branding editing**: Only auth-ui (`accounts.codevertexitsolutions.com/dashboard/settings?tab=branding`). All other frontends redirect to auth-ui for branding management
+- **Branding editing**: Only auth-ui (`accounts.codevertexafrica.com/dashboard/settings?tab=branding`). All other frontends redirect to auth-ui for branding management
 - **Profile editing**: Common fields (name, email, avatar) managed at auth-ui. Role-specific fields (rider KYC, customer preferences) managed by owning service
 
 ---
@@ -603,7 +603,7 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 
 ### Single Sign-On (SSO)
 
-- All users authenticate via **auth-service** (`https://sso.codevertexitsolutions.com/`)
+- All users authenticate via **auth-service** (`https://sso.codevertexafrica.com/`)
 - JWT access tokens contain: `sub` (user_id), `tenant_id`, `tenant_slug`, `roles`, and `permissions` (canonical codes from auth-service role–permission table). All services use these same permission codes for authorization.
 - All services validate tokens via JWKS from auth-service and read roles/permissions from the token (or from GET /me). If the token is valid but the service has no local user yet, the service **JIT-provisions** the user from token claims and continues (no 401 for "user not found").
 - Service-specific profile data (e.g. rider KYC, vehicle) is **not** in the token. It is collected via **service-specific onboarding** after SSO login, with identity (email, name) prefilled from the token.
