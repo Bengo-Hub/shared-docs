@@ -91,7 +91,7 @@ When the user clicks “I paid at till / agent” in the UI, the service backend
 
 ## 4. Shared Pay Page (Treasury UI)
 
-**URL**: Public; e.g. `https://books.codevertexitsolutions.com/pay`  
+**URL**: Public; e.g. `https://books.codevertexafrica.com/pay`  
 **Route**: `/(public)/pay` (no auth).
 
 **Query parameters** (passed by the service frontend when redirecting):

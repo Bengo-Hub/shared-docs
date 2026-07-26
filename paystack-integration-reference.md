@@ -375,7 +375,7 @@ PAYSTACK_WEBHOOK_SECRET=<your webhook secret>
 # Webhook and callback URLs are auto-generated from HTTP_PUBLIC_BASE_URL (TruLoad pattern):
 # Webhook: {HTTP_PUBLIC_BASE_URL}/api/v1/webhooks/paystack
 # Callback (user redirect): {HTTP_PUBLIC_BASE_URL}/api/v1/payments/callback
-HTTP_PUBLIC_BASE_URL=https://booksapi.codevertexitsolutions.com
+HTTP_PUBLIC_BASE_URL=https://booksapi.codevertexafrica.com
 # Optional overrides (if not set, auto-generated URLs are used):
 # PAYSTACK_CALLBACK_URL=...
 # PAYSTACK_WEBHOOK_URL=...

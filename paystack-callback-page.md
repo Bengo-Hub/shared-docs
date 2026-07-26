@@ -50,4 +50,4 @@ Ensure the callback route is **public** (no auth redirect). For example in Next.
 
 ## Production base URLs
 
-- **Treasury API** base URL (for auto-generated webhook/callback URLs in the backend) is set in **devops-k8s** only: `devops-k8s/apps/treasury-api/values.yaml` as `TREASURY_HTTP_PUBLIC_BASE_URL` (same host as ingress, e.g. `https://booksapi.codevertexitsolutions.com`). In production, do not duplicate this; the chart injects it from values. Local dev can use `HTTP_PUBLIC_BASE_URL` or `TREASURY_HTTP_PUBLIC_BASE_URL` in `.env`.
+- **Treasury API** base URL (for auto-generated webhook/callback URLs in the backend) is set in **devops-k8s** only: `devops-k8s/apps/treasury-api/values.yaml` as `TREASURY_HTTP_PUBLIC_BASE_URL` (same host as ingress, e.g. `https://booksapi.codevertexafrica.com`). In production, do not duplicate this; the chart injects it from values. Local dev can use `HTTP_PUBLIC_BASE_URL` or `TREASURY_HTTP_PUBLIC_BASE_URL` in `.env`.

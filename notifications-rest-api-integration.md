@@ -16,7 +16,7 @@ POST https://notifications-api.bengobox.svc.cluster.local:4000/{tenantId}/notifi
 
 **Production (via ingress):**
 ```
-POST https://notificationsapi.codevertexitsolutions.com/{tenantId}/notifications/messages
+POST https://notificationsapi.codevertexafrica.com/{tenantId}/notifications/messages
 ```
 
 ### Authentication
@@ -131,7 +131,7 @@ import requests
 
 def send_notification(tenant_id: str, template: str, to: list, data: dict, subject: str, api_key: str):
     resp = requests.post(
-        f"https://notificationsapi.codevertexitsolutions.com/{tenant_id}/notifications/messages",
+        f"https://notificationsapi.codevertexafrica.com/{tenant_id}/notifications/messages",
         json={
             "channel": "email",
             "template": template,
@@ -232,7 +232,7 @@ public class NotificationClient
 public void SendWeightTicketNotification(string tenantId, string email, WeightTicket ticket)
 {
     var client = new NotificationClient(
-        "https://notificationsapi.codevertexitsolutions.com",
+        "https://notificationsapi.codevertexafrica.com",
         Environment.GetEnvironmentVariable("NOTIFICATIONS_API_KEY"));
 
     client.SendAsync(tenantId, "truload/weight_ticket", new[] { email },
@@ -257,7 +257,7 @@ public void SendWeightTicketNotification(string tenantId, string email, WeightTi
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `NOTIFICATIONS_API_URL` | Base URL for notifications-api | `https://notificationsapi.codevertexitsolutions.com` |
+| `NOTIFICATIONS_API_URL` | Base URL for notifications-api | `https://notificationsapi.codevertexafrica.com` |
 | `NOTIFICATIONS_API_KEY` | API key for service-to-service auth | `sk_notif_...` |
 
 ---
