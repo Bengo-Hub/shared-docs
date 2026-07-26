@@ -16,26 +16,26 @@ Use this list for both **backend env** (`HTTP_ALLOWED_ORIGINS` / app CORS) and *
 
 | Origin | Service type |
 |--------|----------------|
-| `https://ordersapp.codevertexitsolutions.com` | Ordering frontend |
+| `https://ordering.codevertexafrica.com` | Ordering frontend |
 | `https://theurbanloftcafe.com` | Cafe website |
-| `https://accounts.codevertexitsolutions.com` | Auth UI |
-| `https://sso.codevertexitsolutions.com` | Auth API (SSO) |
-| `https://notifications.codevertexitsolutions.com` | Notifications UI |
-| `https://riderapp.codevertexitsolutions.com` | Rider app |
-| `https://pricing.codevertexitsolutions.com` | Subscriptions UI |
-| `https://books.codevertexitsolutions.com` | Treasury UI |
-| `https://pos.codevertexitsolutions.com` | POS UI |
-| `https://logistics.codevertexitsolutions.com` | Logistics UI |
-| `https://inventory.codevertexitsolutions.com` | Inventory UI |
-| `https://ticketing.codevertexitsolutions.com` | Ticketing UI |
-| `https://projects.codevertexitsolutions.com` | Projects UI |
+| `https://accounts.codevertexafrica.com` | Auth UI |
+| `https://sso.codevertexafrica.com` | Auth API (SSO) |
+| `https://notifications.codevertexafrica.com` | Notifications UI |
+| `https://riderapp.codevertexafrica.com` | Rider app |
+| `https://pricing.codevertexafrica.com` | Subscriptions UI |
+| `https://books.codevertexafrica.com` | Treasury UI |
+| `https://pos.codevertexafrica.com` | POS UI |
+| `https://logistics.codevertexafrica.com` | Logistics UI |
+| `https://inventory.codevertexafrica.com` | Inventory UI |
+| `https://ticketing.codevertexafrica.com` | Ticketing UI |
+| `https://projects.codevertexafrica.com` | Projects UI |
 | `http://localhost:3000` | Local dev (cafe, auth-ui, etc.) |
 | `http://localhost:3001` | Local dev (ordering-frontend) |
 | `http://localhost:3002` | Local dev (rider-app) |
 | `http://127.0.0.1:3000` | Local dev |
 | `http://127.0.0.1:3001` | Local dev |
 
-For **dynamic** allow (any `https://*.codevertexitsolutions.com`), use the regex or multi-origin form shown below.
+For **dynamic** allow (any `https://*.codevertexafrica.com`), use the regex or multi-origin form shown below.
 
 ---
 
@@ -45,14 +45,14 @@ If your Ingress uses **NGINX Ingress Controller**, add these annotations to the 
 
 ### 2.1 auth-api (SSO)
 
-**Host:** `sso.codevertexitsolutions.com`  
+**Host:** `sso.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/auth-api/` (or equivalent)
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordersapp.codevertexitsolutions.com, https://theurbanloftcafe.com, https://accounts.codevertexitsolutions.com, https://sso.codevertexitsolutions.com, https://notifications.codevertexitsolutions.com, https://riderapp.codevertexitsolutions.com, https://pricing.codevertexitsolutions.com, https://books.codevertexitsolutions.com, https://pos.codevertexitsolutions.com, https://logistics.codevertexitsolutions.com, https://inventory.codevertexitsolutions.com, https://ticketing.codevertexitsolutions.com, https://projects.codevertexitsolutions.com, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://127.0.0.1:3000, http://127.0.0.1:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://notifications.codevertexafrica.com, https://riderapp.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, https://pos.codevertexafrica.com, https://logistics.codevertexafrica.com, https://inventory.codevertexafrica.com, https://ticketing.codevertexafrica.com, https://projects.codevertexafrica.com, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://127.0.0.1:3000, http://127.0.0.1:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Request-ID, X-Requested-With, X-API-Key, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -63,14 +63,14 @@ metadata:
 
 ### 2.2 ordering-backend
 
-**Host:** `orderingapi.codevertexitsolutions.com` (or `orderingapi.codevertexitsolutions.com`)  
+**Host:** `orderingapi.codevertexafrica.com` (or `orderingapi.codevertexafrica.com`)  
 **Path in devops-k8s:** `apps/ordering-backend/` (or `apps/ordering-backend/values.yaml` under ingress)
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordersapp.codevertexitsolutions.com, https://theurbanloftcafe.com, https://pos.codevertexitsolutions.com, https://accounts.codevertexitsolutions.com, https://sso.codevertexitsolutions.com, https://notifications.codevertexitsolutions.com, https://pricing.codevertexitsolutions.com, https://books.codevertexitsolutions.com, https://logistics.codevertexitsolutions.com, http://localhost:3001, http://127.0.0.1:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://pos.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://notifications.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, https://logistics.codevertexafrica.com, http://localhost:3001, http://127.0.0.1:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Request-ID, X-Tenant-ID, X-Tenant-Slug, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -79,14 +79,14 @@ metadata:
 
 ### 2.3 notifications-api
 
-**Host:** `notificationsapi.codevertexitsolutions.com`  
+**Host:** `notificationsapi.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/notifications-api/`
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://notifications.codevertexitsolutions.com, https://ordersapp.codevertexitsolutions.com, https://accounts.codevertexitsolutions.com, https://sso.codevertexitsolutions.com, https://pricing.codevertexitsolutions.com, https://books.codevertexitsolutions.com, http://localhost:3000, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://notifications.codevertexafrica.com, https://ordering.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, http://localhost:3000, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -95,14 +95,14 @@ metadata:
 
 ### 2.4 logistics-api
 
-**Host:** `logisticsapi.codevertexitsolutions.com`  
+**Host:** `logisticsapi.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/logistics-api/`
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://logistics.codevertexitsolutions.com, https://riderapp.codevertexitsolutions.com, https://ordersapp.codevertexitsolutions.com, https://accounts.codevertexitsolutions.com, https://sso.codevertexitsolutions.com, http://localhost:3002, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://logistics.codevertexafrica.com, https://riderapp.codevertexafrica.com, https://ordering.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, http://localhost:3002, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -111,14 +111,14 @@ metadata:
 
 ### 2.5 treasury-api
 
-**Host:** `booksapi.codevertexitsolutions.com` (Treasury UI is at `books.codevertexitsolutions.com`)  
+**Host:** `booksapi.codevertexafrica.com` (Treasury UI is at `books.codevertexafrica.com`)  
 **Path in devops-k8s:** `apps/treasury-api/`
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://books.codevertexitsolutions.com, https://ordersapp.codevertexitsolutions.com, https://theurbanloftcafe.com, https://pos.codevertexitsolutions.com, https://accounts.codevertexitsolutions.com, https://sso.codevertexitsolutions.com, http://localhost:3011, http://localhost:3001, http://localhost:4201"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://books.codevertexafrica.com, https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://pos.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, http://localhost:3011, http://localhost:3001, http://localhost:4201"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -127,14 +127,14 @@ metadata:
 
 ### 2.6 inventory-api
 
-**Host:** `inventoryapi.codevertexitsolutions.com`  
+**Host:** `inventoryapi.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/inventory-api/`
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordersapp.codevertexitsolutions.com, https://theurbanloftcafe.com, https://pos.codevertexitsolutions.com, https://inventory.codevertexitsolutions.com, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://pos.codevertexafrica.com, https://inventory.codevertexafrica.com, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -143,14 +143,14 @@ metadata:
 
 ### 2.7 pos-api
 
-**Host:** `posapi.codevertexitsolutions.com`  
+**Host:** `posapi.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/pos-api/`
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pos.codevertexitsolutions.com, https://ordersapp.codevertexitsolutions.com, https://theurbanloftcafe.com, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pos.codevertexafrica.com, https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -159,14 +159,14 @@ metadata:
 
 ### 2.8 subscriptions-api
 
-**Host:** `pricingapi.codevertexitsolutions.com`  
+**Host:** `pricingapi.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/subscriptions-api/`
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pricing.codevertexitsolutions.com, https://ordersapp.codevertexitsolutions.com, https://accounts.codevertexitsolutions.com, https://sso.codevertexitsolutions.com, https://books.codevertexitsolutions.com, http://localhost:3010, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pricing.codevertexafrica.com, https://ordering.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://books.codevertexafrica.com, http://localhost:3010, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -181,7 +181,7 @@ For backends that read CORS from env (e.g. ordering-backend `HTTP_ALLOWED_ORIGIN
 
 | App | Env var | Example value |
 |-----|---------|----------------|
-| ordering-backend | `HTTP_ALLOWED_ORIGINS` | `https://ordersapp.codevertexitsolutions.com,https://theurbanloftcafe.com,https://pos.codevertexitsolutions.com,https://notifications.codevertexitsolutions.com,https://pricing.codevertexitsolutions.com,https://books.codevertexitsolutions.com,https://logistics.codevertexitsolutions.com,https://accounts.codevertexitsolutions.com,https://sso.codevertexitsolutions.com,http://localhost:3001,http://127.0.0.1:3001` |
+| ordering-backend | `HTTP_ALLOWED_ORIGINS` | `https://ordering.codevertexafrica.com,https://theurbanloftcafe.com,https://pos.codevertexafrica.com,https://notifications.codevertexafrica.com,https://pricing.codevertexafrica.com,https://books.codevertexafrica.com,https://logistics.codevertexafrica.com,https://accounts.codevertexafrica.com,https://sso.codevertexafrica.com,http://localhost:3001,http://127.0.0.1:3001` |
 | auth-api | (CORS via ingress only) | See ?2.1; origins = configured frontend hosts from values.yaml |
 | notifications-api | (if supported) | Same pattern: frontend origins only |
 | logistics-api | (if supported) | Same pattern |

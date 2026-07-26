@@ -167,24 +167,24 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - Per-service TLS secrets
 
 **External Domains**:
-- Auth API: `sso.codevertexitsolutions.com`
-- Auth UI: `accounts.codevertexitsolutions.com`
-- Treasury API: `booksapi.codevertexitsolutions.com`
-- Treasury UI: `books.codevertexitsolutions.com`
-- Notifications: `notifications.codevertexitsolutions.com`
-- Ordering API: `orderingapi.codevertexitsolutions.com`
-- Ordering UI: `ordersapp.codevertexitsolutions.com`
+- Auth API: `sso.codevertexafrica.com`
+- Auth UI: `accounts.codevertexafrica.com`
+- Treasury API: `booksapi.codevertexafrica.com`
+- Treasury UI: `books.codevertexafrica.com`
+- Notifications: `notifications.codevertexafrica.com`
+- Ordering API: `orderingapi.codevertexafrica.com`
+- Ordering UI: `ordering.codevertexafrica.com`
 - Cafe Website: `theurbanloftcafe.com`
-- POS API: `posapi.codevertexitsolutions.com`
-- POS UI: `pos.codevertexitsolutions.com`
-- Subscription API: `pricingapi.codevertexitsolutions.com`
-- Projects API: `projectsapi.codevertexitsolutions.com`
-- Projects UI: `projects.codevertexitsolutions.com`
-- IoT: `iot.codevertexitsolutions.com`
-- ISP Billing API: `ispbillingapi.codevertexitsolutions.com`
-- ISP Billing UI: `ispbilling.codevertexitsolutions.com`
-- Ticketing API: `ticketingapi.codevertexitsolutions.com`
-- Ticketing UI: `ticketing.codevertexitsolutions.com`
+- POS API: `posapi.codevertexafrica.com`
+- POS UI: `pos.codevertexafrica.com`
+- Subscription API: `pricingapi.codevertexafrica.com`
+- Projects API: `projectsapi.codevertexafrica.com`
+- Projects UI: `projects.codevertexafrica.com`
+- IoT: `iot.codevertexafrica.com`
+- ISP Billing API: `ispbillingapi.codevertexafrica.com`
+- ISP Billing UI: `ispbilling.codevertexafrica.com`
+- Ticketing API: `ticketingapi.codevertexafrica.com`
+- Ticketing UI: `ticketing.codevertexafrica.com`
 - ERP: `erpapi.masterspace.co.ke` (legacy)
 
 ### GitOps & Deployment
@@ -361,7 +361,7 @@ resp, err := http.Get(fmt.Sprintf("%s/api/v1/users/%s", cfg.AuthServiceURL, user
 
 **Service URLs** (Kubernetes DNS for internal, HTTPS for external):
 - Internal: `http://{service}.{namespace}.svc.cluster.local:{port}`
-- External: `https://{domain}.codevertexitsolutions.com`
+- External: `https://{domain}.codevertexafrica.com`
 
 **Shared HTTP Client** (`shared-service-client`):
 - ✅ Circuit breaker (gobreaker) - Opens after 5 consecutive failures
@@ -575,24 +575,24 @@ All services communicate via Kubernetes DNS service names following the pattern:
 - OpenTelemetry: `otel-collector.infra.svc.cluster.local:4317`
 
 **External Service Communication** (Frontend-to-Backend):
-- Auth API: `https://sso.codevertexitsolutions.com`
-- Auth UI: `https://accounts.codevertexitsolutions.com`
-- Treasury API: `https://booksapi.codevertexitsolutions.com`
-- Treasury UI: `https://books.codevertexitsolutions.com`
-- Notifications Service: `https://notifications.codevertexitsolutions.com`
-- Ordering API: `https://orderingapi.codevertexitsolutions.com`
-- Ordering UI: `https://ordersapp.codevertexitsolutions.com`
+- Auth API: `https://sso.codevertexafrica.com`
+- Auth UI: `https://accounts.codevertexafrica.com`
+- Treasury API: `https://booksapi.codevertexafrica.com`
+- Treasury UI: `https://books.codevertexafrica.com`
+- Notifications Service: `https://notifications.codevertexafrica.com`
+- Ordering API: `https://orderingapi.codevertexafrica.com`
+- Ordering UI: `https://ordering.codevertexafrica.com`
 - Cafe Website: `https://theurbanloftcafe.com`
-- POS API: `https://posapi.codevertexitsolutions.com`
-- POS UI: `https://pos.codevertexitsolutions.com`
-- Subscription API: `https://pricingapi.codevertexitsolutions.com`
-- Projects API: `https://projectsapi.codevertexitsolutions.com`
-- Projects UI: `https://projects.codevertexitsolutions.com`
-- IoT Service: `https://iot.codevertexitsolutions.com`
-- ISP Billing API: `https://ispbillingapi.codevertexitsolutions.com`
-- ISP Billing UI: `https://ispbilling.codevertexitsolutions.com`
-- Ticketing API: `https://ticketingapi.codevertexitsolutions.com`
-- Ticketing UI: `https://ticketing.codevertexitsolutions.com`
+- POS API: `https://posapi.codevertexafrica.com`
+- POS UI: `https://pos.codevertexafrica.com`
+- Subscription API: `https://pricingapi.codevertexafrica.com`
+- Projects API: `https://projectsapi.codevertexafrica.com`
+- Projects UI: `https://projects.codevertexafrica.com`
+- IoT Service: `https://iot.codevertexafrica.com`
+- ISP Billing API: `https://ispbillingapi.codevertexafrica.com`
+- ISP Billing UI: `https://ispbilling.codevertexafrica.com`
+- Ticketing API: `https://ticketingapi.codevertexafrica.com`
+- Ticketing UI: `https://ticketing.codevertexafrica.com`
 
 ### Namespace Organization
 
@@ -628,9 +628,9 @@ env:
 ```yaml
 env:
   - name: NEXT_PUBLIC_API_URL
-    value: https://sso.codevertexitsolutions.com
+    value: https://sso.codevertexafrica.com
   - name: NEXT_PUBLIC_NOTIFICATIONS_URL
-    value: https://notifications.codevertexitsolutions.com
+    value: https://notifications.codevertexafrica.com
 ```
 
 ### Benefits
@@ -815,9 +815,9 @@ router.Use(authclient.GinMiddleware(authMiddleware))
 **Published to**: GitHub Packages (npm.pkg.github.com)
 
 **Components** (all use iframe + postMessage):
-- `TreasuryPaymentModal` — embeds `books.codevertexitsolutions.com` in an iframe; handles Paystack, M-Pesa, COD; postMessage events: `treasury:payment_initiated`, `treasury:payment_confirmed`, `treasury:payment_failed`
-- `SSOLoginModal` — embeds `accounts.codevertexitsolutions.com` in an iframe; postMessage events: `auth:login_success`, `auth:login_failed`
-- `TrackingIframeModal` — embeds `logistics.codevertexitsolutions.com`; postMessage events: `tracking:resize`, `logistics:resize`
+- `TreasuryPaymentModal` — embeds `books.codevertexafrica.com` in an iframe; handles Paystack, M-Pesa, COD; postMessage events: `treasury:payment_initiated`, `treasury:payment_confirmed`, `treasury:payment_failed`
+- `SSOLoginModal` — embeds `accounts.codevertexafrica.com` in an iframe; postMessage events: `auth:login_success`, `auth:login_failed`
+- `TrackingIframeModal` — embeds `logistics.codevertexafrica.com`; postMessage events: `tracking:resize`, `logistics:resize`
 
 **Services using v0.1.5**: ordering-frontend, pos-ui, subscriptions-ui, notifications-ui, cafe-website, inventory-ui, truload-frontend
 
@@ -1718,24 +1718,24 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 │                              cert-manager (Let's Encrypt TLS)                                                │
 │                                                                                                               │
 │  Domains:                                                                                                     │
-│  • sso.codevertexitsolutions.com → auth-api                                                                  │
-│  • accounts.codevertexitsolutions.com → auth-ui                                                              │
-│  • notifications.codevertexitsolutions.com → notifications-service                                           │
-│  • booksapi.codevertexitsolutions.com → treasury-api                                                         │
-│  • books.codevertexitsolutions.com → treasury-ui                                                             │
-│  • orderingapi.codevertexitsolutions.com → ordering-backend                                                     │
-│  • ordersapp.codevertexitsolutions.com → ordering-frontend                                                   │
+│  • sso.codevertexafrica.com → auth-api                                                                  │
+│  • accounts.codevertexafrica.com → auth-ui                                                              │
+│  • notifications.codevertexafrica.com → notifications-service                                           │
+│  • booksapi.codevertexafrica.com → treasury-api                                                         │
+│  • books.codevertexafrica.com → treasury-ui                                                             │
+│  • orderingapi.codevertexafrica.com → ordering-backend                                                     │
+│  • ordering.codevertexafrica.com → ordering-frontend                                                   │
 │  • theurbanloftcafe.com → cafe-website                                                             │
-│  • posapi.codevertexitsolutions.com → pos-api                                                                │
-│  • pos.codevertexitsolutions.com → pos-ui                                                                    │
-│  • pricingapi.codevertexitsolutions.com → subscription-api                                                   │
-│  • projectsapi.codevertexitsolutions.com → projects-api                                                      │
-│  • projects.codevertexitsolutions.com → projects-ui                                                          │
-│  • iot.codevertexitsolutions.com → iot-api                                                                   │
-│  • ispbillingapi.codevertexitsolutions.com → isp-billing-backend                                             │
-│  • ispbilling.codevertexitsolutions.com → isp-billing-frontend                                               │
-│  • ticketingapi.codevertexitsolutions.com → ticketing-api                                                     │
-│  • ticketing.codevertexitsolutions.com → ticketing-ui                                                         │
+│  • posapi.codevertexafrica.com → pos-api                                                                │
+│  • pos.codevertexafrica.com → pos-ui                                                                    │
+│  • pricingapi.codevertexafrica.com → subscription-api                                                   │
+│  • projectsapi.codevertexafrica.com → projects-api                                                      │
+│  • projects.codevertexafrica.com → projects-ui                                                          │
+│  • iot.codevertexafrica.com → iot-api                                                                   │
+│  • ispbillingapi.codevertexafrica.com → isp-billing-backend                                             │
+│  • ispbilling.codevertexafrica.com → isp-billing-frontend                                               │
+│  • ticketingapi.codevertexafrica.com → ticketing-api                                                     │
+│  • ticketing.codevertexafrica.com → ticketing-ui                                                         │
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
                                               │
                                               │ HTTP (Internal)
