@@ -1,0 +1,15 @@
+{
+  "name": "processa-integration-architecture-pdf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build the Codevertex Sourcing & Traceability Platform (Processa Integration) architecture + flow-deck PDFs from markdown",
+  "scripts": {
+    "build": "node build-pdf.cjs",
+    "build:deck": "node build-presentation.cjs"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "mermaid": "9.4.3",
+    "puppeteer-core": "^24.0.0"
+  }
+}
