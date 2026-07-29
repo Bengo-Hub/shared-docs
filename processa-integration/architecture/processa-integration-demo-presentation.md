@@ -44,6 +44,63 @@ flowchart LR
 
 Nothing in this diagram is rebuilt. `sourcing-api` and `traceability-api` are the only new boxes.
 
+## Use Case Diagram - sourcing-api
+
+```mermaid
+flowchart LR
+    A1(["Field Officer"])
+    A2(["Receiving Clerk"])
+    A3(["Finance Approver"])
+    A4(["Grower"])
+    subgraph UC1["sourcing-api"]
+        U1((Register Grower))
+        U2((Register Farm))
+        U3((Capture Intake Weighing))
+        U4((Grade Intake))
+        U5((Generate Settlement Run))
+        U6((Approve Settlement))
+        U7((Disburse Payout))
+        U8((View Payout Status))
+    end
+    A1 --> U1
+    A1 --> U2
+    A2 --> U3
+    A2 --> U4
+    U4 --> U5
+    A3 --> U6
+    U6 --> U7
+    A4 --> U8
+```
+
+## Use Case Diagram - traceability-api
+
+```mermaid
+flowchart LR
+    B1(["QA Technician"])
+    B2(["Lab Analyst"])
+    B3(["Production Supervisor"])
+    B4(["Compliance Officer"])
+    subgraph UC2["traceability-api"]
+        V1((Record Sampling Event))
+        V2((Enter Lab Test Result))
+        V3((Approve Disposition))
+        V4((Record Process Step))
+        V5((Record Process Output))
+        V6((Raise Non Conformance))
+        V7((Initiate Recall))
+        V8((Assemble EUDR Statement))
+    end
+    B1 --> V1
+    B2 --> V2
+    V2 --> V3
+    B4 --> V3
+    B3 --> V4
+    B3 --> V5
+    B4 --> V6
+    B4 --> V7
+    B4 --> V8
+```
+
 ## Flow 1 - Grower Intake to Settlement (BPMN-style)
 
 ```mermaid
@@ -95,6 +152,99 @@ flowchart LR
     B[["Grower and supplier<br/>chain"]] --> D
     C[["Lot genealogy<br/>to export consignment"]] --> D
     D --> E(["Filed against<br/>export consignment"])
+```
+
+## Workflow - Full Farm-to-Shelf Swimlane
+
+This mirrors the original whiteboard process map end to end, each lane owned by an existing or
+new service.
+
+```mermaid
+flowchart LR
+    subgraph Suppliers["Suppliers"]
+        S1[Farmers]
+        S2[Aggregators]
+        S3[Cooperatives]
+        S4[Companies]
+    end
+    subgraph Receiving["Receiving Bay<br/>sourcing-api + TruLoad"]
+        R1[["Weighbridge<br/>gross and tare"]]
+    end
+    subgraph QAIntake["QA<br/>traceability-api"]
+        Q1{"Grading<br/>verification"}
+    end
+    subgraph StoreGRN["Store: GRN, FIFO<br/>inventory-api"]
+        G1[["Goods received<br/>note"]]
+    end
+    subgraph Processing["Processing<br/>traceability-api process route"]
+        P1[["Dry, sort, mill"]]
+    end
+    subgraph Warehouse["Warehouse System<br/>inventory-api"]
+        W1[["Finished goods<br/>stock"]]
+    end
+    subgraph QARelease["QA<br/>traceability-api"]
+        Q2{"Release<br/>check"}
+    end
+    subgraph Packaging["Packaging<br/>inventory-api"]
+        PK1[["Fill and label"]]
+    end
+    subgraph Dispatch["Dispatch: Store"]
+        D1[["Load out"]]
+    end
+    subgraph Distribution["Distribution<br/>logistics-api"]
+        DI1[["Vehicles,<br/>cold chain"]]
+    end
+    subgraph Customer["Client / Customer"]
+        C1[["Customer<br/>request"]]
+    end
+
+    S1 --> R1
+    S2 --> R1
+    S3 --> R1
+    S4 --> R1
+    R1 --> Q1
+    Q1 -- pass --> G1
+    Q1 -- reject --> S1
+    G1 --> P1
+    P1 --> W1
+    W1 --> Q2
+    Q2 -- pass --> PK1
+    Q2 -- hold --> W1
+    PK1 --> D1
+    D1 --> DI1
+    DI1 --> C1
+    C1 --> D1
+```
+
+## Workflow - Lot Disposition State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Received
+    Received --> Sampled
+    Sampled --> UnderReview
+    UnderReview --> Released
+    UnderReview --> Quarantined
+    Quarantined --> Released
+    Quarantined --> Rejected
+    Released --> [*]
+    Rejected --> [*]
+```
+
+## Workflow - Settlement Run State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> PendingApproval
+    PendingApproval --> Approved
+    PendingApproval --> Rejected
+    Approved --> PayoutInitiated
+    PayoutInitiated --> Paid
+    PayoutInitiated --> Failed
+    Failed --> PayoutInitiated
+    Paid --> [*]
+    Rejected --> [*]
 ```
 
 ## Data Flow - Grower Registration
