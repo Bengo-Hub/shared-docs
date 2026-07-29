@@ -225,12 +225,16 @@ house diagram toolchain.
 ### 6.1 sourcing-api
 
 ```mermaid
-flowchart LR
-    A1(["Field Officer"])
-    A2(["Receiving Clerk"])
-    A3(["Finance Approver"])
-    A4(["Grower"])
+flowchart TB
+    subgraph Actors1[" "]
+        direction LR
+        A1(["Field Officer"])
+        A2(["Receiving Clerk"])
+        A3(["Finance Approver"])
+        A4(["Grower"])
+    end
     subgraph UC1["sourcing-api"]
+        direction LR
         U1((Register Grower))
         U2((Register Farm))
         U3((Capture Intake Weighing))
@@ -253,12 +257,16 @@ flowchart LR
 ### 6.2 traceability-api
 
 ```mermaid
-flowchart LR
-    B1(["QA Technician"])
-    B2(["Lab Analyst"])
-    B3(["Production Supervisor"])
-    B4(["Compliance Officer"])
+flowchart TB
+    subgraph Actors2[" "]
+        direction LR
+        B1(["QA Technician"])
+        B2(["Lab Analyst"])
+        B3(["Production Supervisor"])
+        B4(["Compliance Officer"])
+    end
     subgraph UC2["traceability-api"]
+        direction LR
         V1((Record Sampling Event))
         V2((Enter Lab Test Result))
         V3((Approve Disposition))

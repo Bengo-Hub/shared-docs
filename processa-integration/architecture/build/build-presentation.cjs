@@ -37,12 +37,16 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;color:${
 @page{size:A4 landscape;margin:0}
 
 .slide{width:297mm;height:210mm;padding:20mm 22mm 16mm;display:flex;flex-direction:column;
-  break-after:page;position:relative;background:${CREAM}}
-.slide:last-child{break-after:auto}
-.slide .kicker{font-size:9.5pt;letter-spacing:2px;text-transform:uppercase;color:${PLUM};font-weight:700;margin-bottom:8px}
+  break-after:page;position:relative;background:${CREAM};overflow:hidden}
+/* :last-of-type (not :last-child) — the trailing <script> tags after the final .slide in
+   the DOM mean :last-child never matches a .slide, so every slide (incl. the true last one)
+   was forced to break-after:page, printing one genuinely blank page at the end. :last-of-type
+   matches by tag name among siblings, so it correctly targets the final <section>. */
+.slide:last-of-type{break-after:auto}
+.slide .kicker{font-size:9.5pt;letter-spacing:2px;text-transform:uppercase;color:${PLUM};font-weight:700;margin-bottom:8px;flex:none}
 .slide h2{font-size:24pt;font-weight:800;color:${PLUMD};line-height:1.14;margin-bottom:14px;padding-bottom:12px;
-  border-bottom:3px solid ${PLUM};max-width:92%}
-.slide .body{flex:1;overflow:hidden;font-size:12.5pt}
+  border-bottom:3px solid ${PLUM};max-width:92%;flex:none}
+.slide .body{flex:1 1 auto;min-height:0;overflow:hidden;font-size:12.5pt;display:flex;flex-direction:column}
 .slide .body p{margin:0 0 10px;max-width:145mm}
 .slide .body ul,.slide .body ol{margin:6px 0 12px 22px}
 .slide .body li{margin-bottom:7px}
@@ -57,14 +61,24 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;color:${
 .slide .body tbody td:first-child{font-weight:700;color:${PLUMD}}
 
 .slide .body blockquote{background:#f4ebe0;border-left:5px solid ${PLUM};border-radius:8px;
-  padding:12px 16px;margin:4px 0 14px;font-size:11.5pt;color:#3a2f3a}
+  padding:12px 16px;margin:4px 0 14px;font-size:11.5pt;color:#3a2f3a;flex:none}
 .slide .body blockquote p{margin:0}
 .slide .body blockquote strong{color:${PLUM}}
 
-.mermaid{margin:4px 0 10px;text-align:center}
-.mermaid svg{max-height:92mm;width:auto !important;max-width:100% !important}
+/* Diagram slides: the intro paragraph (if any) stays top-aligned and fixed-height; the
+   diagram itself gets the flex-grown remainder and is truly centered both axes — the old
+   text-align:center did nothing because the mermaid SVG is a block box, not inline, so
+   diagrams rendered hugging the left edge with a large dead zone on the right. */
 .slide.has-diagram .body{font-size:11pt}
-.slide.has-diagram .body p{margin-bottom:6px}
+.slide.has-diagram .body>p{flex:none;margin-bottom:8px}
+.mermaid{margin:4px 0;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.mermaid svg{max-height:145mm !important;max-width:250mm !important;width:auto !important;height:auto !important}
+/* A slide that mixes body text (before OR after the diagram) with a diagram must leave
+   room for that text — the SVG's max-height is a hard ceiling independent of the flex
+   item's actually-allocated space, so at full size it visually overlapped the paragraph
+   on both "Reuse-First: The Current Ecosystem" (text after) and "Full Farm-to-Shelf
+   Swimlane" (text before). :has() lets one rule catch both orderings. */
+.slide.has-diagram .body:has(>p) .mermaid svg{max-height:92mm !important}
 .mermaid .nodeLabel,.mermaid .nodeLabel *,.mermaid .label,.mermaid .label *{color:${INK} !important;fill:${INK} !important}
 
 .slide .foot{display:flex;align-items:center;justify-content:space-between;padding-top:8px;
