@@ -19,7 +19,7 @@ ground becomes two new services: **`sourcing-api`** and **`traceability-api`**.
 | Field | Value |
 |---|---|
 | Title | Sourcing & Traceability Platform - Technology Architecture |
-| Version | 1.0 |
+| Version | 1.1 |
 | Classification | Confidential |
 | Integrator | Codevertex Africa Limited |
 | Model | Reuse-first micro-service extension (two new Go/Next.js services) |
@@ -216,7 +216,165 @@ Both services are built to the confirmed `library-api`/`library-ui` template:
   `inventory-ui`/`treasury-ui`/`logistics-ui` for stock, money and shipment detail rather than
   recreating those screens.
 
-## 6. Deployment & Infrastructure Architecture
+## 6. Use Case Diagrams
+
+Mermaid has no native UML use-case notation, so actors are drawn as stadium nodes and use cases as
+circular nodes inside each service's boundary - the closest faithful rendering available in the
+house diagram toolchain.
+
+### 6.1 sourcing-api
+
+```mermaid
+flowchart LR
+    A1(["Field Officer"])
+    A2(["Receiving Clerk"])
+    A3(["Finance Approver"])
+    A4(["Grower"])
+    subgraph UC1["sourcing-api"]
+        U1((Register Grower))
+        U2((Register Farm))
+        U3((Capture Intake Weighing))
+        U4((Grade Intake))
+        U5((Generate Settlement Run))
+        U6((Approve Settlement))
+        U7((Disburse Payout))
+        U8((View Payout Status))
+    end
+    A1 --> U1
+    A1 --> U2
+    A2 --> U3
+    A2 --> U4
+    U4 --> U5
+    A3 --> U6
+    U6 --> U7
+    A4 --> U8
+```
+
+### 6.2 traceability-api
+
+```mermaid
+flowchart LR
+    B1(["QA Technician"])
+    B2(["Lab Analyst"])
+    B3(["Production Supervisor"])
+    B4(["Compliance Officer"])
+    subgraph UC2["traceability-api"]
+        V1((Record Sampling Event))
+        V2((Enter Lab Test Result))
+        V3((Approve Disposition))
+        V4((Record Process Step))
+        V5((Record Process Output))
+        V6((Raise Non Conformance))
+        V7((Initiate Recall))
+        V8((Assemble EUDR Statement))
+    end
+    B1 --> V1
+    B2 --> V2
+    V2 --> V3
+    B4 --> V3
+    B3 --> V4
+    B3 --> V5
+    B4 --> V6
+    B4 --> V7
+    B4 --> V8
+```
+
+## 7. Workflow & State Diagrams
+
+### 7.1 Full farm-to-shelf workflow (swimlane view)
+
+This mirrors the original whiteboard process map end to end, with each lane owned by an existing
+or new service.
+
+```mermaid
+flowchart LR
+    subgraph Suppliers["Suppliers"]
+        S1[Farmers]
+        S2[Aggregators]
+        S3[Cooperatives]
+        S4[Companies]
+    end
+    subgraph Receiving["Receiving Bay - sourcing-api + TruLoad"]
+        R1[["Weighbridge<br/>gross and tare"]]
+    end
+    subgraph QAIntake["QA - traceability-api"]
+        Q1{"Grading<br/>verification"}
+    end
+    subgraph StoreGRN["Store - GRN, FIFO - inventory-api"]
+        G1[["Goods received<br/>note"]]
+    end
+    subgraph Processing["Processing - traceability-api process route"]
+        P1[["Dry, sort, mill"]]
+    end
+    subgraph Warehouse["Warehouse System - inventory-api"]
+        W1[["Finished goods<br/>stock"]]
+    end
+    subgraph QARelease["QA - traceability-api"]
+        Q2{"Release<br/>check"}
+    end
+    subgraph Packaging["Packaging - inventory-api"]
+        PK1[["Fill and label"]]
+    end
+    subgraph Dispatch["Dispatch - Store"]
+        D1[["Load out"]]
+    end
+    subgraph Distribution["Distribution - logistics-api"]
+        DI1[["Vehicles,<br/>cold chain"]]
+    end
+    subgraph Customer["Client / Customer"]
+        C1[["Customer<br/>request"]]
+    end
+
+    S1 --> R1
+    S2 --> R1
+    S3 --> R1
+    S4 --> R1
+    R1 --> Q1
+    Q1 -- pass --> G1
+    Q1 -- reject --> S1
+    G1 --> P1
+    P1 --> W1
+    W1 --> Q2
+    Q2 -- pass --> PK1
+    Q2 -- hold --> W1
+    PK1 --> D1
+    D1 --> DI1
+    DI1 --> C1
+    C1 --> D1
+```
+
+### 7.2 Lot disposition state machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Received
+    Received --> Sampled
+    Sampled --> UnderReview
+    UnderReview --> Released
+    UnderReview --> Quarantined
+    Quarantined --> Released
+    Quarantined --> Rejected
+    Released --> [*]
+    Rejected --> [*]
+```
+
+### 7.3 Settlement run state machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> PendingApproval
+    PendingApproval --> Approved
+    PendingApproval --> Rejected
+    Approved --> PayoutInitiated
+    PayoutInitiated --> Paid
+    PayoutInitiated --> Failed
+    Failed --> PayoutInitiated
+    Paid --> [*]
+    Rejected --> [*]
+```
+
+## 8. Deployment & Infrastructure Architecture
 
 ```mermaid
 flowchart TB
@@ -254,7 +412,7 @@ flowchart TB
 | High availability | `replicaCount: 2`, `pdb.minAvailable: 1` per [[ha-min-2-pods-and-pdb]] |
 | Migrations | Ent versioned migrations applied by `entrypoint.sh` before serving; no online-diff auto-migrate |
 
-## 7. Data Ownership Matrix
+## 9. Data Ownership Matrix
 
 The single governing rule: a service that already owns a domain keeps owning it. Neither new
 service stores a second copy of any of the rows below.
@@ -276,7 +434,7 @@ service stores a second copy of any of the rows below.
 | Payroll, casual labour, non-financial approval workflows | `erp-api` | not directly integrated in Phase 1 |
 | Notification delivery + gating registry | `notifications-api` | new `sourcing/*`/`traceability/*` template IDs |
 
-## 8. Security & Multi-Tenancy
+## 10. Security & Multi-Tenancy
 
 - Identity, RBAC and tenant isolation are inherited entirely from `auth-api` - neither new service
   implements its own authentication. Terminal/PIN access (factory-floor receiving-bay and lab
@@ -292,7 +450,7 @@ service stores a second copy of any of the rows below.
   never talks to M-Pesa directly, closing the class of bug where a new service reimplements a
   payment rail with weaker idempotency than the incumbent.
 
-## 9. Reliability & Operations
+## 11. Reliability & Operations
 
 - Both new services publish to and consume from NATS JetStream via a transactional outbox,
   matching the fleet-wide idempotent `QueueSubscribe` pattern from [[project_events_uniformity]].
@@ -302,7 +460,7 @@ service stores a second copy of any of the rows below.
 - Backups follow the tenant-scoped, service-owned pattern already standard across the fleet
   ([[feedback_tenant_scoped_backups]]) - no platform-wide dump exposed through either new UI.
 
-## 10. Phased Implementation Plan
+## 12. Phased Implementation Plan
 
 **Phase 0 - scaffolding.** Stand up `sourcing-api`/`sourcing-ui` and `traceability-api`/
 `traceability-ui` from the `library-api`/`library-ui` template; wire S2S clients to inventory,
@@ -326,7 +484,7 @@ compliance layered on `logistics-api`'s existing temperature fields.
 tenant, migrate that tenant's live data into the new architecture and retire the standalone
 monolith.
 
-## 11. Verification & Testing Strategy
+## 13. Verification & Testing Strategy
 
 - `go build ./... && go vet ./...` and a full `go test ./...` pass per new service, with
   dedicated use-case tests for settlement netting math and multi-output mass-balance
@@ -338,20 +496,20 @@ monolith.
   genealogy and a lab result, release the disposition, run a multi-step multi-output process
   route, confirm co-products land in inventory stock, run a settlement, confirm the treasury
   M-Pesa B2C payout fires, confirm notifications are gated correctly, and confirm this document's
-  two PDFs regenerate cleanly.
+  PDFs regenerate cleanly.
 - A duplication audit: spot-check that neither new service's tables hold anything beyond an ID or
   reference into `inventory-api`/`treasury-api`/`logistics-api`/`auth-api` - never a second copy of
   Supplier, GRN, stock or payment data.
 
-## 12. Appendix - Processa Audit Summary
+## 14. Appendix - Processa Audit Summary
 
 The full Processa codebase audit (backend `Processa.*` modules, frontend React/Vite pages,
 security findings, and domain-correctness findings such as inventory valuation never recording a
 unit cost, double-counted stock on receipt, and production cancellation silently destroying
 inventory) is retained as a separate working document and is the source for the "reuse vs new"
-classification in Section 7 of this architecture.
+classification in Section 9 of this architecture.
 
-## 13. Declarations and Sign-Off
+## 15. Declarations and Sign-Off
 
 <div class="signoff">
   <div class="sig">
