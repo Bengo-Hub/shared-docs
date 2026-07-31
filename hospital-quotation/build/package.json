@@ -1,0 +1,14 @@
+{
+  "name": "hospital-quotation-pdf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build the Codevertex Afya client quotation PDF from markdown (mirrors processa-integration/architecture pipeline)",
+  "scripts": {
+    "build": "node build-pdf.cjs"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "mermaid": "9.4.3",
+    "puppeteer-core": "^24.0.0"
+  }
+}

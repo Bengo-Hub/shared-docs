@@ -1,6 +1,6 @@
 # Cross-Service Data Ownership & User Management
 
-**Last updated:** 2026-06-07 — Retail-POS revamp: loyalty SoT → pos-api (ordering becomes a client); treasury gains AR `CustomerBalance` + AP `VendorBalance` (supplier opening/advance), supplier rebate credit notes, and a `cost_center` dimension; inventory gains a `StockBreakdown` (bulk→unit) op; pos services module gains `RepairJob`. See `/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md`. **Prior:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories with icon field, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking; POS catalog sync handler enriched with full compliance/physical/service fields from inventory events (inventory_item_id FK, item_type, requires_age_verification, barcode, duration_minutes). Use case is per-outlet (not per-tenant) — a single tenant can have outlets with different use cases. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
+**Last updated:** 2026-07-31 — New `hospital-api` service (Codevertex Afya, Sprint-0 scaffold): added as owner of all clinical-workflow entities (Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, specialized-care programme records) — this data currently lives in `pos-api` and will migrate out once hospital-api reaches feature parity (see `hospital-service/hospital-api/docs/integrations.md` § Migration ADR); no migration has happened yet, this is ownership-target documentation only. hospital-api references inventory-api (drug/lot/interaction master) and treasury-api (invoices/quotations/insurance claims, KRA eTIMS transmission opt-in per tenant/service) exactly like pos-api already does, but via `shared/service-client` instead of a hand-rolled HTTP client. **Prior:** 2026-06-07 — Retail-POS revamp: loyalty SoT → pos-api (ordering becomes a client); treasury gains AR `CustomerBalance` + AP `VendorBalance` (supplier opening/advance), supplier rebate credit notes, and a `cost_center` dimension; inventory gains a `StockBreakdown` (bulk→unit) op; pos services module gains `RepairJob`. See `/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md`. **Prior:** March 2026 — Multi-industry revamp (March 25): inventory-api gains hierarchical categories with icon field, compliance fields, custom fields, lot tracking, bundles, suppliers, purchase orders, stock transfers, warranties. pos-api gains KDS, appointments, staff/commission, serial tracking; POS catalog sync handler enriched with full compliance/physical/service fields from inventory events (inventory_item_id FK, item_type, requires_age_verification, barcode, duration_minutes). Use case is per-outlet (not per-tenant) — a single tenant can have outlets with different use cases. logistics-api gains dynamic pricing rules, rider shifts. treasury-api gains split payments, settlements, reconciliation, installments. Tenant schema reduced across all 7 downstream services (March 24). Services store only minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at). Branding, contact info, and subscription data fetched from auth-api Redis cache (cache v0.2.0) with JWT TTL. No data duplication; each service stores only its own data; references via REST, events, or gRPC.
 
 ## Overview
 
@@ -53,6 +53,7 @@ This document is the **canonical** definition of data ownership across Codeverte
 | **Procurement breakdown** | `inventory-api` | **StockBreakdown** (bulk→retail uom-explode; cost carried parent→child) (2026-06-07) | event `inventory.stock.broken_down` |
 | **Repair / job-card** | `pos-api` (services module) | **RepairJob** (intake→diagnosis→parts→settle); parts from inventory, payment via treasury (2026-06-07) | REST, `pos.repair.*` events |
 | **Financial documents** | `treasury-api` | **Invoices, Quotations, proforma, Sales Credit-Notes (eTIMS), AP vendor credit-notes** — pos NEVER duplicates these (2026-06-09) | S2S create from pos context (return→`/s2s/{t}/invoices/{id}/create-credit-note`; cart→quotation) |
+| **Hospital clinical workflow** (Codevertex Afya) | `hospital-api` (new, 2026-07-31, Sprint-0 scaffold) | Patient, PatientVisit, TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom), LabOrder/LabOrderLine, LabTest (tenant-custom), Prescription/PrescriptionLine, ControlledSubstanceLog, Ward/Bed/Admission, Appointment/OPD queue, Referral, specialized-care programme records (ANC/PNC/ART/TB/Immunization/Morgue) | REST/events once implemented; references `inventory_item_id`/`lot_id` (inventory-api) and `invoice_id`/`insurance_claim_id` (treasury-api). Currently owned by `pos-api` pending migration — see Migration ADR in hospital-api's `docs/integrations.md`. |
 
 ### Retail POS Revamp — ownership deltas (2026-06-07)
 Driven by the retail-POS competitive audit (`/.claude/plans/_audit-parts/retail-pos-audit-and-roadmap-2026-06-07.md`). Deltas to the canonical model:
@@ -228,6 +229,39 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 
 ---
 
+### Hospital-Service (hospital-api) — NEW 2026-07-31, Sprint-0 scaffold
+
+**Product:** Codevertex Afya. **Status:** scaffold only — config/logging/db/redis/nats/health/JWKS
+wiring exists (`go build`/`go vet` clean, smoke-tested); no ent schemas or business logic yet, so
+none of the ownership below is actually implemented in a database today. This section documents
+the *target* ownership so Sprint 1+ builds it correctly and so `pos-api`'s existing clinical/pharmacy
+tables (see below) are understood as **migrating out**, not a permanent second home.
+
+**Will own** (once implemented):
+- Patient (MRN, demographics), PatientVisit/Encounter, Referral
+- TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom entries; the default catalogue is global reference data)
+- LabOrder/LabOrderLine, LabTest (tenant-custom entries; the default catalogue is global reference data)
+- Prescription/PrescriptionLine, ControlledSubstanceLog
+- Ward/Bed/Admission, discharge summaries
+- Specialized-care programme records: ANC, PNC, ART, TB, Immunization, Morgue
+
+**Does not own** (references only, exactly like pos-api's existing pattern): drug/item master,
+lot/expiry, drug-interaction rules, controlled-substance schedule, KRA eTIMS item codes
+(`inventory-api`); invoices, quotations, insurance claims/coverage/remittance, payments, eTIMS
+transmission (`treasury-api`, eTIMS opt-in per tenant/service — not mandatory on every encounter);
+tenant/user identity (`auth-api`); `service_tag: hospital` subscription plans (`subscriptions-api`).
+
+**Migration note:** `pos-api` currently owns all of the "will own" entities above (built for
+pharmacy dispensing at a retail till, then organically grew a full OPD/clinical workflow). Per
+`feedback_erp_decisive_removal`-style platform convention (decisive removal, no reference-ID
+shims), these move to hospital-api in full once it reaches feature parity — **not yet executed**.
+See `hospital-service/hospital-api/docs/integrations.md` § "Migration ADR" for the exact file/schema
+list. `pos-api` keeps its standalone "Codevertex Dawa" retail-pharmacy/chemist product (OTC till
+sale, no clinical workflow) — a tenant uses either pos-api Dawa or hospital-api, never both for the
+same outlet.
+
+---
+
 ### Treasury-Service (treasury-api)
 **Owns** (single source of truth for money and tax):
 - Payment intents (now with allow_split), transactions, payment methods
@@ -394,6 +428,7 @@ The following entities belong to a single owner. **No other service may store th
 | Forecasts, forecast data points | **treasury-api** | erp (remove after migration) |
 | Equity transactions, dividend declarations, shareholder reports | **treasury-api** | erp (remove after migration) |
 | Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks | **marketflow-api** | ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only `crm_contact_id` nullable FK) |
+| Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission (clinical workflow) | **hospital-api** (new, target — not yet migrated as of 2026-07-31) | pos-api (remove once hospital-api reaches feature parity — see Migration ADR) |
 
 **Ordering-backend cleanup (target state):**
 - **Remove** (schemas + all associated logic): `proof_of_delivery`, `logistics_events`, `notification_templates`, `notification_events`, `notification_subscriptions`, `payment_intents`, `payments`, `payment_methods`, `refunds`, `treasury_events`.
