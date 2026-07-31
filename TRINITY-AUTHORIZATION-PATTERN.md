@@ -1,6 +1,6 @@
 # Trinity Authorization Pattern
 
-**Last updated:** March 29, 2026 — Subscription enforcement changed to mutations-only across all services (pos-api, treasury-api, projects-api fixed). Frontend 403 discrimination added: subscription 403s show upgrade banners instead of redirecting to login. SubscriptionBanner + SubscriptionGate + useSubscription hook rolled out to all frontends. Platform owner bypass added to subscription middleware.
+**Last updated:** July 31, 2026 — Registered `hospital` (Codevertex Afya) in the Product → Service mapping table. hospital-api is a new Sprint-0 scaffold; Trinity Layer 1 (JWKS auth) is wired, Layer 2 (subscriptions `service_tag: hospital`) and Layer 3 (local RBAC/`auth/me`) are not implemented yet. **Prior:** March 29, 2026 — Subscription enforcement changed to mutations-only across all services (pos-api, treasury-api, projects-api fixed). Frontend 403 discrimination added: subscription 403s show upgrade banners instead of redirecting to login. SubscriptionBanner + SubscriptionGate + useSubscription hook rolled out to all frontends. Platform owner bypass added to subscription middleware.
 
 ## Overview
 
@@ -565,6 +565,7 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 | notifications | notifications-service | (backend only) |
 | auth | auth-service | auth-ui |
 | inventory | inventory-service | inventory-frontend |
+| hospital | hospital-service (Codevertex Afya, Sprint-0 scaffold as of 2026-07-31 — RBAC/subscription gating not yet implemented) | hospital-ui (planned) |
 
 ### Bundle-Based Activation
 

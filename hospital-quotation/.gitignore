@@ -1,0 +1,4 @@
+# generated PDF (regenerate via build-pdf.cjs)
+*.pdf
+node_modules/
+build/output.html

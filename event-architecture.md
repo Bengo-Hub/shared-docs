@@ -1,6 +1,6 @@
 # Codevertex Event Architecture
 
-**Last Updated:** March 25, 2026 — Enriched inventory.item.created/updated event payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). POS catalog sync handler updated to consume full payload including inventory_item_id FK. Previous: Multi-industry revamp with inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due.
+**Last Updated:** July 31, 2026 — Added the `hospital-api` (Codevertex Afya) service event catalog entry (`hospital.>` stream, aggregate_type `hospital`) and its `Consumers by Service` row. hospital-api is a new Sprint-0 scaffold as of this date; the listed subjects are the target contract, not yet published in code. **Previous:** March 25, 2026 — Enriched inventory.item.created/updated event payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). POS catalog sync handler updated to consume full payload including inventory_item_id FK. Prior: Multi-industry revamp with inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due.
 **Status:** Production — All MVP backend services publish and consume events via NATS JetStream with transactional outbox pattern.
 
 ---
@@ -145,6 +145,23 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `pos.appointment.created` | Appointment scheduled | appointment_id, outlet_id, staff_member_id, customer_id, service_items, start_time, end_time |
 | `pos.appointment.completed` | Appointment service completed | appointment_id, outlet_id, staff_member_id, completed_at, total_amount |
 
+### hospital-api (JetStream, stream: `hospital`)
+
+Codevertex Afya hospital management service. Owns clinical-workflow entities (Patient, Visit,
+Triage, Examination, LabOrder, Prescription, Admission, specialized-care programmes) — see
+`hospital-service/hospital-api/docs/architecture.md` for the full data-authority table. As of
+2026-07-31 this service is a Sprint-0 scaffold; the events below are the target contract, not yet
+published in code.
+
+| Subject | Trigger | Key Payload Fields |
+|---------|---------|-------------------|
+| `hospital.patient.created` | Patient registered | patient_id, tenant_id, mrn |
+| `hospital.visit.admitted` | OPD/IPD visit started | patient_visit_id, patient_id, outlet_id, visit_type |
+| `hospital.visit.discharged` | Visit/admission discharged | patient_visit_id, discharged_at |
+| `hospital.lab_order.resulted` | Lab result entered | lab_order_id, patient_visit_id, resulted_at |
+| `hospital.prescription.dispensed` | Prescription dispensed at pharmacy | prescription_id, patient_visit_id, dispensed_by |
+| `hospital.appointment.reminder_due` | Scheduled reminder job fires | appointment_id, patient_id, outlet_id, appointment_at |
+
 ### isp-billing-backend (JetStream, stream: `isp`)
 
 Notifications + messaging-credit billing are centralized in notifications-api; isp-billing only PUBLISHES these domain events (transactional outbox → NATS). notifications-api consumes them and renders `ispbilling/*` templates, gating SMS on the tenant's SMS-credit balance and WhatsApp on an active subscription.
@@ -171,6 +188,7 @@ Notifications + messaging-credit billing are centralized in notifications-api; i
 | Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payment_receipt, payout_completed, settlement_completed, installment_due |
 | Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
 | POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt, kds_ticket_ready, appointment_created, appointment_completed |
+| Hospital (Codevertex Afya) | `hospital` | `hospital.>` | appointment_reminder, lab_result_ready, prescription_ready (planned — Sprint 5+, not yet implemented) |
 | ISP Billing | `isp` | `isp.>` | subscription_credentials (sms+whatsapp; gated on SMS credits / WhatsApp subscription), payment_received, subscription_renewal, subscription_expiring |
 | Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
 | Projects | `projects` | `project.>` | project_milestone_reached |
