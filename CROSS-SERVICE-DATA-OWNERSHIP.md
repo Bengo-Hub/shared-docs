@@ -185,6 +185,8 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 
 **Other services reference**: `inventory_item_id`, `inventory_sku`, `recipe_id`, `reservation_id`, `lot_id`, `supplier_id`, `purchase_order_id`, `transfer_id`, `warranty_id`; catalog and units via inventory-api APIs or sync.
 
+**Reuse note (2026-07-31, Codevertex Afya):** inventory-api's existing `Asset`/`AssetMaintenance` schemas (asset tag, category, location, warranty, maintenance schedule, depreciation fields) are the biomedical-equipment/hospital-asset register for `hospital-api` — surfaced there as "Biomedical Equipment" via `asset_id` reference, not a new asset module. Physical blood-bank units are modeled as a short-shelf-life `InventoryLot`-tracked item category, reusing the same batch/expiry mechanism drugs already use — no bespoke blood inventory system. See `hospital-service/hospital-api/docs/integrations.md` § 1.5-1.6.
+
 ---
 
 ### Ordering-Service (ordering-backend)
@@ -370,6 +372,8 @@ All financial document types (Quotation, Invoice, Proforma Invoice, Credit Note,
 - **RiderShift** — shift management with zone assignment (NEW)
 
 **Other services reference**: `rider_id`, `logistics_task_id`, `pricing_rule_id`, `shift_id`; rider/task data via logistics APIs (e.g. GET /fleet-members, POST /tasks).
+
+**Reuse note (2026-07-31, Codevertex Afya):** ambulance/emergency dispatch for `hospital-api` reuses this service as-is — `task_type` is a free-form string field (no schema change needed to add `ambulance_dispatch` as a value), `FleetMember` is tagged `ambulance` via `specialization_tags`, and `PricingRule`'s existing `rule_type: "distance"` + `distance_tiers` JSON matches Kenya's base-fee-plus-per-km ambulance pricing model. `hospital-api` stores only a reference `logistics_task_id` on its own `AmbulanceBooking` row — no new fleet/dispatch/pricing engine. See `hospital-service/hospital-api/docs/integrations.md` § 2A.
 
 ---
 
