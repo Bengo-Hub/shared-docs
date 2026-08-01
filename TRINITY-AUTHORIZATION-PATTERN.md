@@ -1,6 +1,13 @@
 # Trinity Authorization Pattern
 
-**Last updated:** July 31, 2026 — Registered `hospital` (Codevertex Afya) in the Product → Service mapping table. hospital-api is a new Sprint-0 scaffold; Trinity Layer 1 (JWKS auth) is wired, Layer 2 (subscriptions `service_tag: hospital`) and Layer 3 (local RBAC/`auth/me`) are not implemented yet. **Prior:** March 29, 2026 — Subscription enforcement changed to mutations-only across all services (pos-api, treasury-api, projects-api fixed). Frontend 403 discrimination added: subscription 403s show upgrade banners instead of redirecting to login. SubscriptionBanner + SubscriptionGate + useSubscription hook rolled out to all frontends. Platform owner bypass added to subscription middleware.
+**Last updated:** August 1, 2026 — hospital-api (Codevertex Afya) now implements all three Trinity
+layers: Layer 1 (JWKS auth), Layer 2 (subscriptions `service_tag: hospital` — `AFYA_CLINIC`/
+`AFYA_FACILITY`/`AFYA_HOSPITAL` tiers seeded, mutations-only gate wired, fails open), and Layer 3
+(local RBAC + JIT identity + `GET /api/v1/{tenant}/hospital/auth/me`). Tenant/outlet sync
+(including the self-healing UUID-drift repoint) is also wired. No clinical domain schemas or
+permission-gated domain routes exist yet — that's `hospital-api/docs/migration-pos-pharmacy.md`
+Phase A / Sprint 4, a separate later effort. **Prior:** July 31, 2026 — Registered `hospital`
+(Codevertex Afya) in the Product → Service mapping table as a Sprint-0 scaffold. **Prior:** March 29, 2026 — Subscription enforcement changed to mutations-only across all services (pos-api, treasury-api, projects-api fixed). Frontend 403 discrimination added: subscription 403s show upgrade banners instead of redirecting to login. SubscriptionBanner + SubscriptionGate + useSubscription hook rolled out to all frontends. Platform owner bypass added to subscription middleware.
 
 ## Overview
 
@@ -565,7 +572,7 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 | notifications | notifications-service | (backend only) |
 | auth | auth-service | auth-ui |
 | inventory | inventory-service | inventory-frontend |
-| hospital | hospital-service (Codevertex Afya, Sprint-0 scaffold as of 2026-07-31 — RBAC/subscription gating not yet implemented) | hospital-ui (planned) |
+| hospital | hospital-service (Codevertex Afya — Trinity Layers 1-3 shipped 2026-08-01: JWKS auth, subscription gating, local RBAC/JIT/auth-me; no clinical domain schemas yet, see migration-pos-pharmacy.md) | hospital-ui (live, `afya.codevertexafrica.com`) |
 
 ### Bundle-Based Activation
 
