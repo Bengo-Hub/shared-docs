@@ -1,3 +1,5 @@
+> **Archived (2026-08):** sprint-snapshot, moved out of the main docs nav during the shared-docs consolidation.
+
 # POS QA Remediation Sprint — 2026-07-06
 
 Source: `pos-service/pos-QA-review/POS_QA_Requirements_and_Defects.docx.md` (REQ-001–009 + DEF-001)

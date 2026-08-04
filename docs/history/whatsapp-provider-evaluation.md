@@ -1,3 +1,5 @@
+> **Archived (2026-08):** historical decision record, moved out of the main docs nav during the shared-docs consolidation. Kept for context, not maintained going forward.
+
 # WhatsApp Provider Evaluation — ISP Billing Phase 4 Delivery Consolidation
 
 **Date:** June 2026
