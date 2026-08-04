@@ -1,0 +1,66 @@
+name: Build and Deploy Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'requirements.txt'
+      - 'CHANGELOG.md'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 1.1.0). Defaults to the version in CHANGELOG.md''s latest entry.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git identity for mike
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version
+        id: ver
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            V=$(grep -m1 -oP '^## \[\K[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md || echo "0.0.0")
+            echo "version=$V" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Informational only, doesn't block deploy: known links to sibling service repos
+      # (outside this repo) always warn here — only investigate a warning that points at
+      # a path which should exist inside docs/.
+      - name: Check for new broken links
+        run: mkdocs build --strict
+        continue-on-error: true
+
+      - name: Deploy with mike (versioned, updates 'latest' alias)
+        run: |
+          mike deploy --push --update-aliases "${{ steps.ver.outputs.version }}" latest
+          mike set-default --push latest
