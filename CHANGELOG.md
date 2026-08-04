@@ -2,6 +2,17 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.2.0] — 2026-08-04
+
+Stops the site from publishing the platform's own list of infrastructure weaknesses, and finishes the tone pass started in 1.1.0.
+
+### Removed from the public site
+- The **Gap Analysis & Remediation Plan** page — a compiled list of confirmed infrastructure gaps (no observability stack, plain Kubernetes Secrets, no database/cache HA, duplicated rate-limiting logic) is exactly the kind of thing that shouldn't be handed to a public audience alongside the developer guide. Relocated to `shared-docs/internal/platform-standards/` (unpublished) as the single centralized, fleet-wide gaps tracker, and cross-referenced from the project's own memory system so it stays discoverable internally.
+- Rewrote five Platform Engineering Standards pages (Secrets Management, Observability, Rate Limiting, Connection Pooling & PgBouncer, Caching) to describe how each system works today — genuinely useful for anyone integrating with the platform — without the "here's exactly what's weak about it" framing that belongs in the internal tracker instead. Removed every "known gap" / "tracked gap" pointer from `microservice-architecture.md` and `trinity-authorization-pattern.md`, replacing them with neutral, factual descriptions.
+
+### Changed — tone
+- Full editorial pass on `microservice-architecture.md` (2144 → 1784 lines, ~17% shorter): removed decorative ✅/❌ checkmarks from lists where every item was true by definition, cut a duplicated per-service "Current Stack" block that just repeated an existing table, and fixed a real contradiction — a leftover merge artifact had two consecutive sections claiming Circuit Breaker was both "❌ Not implemented" and "✅ IMPLEMENTED." Checkmarks were kept where they're a genuine mixed pass/fail signal (status tables), not stripped everywhere indiscriminately.
+
 ## [1.1.0] — 2026-08-04
 
 A content-quality and scope pass on the site published as 1.0.0, prompted by publishing it to a public audience for the first time: this version narrows the site to genuinely public-appropriate content, corrects a real cluster of outdated technical claims, and rewrites the parts that read like unedited AI output.

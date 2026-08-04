@@ -2,7 +2,7 @@
 
 **Date**: May 2026 (merged August 2026)  
 **Version**: 1.2  
-**Purpose**: Define a hybrid microservices architecture with seamless service-to-service communication, scalability, performance, and security for all Codevertex services.
+**Purpose**: Define a hybrid microservices architecture with clear service-to-service communication, scalability, performance, and security for all Codevertex services.
 
 > **August 2026 update**: This document absorbed the genuinely unique, still-accurate content from `ARCHITECTURE-RECOMMENDATIONS.md` (Jan 2026) and `Microservice-Architecture-for-POS-Inventory-Orders.md`, both now retired in favor of this single canonical document.
 
@@ -29,7 +29,7 @@
 
 ## Overview
 
-Codevertex uses a **hybrid microservices architecture** that combines multiple communication patterns to optimize for different use cases:
+Codevertex uses a hybrid microservices architecture that combines multiple communication patterns for different use cases:
 
 - **Event-Driven Architecture (EDA)** via NATS JetStream for asynchronous, decoupled communication
 - **REST APIs** for synchronous, request-response operations
@@ -38,13 +38,7 @@ Codevertex uses a **hybrid microservices architecture** that combines multiple c
 - **WebSockets** for real-time bidirectional communication
 - **GraphQL** for flexible frontend data fetching (future)
 
-This architecture ensures:
-- ✅ Zero logic/entity duplication across services
-- ✅ Scalable, high-performance communication
-- ✅ Secure service-to-service interactions
-- ✅ Parallel processing where applicable
-- ✅ Fault tolerance and resilience
-- ✅ Real-time capabilities where needed
+The goal is no duplicated entities across services, authenticated and authorized service-to-service calls, graceful degradation under failure, and real-time updates where they're actually needed rather than everywhere by default.
 
 ---
 
@@ -75,9 +69,9 @@ Distributed tracing, metrics, and structured logging.
 
 ## Production Infrastructure (devops-k8s)
 
-**Status**: ✅ **FULLY OPERATIONAL**
+**Status**: ✅ Operational
 
-Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides shared infrastructure, deployment pipelines, and standardized configurations for all microservices.
+Codevertex uses a centralized DevOps repository (`devops-k8s`) that provides shared infrastructure, deployment pipelines, and standardized configurations for all microservices.
 
 ### Infrastructure Services
 
@@ -138,7 +132,7 @@ RabbitMQ previously ran alongside NATS as the Celery broker for the original Dja
 - Usage: Centralized trace/metric collection
 - Export: All services export traces/metrics to collector
 
-**Metrics/dashboards**: a `ServiceMonitor` Helm template exists so any service can expose Prometheus-scrapeable metrics, but no Prometheus/Grafana instance is currently deployed to consume it — this is a tracked gap, not a running system. See the [Gap Analysis & Remediation Plan](../platform-standards/gap-analysis-and-remediation-plan.md).
+**Metrics/dashboards**: a `ServiceMonitor` Helm template exists so any service can expose Prometheus-scrapeable metrics once a metrics-collection stack is pointed at it. See [Observability](../platform-standards/observability.md) for what's actually running today.
 
 ### API Gateway & Ingress
 
@@ -245,7 +239,7 @@ apps/
 
 ## 1. Event-Driven Architecture (NATS JetStream)
 
-**Status**: ✅ **IMPLEMENTED** (Primary async communication)
+**Status**: ✅ Implemented (primary async communication)
 
 **Technology**: NATS JetStream
 
@@ -281,7 +275,7 @@ apps/
 **Outbox Pattern** (Recommended for reliability):
 1. Store event in database (same transaction as domain operation)
 2. Background worker publishes from outbox table to NATS
-3. Ensures guaranteed delivery even if NATS is temporarily unavailable
+3. Delivery survives even if NATS is temporarily unavailable
 
 **Direct Publish** (For non-critical events):
 - Direct NATS publish without persistence
@@ -314,61 +308,42 @@ This complements the general `{service_name}.{entity}.{action}` subject pattern 
 
 ### Gaps
 
-- ⚠️ Outbox pattern partially implemented (subscription, notifications, logistics, projects, IoT ✅; ordering, treasury, auth ⚠️)
-- ❌ No event schema registry
-- ❌ No event versioning strategy
-- ⚠️ Dead-letter queue handling (implemented in shared-events library, needs configuration per service)
+- Outbox pattern is only partially rolled out (implemented for subscription, notifications, logistics, projects, IoT; still partial for ordering, treasury, auth)
+- No event schema registry
+- No event versioning strategy
+- Dead-letter queue handling exists in the shared-events library but needs per-service configuration
 
 ### Recommendations
 
-1. **Standardize Outbox Pattern**: All services should implement outbox for critical events
-2. **Event Schema Registry**: Use JSON Schema or Protobuf for event contracts
-3. **Event Versioning**: Support event versioning (e.g., `auth.user.created.v1`, `auth.user.created.v2`)
-4. **Dead Letter Queue**: Configure DLQ for failed event processing
+1. Standardize the outbox pattern for all critical events, across every service
+2. Adopt JSON Schema or Protobuf for event contracts (schema registry)
+3. Support event versioning (e.g., `auth.user.created.v1`, `auth.user.created.v2`)
+4. Configure DLQ handling for failed event processing
 
 ---
 
 ## 2. REST API (Synchronous)
 
-**Status**: ✅ **IMPLEMENTED** (Standard HTTP calls)
+**Status**: ✅ Implemented (standard HTTP calls)
 
 **Technology**: HTTP/REST with Chi Router (Go) or Gin (Go)
 
-**Use For**:
-- Real-time data retrieval
-- Immediate operations requiring response
-- Query operations
-- CRUD operations
+**Use For**: real-time data retrieval, immediate operations requiring a response, query operations, CRUD operations.
 
 ### Current Implementation
 
-**Service URLs** (Hardcoded via environment variables):
-```go
-// Each service configures other service URLs
-type Config struct {
-    AuthServiceURL      string `envconfig:"AUTH_SERVICE_URL"`
-    TreasuryServiceURL  string `envconfig:"TREASURY_SERVICE_URL"`
-    NotificationsURL    string `envconfig:"NOTIFICATIONS_SERVICE_URL"`
-}
-```
-
-**Direct HTTP Calls** (No abstraction):
-```go
-resp, err := http.Get(fmt.Sprintf("%s/api/v1/users/%s", cfg.AuthServiceURL, userID))
-```
-
-### Current Implementation
-
-**Service URLs** (Kubernetes DNS for internal, HTTPS for external):
+Services address each other via Kubernetes DNS internally and HTTPS externally:
 - Internal: `http://{service}.{namespace}.svc.cluster.local:{port}`
 - External: `https://{domain}.codevertexafrica.com`
 
-**Shared HTTP Client** (`shared-service-client`):
-- ✅ Circuit breaker (gobreaker) - Opens after 5 consecutive failures
-- ✅ Retry with exponential backoff - 100ms to 5s, max 30s
-- ✅ Distributed tracing (OpenTelemetry)
-- ✅ Structured logging (Zap)
-- ✅ Configurable timeouts (default 10s)
+Config is env-var driven per service — each service holds the URLs of the services it calls (e.g. `AUTH_SERVICE_URL`, `TREASURY_SERVICE_URL`).
+
+Calls go through the shared HTTP client (`shared-service-client`), which adds:
+- Circuit breaker (gobreaker) — opens after 5 consecutive failures
+- Retry with exponential backoff — 100ms to 5s, max 30s
+- Distributed tracing (OpenTelemetry)
+- Structured logging (Zap)
+- Configurable timeouts (default 10s)
 
 **Usage**:
 ```go
@@ -382,14 +357,13 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ### Gaps
 
-- ✅ All services migrated to use shared HTTP client (logistics, subscription completed)
-- ✅ Service discovery using Kubernetes DNS (fully operational)
+None outstanding — all services have migrated to the shared HTTP client, and Kubernetes DNS-based service discovery is fully in place.
 
 ---
 
 ## 3. gRPC/ConnectRPC (High-Throughput)
 
-**Status**: ⚠️ **PLANNED** (Not yet implemented)
+**Status**: ⚠️ Planned (not yet implemented)
 
 **Technology**: ConnectRPC (modern gRPC alternative)
 
@@ -410,11 +384,10 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ### Implementation Plan
 
-**Implementation Plan**:
 - Use Protocol Buffers (`.proto`) for service definitions
-- ConnectRPC for gRPC implementation
+- ConnectRPC for the gRPC implementation
 - Start with subscription-service for feature checks
-- Implement in treasury-service for bulk payments
+- Follow with treasury-service for bulk payments
 
 ### Services to Implement gRPC
 
@@ -433,47 +406,30 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ## 4. Webhooks (Callbacks)
 
-**Status**: ⚠️ **PARTIALLY IMPLEMENTED**
+**Status**: ⚠️ Partially implemented
 
 **Technology**: HTTP POST with HMAC signature verification
 
-**Use For**:
-- External service callbacks (payment providers, SendGrid, Twilio)
-- Internal service-to-service callbacks (payment confirmations, delivery updates)
+**Use For**: external service callbacks (payment providers, SendGrid, Twilio), and internal service-to-service callbacks (payment confirmations, delivery updates).
 
 ### Current Implementation
 
-**External Webhooks** (Implemented):
-- ✅ Treasury service: M-Pesa callbacks, Stripe webhooks
-- ✅ Notifications service: SendGrid, Twilio delivery callbacks (planned)
+**External** (implemented): treasury-service handles M-Pesa and Stripe webhooks, with HMAC signature verification and retry logic on event processing. Notifications-service has SendGrid/Twilio delivery callbacks planned.
 
-**Internal Webhooks** (Partial):
-- ✅ Auth-service: Tenant/user discovery webhooks (to be implemented)
-- ❌ Other services: No standardized internal webhook infrastructure
-
-**External Webhooks** (Implemented):
-- HMAC signature verification for security
-- M-Pesa and Stripe callback handlers in treasury-service
-- Webhook event processing with retry logic
-
-**Internal Webhooks** (Planned):
-- Webhook registration API for service-to-service callbacks
-- Event-driven webhook delivery with HMAC signing
-- Retry mechanism with exponential backoff for failed deliveries
-- Webhook management API (register/unregister/list)
+**Internal** (planned, not built): auth-service has tenant/user discovery webhooks on the roadmap; no other service has internal webhook infrastructure yet. The planned design is a webhook registration API, event-driven delivery with HMAC signing, and exponential-backoff retries for failed deliveries.
 
 ### Gaps
 
-- ❌ No internal webhook registration infrastructure
-- ❌ No webhook retry mechanism (for internal)
-- ❌ No webhook delivery status tracking
-- ❌ No webhook management UI/API
+- No internal webhook registration infrastructure
+- No internal webhook retry mechanism
+- No webhook delivery status tracking
+- No webhook management UI/API
 
 ---
 
 ## 5. WebSockets (Real-Time)
 
-**Status**: ⚠️ **PLANNED** (Not yet implemented)
+**Status**: ⚠️ Planned (not yet implemented)
 
 **Technology**: WebSocket (WS/WSS) with gorilla/websocket or nhooyr.io/websocket
 
@@ -500,9 +456,8 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ### Implementation Plan
 
-**Implementation Plan**:
 - WebSocket handler upgrades HTTP connections
-- Redis pub/sub for broadcasting updates to connected clients
+- Redis pub/sub broadcasts updates to connected clients
 - Real-time location and status updates for delivery tracking
 
 ### Services to Implement WebSockets
@@ -520,7 +475,7 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ## 6. GraphQL (Flexible Queries)
 
-**Status**: ⚠️ **FUTURE** (Not yet planned)
+**Status**: ⚠️ Future (not yet planned)
 
 **Technology**: GraphQL with gqlgen or graphql-go
 
@@ -537,7 +492,6 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ### Implementation (Future)
 
-**Future Implementation**:
 - GraphQL schema for flexible frontend queries
 - Resolvers aggregate data from multiple services
 - Complex nested queries with filters
@@ -546,7 +500,7 @@ resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
 
 ## Service Discovery
 
-**Status**: ✅ **IMPLEMENTED** (Kubernetes DNS-based)
+**Status**: ✅ Implemented (Kubernetes DNS-based)
 
 ### Production Implementation
 
@@ -633,11 +587,11 @@ env:
 
 ### Benefits
 
-- ✅ **Zero Configuration**: Kubernetes DNS automatically resolves service names
-- ✅ **Load Balancing**: Kubernetes Service provides built-in load balancing
-- ✅ **Health Checks**: Service endpoints automatically exclude unhealthy pods
-- ✅ **Multi-Namespace**: Logical separation via namespaces
-- ✅ **No Service Registry Required**: Kubernetes DNS is the registry
+- **Zero configuration**: Kubernetes DNS resolves service names automatically
+- **Load balancing**: built into the Kubernetes Service
+- **Health checks**: unhealthy pods are excluded from service endpoints automatically
+- **Multi-namespace**: logical separation via namespaces
+- **No service registry needed**: Kubernetes DNS is the registry
 
 ### Future Enhancements
 
@@ -665,38 +619,15 @@ env:
 
 ### Communication Pattern Decision Tree
 
-**When to Use REST API**:
-- ✅ Synchronous operations requiring immediate response
-- ✅ CRUD operations
-- ✅ Query operations
-- ✅ External-facing APIs
-- ✅ Frontend-to-backend communication
+**REST API**: synchronous operations requiring an immediate response, CRUD, queries, external-facing APIs, frontend-to-backend communication.
 
-**When to Use NATS JetStream (Events)**:
-- ✅ Asynchronous notifications
-- ✅ User/tenant synchronization
-- ✅ Status updates
-- ✅ Audit logging
-- ✅ Event sourcing
-- ✅ Non-blocking operations
+**NATS JetStream (Events)**: asynchronous notifications, user/tenant synchronization, status updates, audit logging, event sourcing, non-blocking operations.
 
-**When to Use gRPC**:
-- ✅ High-throughput internal service calls
-- ✅ Bulk operations
-- ✅ Streaming data
-- ✅ Service-to-service RPCs (future)
-- ✅ Micro-batching scenarios
+**gRPC**: high-throughput internal service calls, bulk operations, streaming data, service-to-service RPCs (future), micro-batching scenarios.
 
-**When to Use WebSockets**:
-- ✅ Real-time tracking (delivery, order status)
-- ✅ Live notifications
-- ✅ Collaborative features
-- ✅ Bidirectional communication required
+**WebSockets**: real-time tracking (delivery, order status), live notifications, collaborative features, anything needing bidirectional communication.
 
-**When to Use Webhooks**:
-- ✅ External service callbacks (payment providers)
-- ✅ Internal service-to-service callbacks
-- ✅ Event delivery to external systems
+**Webhooks**: external service callbacks (payment providers), internal service-to-service callbacks, event delivery to external systems.
 
 ### Service Communication Examples
 
@@ -799,19 +730,13 @@ For recipe-based items (bakery, café), inventory-service also supports **backfl
 
 ### Current Shared Libraries
 
-#### 1. **shared-auth-client** ✅
+#### 1. shared-auth-client
 
 **Purpose**: JWT validation and authentication for all services
 
 **Repository**: `github.com/Bengo-Hub/shared-auth-client`
 
-**Features**:
-- JWKS fetching and caching
-- RS256 signature validation
-- Issuer and audience validation
-- HTTP middleware for Chi and Gin routers
-- API key fallback support
-- Redis session caching
+**Features**: JWKS fetching and caching, RS256 signature validation, issuer/audience validation, HTTP middleware for Chi and Gin routers, API key fallback support, Redis session caching.
 
 **Usage**:
 ```go
@@ -826,7 +751,7 @@ router.Use(authclient.GinMiddleware(authMiddleware))
 
 ### Frontend Shared Libraries (NPM)
 
-#### **@bengo-hub/shared-ui-lib** v0.1.5 ✅
+#### @bengo-hub/shared-ui-lib v0.1.5
 
 **Package**: `@bengo-hub/shared-ui-lib`  
 **Repository**: `github.com/Bengo-Hub/shared-ui-lib`  
@@ -844,7 +769,7 @@ router.Use(authclient.GinMiddleware(authMiddleware))
 "@bengo-hub/shared-ui-lib": "github:Bengo-Hub/shared-ui-lib#v0.1.5"
 ```
 
-#### **@bengo-hub/maps** v0.2.6 ✅
+#### @bengo-hub/maps v0.2.6
 
 **Package**: `@bengo-hub/maps`  
 **Repository**: `github.com/Bengo-Hub/maps`  
@@ -852,65 +777,26 @@ router.Use(authclient.GinMiddleware(authMiddleware))
 
 ---
 
-### Recommended Shared Libraries (To Be Created)
+### Additional Shared Libraries
 
-#### 2. **shared-service-client** ✅ **IMPLEMENTED**
+#### 2. shared-service-client — Implemented
 
-**Purpose**: Standardized HTTP client for service-to-service communication
+**Purpose**: standardized HTTP client for service-to-service communication (circuit breaker, retry, tracing, logging — see [REST API](#2-rest-api-synchronous) above for the full feature list).
 
 **Repository**: `github.com/Bengo-Hub/shared-service-client`
 
-**Features**:
-- ✅ Circuit breaker (gobreaker) - Prevents cascading failures
-- ✅ Retry with exponential backoff - Automatic retries for transient failures
-- ✅ Distributed tracing (OpenTelemetry) - Request tracing integration
-- ✅ Structured logging (Zap) - Request/response logging
-- ✅ Timeout configuration - Configurable per service
-- ✅ Service discovery ready - Works with Kubernetes DNS
+**Services using**: logistics-service, subscription-service; remaining services can migrate incrementally.
 
-**Usage**:
-```go
-import serviceclient "github.com/Bengo-Hub/shared-service-client"
+#### 3. shared-events — Implemented
 
-cfg := serviceclient.DefaultConfig(
-    "http://auth-api.auth.svc.cluster.local:4101",
-    "auth-service",
-    logger,
-)
-client := serviceclient.New(cfg)
-resp, err := client.Get(ctx, "/api/v1/users/"+userID, nil)
-```
-
-**Services Using**: ✅ **COMPLETED** (logistics-service, subscription-service; remaining services can migrate incrementally)
-
-#### 3. **shared-events** ✅ **IMPLEMENTED**
-
-**Purpose**: Standardized event publishing/consuming with outbox pattern
+**Purpose**: standardized event publishing/consuming with the outbox pattern (schema validation, versioning, dead-letter handling, idempotency, NATS JetStream integration, background publisher worker). See [Transactional Outbox Pattern](#transactional-outbox-pattern) below for how the outbox mechanics and event envelope work.
 
 **Repository**: `github.com/Bengo-Hub/shared-events`
 
-**Features**:
-- ✅ Outbox pattern implementation
-- ✅ Event schema validation
-- ✅ Event versioning
-- ✅ Dead-letter queue handling
-- ✅ Idempotency
-- ✅ NATS JetStream integration
-- ✅ Background publisher worker
+**Services using**: subscription, notifications, logistics, projects, IoT.
 
-**Services Using**: ✅ **COMPLETED** (subscription, notifications, logistics, projects, IoT services)
-
-**Implementation**:
 ```go
 // shared/events/publisher.go
-package events
-
-type Publisher struct {
-    js     nats.JetStreamContext
-    db     *sql.DB
-    logger *zap.Logger
-}
-
 func (p *Publisher) PublishWithOutbox(ctx context.Context, event Event) error {
     // Store in outbox table (same transaction as domain event)
     // Background worker publishes from outbox
@@ -924,56 +810,19 @@ publisher.PublishWithOutbox(ctx, &UserCreatedEvent{
 })
 ```
 
-**Why Needed**: Ensure reliable event delivery across all services
+#### 4. shared-observability — To be implemented
 
-#### 4. **shared-observability** ⚠️ (To Be Implemented)
+Standardized logging, tracing, and metrics: structured logging (Zap) with request ID propagation, OpenTelemetry tracing, Prometheus metrics helpers, context propagation. Needed for consistent observability across services once built.
 
-**Purpose**: Standardized logging, tracing, and metrics
+#### 5. shared-config — To be implemented
 
-**Features**:
-- Structured logging (Zap) with request ID propagation
-- OpenTelemetry tracing
-- Prometheus metrics helpers
-- Context propagation
-
-**Implementation**:
-```go
-// shared/observability/logger.go
-package observability
-
-func NewLogger(serviceName string) *zap.Logger {
-    // Standardized logger with request ID, tenant ID
-}
-
-// shared/observability/tracer.go
-func NewTracer(serviceName string) trace.Tracer {
-    // OpenTelemetry tracer with service name
-}
-
-// Usage
-logger := observability.NewLogger("subscription-service")
-tracer := observability.NewTracer("subscription-service")
-```
-
-**Why Needed**: Consistent observability across all services
-
-#### 5. **shared-config** ⚠️ (To Be Implemented)
-
-**Purpose**: Standardized configuration loading and validation
-
-**Features**:
-- Environment variable parsing (envconfig)
-- Configuration validation
-- Default values
-- Secret management integration
-
-**Why Needed**: Reduce boilerplate, ensure consistency
+Standardized configuration loading and validation: env var parsing (envconfig), validation, default values, secret management integration. Needed to cut config boilerplate across services.
 
 ### Library Adoption Strategy
 
 **Phase 1** (Q1 2026):
-1. ✅ Create `shared-service-client` with circuit breaker and retry - **COMPLETED**
-2. ⚠️ Migrate all services to use shared HTTP client - **IN PROGRESS**
+1. Create `shared-service-client` with circuit breaker and retry — done
+2. Migrate all services to the shared HTTP client — in progress
 
 **Phase 2** (Q2 2026):
 1. Create `shared-events` with outbox pattern
@@ -988,199 +837,55 @@ tracer := observability.NewTracer("subscription-service")
 
 ## Service-Specific Technology Recommendations
 
-### Detailed Technology Stack by Service
+The [service/use-case table](#technology-selection-by-service-and-use-case) above covers the current stack per service. Below are the services where the technology choice needs more explanation, plus concrete usage patterns for planned upgrades.
 
-#### 1. **auth-service**
+#### auth-service
 
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream
-- **Database**: PostgreSQL
-- **Cache**: Redis
-- **Authentication**: JWT (self-issued)
+REST for JWT validation follows the standard OAuth2/OIDC pattern. NATS publishes user/tenant events to multiple subscribers. PostgreSQL holds user/tenant/role data (needs ACID guarantees). Redis caches JWKS and sessions for high-frequency reads.
 
-**Why This Stack?**:
-- ✅ REST for JWT validation endpoints (standard OAuth2/OIDC pattern)
-- ✅ NATS for publishing user/tenant events (multiple subscribers)
-- ✅ PostgreSQL for user/tenant/role data (ACID compliance required)
-- ✅ Redis for JWKS caching and session storage (high-frequency reads)
+Future: gRPC for high-throughput user lookups if the need arises, and internal webhook endpoints for tenant/user discovery.
 
-**Future Enhancements**:
-- ⚠️ gRPC for high-throughput user lookups (if needed)
-- ⚠️ Webhook endpoints for tenant/user discovery (internal)
+#### subscription-service
 
----
+Planned: gRPC for feature checks, which every service calls on every request — lower latency and less overhead than REST at that volume (target: <10ms cached, <50ms uncached).
 
-#### 2. **subscription-service**
-
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream (with outbox pattern)
-- **Database**: PostgreSQL
-- **Cache**: Redis
-
-**Recommended Enhancements**:
-- ⚠️ **gRPC** for feature checks (high-frequency calls from all services)
-- ⚠️ **GraphQL** for admin dashboards (complex plan/feature queries)
-
-**Why gRPC?**:
-- Feature checks called by ALL services on every request
-- Lower latency than REST (binary protocol)
-- Better suited for high-throughput scenarios
-- Reduced overhead for simple request-response
-
-**Usage Pattern**:
 ```
 Every Service → subscription-service (gRPC)
   CheckFeature(tenant_id, feature_code) → {enabled: true, limit: 5}
-  Response time: < 10ms (cached), < 50ms (uncached)
 ```
 
----
+Also planned: GraphQL for admin dashboards that need complex plan/feature queries.
 
-#### 3. **notifications-service**
+#### notifications-service
 
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream
-- **Database**: PostgreSQL
-- **Cache**: Redis
+Planned: gRPC for bulk notification campaigns — streaming support for large batches, target throughput 10,000+ notifications/second — and optionally WebSocket for live delivery status.
 
-**Recommended Enhancements**:
-- ⚠️ **gRPC** for bulk notifications (campaigns, batch sends)
-- ⚠️ **WebSocket** for live notification delivery (optional)
-
-**Why gRPC?**:
-- Bulk notification campaigns require high throughput
-- Streaming support for large batches
-- Lower latency for batch operations
-
-**Usage Pattern**:
 ```
 Campaign Service → notifications-service (gRPC)
   SendBulk(notifications: [Notification]) → Stream<Result>
-  Throughput: 10,000+ notifications/second
 ```
 
----
+#### treasury-service
 
-#### 4. **treasury-service**
+Planned: gRPC for bulk settlement and payment processing, where batch throughput matters more than per-call latency. Webhooks are already live for M-Pesa and Stripe.
 
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream (with outbox pattern)
-- **Database**: PostgreSQL
-- **Cache**: Redis
-- **Storage**: MinIO (S3-compatible)
+#### logistics-service
 
-**Recommended Enhancements**:
-- ⚠️ **gRPC** for bulk payment processing and settlements
-- ✅ **Webhooks** (already implemented for M-Pesa, Stripe)
+WebSocket is the priority here — real-time delivery tracking is core to the product, and polling can't match it for latency or UX (rider → service → customer needs to be bidirectional). PostGIS handles geo-spatial queries (nearest rider, route optimization) natively inside PostgreSQL.
 
-**Why gRPC?**:
-- Bulk settlement processing requires high throughput
-- Batch payment operations
-- Lower latency for financial operations
-
----
-
-#### 5. **logistics-service**
-
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream
-- **Database**: PostgreSQL with PostGIS
-- **Cache**: Redis
-
-**Recommended Enhancements**:
-- ⚠️ **WebSocket** for real-time task tracking (critical)
-- ⚠️ **gRPC** for streaming location updates
-
-**Why WebSocket?**:
-- Real-time delivery tracking is core feature
-- Customers need live location updates
-- Lower latency than polling
-- Bidirectional communication (rider → service → customer)
-
-**Why PostGIS?**:
-- Geo-spatial queries (nearest rider, route optimization)
-- Native PostgreSQL extension for location data
-
-**Usage Pattern**:
 ```
 Frontend → logistics-service (WebSocket)
   Connect: ws://logistics-service/ws/task/{task_id}
   Receive: {location: {lat, lng}, status: "en_route", eta: "5min"}
 ```
 
----
+#### ordering-service
 
-#### 6. **ordering-service**
+Planned: WebSocket for live order status and ETA updates (better UX than polling), and GraphQL for menu queries with filters (category, dietary, availability) to avoid over-fetching on the frontend.
 
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream
-- **Database**: PostgreSQL
-- **Cache**: Redis
+#### inventory-service, pos-service, erp-service
 
-**Recommended Enhancements**:
-- ⚠️ **WebSocket** for live order status updates
-- ⚠️ **GraphQL** for complex menu queries (frontend)
-
-**Why WebSocket?**:
-- Customers need live order status updates
-- Real-time ETA updates from logistics-service
-- Better UX than polling
-
-**Why GraphQL?**:
-- Complex menu queries with filters (category, dietary, availability)
-- Frontend needs flexible data fetching
-- Reduce over-fetching of menu data
-
----
-
-#### 7. **inventory-service**
-
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream
-- **Database**: PostgreSQL
-- **Cache**: Redis
-
-**Why REST Only?**:
-- Stock queries are simple CRUD operations
-- No need for real-time updates (event-driven via NATS)
-- REST is sufficient for inventory management
-
-**Future Consideration**:
-- GraphQL if complex inventory queries needed (aggregations, multi-warehouse views)
-
----
-
-#### 8. **pos-service**
-
-**Current Stack**:
-- **Protocol**: REST (HTTP)
-- **Message Broker**: NATS JetStream
-- **Database**: PostgreSQL
-- **Cache**: Redis
-
-**Why REST Only?**:
-- Point-of-sale operations are straightforward CRUD
-- Low-latency requirements met by REST
-- Event-driven integration via NATS for order sync
-
----
-
-#### 9. **erp-service**
-
-**Current stack**:
-- **Protocol**: REST (HTTP)
-- **Async events**: NATS JetStream
-- **Database**: PostgreSQL
-- **Cache**: Redis
-
-ERP started life as a Django application using RabbitMQ/Celery for background work. It was later rebuilt on Go, and now follows the exact same pattern as the rest of the backend fleet — REST for synchronous calls, NATS JetStream for async events, Ent + Atlas for schema/migrations.
+REST + NATS is sufficient for all three — stock queries and POS operations are simple CRUD with no real-time requirement, and NATS already covers the event-driven side (stock updates, order sync). erp-service was rebuilt from its original Django/RabbitMQ/Celery implementation onto the same Go + REST + NATS + Ent/Atlas pattern as the rest of the fleet. inventory-service may add GraphQL later if aggregation or multi-warehouse queries get complex enough to justify it.
 
 ---
 
@@ -1199,7 +904,7 @@ ERP started life as a Django application using RabbitMQ/Celery for background wo
 
 ## Data Sharing & Ownership
 
-**Status**: ✅ **WELL DEFINED**
+**Status**: ✅ Well defined
 
 ### Principles
 
@@ -1284,7 +989,7 @@ All transactional and inventory entities carry both `tenant_id` and `outlet_id`;
 
 ## Security & Authentication
 
-**Status**: ✅ **IMPLEMENTED** (Via shared-auth-client)
+**Status**: ✅ Implemented (via shared-auth-client)
 
 ### Dual Authentication Support (JWT + API Key)
 
@@ -1326,18 +1031,9 @@ All Codevertex microservices MUST support **dual authentication** - accepting ei
 
 ### Current Implementation
 
-**JWT Validation** (Shared Library):
-- ✅ `shared/auth-client` library for all services
-- ✅ JWKS caching with auto-refresh (1 hour TTL, 5 min refresh)
-- ✅ RS256 signature validation
-- ✅ Issuer and audience validation
-- ✅ Redis session caching (5 min TTL)
+**JWT validation** (`shared/auth-client`, used by all services): JWKS caching with auto-refresh (1 hour TTL, 5 min refresh), RS256 signature validation, issuer/audience validation, Redis session caching (5 min TTL).
 
-**API Key Validation** (Shared Library):
-- ✅ API key authentication via auth-service `/api/v1/admin/api-keys/validate`
-- ✅ Service accounts for automated operations
-- ✅ Scoped permissions per API key
-- ✅ Response caching (5 min TTL)
+**API key validation**: authenticated via auth-service `/api/v1/admin/api-keys/validate`, service accounts for automated operations, scoped permissions per key, response caching (5 min TTL).
 
 **Middleware Integration** (AuthMiddleware):
 ```go
@@ -1545,9 +1241,9 @@ func authorizeOrderAccess(ctx context.Context, orderID string) error {
 
 ### Gaps
 
-- ❌ No mTLS for service-to-service communication
-- ❌ No request signing for internal APIs
-- ❌ No rate limiting for service-to-service calls
+- No mTLS for service-to-service communication
+- No request signing for internal APIs
+- No rate limiting for service-to-service calls
 
 ### Future Enhancements
 
@@ -1559,46 +1255,33 @@ func authorizeOrderAccess(ctx context.Context, orderID string) error {
 
 ## Reliability & Resilience
 
-**Status**: ⚠️ **PARTIAL** (Some patterns implemented)
+**Status**: ⚠️ Partial (some patterns implemented)
 
 ### Patterns
 
 #### 1. Circuit Breaker
 
-**Status**: ❌ Not implemented
-
-#### 1. Circuit Breaker
-
-**Status**: ✅ **IMPLEMENTED** (via `shared-service-client`)
-- Opens after 5 consecutive failures
-- 30-second timeout before attempting to close
-- Prevents cascading failures
+**Status**: ✅ Implemented (via `shared-service-client`) — opens after 5 consecutive failures, 30-second timeout before attempting to close, prevents cascading failures.
 
 #### 2. Retry with Backoff
 
-**Status**: ✅ **IMPLEMENTED** (via `shared-service-client`)
-- Exponential backoff: 100ms to 5s
-- Maximum retry time: 30 seconds
-- Retries on network errors and HTTP 5xx/429
+**Status**: ✅ Implemented (via `shared-service-client`) — exponential backoff from 100ms to 5s, 30-second max retry time, retries on network errors and HTTP 5xx/429.
 
 #### 3. Timeout Configuration
 
-**Status**: ✅ **STANDARDIZED** (via `shared-service-client`)
-- Default HTTP client timeout: 10 seconds
-- Configurable per service
-- Context-aware timeouts
+**Status**: ✅ Standardized (via `shared-service-client`) — default HTTP client timeout 10 seconds, configurable per service, context-aware.
 
 #### 4. Graceful Degradation
 
-**Status**: ⚠️ **PARTIAL** - Services should implement fallbacks for critical dependencies
+**Status**: ⚠️ Partial — services should implement fallbacks for critical dependencies.
 
 #### 5. Health Checks
 
-**Status**: ✅ **IMPLEMENTED** - All services have `/healthz` endpoints
+**Status**: ✅ Implemented — all services have `/healthz` endpoints.
 
 #### 6. Offline-First Resilience (pos-service)
 
-**Status**: ⚠️ **Design pattern** (verify current implementation status per deployment)
+**Status**: ⚠️ Design pattern (verify current implementation status per deployment)
 
 Physical retail/hospitality locations can lose connectivity mid-shift, so pos-service is designed around an offline-first model rather than assuming the backend is always reachable:
 
@@ -1610,7 +1293,7 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 
 ## Observability
 
-**Status**: ⚠️ **PARTIAL** (Logging implemented, tracing/metrics partial)
+**Status**: ⚠️ Partial (logging implemented, tracing/metrics partial)
 
 ### Current State
 
@@ -1641,6 +1324,7 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 - **Shared service-client library** (`shared-service-client`) - Circuit breaker, retry, tracing
 - **Shared events library** (`shared-events`) - Transactional outbox pattern
 - **Shared password-hasher library** (`shared-password-hasher`) - Argon2id hashing
+- **Shared middleware library** (`httpware` v0.4.1) - RequestID, Tenant, Logging, Recover, CORS
 - **Service Discovery** via Kubernetes DNS
 - **Redis** for caching and sessions
 - **PostgreSQL** per-service databases
@@ -1705,7 +1389,6 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 - **gRPC/ConnectRPC**: Planned Q2 2026 (subscription, treasury, notifications)
 - **WebSockets**: Planned Q2 2026 (logistics, ordering)
 - **GraphQL**: Future consideration
-- **Shared middleware library**: ✅ Completed (httpware v0.1.1, Jan 2026)
 - **Shared config library**: Planned Q2 2026
 - **Shared observability library**: Planned Q2 2026
 - **mTLS**: Not implemented (rely on Kubernetes network policies)
@@ -1715,44 +1398,44 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 
 ## Migration Roadmap
 
-### Phase 1: Foundation (Q1–Q2 2026) - ✅ **COMPLETED**
+### Phase 1: Foundation (Q1–Q2 2026) - Completed
 
-**Shared Libraries (all services fully updated — May 2026):**
-- ✅ `shared-auth-client` **v0.6.1** — JWT validation, JWKS caching, subscription claims, RBAC helpers, feature gating middleware
-- ✅ `shared-service-client` v0.2.0 — Circuit breaker, retry, tracing
-- ✅ `shared-events` v0.2.0 — Transactional outbox pattern
-- ✅ `shared-password-hasher` v0.1.1 — Argon2id password hashing
-- ✅ `httpware` **v0.4.1** — HTTP middleware (RequestID, Tenant, Logging, Recover, CORS)
-- ✅ `@bengo-hub/shared-ui-lib` **v0.1.5** — TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal
-- ✅ `@bengo-hub/maps` v0.2.6 — MapLibre-based map components
+**Shared libraries (all services fully updated — May 2026):**
+- `shared-auth-client` v0.6.1 — JWT validation, JWKS caching, subscription claims, RBAC helpers, feature gating middleware
+- `shared-service-client` v0.2.0 — Circuit breaker, retry, tracing
+- `shared-events` v0.2.0 — Transactional outbox pattern
+- `shared-password-hasher` v0.1.1 — Argon2id password hashing
+- `httpware` v0.4.1 — HTTP middleware (RequestID, Tenant, Logging, Recover, CORS)
+- `@bengo-hub/shared-ui-lib` v0.1.5 — TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal
+- `@bengo-hub/maps` v0.2.6 — MapLibre-based map components
 
-**Outbox Pattern Migration (✅ COMPLETED):**
-- [x] Add outbox to inventory-service ✅
-- [x] Add outbox to pos-service ✅
-- [x] Add outbox to ordering-service ✅
-- [x] Integrate background publisher worker in all services ✅
-- [x] Replace direct NATS publish with PublishWithOutbox ✅
+**Outbox pattern migration — completed:**
+- [x] Add outbox to inventory-service
+- [x] Add outbox to pos-service
+- [x] Add outbox to ordering-service
+- [x] Integrate background publisher worker in all services
+- [x] Replace direct NATS publish with PublishWithOutbox
 
-**Circuit Breaker Migration (✅ COMPLETED):**
-- [x] Migrate ordering-service to shared-service-client ✅
-- [x] Migrate inventory-service to shared-service-client ✅
+**Circuit breaker migration — completed:**
+- [x] Migrate ordering-service to shared-service-client
+- [x] Migrate inventory-service to shared-service-client
 - [ ] Migrate pos-service to shared-service-client
 
-**Auth-Client v0.2.0 Upgrade (✅ COMPLETED):**
-- [x] Upgrade ordering-service to auth-client v0.2.0 ✅ (Jan 2026)
-- [x] Upgrade inventory-service to auth-client v0.2.0 ✅ (Jan 2026)
-- [x] Upgrade pos-service to auth-client v0.2.0 ✅ (Jan 2026)
+**Auth-client v0.2.0 upgrade — completed:**
+- [x] Upgrade ordering-service to auth-client v0.2.0 (Jan 2026)
+- [x] Upgrade inventory-service to auth-client v0.2.0 (Jan 2026)
+- [x] Upgrade pos-service to auth-client v0.2.0 (Jan 2026)
 
-**Code Duplication Reduction:**
-- [x] Create `httpware` package (RequestID, Tenant, Logging, Recover, CORS) ✅
-- [x] Migrate all services to httpware **v0.4.1** ✅
+**Code duplication reduction:**
+- [x] Create `httpware` package (RequestID, Tenant, Logging, Recover, CORS)
+- [x] Migrate all services to httpware v0.4.1
 
-### Phase 2: Standardization (Q3 2026) - 🚧 **IN PROGRESS**
+### Phase 2: Standardization (Q3 2026) - In progress
 
-**Remaining Migrations:**
+**Remaining migrations:**
 - [ ] Add outbox to auth-service (Q3 2026)
 - [ ] Add outbox to ticketing-service (Q3 2026)
-- [x] Complete shared-service-client migration for all services ✅
+- [x] Complete shared-service-client migration for all services
 
 **New Shared Libraries:**
 - [ ] Create `shared-config` package
@@ -1864,7 +1547,7 @@ flowchart TB
     Backends --> Infra
 ```
 
-Every backend service talks to its own PostgreSQL database, shares one Redis instance for caching, and publishes/consumes events through a single NATS JetStream cluster — there's no per-service message broker split. (An earlier version of the platform ran the original Django-based ERP service on RabbitMQ/Celery; that service was fully rebuilt on Go, and RabbitMQ was decommissioned along with it.) A dedicated metrics/tracing/alerting stack is a known, tracked gap rather than something already running — see the [Gap Analysis & Remediation Plan](../platform-standards/gap-analysis-and-remediation-plan.md) for what observability tooling exists today versus what's planned.
+Every backend service talks to its own PostgreSQL database, shares one Redis instance for caching, and publishes/consumes events through a single NATS JetStream cluster — there's no per-service message broker split. (An earlier version of the platform ran the original Django-based ERP service on RabbitMQ/Celery; that service was fully rebuilt on Go, and RabbitMQ was decommissioned along with it.) See [Observability](../platform-standards/observability.md) for the logging and tracing tooling in place today.
 
 ### Domain routing (ingress → service)
 
@@ -1949,29 +1632,7 @@ Frontend → WebSocket → Backend Service → Redis Pub/Sub → WebSocket → F
 - **Package Manager**: Helm
 - **CI/CD**: GitHub Actions
 
-### Shared Libraries Integration
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    SHARED LIBRARIES                             │
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │
-│  │shared-auth-  │  │shared-service│  │shared-events │        │
-│  │client        │  │client        │  │              │        │
-│  │✅ Implemented│  │✅ Implemented│  │✅ Implemented│        │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘        │
-│         │                 │                  │                  │
-│  ┌──────┴─────────────────┴──────────────────┴───────┐        │
-│  │        All Go Services Use These Libraries         │        │
-│  └─────────────────────────────────────────────────────┘        │
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐                            │
-│  │shared-       │  │shared-config │                            │
-│  │observability │  │              │                            │
-│  │⚠️ Planned    │  │⚠️ Planned    │                            │
-│  └──────────────┘  └──────────────┘                            │
-└─────────────────────────────────────────────────────────────────┘
-```
+All Go services consume `shared-auth-client`, `shared-service-client`, and `shared-events`; `shared-observability` and `shared-config` are still planned. See [Shared Libraries Summary](#shared-libraries-summary) above for versions and adoption.
 
 ### Key Integration Points
 
@@ -2093,45 +1754,25 @@ The notifications-service worker processes messages from NATS JetStream with ret
 
 ## Conclusion
 
-Codevertex's microservices architecture is built on **solid production-ready foundations** with a well-orchestrated centralized DevOps infrastructure:
+Codevertex's microservices architecture rests on a centralized, GitOps-managed DevOps infrastructure with clear conventions for how services talk to each other, own data, and authenticate.
 
 ### Strengths
 
-1. **✅ Production Infrastructure**: Fully operational Kubernetes cluster with centralized `devops-k8s` repository
-2. **✅ Service Discovery**: Kubernetes DNS-based discovery eliminates need for service registry
-3. **✅ Uniform Async Messaging**: NATS JetStream, fleet-wide, with a shared idempotency/outbox pattern
-4. **✅ Shared Infrastructure**: Centralized Redis and NATS
-5. **✅ GitOps**: ArgoCD-based deployments ensure consistency and reliability
-6. **✅ Standardized Auth**: `shared-auth-client` provides consistent JWT validation across all services
-7. **✅ Resilience**: `shared-service-client` provides circuit breaker, retry, and tracing for service-to-service calls
-8. **✅ Event Reliability**: `shared-events` library provides standardized outbox pattern (implemented in subscription-service)
+- Production infrastructure: fully operational Kubernetes cluster with a centralized `devops-k8s` repository
+- Service discovery: Kubernetes DNS-based, no separate registry to run
+- Uniform async messaging: NATS JetStream fleet-wide, with a shared idempotency/outbox pattern
+- Shared infrastructure: centralized Redis and NATS
+- GitOps: ArgoCD-based deployments for consistent, repeatable releases
+- Standardized auth: `shared-auth-client` for JWT validation across all services
+- Resilience: `shared-service-client` for circuit breaker, retry, and tracing on service-to-service calls
+- Event reliability: `shared-events` for the standardized outbox pattern
 
-### Areas for Enhancement
+### What's Next
 
-1. **Immediate Priorities (Q1 2026)**:
-   - ✅ Create `shared-service-client` library - **COMPLETED**
-   - ✅ Migrate all services to use `shared-service-client` - **COMPLETED** (logistics-service, subscription-service)
-   - ✅ Create `shared-events` library - **COMPLETED**
-   - ✅ Migrate all services to use `shared-events` for outbox pattern - **COMPLETED** (subscription, notifications, logistics, projects, IoT services)
+- **Short-term (Q2–Q3 2026)**: gRPC/ConnectRPC for high-throughput operations, WebSockets for real-time tracking, internal webhook infrastructure
+- **Long-term (Q4 2026+)**: service mesh evaluation (Istio/Linkerd), GraphQL for flexible frontend queries, full distributed tracing
 
-2. **Short-Term (Q2-Q3 2026)**:
-   - Implement gRPC/ConnectRPC for high-throughput operations
-   - Implement WebSockets for real-time tracking
-   - Build internal webhook infrastructure
-
-3. **Long-Term (Q4 2026+)**:
-   - Service mesh evaluation (Istio/Linkerd)
-   - GraphQL for flexible frontend queries
-   - Advanced observability with full distributed tracing
-
-### Architecture Highlights
-
-- **Hybrid Communication**: Right tool for each use case (REST for sync, NATS for async, WebSocket for real-time)
-- **Zero Duplication**: Clear data ownership with reference-only patterns
-- **Scalable Foundation**: Kubernetes-native architecture with auto-scaling and GitOps
-- **Production-Ready**: Fully operational infrastructure with structured logging; a dedicated metrics/tracing/alerting stack is tracked as a gap, not yet built — see [Gap Analysis & Remediation Plan](../platform-standards/gap-analysis-and-remediation-plan.md)
-
-This hybrid architecture ensures optimal communication patterns for each use case while maintaining scalability, performance, and security across all Codevertex microservices.
+See [Migration Roadmap](#migration-roadmap) above for the detailed phase-by-phase status, and [Observability](../platform-standards/observability.md) for what's actually deployed today.
 
 ---
 
