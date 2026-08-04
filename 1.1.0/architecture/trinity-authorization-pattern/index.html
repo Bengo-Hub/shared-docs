@@ -1,0 +1,3552 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.">
+      
+      
+        <meta name="author" content="Codevertex Africa">
+      
+      
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.1.0/architecture/trinity-authorization-pattern/">
+      
+      
+        <link rel="prev" href="../microservice-architecture/">
+      
+      
+        <link rel="next" href="../event-architecture/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Trinity Authorization Pattern - Codevertex Africa — Platform Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trinity-authorization-pattern" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Codevertex Africa — Platform Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Trinity Authorization Pattern
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Technical Guide
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Codevertex Africa — Platform Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user-guide/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/platform-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscriptions & Billing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservice-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservice Architecture (master doc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trinity Authorization Pattern
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trinity Authorization Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-three-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three Layers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Three Layers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-rbac-role-based-access-control-auth-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1: RBAC (Role-Based Access Control) - Auth-Service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-2-licensing-feature-entitlements-subscription-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 2: Licensing (Feature Entitlements) - Subscription-Service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-3-resources-domain-specific-permissions-domain-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 3: Resources (Domain-Specific Permissions) - Domain Services
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-user-authentication-auth-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. User Authentication (Auth-Service)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-jwt-claims-extension-subscription-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. JWT Claims Extension (Subscription-Service)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-enhanced-jwt-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Enhanced JWT Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-request-authorization-domain-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Request Authorization (Domain Service)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-1-feature-gate-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 1: Feature Gate Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-2-limit-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 2: Limit Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-3-usage-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 3: Usage Reporting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-4-trinity-authorization-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 4: Trinity Authorization Middleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plan-transitions-grace-periods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plan Transitions &amp; Grace Periods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Plan Transitions &amp; Grace Periods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upgrade Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#downgrade-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downgrade Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grace-period" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grace Period
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-cache-feature-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Cache Feature Gates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-fail-closed-for-feature-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fail Closed for Feature Checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-real-time-usage-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Real-time Usage Reporting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-soft-limits-with-overage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Soft Limits with Overage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-jwt-claims-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. JWT Claims Caching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product-level-entitlements-added-february-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Product-Level Entitlements (Added February 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Product-Level Entitlements (Added February 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-between-rbac-and-feature-licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer Between RBAC and Feature Licensing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bundle-based-activation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle-Based Activation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-alerts-target-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring &amp; Alerts (Target State)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-owner-pattern-codevertex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform Owner Pattern (Codevertex)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platform Owner Pattern (Codevertex)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#subscription-and-tenant-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription and tenant sync
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Claims
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-tenant-override-for-platform-owners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Tenant Override for Platform Owners
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auth-api-seed-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth-API Seed Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#account-creation-subscription-enforcement-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Account Creation &amp; Subscription Enforcement Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Account Creation &amp; Subscription Enforcement Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registration-flow-auth-ui-multi-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Flow (auth-ui multi-step)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscription-member-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Member Limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#login-post-auth-subscription-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Login Post-Auth Subscription Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-seed-uuid-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Seed UUID Resolution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscription Seed UUID Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#env-var-override-for-cioffline-seeding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Env Var Override (for CI/offline seeding)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Architecture (NATS/JetStream)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sso-integration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../login-flow-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Login Flow Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../subscription-gating-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscription Gating Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cross-service-data-ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Service Data Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go-backend-ent-atlas-migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Backend — Ent + Atlas Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../devops-k8s-ingress-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps-K8s Ingress & CORS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../platform-standards/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Engineering Standards
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform Engineering Standards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/webhooks-vs-polling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhooks vs Polling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/connection-pooling-pgbouncer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection Pooling & PgBouncer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/idempotency-and-outbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotency & the Outbox Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/resilience-and-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resilience — Circuit Breakers & Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/rate-limiting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/s2s-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service-to-Service (S2S) Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/secrets-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secrets Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/ai-and-pgvector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Integrations & pgvector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/n-plus-one-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N+1 Queries & Preloading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/gap-analysis-and-remediation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gap Analysis & Remediation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../integrations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/payment-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Workflow (hub)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/mpesa-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M-Pesa (Daraja) Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-callback-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Callback Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/notifications-rest-api-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications REST API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/finance-integration-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-three-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three Layers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Three Layers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-rbac-role-based-access-control-auth-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1: RBAC (Role-Based Access Control) - Auth-Service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-2-licensing-feature-entitlements-subscription-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 2: Licensing (Feature Entitlements) - Subscription-Service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-3-resources-domain-specific-permissions-domain-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 3: Resources (Domain-Specific Permissions) - Domain Services
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-user-authentication-auth-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. User Authentication (Auth-Service)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-jwt-claims-extension-subscription-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. JWT Claims Extension (Subscription-Service)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-enhanced-jwt-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Enhanced JWT Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-request-authorization-domain-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Request Authorization (Domain Service)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-1-feature-gate-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 1: Feature Gate Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-2-limit-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 2: Limit Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-3-usage-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 3: Usage Reporting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-4-trinity-authorization-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 4: Trinity Authorization Middleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plan-transitions-grace-periods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plan Transitions &amp; Grace Periods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Plan Transitions &amp; Grace Periods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#upgrade-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upgrade Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#downgrade-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downgrade Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grace-period" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grace Period
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-cache-feature-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Cache Feature Gates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-fail-closed-for-feature-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fail Closed for Feature Checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-real-time-usage-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Real-time Usage Reporting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-soft-limits-with-overage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Soft Limits with Overage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-jwt-claims-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. JWT Claims Caching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#product-level-entitlements-added-february-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Product-Level Entitlements (Added February 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Product-Level Entitlements (Added February 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-between-rbac-and-feature-licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer Between RBAC and Feature Licensing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bundle-based-activation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle-Based Activation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-alerts-target-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring &amp; Alerts (Target State)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-owner-pattern-codevertex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform Owner Pattern (Codevertex)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platform Owner Pattern (Codevertex)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#subscription-and-tenant-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription and tenant sync
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Claims
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-tenant-override-for-platform-owners" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Tenant Override for Platform Owners
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auth-api-seed-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth-API Seed Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#account-creation-subscription-enforcement-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Account Creation &amp; Subscription Enforcement Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Account Creation &amp; Subscription Enforcement Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registration-flow-auth-ui-multi-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Flow (auth-ui multi-step)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscription-member-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Member Limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#login-post-auth-subscription-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Login Post-Auth Subscription Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-seed-uuid-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Seed UUID Resolution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscription Seed UUID Resolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#env-var-override-for-cioffline-seeding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Env Var Override (for CI/offline seeding)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="trinity-authorization-pattern">Trinity Authorization Pattern<a class="headerlink" href="#trinity-authorization-pattern" title="Permanent link">&para;</a></h1>
+<p><strong>Last updated:</strong> August 1, 2026 — hospital-api (Codevertex Afya) now implements all three Trinity
+layers: Layer 1 (JWKS auth), Layer 2 (subscriptions <code>service_tag: hospital</code> — <code>AFYA_CLINIC</code>/
+<code>AFYA_FACILITY</code>/<code>AFYA_HOSPITAL</code> tiers seeded, mutations-only gate wired, fails open), and Layer 3
+(local RBAC + JIT identity + <code>GET /api/v1/{tenant}/hospital/auth/me</code>). Tenant/outlet sync
+(including the self-healing UUID-drift repoint) is also wired. No clinical domain schemas or
+permission-gated domain routes exist yet — that's <code>hospital-api/docs/migration-pos-pharmacy.md</code>
+Phase A / Sprint 4, a separate later effort. <strong>Prior:</strong> July 31, 2026 — Registered <code>hospital</code>
+(Codevertex Afya) in the Product → Service mapping table as a Sprint-0 scaffold. <strong>Prior:</strong> March 29, 2026 — Subscription enforcement changed to mutations-only across all services (pos-api, treasury-api, projects-api fixed). Frontend 403 discrimination added: subscription 403s show upgrade banners instead of redirecting to login. SubscriptionBanner + SubscriptionGate + useSubscription hook rolled out to all frontends. Platform owner bypass added to subscription middleware.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The Trinity Authorization Pattern combines three layers of access control — identity/RBAC, subscription licensing, and service-level permissions — into a single authorization model used across the Codevertex ecosystem.</p>
+<div class="highlight"><pre><span></span><code>Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resources (Domain Services)
+</code></pre></div>
+<hr />
+<h2 id="the-three-layers">The Three Layers<a class="headerlink" href="#the-three-layers" title="Permanent link">&para;</a></h2>
+<h3 id="layer-1-rbac-role-based-access-control-auth-service">Layer 1: RBAC (Role-Based Access Control) - Auth-Service<a class="headerlink" href="#layer-1-rbac-role-based-access-control-auth-service" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: User identity, authentication, and basic role assignments</p>
+<p><strong>Owned By</strong>: Auth-Service</p>
+<p><strong>Components</strong>:
+- User identity (email, phone, password)
+- Global roles (<code>superuser</code>, <code>admin</code>, <code>user</code>)
+- Service-specific roles (can be defined by services)
+- JWT token issuance with <strong>roles</strong> and <strong>permissions</strong> (canonical codes) from a single role–permission table
+- Session management</p>
+<p><strong>Auth-service permissions scope (Layer 1):</strong> Auth-api issues only <strong>auth-service permissions</strong> in the JWT (e.g. <code>auth.users.view</code>, <code>auth.profile.change</code>). It does NOT issue service-specific permissions such as <code>pos.*.*</code>, <code>ordering.*.*</code>, <code>inventory.*.*</code>, etc. Service-level permissions are managed locally by each service (Layer 3) and are resolved via the service's own <code>/auth/me</code> endpoint after SSO login.</p>
+<p><strong>Global roles in JWT:</strong> Auth-api issues global canonical roles (<code>superuser</code>, <code>admin</code>, <code>manager</code>, <code>cashier</code>, <code>waiter</code>, <code>kitchen</code>, <code>bar</code>, <code>receptionist</code>, <code>staff</code>, <code>member</code>, <code>rider</code>, <code>viewer</code>). Each service maps these global roles to its own service-level roles via JIT provisioning and the service <code>/auth/me</code> endpoint.</p>
+<p><strong>Example Roles</strong>:
+- <code>superuser</code> - Full access across all services
+- <code>admin</code> - Administrative access in specific service
+- <code>user</code> - Standard user access
+- <code>customer</code> - Ordering service customer
+- <code>rider</code> - Logistics service rider
+- <code>staff</code> - POS service staff member</p>
+<hr />
+<h3 id="layer-2-licensing-feature-entitlements-subscription-service">Layer 2: Licensing (Feature Entitlements) - Subscription-Service<a class="headerlink" href="#layer-2-licensing-feature-entitlements-subscription-service" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Feature availability and usage limits based on subscription plan</p>
+<p><strong>Owned By</strong>: Subscription-Service</p>
+<p><strong>Components</strong>:
+- Subscription plans (Starter, Growth, Professional)
+- Feature gates (which features are enabled)
+- Usage limits (max riders, max orders per day, etc.)
+- Usage tracking (current usage vs limits)
+- Overage detection and billing</p>
+<p><strong>Example Features</strong>:
+- <code>customer_portal</code> - Basic ordering
+- <code>loyalty_program</code> - Loyalty points feature
+- <code>multi_outlet</code> - Multiple outlet support
+- <code>api_webhooks</code> - Webhook API access
+- <code>route_optimization</code> - Advanced routing algorithms</p>
+<p><strong>Example Limits</strong>:
+- <code>max_riders: 15</code> - Maximum active riders
+- <code>max_orders_per_day: 1000</code> - Maximum orders per day
+- <code>max_admins: 3</code> - Maximum admin users</p>
+<hr />
+<h3 id="layer-3-resources-domain-specific-permissions-domain-services">Layer 3: Resources (Domain-Specific Permissions) - Domain Services<a class="headerlink" href="#layer-3-resources-domain-specific-permissions-domain-services" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Fine-grained permissions and resource-level access control</p>
+<p><strong>Owned By</strong>: Individual Domain Services (Ordering, Logistics, POS, etc.)</p>
+<p><strong>Components</strong>:
+- Service-specific permissions
+- Resource-level access control (e.g., can only edit own orders)
+- Business rule enforcement
+- Data ownership and isolation</p>
+<p><strong>Service-Level Permission System:</strong></p>
+<p>Each domain service implements its own fine-grained permission system stored in its database. Permission codes follow the format <code>{service}.{module}.{action}</code>, with a fixed action vocabulary: <code>add</code>, <code>view</code>, <code>view_own</code>, <code>change</code>, <code>change_own</code>, <code>delete</code>, <code>delete_own</code>, <code>manage</code>, <code>manage_own</code>.</p>
+<p><strong>Ent schemas per service</strong> (following the treasury-api reference pattern):
+- <code>{Service}Permission</code> — permission_code (unique), module, action, resource, description
+- <code>{Service}Role</code> — tenant-scoped roles with role_code, is_system_role flag
+- <code>RolePermission</code> — many-to-many junction table (role_id + permission_id)
+- <code>UserRoleAssignment</code> — tenant_id, user_id, role_id, assigned_by, expires_at
+- <code>{Service}User</code> — JIT-provisioned local user ref with auth_service_user_id, sync_status
+- <code>RateLimitConfig</code> — DB-loaded rate limit settings per service
+- <code>ServiceConfig</code> — key-value config with platform defaults and per-tenant overrides</p>
+<p><strong>RBAC module per service</strong> (<code>internal/modules/rbac/</code>): service.go, repository.go, repository_ent.go, models.go — provides EnsureUserFromToken (JIT), HasPermission, HasRole, AssignRole, RevokeRole.</p>
+<p><strong>Middleware chain</strong> (in order): Global rate limit → Auth (JWT/API key via shared-auth-client) → Subscription enforcement (RequireActiveSubscriptionForMutations — mutations only) → JIT user provisioning (with role assignment from JWT) → <strong>Outlet context extraction</strong> (<code>OutletContext</code> middleware: reads <code>X-Outlet-ID</code> header → stores in context via <code>httpware.WithOutletID()</code>; no-op if header absent) → Route-level RequirePermission/RequireAnyPermission.</p>
+<p><strong>Outlet context middleware (all services):</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// Applied to /{tenant} route group after TenantV2 and before route handlers</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">OutletContext</span><span class="p">(</span><span class="nx">next</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">OutletHeader</span><span class="p">(</span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">r</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">httpware</span><span class="p">.</span><span class="nx">WithOutletID</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">(),</span><span class="w"> </span><span class="nx">outletID</span><span class="p">))</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="c1">// always continues — outlet is optional</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Optional outlet filtering in handlers (all services):</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">GetOutletID</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+<span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Entity</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Where</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">TenantID</span><span class="p">(</span><span class="nx">tenantUUID</span><span class="p">))</span>
+<span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">uid</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">outletID</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">q</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">OutletIDEQ</span><span class="p">(</span><span class="nx">uid</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Outlet absence is NOT an error — platform admin calls omit it</span>
+</code></pre></div></p>
+<p><strong>Subscription enforcement by service (March 2026, updated March 29):</strong>
+- <strong>Enforced (mutations only):</strong> treasury-api, inventory-api, pos-api, ordering-backend, logistics-api, projects-api, marketflow-api — all use mutations-only enforcement: GET/HEAD/OPTIONS pass through, POST/PUT/PATCH/DELETE require active subscription.
+- <strong>NOT enforced (core services, free in all plans):</strong> auth-api (token authority), subscriptions-api (subscription authority), notifications-api (core messaging). Notifications uses <strong>plan-based email rate limiting</strong> (<code>max_emails_per_day</code> from JWT <code>SubscriptionLimits</code>) instead of subscription gating.
+- Superuser and platform owner always bypass subscription enforcement.</p>
+<p><strong>Subscription enforcement rules:</strong>
+- Subscription NEVER blocks authentication or login. Users must always be able to log in regardless of subscription status.
+- Read operations (GET) are always allowed so users can view their data even with an expired subscription.
+- Mutation operations (POST/PUT/PATCH/DELETE) are blocked with HTTP 403 and response body <code>{"error":"...","code":"subscription_inactive","upgrade":true}</code>.
+- The <code>upgrade: true</code> field in the JSON response distinguishes subscription 403s from auth/permission 403s.
+- Frontends must discriminate subscription 403s from auth 403s: subscription 403 → show upgrade banner/toast, NOT redirect to login. Auth 403 → redirect to unauthorized page.</p>
+<p><strong>Frontend subscription gating pattern:</strong>
+Each frontend implements lazy subscription loading via <code>useSubscription()</code> hook + <code>SubscriptionBanner</code> (persistent top banner) + <code>SubscriptionGate</code> (wraps gated features). Subscription info is fetched AFTER login from subscriptions-api; loading never blocks UI. Platform owners get automatic <code>active/enterprise</code> status. <strong>See <a href="../subscription-gating-guide/">subscription-gating-guide.md</a> for the full implementation guide</strong> (backend middleware code, frontend error-handler wiring, the mutations-only services table, and the step-by-step checklist for adding gating to a new service) — this file states the policy, that one is the how-to.</p>
+<p><strong>Example service-level permissions:</strong>
+- <code>treasury.payments.add</code>, <code>treasury.payments.view</code>, <code>treasury.payments.manage</code>
+- <code>ordering.orders.add</code>, <code>ordering.catalog.change</code>, <code>ordering.config.manage</code>
+- <code>logistics.tasks.add</code>, <code>logistics.fleet.manage</code>, <code>logistics.zones.view</code>
+- <code>notifications.templates.change</code>, <code>notifications.providers.manage</code>
+- <code>marketflow.leads.add</code>, <code>marketflow.campaigns.manage</code>, <code>marketflow.chat.view</code></p>
+<p><strong>Relationship to Layer 1 (auth-service) permissions:</strong>
+Layer 1 canonical codes (e.g. <code>catalog:view</code>) are global cross-cutting codes issued in JWT by auth-service. Layer 3 service-level codes (e.g. <code>ordering.catalog.view</code>) are fine-grained codes managed locally by each service. Both can coexist: the shared-auth-client <code>RequirePermission</code> middleware checks <code>claims.Permissions</code> (from JWT), while the service RBAC module checks local DB permissions via <code>rbacService.HasPermission()</code>.</p>
+<p><strong>Superuser bypass:</strong> All permission checks (both JWT-level and service-level) are bypassed for users with the <code>superuser</code> role. Platform owner (<code>is_platform_owner</code>) bypasses tenant isolation and platform route restrictions.</p>
+<p><strong>Just-in-Time (JIT) provisioning:</strong> When a microservice receives a valid JWT but has no local user record for <code>sub</code>, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. <strong>JIT must also assign a default service-level role</strong> based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (admin), logistics-api (admin), notifications-api (super_admin), marketflow-api (marketflow_admin).</p>
+<p><strong>Service auth/me endpoint (Layer 3 enrichment):</strong> Every domain service must expose <code>GET /{tenant}/auth/me</code> (or equivalent) that returns the user's <strong>service-level role and fine-grained service permissions</strong> merged from the local RBAC tables. Frontends call this endpoint immediately after SSO login (after getting SSO identity from auth-api <code>/api/v1/auth/me</code>) to obtain service-specific RBAC data:</p>
+<div class="highlight"><pre><span></span><code>1. SSO callback → exchange code → get access_token
+2. Call SSO GET /api/v1/auth/me → get user identity + global roles + auth.*.* perms
+3. Call service GET /{tenant}/{service}/auth/me → get service role + service.*.* perms
+   - Service maps global JWT roles to local service role via JIT
+   - Returns: { user_id, email, name, global_roles, service_role, permissions: [...] }
+4. Frontend stores merged profile: identity from SSO + permissions from service /auth/me
+5. Sidebar, page guards, action buttons check service permissions (pos.orders.add, etc.)
+</code></pre></div>
+<p><strong>Services implementing this pattern:</strong>
+- pos-api: <code>GET /{tenant}/pos/auth/me</code> → returns pos_role + pos.<em>.</em> permissions
+- ordering-backend: <code>GET /{tenant}/auth/me</code> → ordering role + permissions (reference implementation)
+- treasury-api: <code>GET /api/v1/auth/me</code> → finance role + permissions
+- notifications-api: <code>GET /{tenant}/auth/me</code> → notifications role + permissions</p>
+<p><strong>JIT tenant sync:</strong> All Go backends must sync the tenant from auth-api when the request carries a tenant slug (e.g. from JWT or path). If the slug is present and the tenant is missing locally, the service should fetch and upsert the tenant from auth-api before processing the request. This avoids "tenant not found" after SSO login when the token was minted for a tenant (via <code>?tenant=</code> on the authorize URL).</p>
+<p><strong>Outlet/branch context (Layer 3 extension):</strong> Services that support multi-outlet operations (ordering, inventory, logistics, POS, treasury) accept <code>X-Outlet-ID</code> (outlet UUID) as an optional header. When present, handlers filter their data to that outlet. When absent, all tenant-scoped data is returned. This allows platform owners and HQ admin users to see cross-outlet aggregates while individual staff see only their assigned outlet. CORS <code>AllowedHeaders</code> must include <code>X-Outlet-ID</code> on all services. See <code>sso-integration-guide.md</code> → <strong>Outlet/Branch Context</strong> section for frontend preselection rules and the select-outlet page pattern.</p>
+<p><strong>Tenant ID format:</strong> Frontends must send <code>X-Tenant-ID</code> as the <strong>tenant UUID</strong> from auth-api (e.g. from GET <code>/api/v1/auth/me</code> response <code>tenant_id</code>). Do not send a slug or custom string (e.g. <code>tenant-acme-retail</code>). Auth-api and all SSO-integrated backends must include <code>X-Tenant-ID</code> in CORS <code>Access-Control-Allow-Headers</code> (app and ingress) so browser preflights succeed.</p>
+<p><strong>Auth/me caching:</strong> Auth-api caches GET <code>/api/v1/auth/me</code> in Redis by user ID with TTL = token expiry. Frontends should use TanStack Query (or similar) with a TTL aligned to token lifetime so the first read is fast and DB load is reduced.</p>
+<p><strong>Claims best practices:</strong> Keep claims in the token stable (e.g. user ID, tenant, roles, permissions). Avoid putting volatile or rarely used data in the token; services can resolve fine-grained rules from role/claims locally.</p>
+<hr />
+<h2 id="integration-flow">Integration Flow<a class="headerlink" href="#integration-flow" title="Permanent link">&para;</a></h2>
+<h3 id="1-user-authentication-auth-service">1. User Authentication (Auth-Service)<a class="headerlink" href="#1-user-authentication-auth-service" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// User logs in</span>
+<span class="nx">POST</span><span class="w"> </span><span class="o">/</span><span class="nx">api</span><span class="o">/</span><span class="nx">v1</span><span class="o">/</span><span class="nx">auth</span><span class="o">/</span><span class="nx">login</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;email&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;password&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;tenant_slug&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;urban-cafe&quot;</span>
+<span class="p">}</span>
+
+<span class="c1">// Auth-service validates credentials and issues JWT</span>
+<span class="nx">Response</span><span class="o">:</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;access_token&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;jwt-token&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;refresh_token&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;refresh-token&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;user&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;user-uuid&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;email&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;tenant_id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;tenant-uuid&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;roles&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="2-jwt-claims-extension-subscription-service">2. JWT Claims Extension (Subscription-Service)<a class="headerlink" href="#2-jwt-claims-extension-subscription-service" title="Permanent link">&para;</a></h3>
+<p>Auth-api calls <code>GET /api/v1/tenants/{tenant_id}/subscription</code> on subscriptions-api (with <code>X-API-Key: INTERNAL_SERVICE_KEY</code>) to fetch subscription data at token issuance. The subscription fields are embedded directly in the JWT using short <code>sub_*</code> key names.</p>
+<p><strong>Endpoint</strong>: <code>GET /api/v1/tenants/{tenant_id}/subscription</code> (S2S, API key auth)</p>
+<h3 id="3-enhanced-jwt-token">3. Enhanced JWT Token<a class="headerlink" href="#3-enhanced-jwt-token" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user-uuid&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tenant_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tenant-uuid&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;sub_plan&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ORDERING-GROWTH-MONTHLY&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sub_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ACTIVE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sub_features&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;customer_portal&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;loyalty_program&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;multi_outlet&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;sub_limits&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max_riders&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max_orders_per_day&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max_admins&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;sub_expires&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1751328000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;exp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;iat&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Key names</strong>: <code>sub_plan</code>, <code>sub_status</code>, <code>sub_features</code>, <code>sub_limits</code>, <code>sub_expires</code> — NOT <code>subscription_plan</code>, <code>subscription_features</code>, etc. The <code>sub_*</code> prefix is the canonical JWT form. The long names exist only in internal DB columns and admin API responses.</p>
+</blockquote>
+<h3 id="4-request-authorization-domain-service">4. Request Authorization (Domain Service)<a class="headerlink" href="#4-request-authorization-domain-service" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Domain service validates authorization (Go — using shared-auth-client)</span>
+<span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ClaimsFromContext</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">())</span>
+<span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unauthorized&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">401</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span>
+<span class="p">}</span>
+
+<span class="c1">// Step 1: RBAC — check service-specific permissions from local RBAC</span>
+<span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">rbacService</span><span class="p">.</span><span class="nx">HasPermission</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">UserID</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ordering.orders.add&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">`{&quot;error&quot;:&quot;forbidden&quot;}`</span><span class="p">,</span><span class="w"> </span><span class="mi">403</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span>
+<span class="p">}</span>
+
+<span class="c1">// Step 2: Licensing — subscription gate (already applied by mutations-only middleware)</span>
+<span class="c1">// claims.IsSubscriptionActive() || claims.IsSuperuser() || claims.IsPlatformOwner</span>
+
+<span class="c1">// Step 3: Feature check from JWT claims (no HTTP call needed)</span>
+<span class="nx">hasFeature</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="kc">false</span>
+<span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">f</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">SubscriptionFeatures</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">f</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;customer_portal&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">hasFeature</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> </span><span class="k">break</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">hasFeature</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">`{&quot;error&quot;:&quot;feature not available on current plan&quot;}`</span><span class="p">,</span><span class="w"> </span><span class="mi">403</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span>
+<span class="p">}</span>
+
+<span class="c1">// Step 4: Limit check from JWT claims</span>
+<span class="nx">maxOrders</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">SubscriptionLimits</span><span class="p">[</span><span class="s">&quot;max_orders_per_day&quot;</span><span class="p">]</span>
+<span class="k">if</span><span class="w"> </span><span class="nx">maxOrders</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">todayOrders</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">maxOrders</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">http</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="s">`{&quot;error&quot;:&quot;daily order limit exceeded&quot;}`</span><span class="p">,</span><span class="w"> </span><span class="mi">403</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span>
+<span class="p">}</span>
+
+<span class="c1">// Step 5: Create order</span>
+</code></pre></div>
+<hr />
+<h2 id="implementation-patterns">Implementation Patterns<a class="headerlink" href="#implementation-patterns" title="Permanent link">&para;</a></h2>
+<h3 id="pattern-1-feature-gate-check">Pattern 1: Feature Gate Check<a class="headerlink" href="#pattern-1-feature-gate-check" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Before allowing feature access</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">checkFeature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">tenantId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">featureCode</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="kt">boolean</span><span class="o">&gt;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Check cache first (Redis)</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">cacheKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`subscription:feature:</span><span class="si">${</span><span class="nx">tenantId</span><span class="si">}</span><span class="sb">:</span><span class="si">${</span><span class="nx">featureCode</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">cached</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">redis</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">cacheKey</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">cached</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">cached</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Check subscription service</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">hasFeature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">subscriptionService</span><span class="p">.</span><span class="nx">HasFeature</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="nx">featureCode</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Cache result (60s TTL)</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">redis</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">cacheKey</span><span class="p">,</span><span class="w"> </span><span class="nx">hasFeature</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;false&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;EX&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">60</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">hasFeature</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">await</span><span class="w"> </span><span class="nx">checkFeature</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;loyalty_program&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrFeatureNotAvailable</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="pattern-2-limit-enforcement">Pattern 2: Limit Enforcement<a class="headerlink" href="#pattern-2-limit-enforcement" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Before creating resource</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">checkLimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="nx">tenantId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">metricType</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">limitName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">allowed</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span><span class="w"> </span><span class="nx">current</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Get limits from JWT claims or subscription service</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">limits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">subscriptionService</span><span class="p">.</span><span class="nx">GetLimits</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">currentUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">subscriptionService</span><span class="p">.</span><span class="nx">GetUsage</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="nx">metricType</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;current&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">limits</span><span class="p">[</span><span class="nx">limitName</span><span class="p">];</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">allowed</span><span class="o">:</span><span class="w"> </span><span class="kt">currentUsage</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">limit</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">current</span><span class="o">:</span><span class="w"> </span><span class="kt">currentUsage</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="kt">limit</span><span class="p">,</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">limitCheck</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">checkLimit</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rider_count&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;max_riders&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">limitCheck</span><span class="p">.</span><span class="nx">allowed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Option 1: Reject</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrLimitExceeded</span><span class="p">(</span><span class="sb">`Maximum </span><span class="si">${</span><span class="nx">limitCheck</span><span class="p">.</span><span class="nx">limit</span><span class="si">}</span><span class="sb"> riders allowed`</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Option 2: Allow with overage</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">subscriptionService</span><span class="p">.</span><span class="nx">ReportOverage</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rider_count&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="pattern-3-usage-reporting">Pattern 3: Usage Reporting<a class="headerlink" href="#pattern-3-usage-reporting" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// After creating resource</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">reportUsage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="nx">tenantId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">metricType</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">metadata?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span>
+<span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">subscriptionService</span><span class="p">.</span><span class="nx">ReportUsage</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="nx">metricType</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">metadata</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">createOrder</span><span class="p">(</span><span class="nx">orderData</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">reportUsage</span><span class="p">(</span><span class="nx">tenantId</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;order_count&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">order_id</span><span class="o">:</span><span class="w"> </span><span class="kt">order.id</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="kt">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toISOString</span><span class="p">().</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)[</span><span class="mf">0</span><span class="p">],</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="pattern-4-trinity-authorization-middleware">Pattern 4: Trinity Authorization Middleware<a class="headerlink" href="#pattern-4-trinity-authorization-middleware" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Express/Next.js middleware</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">trinityAuth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="nx">requiredPermissions</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[],</span>
+<span class="w">  </span><span class="nx">requiredFeatures</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nx">resourceCheck</span><span class="o">?:</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="o">:</span><span class="w"> </span><span class="kt">Request</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="kt">boolean</span><span class="o">&gt;</span>
+<span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="o">:</span><span class="w"> </span><span class="kt">Request</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="o">:</span><span class="w"> </span><span class="kt">Response</span><span class="p">,</span><span class="w"> </span><span class="nx">next</span><span class="o">:</span><span class="w"> </span><span class="kt">NextFunction</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Step 1: Extract and validate JWT</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">extractToken</span><span class="p">(</span><span class="nx">req</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">claims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">validateJWT</span><span class="p">(</span><span class="nx">token</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">claims</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Unauthorized&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Step 2: Check RBAC permissions</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">hasPermissions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">requiredPermissions</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">perm</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">      </span><span class="nx">hasPermission</span><span class="p">(</span><span class="nx">claims</span><span class="p">.</span><span class="nx">roles</span><span class="p">,</span><span class="w"> </span><span class="nx">perm</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">hasPermissions</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">403</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Insufficient permissions&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Step 3: Check subscription features</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">hasFeatures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">requiredFeatures</span><span class="p">.</span><span class="nx">every</span><span class="p">(</span><span class="nx">feature</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">      </span><span class="nx">claims</span><span class="p">.</span><span class="nx">subscription_features</span><span class="o">?</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">feature</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">hasFeatures</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">403</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span>
+<span class="w">        </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Feature not available on current plan&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">required_features</span><span class="o">:</span><span class="w"> </span><span class="kt">requiredFeatures</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">available_features</span><span class="o">:</span><span class="w"> </span><span class="kt">claims.subscription_features</span><span class="p">,</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Step 4: Check resource-level permissions (if provided)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">resourceCheck</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">hasResourceAccess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">resourceCheck</span><span class="p">(</span><span class="nx">req</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">hasResourceAccess</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">403</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Resource access denied&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Attach claims to request for use in handlers</span>
+<span class="w">    </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">claims</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">next</span><span class="p">();</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span>
+<span class="w">  </span><span class="s1">&#39;/api/v1/orders&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">trinityAuth</span><span class="p">(</span>
+<span class="w">    </span><span class="p">[</span><span class="s1">&#39;orders:create&#39;</span><span class="p">],</span><span class="w"> </span><span class="c1">// Required permissions</span>
+<span class="w">    </span><span class="p">[</span><span class="s1">&#39;customer_portal&#39;</span><span class="p">],</span><span class="w"> </span><span class="c1">// Required features</span>
+<span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Resource-level check: can only create orders for own tenant</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">tenant_id</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">tenant_id</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="nx">createOrderHandler</span>
+<span class="p">);</span>
+</code></pre></div>
+<hr />
+<h2 id="plan-transitions-grace-periods">Plan Transitions &amp; Grace Periods<a class="headerlink" href="#plan-transitions-grace-periods" title="Permanent link">&para;</a></h2>
+<h3 id="upgrade-flow">Upgrade Flow<a class="headerlink" href="#upgrade-flow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// User upgrades plan</span>
+<span class="mf">1.</span><span class="w"> </span><span class="nx">Subscription</span><span class="w"> </span><span class="nx">service</span><span class="w"> </span><span class="nx">creates</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">transition</span><span class="w"> </span><span class="nx">record</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Calculates</span><span class="w"> </span><span class="nx">proration</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Emits</span><span class="w"> </span><span class="nx">billing</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">treasury</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">After</span><span class="w"> </span><span class="nx">payment</span><span class="w"> </span><span class="nx">confirmation</span><span class="o">:</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Updates</span><span class="w"> </span><span class="nx">subscription</span><span class="w"> </span><span class="nx">status</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Activates</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">features</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Updates</span><span class="w"> </span><span class="nx">JWT</span><span class="w"> </span><span class="nx">claims</span><span class="w"> </span><span class="p">(</span><span class="nx">on</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="nx">refresh</span><span class="p">)</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="w"> </span><span class="nx">subscription</span><span class="p">.</span><span class="nx">entitlements_changed</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">5.</span><span class="w"> </span><span class="nx">All</span><span class="w"> </span><span class="nx">services</span><span class="w"> </span><span class="nx">refresh</span><span class="w"> </span><span class="nx">feature</span><span class="w"> </span><span class="nx">gates</span>
+</code></pre></div>
+<h3 id="downgrade-flow">Downgrade Flow<a class="headerlink" href="#downgrade-flow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// User downgrades plan</span>
+<span class="mf">1.</span><span class="w"> </span><span class="nx">Subscription</span><span class="w"> </span><span class="nx">service</span><span class="w"> </span><span class="nx">schedules</span><span class="w"> </span><span class="nx">downgrade</span><span class="w"> </span><span class="p">(</span><span class="nx">period</span><span class="o">-</span><span class="nx">end</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">immediate</span><span class="p">)</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Before</span><span class="w"> </span><span class="nx">downgrade</span><span class="o">:</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Checks</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">current</span><span class="w"> </span><span class="nx">usage</span><span class="w"> </span><span class="nx">exceeds</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">plan</span><span class="w"> </span><span class="nx">limits</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">warning</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">limits</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="nx">exceeded</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Allows</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">cancel</span><span class="w"> </span><span class="nx">downgrade</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">On</span><span class="w"> </span><span class="nx">downgrade</span><span class="o">:</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Deactivates</span><span class="w"> </span><span class="nx">premium</span><span class="w"> </span><span class="nx">features</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Updates</span><span class="w"> </span><span class="nx">limits</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="w"> </span><span class="nx">subscription</span><span class="p">.</span><span class="nx">entitlements_changed</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Services</span><span class="w"> </span><span class="nx">gracefully</span><span class="w"> </span><span class="nx">disable</span><span class="w"> </span><span class="nx">premium</span><span class="w"> </span><span class="nx">features</span>
+</code></pre></div>
+<h3 id="grace-period">Grace Period<a class="headerlink" href="#grace-period" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Subscription expires</span>
+<span class="mf">1.</span><span class="w"> </span><span class="nx">Subscription</span><span class="w"> </span><span class="nx">service</span><span class="w"> </span><span class="nx">marks</span><span class="w"> </span><span class="nx">subscription</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">expired</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Grace</span><span class="w"> </span><span class="nx">period</span><span class="w"> </span><span class="nx">starts</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">g</span><span class="p">.,</span><span class="w"> </span><span class="mf">7</span><span class="w"> </span><span class="nx">days</span><span class="p">)</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">During</span><span class="w"> </span><span class="nx">grace</span><span class="w"> </span><span class="nx">period</span><span class="o">:</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Features</span><span class="w"> </span><span class="nx">remain</span><span class="w"> </span><span class="nx">active</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Usage</span><span class="w"> </span><span class="nx">tracking</span><span class="w"> </span><span class="nx">continues</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Warnings</span><span class="w"> </span><span class="nx">shown</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">users</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">After</span><span class="w"> </span><span class="nx">grace</span><span class="w"> </span><span class="nx">period</span><span class="o">:</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Features</span><span class="w"> </span><span class="nx">disabled</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Access</span><span class="w"> </span><span class="nx">restricted</span><span class="w"> </span><span class="p">(</span><span class="nx">read</span><span class="o">-</span><span class="nx">only</span><span class="w"> </span><span class="nx">mode</span><span class="p">)</span>
+<span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="nx">Billing</span><span class="w"> </span><span class="nx">retry</span><span class="w"> </span><span class="nx">attempts</span><span class="w"> </span><span class="k">continue</span>
+</code></pre></div>
+<hr />
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="1-cache-feature-gates">1. Cache Feature Gates<a class="headerlink" href="#1-cache-feature-gates" title="Permanent link">&para;</a></h3>
+<p><strong>Rationale</strong>: Feature checks happen frequently; caching reduces latency</p>
+<p><strong>Implementation</strong>:
+- Cache in Redis with 60s TTL
+- Invalidate cache on subscription changes
+- Use stale-while-revalidate pattern</p>
+<h3 id="2-fail-closed-for-feature-checks">2. Fail Closed for Feature Checks<a class="headerlink" href="#2-fail-closed-for-feature-checks" title="Permanent link">&para;</a></h3>
+<p><strong>Rationale</strong>: If subscription service is unavailable, deny access rather than allow</p>
+<p><strong>Implementation</strong>:
+- If feature check fails → assume feature unavailable
+- Log error for monitoring
+- Alert operations team</p>
+<h3 id="3-real-time-usage-reporting">3. Real-time Usage Reporting<a class="headerlink" href="#3-real-time-usage-reporting" title="Permanent link">&para;</a></h3>
+<p><strong>Rationale</strong>: Accurate usage tracking enables proper limit enforcement</p>
+<p><strong>Implementation</strong>:
+- Report usage immediately after action
+- Batch multiple reports for efficiency
+- Retry on failure with exponential backoff</p>
+<h3 id="4-soft-limits-with-overage">4. Soft Limits with Overage<a class="headerlink" href="#4-soft-limits-with-overage" title="Permanent link">&para;</a></h3>
+<p><strong>Rationale</strong>: Better user experience - allow usage but charge for overages</p>
+<p><strong>Implementation</strong>:
+- Allow action even if limit exceeded
+- Track overage quantity
+- Calculate overage charges daily
+- Emit billing events for overages</p>
+<h3 id="5-jwt-claims-caching">5. JWT Claims Caching<a class="headerlink" href="#5-jwt-claims-caching" title="Permanent link">&para;</a></h3>
+<p><strong>Rationale</strong>: Reduce calls to subscription service for every request</p>
+<p><strong>Implementation</strong>:
+- Include subscription data in JWT claims
+- Cache claims for token lifetime
+- Refresh claims on token refresh
+- Invalidate cache on subscription changes</p>
+<hr />
+<h2 id="product-level-entitlements-added-february-2026">Product-Level Entitlements (Added February 2026)<a class="headerlink" href="#product-level-entitlements-added-february-2026" title="Permanent link">&para;</a></h2>
+<h3 id="layer-between-rbac-and-feature-licensing">Layer Between RBAC and Feature Licensing<a class="headerlink" href="#layer-between-rbac-and-feature-licensing" title="Permanent link">&para;</a></h3>
+<p>Products represent the bridge between RBAC (who can access) and Feature Licensing (what's available):</p>
+<p><strong>Product activation flow:</strong>
+1. Tenant subscribes to a bundle (e.g., Professional)
+2. Bundle activates products: ordering, logistics, treasury, notifications, auth
+3. Active product IDs are embedded in JWT claims
+4. Frontend checks <code>jwt.products</code> array before rendering service-specific UI
+5. Backend middleware validates product access before processing API calls</p>
+<p><strong>Product → Service mapping:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Product</th>
+<th style="text-align: left;">Service</th>
+<th style="text-align: left;">Frontend App</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ordering</td>
+<td style="text-align: left;">ordering-service</td>
+<td style="text-align: left;">ordering-frontend</td>
+</tr>
+<tr>
+<td style="text-align: left;">logistics</td>
+<td style="text-align: left;">logistics-service</td>
+<td style="text-align: left;">rider-app, logistics-ui</td>
+</tr>
+<tr>
+<td style="text-align: left;">treasury</td>
+<td style="text-align: left;">treasury-service</td>
+<td style="text-align: left;">(embedded in ordering)</td>
+</tr>
+<tr>
+<td style="text-align: left;">pos</td>
+<td style="text-align: left;">pos-service</td>
+<td style="text-align: left;">pos-frontend</td>
+</tr>
+<tr>
+<td style="text-align: left;">analytics</td>
+<td style="text-align: left;">analytics-service</td>
+<td style="text-align: left;">(embedded dashboard)</td>
+</tr>
+<tr>
+<td style="text-align: left;">notifications</td>
+<td style="text-align: left;">notifications-service</td>
+<td style="text-align: left;">(backend only)</td>
+</tr>
+<tr>
+<td style="text-align: left;">auth</td>
+<td style="text-align: left;">auth-service</td>
+<td style="text-align: left;">auth-ui</td>
+</tr>
+<tr>
+<td style="text-align: left;">inventory</td>
+<td style="text-align: left;">inventory-service</td>
+<td style="text-align: left;">inventory-frontend</td>
+</tr>
+<tr>
+<td style="text-align: left;">hospital</td>
+<td style="text-align: left;">hospital-service (Codevertex Afya — Trinity Layers 1-3 shipped 2026-08-01: JWKS auth, subscription gating, local RBAC/JIT/auth-me; no clinical domain schemas yet, see migration-pos-pharmacy.md)</td>
+<td style="text-align: left;">hospital-ui (live, <code>afya.codevertexafrica.com</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bundle-based-activation">Bundle-Based Activation<a class="headerlink" href="#bundle-based-activation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Bundle</th>
+<th style="text-align: left;">Products Included</th>
+<th style="text-align: left;">Price Tier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Starter</td>
+<td style="text-align: left;">ordering, auth</td>
+<td style="text-align: left;">Entry-level</td>
+</tr>
+<tr>
+<td style="text-align: left;">Professional</td>
+<td style="text-align: left;">ordering, logistics, treasury, notifications, auth</td>
+<td style="text-align: left;">Mid-tier</td>
+</tr>
+<tr>
+<td style="text-align: left;">Enterprise</td>
+<td style="text-align: left;">All 8 products</td>
+<td style="text-align: left;">Full platform</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="monitoring-alerts-target-state">Monitoring &amp; Alerts (Target State)<a class="headerlink" href="#monitoring-alerts-target-state" title="Permanent link">&para;</a></h2>
+<p>These are the metrics and alerts this authorization model <em>should</em> be instrumented for. No metrics/tracing stack is currently running in the cluster — see <a href="../../platform-standards/gap-analysis-and-remediation-plan/">gap-analysis-and-remediation-plan.md</a> and <a href="../../platform-standards/observability/">observability.md</a> for the current state and remediation plan. Treat the list below as design intent, not a live dashboard.</p>
+<ul>
+<li>Feature check latency and success/failure rate</li>
+<li>Usage reporting latency and failures</li>
+<li>Limit enforcement and overage detection accuracy</li>
+<li>Plan transition success/failure rate</li>
+<li>Subscription service availability</li>
+</ul>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../subscription-service/docs/integrations.md">Subscription Service Integration</a></li>
+<li><a href="../../auth-service/auth-api/docs/integrations.md">Auth Service Integration</a></li>
+<li><a href="../cross-service-data-ownership/">Cross-Service Data Ownership</a></li>
+</ul>
+<hr />
+<h2 id="platform-owner-pattern-codevertex">Platform Owner Pattern (Codevertex)<a class="headerlink" href="#platform-owner-pattern-codevertex" title="Permanent link">&para;</a></h2>
+<p><strong>Codevertex is NOT a business tenant</strong> — it is the platform owner. Any user whose <code>primary_tenant = "codevertex"</code> and who has the <code>superuser</code> role has <strong>cross-tenant access</strong> to all tenants' data.</p>
+<h3 id="subscription-and-tenant-sync">Subscription and tenant sync<a class="headerlink" href="#subscription-and-tenant-sync" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Subscription-service must NOT create tenant subscriptions for the platform owner.</strong> Only business (customer) organisations have subscriptions. The subscription-api seed excludes the platform owner slug so no <code>TenantSubscription</code> is created for Codevertex.</li>
+<li><strong>All services that sync tenants</strong> (in seed or at startup) <strong>must sync the codevertex platform org</strong> in addition to other default tenants, so the platform tenant row exists in each service DB (e.g. ordering-backend, inventory-api, subscriptions-api app, notifications-api seed).</li>
+<li><strong>Platform org admin user:</strong> Each service that maintains local user/role/permission data must sync or JIT-provision the platform admin user (auth-api super admin, e.g. <code>admin@codevertexafrica.com</code>) and assign <strong>all permissions</strong> in that service as the global admin user (e.g. superuser + admin roles in ordering-backend, finance_admin in treasury-api, admin role in logistics-api JIT).</li>
+</ul>
+<h3 id="token-claims">Token Claims<a class="headerlink" href="#token-claims" title="Permanent link">&para;</a></h3>
+<p><code>GET /api/v1/auth/me</code> returns <code>is_platform_owner: true</code> when the user's primary tenant slug is <code>codevertex</code>. Services should grant full read/write when this flag is set:</p>
+<div class="highlight"><pre><span></span><code>if claims.roles.includes(&quot;superuser&quot;) || user.is_platform_owner:
+    → bypass tenant isolation checks
+    → allow reading/writing any tenant&#39;s data
+</code></pre></div>
+<h3 id="backend-tenant-override-for-platform-owners">Backend Tenant Override for Platform Owners<a class="headerlink" href="#backend-tenant-override-for-platform-owners" title="Permanent link">&para;</a></h3>
+<p>All tenant-scoped handlers support <code>?tenantId=&lt;uuid&gt;</code> query parameter for platform owners (March 2026). The standard pattern:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">func</span><span class="w"> </span><span class="nx">getTenantID</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">()</span>
+<span class="w">    </span><span class="c1">// Platform owner can target any tenant via query param</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">IsPlatformOwner</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;tenantId&quot;</span><span class="p">);</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// Standard resolution: httpware context → headers → JWT claims</span>
+<span class="w">    </span><span class="nx">tenantIDStr</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">GetTenantID</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">tenantIDStr</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Frontend pattern:</strong> Platform owner UIs do NOT send <code>X-Tenant-ID</code>/<code>X-Tenant-Slug</code> headers. Instead, a centralized <code>TenantFilter</code> component lets the platform owner select a tenant, and the selected ID is passed as <code>?tenantId=</code> on API calls. When "All Tenants" is selected, no <code>tenantId</code> param is sent and the backend returns cross-tenant data for list endpoints.</p>
+<h3 id="auth-api-seed-logic">Auth-API Seed Logic<a class="headerlink" href="#auth-api-seed-logic" title="Permanent link">&para;</a></h3>
+<p>The auth-api seed creates the <code>codevertex</code> tenant first, then creates Codevertex-owned users (e.g. <code>admin@codevertex.dev</code>) with <code>superuser</code> membership. All other tenants are then seeded as business clients.</p>
+<hr />
+<h2 id="account-creation-subscription-enforcement-flow">Account Creation &amp; Subscription Enforcement Flow<a class="headerlink" href="#account-creation-subscription-enforcement-flow" title="Permanent link">&para;</a></h2>
+<h3 id="registration-flow-auth-ui-multi-step">Registration Flow (auth-ui multi-step)<a class="headerlink" href="#registration-flow-auth-ui-multi-step" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Step 1: Account Info (name, email, password)
+        ↓
+Step 2: Organisation
+        ├── Join Existing: search by slug → GET /api/v1/tenants/by-slug/{slug} (public)
+        │     → user joins with `member` role
+        └── Create New: provide name, slug, org_size, use_case
+              → POST /api/v1/auth/register with org_action=create_new
+              → auth-api creates tenant, assigns user `admin` role (tenant founder)
+              → publishes tenant.created event (downstream services sync)
+        ↓
+Step 3: Subscription Recommendation
+        → Fetch plans from GET /api/v1/plans (subscription-api)
+        → Display plans with features, limits, 14-day free trial
+        → User selects preferred plan (stored as profile.selected_plan)
+        ↓
+Submit → POST /api/v1/auth/register → redirect to /login
+        ↓ After login ↓
+If not platform user (primary_tenant ≠ codevertex):
+    → Check subscription-api: GET /api/v1/tenants/{id}/subscription
+    → If ACTIVE or TRIAL: allow full access
+    → If no subscription / EXPIRED: redirect to /subscribe page
+        → Show subscription plans, free trial CTA
+        → User selects plan → subscription-api provisions trial
+</code></pre></div>
+<h3 id="subscription-member-limits">Subscription Member Limits<a class="headerlink" href="#subscription-member-limits" title="Permanent link">&para;</a></h3>
+<p>When a tenant's subscription tier has <code>max_admins = 2</code>:
+- The 3rd user trying to register as <code>admin</code> for that org is blocked at registration
+- Error returned: <code>subscription_limit_exceeded</code> with tier details
+- Implementation: <code>Register()</code> checks <code>GET /api/v1/tenants/{id}/subscription</code> before creating membership <em>(planned — not yet enforced in code; tracked for next sprint)</em></p>
+<h3 id="login-post-auth-subscription-check">Login Post-Auth Subscription Check<a class="headerlink" href="#login-post-auth-subscription-check" title="Permanent link">&para;</a></h3>
+<p>After successful login, <strong>every frontend</strong> (except auth-ui itself) must:</p>
+<div class="highlight"><pre><span></span><code>1. Receive access_token from auth-api
+2. Check user.is_platform_owner
+   → true: skip subscription check, grant full access
+3. Call GET /api/v1/tenants/{tenant_id}/subscription (subscription-api)
+   → status=ACTIVE or TRIAL: allow access
+   → status=EXPIRED or no record: redirect to subscription page
+</code></pre></div>
+<hr />
+<h2 id="subscription-seed-uuid-resolution">Subscription Seed UUID Resolution<a class="headerlink" href="#subscription-seed-uuid-resolution" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Critical:</strong> The subscription-api seed must NEVER hardcode tenant UUIDs.
+Auth-api generates UUIDs at runtime (DB-generated). Hardcoded UUIDs will never match.</p>
+</blockquote>
+<h3 id="resolution-order">Resolution Order<a class="headerlink" href="#resolution-order" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Env var override</strong>: <code>TENANT_ID_{SLUG_UPPER}</code> (e.g. <code>TENANT_ID_ACME_RETAIL=&lt;uuid&gt;</code>)</li>
+<li><strong>Auth-api public endpoint</strong>: <code>GET /api/v1/tenants/by-slug/{slug}</code> (no auth required)</li>
+<li><strong>Skip with warning</strong>: if auth-api unreachable and no env var, log and continue</li>
+</ol>
+<h3 id="env-var-override-for-cioffline-seeding">Env Var Override (for CI/offline seeding)<a class="headerlink" href="#env-var-override-for-cioffline-seeding" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nv">TENANT_ID_ACME_RETAIL</span><span class="o">=</span>&lt;uuid-from-auth-api-db&gt;
+<span class="nv">TENANT_ID_CODEVERTEX</span><span class="o">=</span>&lt;uuid-from-auth-api-db&gt;
+<span class="nv">AUTH_API_URL</span><span class="o">=</span>https://sso.codevertexafrica.com<span class="w">  </span><span class="c1"># default</span>
+</code></pre></div>
+<h3 id="run-order">Run Order<a class="headerlink" href="#run-order" title="Permanent link">&para;</a></h3>
+<p>Auth-api seed <strong>must run before</strong> subscription-api seed so tenants exist in auth-api DB.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 11:12:54 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
