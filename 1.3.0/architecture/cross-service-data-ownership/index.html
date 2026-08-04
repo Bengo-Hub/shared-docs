@@ -1,0 +1,3863 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.">
+      
+      
+        <meta name="author" content="Codevertex Africa">
+      
+      
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.3.0/architecture/cross-service-data-ownership/">
+      
+      
+        <link rel="prev" href="../subscription-gating-guide/">
+      
+      
+        <link rel="next" href="../go-backend-ent-atlas-migrations/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Cross-Service Data Ownership - Codevertex Africa — Platform Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cross-service-data-ownership-user-management" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Codevertex Africa — Platform Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Cross-Service Data Ownership
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Technical Guide
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Codevertex Africa — Platform Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user-guide/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/platform-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscriptions & Billing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservice-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservice Architecture (master doc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trinity-authorization-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trinity Authorization Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Architecture (NATS/JetStream)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sso-integration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../login-flow-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Login Flow Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../subscription-gating-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscription Gating Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Service Data Ownership
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Service Data Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-architecture-no-data-duplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expected Architecture: No Data Duplication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canonical-data-ownership-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Data Ownership Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#item-lifecycle-use-case-flexibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Item Lifecycle &amp; "Use Case" Flexibility
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Item Lifecycle &amp; &#34;Use Case&#34; Flexibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-master-product-inventory-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Master Product (inventory-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sales-catalog-pos-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Sales Catalog (pos-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-fulfillment-projection-ordering-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Fulfillment Projection (ordering-backend)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generalization-cafe_id-vs-outlet_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generalization: cafe_id vs outlet_id
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-ownership-by-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Ownership by Service
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Ownership by Service">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auth-service-auth-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth-Service (auth-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crm-service-marketflow-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CRM Service (marketflow-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-service-inventory-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventory-Service (inventory-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ordering-service-ordering-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ordering-Service (ordering-backend)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pos-service-pos-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POS-Service (pos-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hospital-service-hospital-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hospital-Service (hospital-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#treasury-service-treasury-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Treasury-Service (treasury-api)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Treasury-Service (treasury-api)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quotation-crm-customer-integration-pattern-may-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quotation ↔ CRM Customer Integration Pattern (May 2026)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#financial-documents-cross-service-integration-patterns-may-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Financial Documents ↔ Cross-Service Integration Patterns (May 2026)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistics-service-logistics-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logistics-Service (logistics-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscriptions-service-subscriptions-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscriptions-Service (subscriptions-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifications-service-notifications-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications-Service (notifications-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iot-service-iot-service-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IoT-Service (iot-service-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entities-that-must-not-exist-in-non-owner-services-no-duplication-no-legacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entities That Must Not Exist in Non-Owner Services (No Duplication, No Legacy)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-data-is-accessed-no-duplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Data Is Accessed (No Duplication)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-service-event-subscription-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Service Event Subscription Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-management-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Management Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Management Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-1-service-specific-user-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 1: Service-Specific User Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-2-tenant-service-availability-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 2: Tenant Service Availability Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-3-service-to-service-data-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 3: Service-to-Service Data Queries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-plan-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Plan Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscription Plan Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-availability-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Availability Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication &amp; SSO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication &amp; SSO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Sign-On (SSO)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-specific-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service-Specific Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example-order-assignment-with-a-rider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked Example: Order Assignment with a Rider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-state-post-cleanup-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State (Post-Cleanup Target)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-libraries-uniformity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Libraries (Uniformity)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go-backend-ent-atlas-migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Backend — Ent + Atlas Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../devops-k8s-ingress-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps-K8s Ingress & CORS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../platform-standards/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Engineering Standards
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform Engineering Standards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/webhooks-vs-polling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhooks vs Polling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/connection-pooling-pgbouncer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection Pooling & PgBouncer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/idempotency-and-outbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotency & the Outbox Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/resilience-and-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resilience — Circuit Breakers & Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/rate-limiting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/s2s-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service-to-Service (S2S) Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/secrets-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secrets Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/ai-and-pgvector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Integrations & pgvector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/n-plus-one-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N+1 Queries & Preloading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../integrations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/payment-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Workflow (hub)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/mpesa-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M-Pesa (Daraja) Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-callback-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Callback Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/notifications-rest-api-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications REST API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/finance-integration-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-architecture-no-data-duplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expected Architecture: No Data Duplication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canonical-data-ownership-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canonical Data Ownership Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#item-lifecycle-use-case-flexibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Item Lifecycle &amp; "Use Case" Flexibility
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Item Lifecycle &amp; &#34;Use Case&#34; Flexibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-master-product-inventory-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Master Product (inventory-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sales-catalog-pos-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Sales Catalog (pos-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-fulfillment-projection-ordering-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Fulfillment Projection (ordering-backend)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generalization-cafe_id-vs-outlet_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generalization: cafe_id vs outlet_id
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-ownership-by-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Ownership by Service
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Ownership by Service">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auth-service-auth-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth-Service (auth-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crm-service-marketflow-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CRM Service (marketflow-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-service-inventory-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventory-Service (inventory-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ordering-service-ordering-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ordering-Service (ordering-backend)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pos-service-pos-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POS-Service (pos-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hospital-service-hospital-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hospital-Service (hospital-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#treasury-service-treasury-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Treasury-Service (treasury-api)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Treasury-Service (treasury-api)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quotation-crm-customer-integration-pattern-may-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quotation ↔ CRM Customer Integration Pattern (May 2026)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#financial-documents-cross-service-integration-patterns-may-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Financial Documents ↔ Cross-Service Integration Patterns (May 2026)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logistics-service-logistics-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logistics-Service (logistics-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscriptions-service-subscriptions-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscriptions-Service (subscriptions-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifications-service-notifications-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications-Service (notifications-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iot-service-iot-service-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IoT-Service (iot-service-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entities-that-must-not-exist-in-non-owner-services-no-duplication-no-legacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entities That Must Not Exist in Non-Owner Services (No Duplication, No Legacy)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-data-is-accessed-no-duplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Data Is Accessed (No Duplication)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-service-event-subscription-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Service Event Subscription Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-management-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Management Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Management Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-1-service-specific-user-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 1: Service-Specific User Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-2-tenant-service-availability-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 2: Tenant Service Availability Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-3-service-to-service-data-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 3: Service-to-Service Data Queries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-plan-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Plan Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscription Plan Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-availability-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Availability Check
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication &amp; SSO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication &amp; SSO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single Sign-On (SSO)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-specific-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service-Specific Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example-order-assignment-with-a-rider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked Example: Order Assignment with a Rider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-state-post-cleanup-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State (Post-Cleanup Target)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-libraries-uniformity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Libraries (Uniformity)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cross-service-data-ownership-user-management">Cross-Service Data Ownership &amp; User Management<a class="headerlink" href="#cross-service-data-ownership-user-management" title="Permanent link">&para;</a></h1>
+<p><code>hospital-api</code> (Codevertex Afya) is the target owner of all clinical-workflow entities (Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, specialized-care programme records). This data currently lives in <code>pos-api</code> and will migrate out once hospital-api reaches feature parity — no migration has happened yet, so the ownership below is the target model, not the current database state. hospital-api references inventory-api (drug/lot/interaction master) and treasury-api (invoices/quotations/insurance claims, KRA eTIMS transmission opt-in per tenant/service) the same way pos-api already does.</p>
+<p>Downstream services store only a minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at) — branding, contact info, and subscription data are fetched from auth-api's Redis-cached tenant projection rather than duplicated locally. Use case is scoped per-outlet, not per-tenant, so a single tenant can have outlets configured for different use cases (e.g. one retail outlet and one hospitality outlet under the same organisation). No data duplication anywhere: each service stores only what it owns, and reads everything else via REST, events, or gRPC references.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This document is the <strong>canonical</strong> definition of data ownership across Codevertex microservices. It ensures <strong>no data duplication</strong>: each service stores only the data it owns; any need for another service’s data is satisfied by <strong>reference IDs</strong> and access via <strong>REST</strong>, <strong>events (NATS)</strong>, or <strong>gRPC</strong> — never by copying entities into another service’s database.</p>
+<hr />
+<h2 id="expected-architecture-no-data-duplication">Expected Architecture: No Data Duplication<a class="headerlink" href="#expected-architecture-no-data-duplication" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Single store per entity:</strong> Each entity (e.g. Product Master, orders, riders, payments) has exactly one owning service. That service is the only place that creates, updates, and stores that data.</li>
+<li><strong>Reference only elsewhere:</strong> Other services store only <strong>references</strong> (e.g. <code>inventory_item_id</code>, <code>rider_id</code>, <code>payment_id</code>) and optionally minimal <strong>snapshots</strong> for audit (e.g. amount at time of payment). They do <strong>not</strong> store a full copy of the entity.</li>
+<li><strong>Access via integration:</strong> To read or act on another service’s data, a service calls that service’s <strong>REST</strong> or <strong>gRPC</strong> APIs, or reacts to <strong>NATS events</strong> it publishes. Catalog/projection caches (e.g. POS Sales Catalog, ordering catalog cache) are <strong>synced from the owner</strong> (inventory-api), not authored locally. Core inventory master data (Items, Categories, Warehouses) is accessible via <strong>public GET endpoints</strong> to facilitate auto-discovery and synchronization.</li>
+<li><strong>Auth is always available:</strong> Tenant and user identity come from auth-api; all services use the same tenant UUID from auth. Other services may require a subscription check before use (subscriptions-api).</li>
+</ul>
+<hr />
+<h2 id="core-principles">Core Principles<a class="headerlink" href="#core-principles" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Single Source of Truth</strong>: Each service owns and manages all data related to its domain; no other service duplicates that data.</li>
+<li><strong>Reference Only</strong>: Other services store only reference IDs (and optional audit snapshots), never full copies of entities they do not own.</li>
+<li><strong>Access via REST / events / gRPC</strong>: To use another service's data, call its API or consume its events; do not replicate tables.</li>
+<li><strong>Tenant Service Availability</strong>: Check tenant subscription (subscriptions-api) before creating or referencing data in a dependent service (except auth-api, which is always available).</li>
+<li><strong>SSO Authentication</strong>: All users authenticate via auth-service (SSO); service-specific data (e.g. rider profile, loyalty) is stored only in the owning service.</li>
+<li><strong>Service Independence</strong>: Services can operate standalone or in combination based on tenant subscription.</li>
+</ol>
+<hr />
+<h2 id="canonical-data-ownership-matrix">Canonical Data Ownership Matrix<a class="headerlink" href="#canonical-data-ownership-matrix" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Owner Service</th>
+<th>Data/Entities</th>
+<th>Integration Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Identity</strong></td>
+<td><code>auth-api</code></td>
+<td>Users, Tenants, <strong>Outlets</strong>, Roles</td>
+<td>SSO (JWT), <code>user_id</code>/<code>outlet_id</code> refs. Auto-provisions downstream (Inventory Warehouses, Ordering Outlets) via NATS events.</td>
+</tr>
+<tr>
+<td><strong>CRM / Customer Relationship</strong></td>
+<td><code>marketflow-api</code></td>
+<td>Leads, Contacts, Deals, Pipelines, Accounts, Activities, Tasks, Campaigns, Funnels, NurtureSequences, ChatSessions, Meetings, CustomFields, AI Agents</td>
+<td>REST (GET), <code>crm_contact_id</code> refs, NATS events</td>
+</tr>
+<tr>
+<td><strong>Product Master</strong></td>
+<td><code>inventory-api</code></td>
+<td>Items (SKUs), BOM, Recipes, <strong>Units</strong>, <strong>Categories</strong> (hierarchical), <strong>Variants</strong>, <strong>CustomFieldDefinition/Value</strong>, <strong>InventoryLot</strong>, <strong>VariantAttribute</strong>, <strong>Bundle/BundleComponent</strong>, <strong>Supplier</strong>, <strong>PurchaseOrder/Line</strong>, <strong>StockTransfer/Line</strong>, <strong>Warranty</strong></td>
+<td>REST (GET), <code>sku</code>/<code>product_id</code> refs</td>
+</tr>
+<tr>
+<td><strong>Sales Catalog</strong></td>
+<td><code>pos-api</code></td>
+<td>Catalogs, Modifier Groups, Local Prices, <strong>KDSStation/KDSTicket</strong>, <strong>Appointment</strong>, <strong>StaffMember</strong>, <strong>SerialNumberLog</strong>, <strong>CommissionRecord</strong></td>
+<td>Sync from Inventory, NATS <code>CatalogUpdated</code></td>
+</tr>
+<tr>
+<td><strong>Orders (Online)</strong></td>
+<td><code>ordering-backend</code></td>
+<td>Carts, Online Orders, <strong>Catalog Projection</strong>, Booking/Appointment refs (loyalty is read/written via pos-api, not owned here)</td>
+<td>Projection of Global Catalog, NATS Events</td>
+</tr>
+<tr>
+<td><strong>Logistics</strong></td>
+<td><code>logistics-api</code></td>
+<td>Riders, Tasks, Proof of Delivery, <strong>PricingRule</strong>, <strong>RiderShift</strong></td>
+<td>REST, Webhooks, <code>rider_id</code> refs</td>
+</tr>
+<tr>
+<td><strong>Payments</strong></td>
+<td><code>treasury-api</code></td>
+<td>Intents, Transactions, Refunds, Taxes, <strong>PaymentSplit</strong>, <strong>Settlement/SettlementLine</strong>, <strong>ReconciliationRun</strong>, <strong>InstallmentPlan/Installment</strong></td>
+<td>REST, Webhooks, <code>payment_intent_id</code> refs</td>
+</tr>
+<tr>
+<td><strong>Subscription plans, tenant entitlements</strong></td>
+<td>subscriptions-api</td>
+<td>All services: check plan before using inventory, POS, logistics, treasury, etc.</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Notification templates, delivery status, channel preferences</strong></td>
+<td>notifications-api</td>
+<td>Other services: trigger via events or API; store only <code>notification_message_id</code> etc. if needed</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>IoT devices, telemetry, alerts</strong></td>
+<td>iot-service-api</td>
+<td>inventory-api (e.g. temperature/compliance), notifications; optional POS/inventory hardware integration</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Loyalty &amp; Referrals</strong></td>
+<td><code>pos-api</code></td>
+<td>LoyaltyProgram, LoyaltyAccount, LoyaltyTransaction, <strong>Referral</strong> — keyed on <code>crm_contact_id</code>; ordering-backend is a client, not an owner</td>
+<td>REST, <code>pos.loyalty.*</code> events</td>
+</tr>
+<tr>
+<td><strong>AR / AP balances</strong></td>
+<td><code>treasury-api</code></td>
+<td><strong>CustomerBalance</strong> (credit sale, ageing, statements), <strong>VendorBalance</strong> (supplier opening/advance, ageing), supplier <strong>rebate</strong> credit notes, <strong>cost_center</strong></td>
+<td>REST, <code>customer_balance</code>/<code>vendor_balance</code> refs</td>
+</tr>
+<tr>
+<td><strong>Procurement breakdown</strong></td>
+<td><code>inventory-api</code></td>
+<td><strong>StockBreakdown</strong> (bulk→retail uom-explode; cost carried parent→child)</td>
+<td>event <code>inventory.stock.broken_down</code></td>
+</tr>
+<tr>
+<td><strong>Repair / job-card</strong></td>
+<td><code>pos-api</code> (services module)</td>
+<td><strong>RepairJob</strong> (intake→diagnosis→parts→settle); parts from inventory, payment via treasury</td>
+<td>REST, <code>pos.repair.*</code> events</td>
+</tr>
+<tr>
+<td><strong>Financial documents</strong></td>
+<td><code>treasury-api</code></td>
+<td><strong>Invoices, Quotations, proforma, Sales Credit-Notes (eTIMS), AP vendor credit-notes</strong> — pos never duplicates these</td>
+<td>S2S create from pos context (return→<code>/s2s/{t}/invoices/{id}/create-credit-note</code>; cart→quotation)</td>
+</tr>
+<tr>
+<td><strong>Hospital clinical workflow</strong> (Codevertex Afya)</td>
+<td><code>hospital-api</code> (target owner)</td>
+<td>Patient, PatientVisit, TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom), LabOrder/LabOrderLine, LabTest (tenant-custom), Prescription/PrescriptionLine, ControlledSubstanceLog, Ward/Bed/Admission, Appointment/OPD queue, Referral, specialized-care programme records (ANC/PNC/ART/TB/Immunization/Morgue)</td>
+<td>REST/events once implemented; references <code>inventory_item_id</code>/<code>lot_id</code> (inventory-api) and <code>invoice_id</code>/<code>insurance_claim_id</code> (treasury-api). Currently owned by <code>pos-api</code> pending migration.</td>
+</tr>
+</tbody>
+</table>
+<p>Loyalty is a single source of truth in <code>pos-api</code> — both online (ordering) and in-store (pos) purchases earn into one balance, keyed on <code>crm_contact_id</code>, so ordering-backend calls pos's loyalty endpoints rather than owning its own. Financial documents (invoices, quotations, credit notes) live exclusively in treasury-api; pos-ui never builds a parallel entity for them, only creates them via S2S from a pos context (a return creates a credit note, a saved cart creates a quotation). The same "link, don't rebuild" rule applies across the frontends generally: pos-ui links out to treasury-ui/inventory-ui/marketflow-ui pages (an external redirect, with the target service enforcing its own RBAC) rather than recreating another service's UI — only the actual pos-to-service integration action lives in pos-ui itself.</p>
+<hr />
+<h2 id="item-lifecycle-use-case-flexibility">Item Lifecycle &amp; "Use Case" Flexibility<a class="headerlink" href="#item-lifecycle-use-case-flexibility" title="Permanent link">&para;</a></h2>
+<p>To support a wide range of business models (Hospitality, Retail, Warehouse), the system employs a tiered data model:</p>
+<h3 id="1-master-product-inventory-api">1. Master Product (<code>inventory-api</code>)<a class="headerlink" href="#1-master-product-inventory-api" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authority</strong>: Owns the physical definition (Name, SKU, Base UoM, Recipe/BOM).</li>
+<li><strong>Flexibility</strong>: Stores the <code>use_case</code> (Retail vs Hospitality) at the Outlet level.</li>
+</ul>
+<h3 id="2-sales-catalog-pos-api">2. Sales Catalog (<code>pos-api</code>)<a class="headerlink" href="#2-sales-catalog-pos-api" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authority</strong>: Owns the <strong>Menu/Catalog</strong>. Defines how Master Products are sold at a specific <strong>Outlet</strong>.</li>
+<li><strong>Data</strong>: Modifiers, POS-specific Categories, Button positions, Outlet Prices.</li>
+<li><strong>Integration</strong>: Publishes <code>pos.menu.updated</code> when the sales interface changes.</li>
+</ul>
+<h3 id="3-fulfillment-projection-ordering-backend">3. Fulfillment Projection (<code>ordering-backend</code>)<a class="headerlink" href="#3-fulfillment-projection-ordering-backend" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authority</strong>: Owns the <strong>Online Storefront</strong> presentation.</li>
+<li><strong>Data</strong>: Read-only projection of the POS Menu, augmented with online-only flags (e.g., <code>featured_on_web</code>).</li>
+<li><strong>Integration</strong>: Zero-authority for master data; hydrates local cache via NATS events.</li>
+</ul>
+<h2 id="generalization-cafe_id-vs-outlet_id">Generalization: <code>cafe_id</code> vs <code>outlet_id</code><a class="headerlink" href="#generalization-cafe_id-vs-outlet_id" title="Permanent link">&para;</a></h2>
+<p>All services must use the generic <code>outlet_id</code> to refer to physical/logical locations. A "Cafe" is simply an outlet with a <code>Hospitality</code> use case. This allows the same services to manage "Warehouses" (Stock use case) or "Electronics Stores" (Retail use case).</p>
+<h2 id="data-ownership-by-service">Data Ownership by Service<a class="headerlink" href="#data-ownership-by-service" title="Permanent link">&para;</a></h2>
+<h3 id="auth-service-auth-api">Auth-Service (auth-api)<a class="headerlink" href="#auth-service-auth-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong> (only store here; no duplication elsewhere):
+- User identity (email, password, phone, status, full_name, avatar)
+- <strong>Tenant definitions, UUIDs, and branding</strong> — single source of truth for tenant identity, logo, brand colors, contact info, use case, subscription cache
+- Tenant membership and roles
+- Sessions and MFA
+- OAuth client registry and consent</p>
+<p><strong>Other services reference</strong> (no copy of user/tenant data):
+- <code>tenant_id</code> (UUID) from JWT or auth-api events
+- <code>auth_service_user_id</code> / <code>user_id</code> (UUID)
+- Identity updates via events: <code>auth.user.created</code>, <code>auth.user.updated</code>, <code>auth.user.deactivated</code>, <code>auth.tenant.*</code></p>
+<p><strong>Tenant data access pattern (March 2026):</strong>
+- Downstream services store only: <code>id</code>, <code>slug</code>, <code>name</code>, <code>status</code>, <code>use_case</code>, <code>sync_status</code>, <code>last_sync_at</code>
+- All branding (logo, colors, contact info) is fetched from auth-api <code>GET /api/v1/tenants/by-slug/{slug}</code> and cached in Redis with key <code>tenant:{slug}</code> and JWT-aligned TTL (6 hours default) via <code>cache.GetTenantDetails()</code>
+- Frontend services use TanStack Query with staleTime = JWT TTL to cache tenant branding
+- <strong>No service stores branding locally</strong> — no <code>brand_colors</code>, <code>logo_url</code>, <code>contact_email</code>, <code>contact_phone</code>, <code>website</code>, <code>country</code>, <code>timezone</code>, <code>org_size</code>, <code>subscription_plan/status/expires_at/id</code>, <code>tier_limits</code>, <code>metadata</code> in downstream tenant tables
+- Subscription enforcement reads from JWT claims (<code>SubscriptionPlan</code>, <code>SubscriptionStatus</code>, <code>SubscriptionLimits</code>), not from tenant DB
+- <strong>Branding editing</strong>: Only auth-ui (<code>accounts.codevertexafrica.com/dashboard/settings?tab=branding</code>). All other frontends redirect to auth-ui for branding management
+- <strong>Profile editing</strong>: Common fields (name, email, avatar) managed at auth-ui. Role-specific fields (rider KYC, customer preferences) managed by owning service</p>
+<hr />
+<h3 id="crm-service-marketflow-api">CRM Service (marketflow-api)<a class="headerlink" href="#crm-service-marketflow-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong> (single source of truth for all customer relationship data):
+- <strong>Lead</strong> — potential customers/recruits captured via ads, funnels, chat, manual entry
+- <strong>Contact</strong> — known customers/partners with full profile, lifecycle stage, account link
+- <strong>Deal / Opportunity</strong> — sales pipeline records with value, stage, probability, close date
+- <strong>Pipeline / PipelineStage</strong> — tenant-configurable sales pipeline with ordered stages
+- <strong>Account</strong> — company/organization-level records linked to contacts
+- <strong>Activity</strong> — unified timeline of all interactions per entity (emails, calls, notes, meetings, SMS, WhatsApp)
+- <strong>Task</strong> — follow-up reminders and action items linked to leads/contacts/deals
+- <strong>Campaign</strong> — Meta/TikTok/Google/manual marketing campaigns
+- <strong>Funnel</strong> — multi-step landing pages for lead capture and qualification
+- <strong>NurtureSequence</strong> — automated multi-channel follow-up sequences (email/SMS/WhatsApp)
+- <strong>ChatSession</strong> — AI chatbot conversations (web widget, WhatsApp, funnel)
+- <strong>ScheduledMeeting</strong> — Cal.com meeting bookings linked to leads/contacts
+- <strong>CustomFieldDef / CustomFieldValue</strong> — per-tenant extensible fields for leads/contacts/deals
+- <strong>LeadScoringRule</strong> — configurable rule-based lead scoring conditions
+- <strong>CustomAgent / AgentRun</strong> — tenant-defined AI automation agents and their execution logs
+- <strong>ShortLink</strong> — URL shortener for tracking</p>
+<p><strong>Other services MUST NOT store</strong> lead profiles, contact email/phone/name, deal records, activity logs, pipeline data, or any CRM entity. They store only <code>crm_contact_id</code> (nullable UUID) as a reference FK.</p>
+<p><strong>Cross-service reference pattern:</strong>
+- <code>pos-api</code> LoyaltyAccount and Appointment: add nullable <code>crm_contact_id</code> UUID FK
+- <code>ordering-backend</code> Order: add nullable <code>crm_contact_id</code> UUID FK
+- <code>treasury-api</code> PaymentIntent: add nullable <code>crm_contact_id</code> UUID FK
+- <code>ticketing-api</code> Ticket: add nullable <code>crm_contact_id</code> and <code>crm_lead_id</code> UUID FKs
+- All FKs are <strong>nullable</strong> — existing records function without CRM; linkage is opt-in</p>
+<p><strong>Integration pattern (no duplication):</strong>
+- <code>marketflow-worker</code> subscribes to <code>ordering.order.created</code>, <code>pos.sale.finalized</code>, <code>treasury.payment.succeeded</code>, <code>pos.appointment.completed</code> — when <code>crm_contact_id</code> is set on the event payload, logs an Activity on the CRM contact timeline
+- Other services query contact details via <code>GET /api/v1/contacts/{crm_contact_id}</code> on marketflow-api using <code>X-API-Key: INTERNAL_SERVICE_KEY</code> when they need contact name/email for display
+- <code>GET /api/v1/contacts/{id}/360</code> on marketflow-api aggregates cross-service data (orders from ordering-backend, payments from treasury-api, loyalty from pos-api) in one response</p>
+<p><strong>Events published by marketflow-api (via NATS outbox):</strong>
+- <code>crm.lead.created</code>, <code>crm.lead.qualified</code>, <code>crm.lead.converted</code>
+- <code>crm.contact.created</code>, <code>crm.contact.updated</code>, <code>crm.contact.enriched</code>
+- <code>crm.deal.created</code>, <code>crm.deal.stage_moved</code>, <code>crm.deal.won</code>, <code>crm.deal.lost</code>
+- <code>crm.activity.logged</code>
+- <code>crm.task.created</code>, <code>crm.task.overdue</code>
+- <code>crm.agent.action_taken</code></p>
+<p><strong>Other services reference</strong>: <code>crm_contact_id</code>, <code>crm_lead_id</code>; contact/deal data via marketflow-api REST when needed.</p>
+<hr />
+<h3 id="inventory-service-inventory-api">Inventory-Service (inventory-api)<a class="headerlink" href="#inventory-service-inventory-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong> (single source of truth for product master and stock):
+- <strong>Units of measure (UoM)</strong> — core shared, no tenant_id; one global unit list
+- <strong>Items (SKU master)</strong> — tenant-scoped; now includes barcode, barcode_type, compliance flags (age_verification, controlled_substance, perishable, serial_numbers, lots), weight_kg, dimensions_cm, duration_minutes
+- <strong>ItemVariants</strong> — attributes map, barcode, image_url, cost_price, weight_kg
+- <strong>Product categories</strong> (ItemCategory) — tenant-scoped; now hierarchical with parent_id, depth, path, slug, icon, sort_order
+- <strong>Recipes and BOM</strong> (recipe_ingredients) — tenant-scoped; Recipe now includes total_cost, cost_per_portion, target_margin_percent, suggested_price
+- Warehouses, inventory_balances (now with reorder_quantity, preferred_supplier_id, auto_reorder_enabled), reservations, consumptions
+- Stock adjustments, low-stock state
+- <strong>CustomFieldDefinition / CustomFieldValue</strong> — structured metadata per item/category (NEW)
+- <strong>InventoryLot</strong> — batch/lot tracking with expiry dates (NEW)
+- <strong>VariantAttribute</strong> — structured variant matrix definitions (NEW)
+- <strong>Bundle / BundleComponent</strong> — pre-packaged kits (NEW)
+- <strong>Supplier</strong> — vendor management (NEW)
+- <strong>PurchaseOrder / PurchaseOrderLine</strong> — procurement workflow (NEW)
+- <strong>StockTransfer / StockTransferLine</strong> — inter-warehouse transfers (NEW)
+- <strong>Warranty</strong> — serial number warranty tracking (NEW)
+- <strong>Hospitality SERVICE items</strong> — Items with <code>use_case</code> ∈ {<code>HOSPITALITY_ROOM</code>, <code>HOSPITALITY_FACILITY</code>, <code>CONFERENCE</code>, <code>SALON_SERVICE</code>, <code>AMENITY</code>} are the <strong>master</strong> for room-types, conference halls, facilities, and amenities, including their rates (via <code>ItemPricing</code>), <code>meal_plan</code> (RO/BB/HB/FB/AI), occupancy basis and capacity. pos-api references these by <code>inventory_item_id</code> and projects price via catalog sync. (NEW — June 2026)
+- <strong>Conference / event packages</strong> — modeled as <code>Bundle</code> (parent SERVICE Item) + <code>BundleComponent</code> rows (meal periods, AV, stationery, consumables, sessions). <code>package_type</code> ∈ {<code>ROOM_RATE_PLAN</code>, <code>DDR</code>, <code>RDR</code>, <code>HALF_BOARD</code>, <code>FULL_BOARD</code>, <code>HALL_HIRE_ONLY</code>, <code>SERVICE_SESSIONS</code>}; <code>price_basis</code> ∈ {<code>per_delegate_per_day</code>, <code>per_person_sharing</code>, <code>flat</code>, <code>per_session</code>}. This <strong>replaces</strong> any pricing/package authoring in pos-api (<code>Room.rate_per_night</code>, <code>Facility.rate_per_session</code>, <code>ServicePackage.price</code>). (NEW — June 2026)
+- <strong>ItemPricing outlet override</strong> — <code>outlet_id</code> (nullable) + <code>tier_basis</code> (nightly/per_session/per_delegate_per_day/peak/off_peak) for outlet-level and seasonal rate tiers. (NEW — June 2026)</p>
+<p><strong>Other services do not store</strong> items, units, recipes, lots, suppliers, purchase orders, <strong>or hospitality rates/packages</strong>; they reference by <code>inventory_item_id</code>, <code>sku</code>, <code>recipe_id</code>, <code>lot_id</code>, <code>supplier_id</code> and get data via REST (e.g. GET /items, GET /units, GET /recipes, GET /lots, GET /suppliers) or events. Ordering and POS may keep a <strong>read-only projection/cache</strong> of catalog synced from inventory.</p>
+<p><strong>Other services reference</strong>: <code>inventory_item_id</code>, <code>inventory_sku</code>, <code>recipe_id</code>, <code>reservation_id</code>, <code>lot_id</code>, <code>supplier_id</code>, <code>purchase_order_id</code>, <code>transfer_id</code>, <code>warranty_id</code>; catalog and units via inventory-api APIs or sync.</p>
+<p><strong>Reuse note:</strong> inventory-api's existing <code>Asset</code>/<code>AssetMaintenance</code> schemas (asset tag, category, location, warranty, maintenance schedule, depreciation fields) are the biomedical-equipment/hospital-asset register for <code>hospital-api</code> — surfaced there as "Biomedical Equipment" via <code>asset_id</code> reference, not a new asset module. Physical blood-bank units are modeled as a short-shelf-life <code>InventoryLot</code>-tracked item category, reusing the same batch/expiry mechanism drugs already use — no bespoke blood inventory system. See <code>hospital-service/hospital-api/docs/integrations.md</code> § 1.5-1.6.</p>
+<hr />
+<h3 id="ordering-service-ordering-backend">Ordering-Service (ordering-backend)<a class="headerlink" href="#ordering-service-ordering-backend" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong> (order lifecycle and cafe context only):
+- Online orders (now with appointment_id, staff_preference_id, preferred_carrier), order_items (now with item_type, service_start_time, duration_minutes), carts, cart_items
+- Cafe/outlet context (cafes, outlets) as used by ordering
+- Promo codes, redemptions (loyalty accounts/transactions are now owned by <strong>pos-api</strong>; ordering reads/writes via pos loyalty API)
+- Cafe-specific user preferences/roles for ordering UX
+- <strong>CatalogOverride</strong> — now with requires_age_verification, item_type, variant_options</p>
+<p><strong>Catalog (catalog_items, catalog_categories):</strong> Not owned as master. Either (A) <strong>no local tables</strong> — catalog read from inventory-api (proxy or frontend calls inventory), or (B) <strong>read-only cache/projection</strong> synced from inventory-api (all catalog writes go to inventory-api). <code>ordering-backend</code> pulls public core master data from <code>inventory-api</code>. Ordering stores only <code>item_id</code>/<code>sku</code>/<code>recipe_id</code> references.</p>
+<p><strong>Does not store (reference only):</strong> Payment intents, payments, payment methods, refunds (treasury-api); notification events/templates/subscriptions (notifications-api); proof of delivery, logistics events (logistics-api). Ordering keeps only <code>payment_intent_id</code> on Order and uses treasury client for intent create/get; notifications and payments modules use stub/treasury-only repositories.</p>
+<p><strong>Other services reference</strong>: <code>order_id</code>, <code>cafe_id</code>; logistics and treasury use order refs for tasks and payments.</p>
+<hr />
+<h3 id="pos-service-pos-api">POS-Service (pos-api)<a class="headerlink" href="#pos-service-pos-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong> (sales and shift context only):
+- POS orders, pos_order_lines, cash_drawers, tenders, price_books, price_book_items
+- <strong>catalog_items</strong> as <strong>projection/cache</strong> from inventory-api (not product master; sync or pull from inventory-api); CatalogItem now includes inventory_item_id, item_type, compliance flags, duration_minutes, cost_price, tags
+- <strong>OutletSetting</strong> — display_mode (list/card/image_grid), show_barcode_scanner, enable_kds, enable_appointments
+- <strong>ModifierGroup</strong> / <strong>Modifier</strong> — now with inventory_modifier_group_id / inventory_modifier_option_id for sync from inventory
+- POS connections, outlets, sessions
+- <strong>KDSStation / KDSTicket</strong> — Kitchen Display System routing and ticket lifecycle (NEW)
+- <strong>Appointment</strong> — salon/service scheduling (NEW)
+- <strong>StaffMember</strong> — staff with commission rates, service assignments (NEW)
+- <strong>SerialNumberLog</strong> — serial number tracking at POS (NEW)
+- <strong>CommissionRecord</strong> — commission tracking per staff member (NEW)
+- <strong>LoyaltyProgram / LoyaltyAccount / LoyaltyTransaction / Referral</strong> — in-store + cross-channel loyalty <strong>SoT</strong>, keyed on <code>crm_contact_id</code>; ordering-backend reads/writes via pos loyalty API and does not own a second balance
+- <strong>RepairJob</strong> (services module) — repair/job-card lifecycle (intake→diagnosis→parts→settle); parts referenced from inventory, settled via treasury
+- <strong>Hotel operations</strong> — <code>Room</code>/<code>RoomGuest</code> (guest stay, check-in/out), <code>RoomBooking</code> (multi-room group header), <code>RoomFolioItem</code> (folio charges), <code>RoomAmenity</code> assignment, <code>Facility</code>/<code>FacilityBooking</code>, <code>HousekeepingTask</code>. These hold <strong>operational state only</strong> (status, occupancy, guest data); rates and room-type/facility/amenity masters live in inventory-api (referenced via <code>inventory_item_id</code>). (NEW — June 2026)
+- <strong>EventBooking (BEO)</strong> — conference/wedding/party bookings referencing an inventory <code>Bundle</code> (<code>inventory_bundle_id</code>) for the package master. (NEW — June 2026)
+- <strong>MealEntitlement</strong> — meal-card/voucher issuance &amp; redemption per delegate × conference-day × meal-period (one-time <code>issued→redeemed</code> with validity window). The <em>template</em> of included meals lives on the inventory Bundle; redemption backflushes meal BOM to inventory. (NEW — June 2026)
+- <strong>Happy-hour promotions</strong> — <code>Promotion</code>/<code>PromotionRule</code> extended with <code>promo_kind=happy_hour</code>, daily <code>window_start</code>/<code>window_end</code>, <code>days_of_week</code>, <code>outlet_id</code>, <code>auto_apply</code>, and category/item scoping that <strong>references inventory category ids</strong> (synced via <code>inventory.category.*</code>). Happy hour is a sales-pricing operation on the projection, not a product master. (NEW — June 2026)
+- <strong>Guest ID document</strong> — <code>RoomGuest.id_document_url</code> stores only an <strong>object-storage key</strong> (PII; never the blob). The file lives in object storage with presigned, expiring access.</p>
+<p><strong>Does not own</strong>: Units, items, recipes, <strong>room-type/facility/amenity masters, conference/event package definitions, or any hospitality rate</strong> — obtained from inventory-api via REST or sync. Guest contact identity converges on marketflow-api CRM (<code>crm_contact_id</code>). Stock consumption reported to inventory-api via REST (POST /consumption) or event (<code>pos.sale.finalized</code>).</p>
+<p><strong>Other services reference</strong>: <code>pos_order_id</code>, <code>pos_outlet_id</code>, <code>pos_connection_id</code>, <code>appointment_id</code>, <code>staff_member_id</code>.</p>
+<hr />
+<h3 id="hospital-service-hospital-api">Hospital-Service (hospital-api)<a class="headerlink" href="#hospital-service-hospital-api" title="Permanent link">&para;</a></h3>
+<p><strong>Product:</strong> Codevertex Afya. <strong>Status:</strong> platform scaffolding (auth, tenant sync, health checks) is live; clinical domain schemas and business logic are not yet built, so none of the ownership below is implemented in a database today. This section documents the <em>target</em> ownership — <code>pos-api</code>'s existing clinical/pharmacy tables (see below) are expected to migrate out to hospital-api over time, not stay there permanently.</p>
+<p><strong>Will own</strong> (once implemented):
+- Patient (MRN, demographics), PatientVisit/Encounter, Referral
+- TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom entries; the default catalogue is global reference data)
+- LabOrder/LabOrderLine, LabTest (tenant-custom entries; the default catalogue is global reference data)
+- Prescription/PrescriptionLine, ControlledSubstanceLog
+- Ward/Bed/Admission, discharge summaries
+- Specialized-care programme records: ANC, PNC, ART, TB, Immunization, Morgue</p>
+<p><strong>Does not own</strong> (references only, exactly like pos-api's existing pattern): drug/item master,
+lot/expiry, drug-interaction rules, controlled-substance schedule, KRA eTIMS item codes
+(<code>inventory-api</code>); invoices, quotations, insurance claims/coverage/remittance, payments, eTIMS
+transmission (<code>treasury-api</code>, eTIMS opt-in per tenant/service — not mandatory on every encounter);
+tenant/user identity (<code>auth-api</code>); <code>service_tag: hospital</code> subscription plans (<code>subscriptions-api</code>).</p>
+<p><strong>Migration note:</strong> <code>pos-api</code> currently owns all of the "will own" entities above (built for
+pharmacy dispensing at a retail till, then organically grew a full OPD/clinical workflow). Per
+<code>feedback_erp_decisive_removal</code>-style platform convention (decisive removal, no reference-ID
+shims), these move to hospital-api in full once it reaches feature parity — <strong>not yet executed</strong>.
+See <code>hospital-service/hospital-api/docs/integrations.md</code> § "Migration ADR" for the exact file/schema
+list. <code>pos-api</code> keeps its standalone "Codevertex Dawa" retail-pharmacy/chemist product (OTC till
+sale, no clinical workflow) — a tenant uses either pos-api Dawa or hospital-api, never both for the
+same outlet.</p>
+<hr />
+<h3 id="treasury-service-treasury-api">Treasury-Service (treasury-api)<a class="headerlink" href="#treasury-service-treasury-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong> (single source of truth for money and tax):
+- Payment intents (now with allow_split), transactions, payment methods
+- Refunds, payouts, invoices
+- Taxes, payment gateway config, chart of accounts, ledger
+- <strong>PaymentSplit</strong> — split payments across multiple methods (NEW)
+- <strong>Settlement / SettlementLine</strong> — merchant settlement processing (NEW)
+- <strong>ReconciliationRun</strong> — gateway reconciliation (NEW)
+- <strong>InstallmentPlan / Installment</strong> — buy-now-pay-later support (NEW)
+- <strong>CustomerBalance</strong> — AR running balance, ageing, statements, <strong>credit-sale</strong> posting (keyed on <code>crm_contact_id</code>)
+- <strong>VendorBalance</strong> — AP running balance, supplier <strong>opening/advance balance</strong>, ageing, statements; supplier master stays in inventory-api
+- <strong>Supplier rebate / vendor credit notes</strong> + <strong>cost_center</strong> dimension on expense/journal lines
+- <strong>Quotations / QuotationLines</strong> — sales quotations and line items (from ERP finance)
+- <strong>Expenses / ExpenseCategories / ExpenseClaims</strong> — expense tracking and claims (from ERP finance)
+- <strong>TaxCodes / TaxPeriods / TaxFilings</strong> — tax configuration and compliance (from ERP finance)
+- <strong>eTIMSDevices / eTIMSInvoices</strong> — KRA eTIMS device registration and invoice transmission (from ERP finance)
+- <strong>Budgets / BudgetLines</strong> — budget management (from ERP finance)
+- <strong>ApprovalWorkflows / ApprovalSteps / ApprovalRecords</strong> — approval workflows for financial entities (from ERP finance)
+- <strong>VendorBills / VendorBillLines</strong> — vendor bill management (from ERP finance)
+- <strong>BankAccounts / BankStatements / BankStatementLines / ReconciliationRules</strong> — banking and reconciliation (from ERP finance)
+- <strong>Forecasts / ForecastDataPoints</strong> — cash flow forecasting (from ERP finance)</p>
+<p><strong>Other services</strong> store only payment references and minimal snapshots (e.g. amount at payment time); they do not duplicate treasury entities.</p>
+<p><strong>Other services reference</strong>: <code>payment_intent_id</code>, <code>payment_id</code>, <code>payout_id</code>, <code>settlement_id</code>, <code>installment_plan_id</code>, <code>quotation_id</code>, <code>expense_id</code>, <code>budget_id</code>, <code>vendor_bill_id</code>, <code>bank_account_id</code>; payment status via webhooks or events.</p>
+<h4 id="quotation-crm-customer-integration-pattern-may-2026">Quotation ↔ CRM Customer Integration Pattern (May 2026)<a class="headerlink" href="#quotation-crm-customer-integration-pattern-may-2026" title="Permanent link">&para;</a></h4>
+<p>Quotations in treasury-api reference CRM customers from marketflow-api. The ownership rule:</p>
+<ul>
+<li><strong>CRM (marketflow-api) owns</strong> all customer/contact data: name, email, phone, address, company, lifecycle stage, custom fields.</li>
+<li><strong>treasury-api stores</strong> a nullable <code>customer_id</code> UUID FK (the CRM Contact UUID) on <code>Quotation</code>. It also caches <code>customer_name</code> and <code>customer_email</code> as snapshot strings directly on the quotation row for display/export without requiring a live CRM lookup.</li>
+</ul>
+<p><strong>Integration pattern for quotation creation:</strong>
+1. UI calls <code>GET /api/v1/marketflow/{tenant}/contacts?search=&lt;query&gt;</code> (S2S with <code>X-API-Key: INTERNAL_SERVICE_KEY</code>) to search CRM contacts.
+2. User selects a contact → UI populates <code>customer_id</code> (UUID), <code>customer_name</code>, <code>customer_email</code> in the form.
+3. UI posts <code>POST /api/v1/{tenant}/quotations</code> with all three fields.
+4. treasury-api stores them; <code>customer_id</code> is the authoritative FK.</p>
+<p><strong>Access pattern for display:</strong> treasury-api returns <code>customer_name</code> and <code>customer_email</code> from the quotation row (snapshot). For live CRM data (phone, address, 360 view), call <code>GET /api/v1/marketflow/{tenant}/contacts/{customer_id}</code>.</p>
+<p><strong>Services that must NOT store customer master data:</strong> treasury-api, pos-api, ordering-backend, logistics-api, inventory-api. These services store only <code>crm_contact_id</code> (nullable UUID FK) and optional snapshot fields (<code>customer_name</code>, <code>customer_email</code>) for audit/display.</p>
+<h4 id="financial-documents-cross-service-integration-patterns-may-2026">Financial Documents ↔ Cross-Service Integration Patterns (May 2026)<a class="headerlink" href="#financial-documents-cross-service-integration-patterns-may-2026" title="Permanent link">&para;</a></h4>
+<p>All financial document types (Quotation, Invoice, Proforma Invoice, Credit Note, Sales Order, Delivery Challan, Payment Receipt) in treasury-api follow these data ownership rules for cross-service references:</p>
+<p><strong>Line Items ↔ Inventory-API (Product Catalog)</strong>
+- <strong>inventory-api owns</strong> all product master data: item name, SKU, description, unit of measure, cost price, tax rate, images, variants.
+- <strong>treasury-api stores</strong> a nullable <code>item_id</code> UUID FK (inventory-api <code>inventory_item_id</code>) and <code>sku</code> string on each line item.
+- <code>rate</code> (unit price), <code>tax_rate</code>, and <code>description</code> on the line item are <strong>snapshot values</strong> captured at the time the document is created — they do not change if the inventory item is later updated.
+- <strong>Integration pattern:</strong> treasury-ui calls <code>GET /api/v1/{tenant}/inventory?search=&lt;query&gt;</code> (inventory-api) to search products in the line items combobox. Selecting a product auto-fills rate and tax_rate from the current inventory master; these values are then submitted as part of the document and stored as snapshots.
+- <strong>treasury-api must NOT</strong> mirror or sync inventory items locally. Line item <code>item_id</code> is the authoritative reference; live product data is fetched from inventory-api on demand.</p>
+<p><strong>Delivery Challan Conversion ↔ Logistics-API</strong>
+- <strong>logistics-api owns</strong> all delivery task data: task lifecycle, proof of delivery, rider assignment, tracking, dispatch notes.
+- When a quotation is converted to a delivery challan, treasury-api calls <code>POST /api/v1/{tenant}/tasks</code> on logistics-api (S2S with <code>X-API-Key: INTERNAL_SERVICE_KEY</code>) with the quotation line items, shipping details, and source document reference.
+- <strong>treasury-api stores</strong> the returned <code>logistics_task_id</code> UUID on the quotation as a reference.
+- treasury-api does <strong>NOT</strong> store delivery task lifecycle, rider details, proof of delivery, or tracking status. These are fetched from logistics-api when needed.
+- NATS event <code>treasury.quotation.delivery_challan_created</code> is published with <code>{quotation_id, logistics_task_id, tenant_id}</code>.</p>
+<p><strong>Sales Order Conversion ↔ Ordering-Backend</strong>
+- <strong>ordering-backend owns</strong> all sales order/online order data including order lifecycle, fulfillment state, and customer-facing order status.
+- When a quotation is converted to a sales order, treasury-api calls <code>POST /api/v1/{tenant}/orders</code> on ordering-backend (S2S with <code>X-API-Key: INTERNAL_SERVICE_KEY</code>) with the quotation line items, customer reference, and source quotation ID.
+- <strong>treasury-api stores</strong> the returned <code>order_id</code> UUID on the quotation as a reference.
+- treasury-api does <strong>NOT</strong> store order lifecycle, fulfillment, or cart data. These are owned by ordering-backend.
+- NATS event <code>treasury.quotation.converted_to_order</code> is published with <code>{quotation_id, order_id, tenant_id}</code>.</p>
+<p><strong>Payment Receipts ↔ Banking Accounts</strong>
+- Bank accounts (for the "Deposited To" field in Payment Receipts) are owned by <strong>treasury-api</strong> itself (<code>BankAccounts</code> entity). No cross-service reference needed — treasury-api queries its own bank accounts.
+- <code>GET /{tenant}/banking/accounts</code> is the endpoint treasury-ui calls to populate the "Deposited To" dropdown in the RecordPaymentModal.</p>
+<p><strong>Financial Document Public Share Links</strong>
+- Public share pages (<code>/q/{token}</code>, <code>/i/{token}</code>) serve document data via a <code>public_token</code> UUID field stored on each document row.
+- Public endpoints (<code>GET /api/v1/public/quotations/{token}</code>, <code>GET /api/v1/public/invoices/{token}</code>) do not require authentication and are rendered as Next.js server components.
+- PDF/CSV/XLSX exports for authenticated users use blob download (TruLoad pattern): <code>GET /{tenant}/quotations/{id}/pdf</code> returns bytes; the client creates an object URL and triggers <code>&lt;a&gt;.click()</code>. Public pages use direct <code>&lt;a href&gt;</code> to treasury-api public endpoints.</p>
+<p><strong>Document Email/WhatsApp Delivery ↔ Notifications-API</strong>
+- treasury-api does <strong>NOT</strong> directly send email or WhatsApp messages. On <code>SendQuotation</code> / <code>SendInvoice</code>, treasury-api publishes NATS events:
+  - <code>treasury.quotation.sent</code> — <code>{quotation_id, tenant_id, recipient_email, public_token}</code>
+  - <code>treasury.invoice.sent</code> — <code>{invoice_id, tenant_id, recipient_email, public_token}</code>
+- notifications-api subscribes to these events and delivers the email/WhatsApp using the appropriate template (<code>quotation_sent</code>, <code>invoice_sent</code>).
+- For payment reminders: treasury-ui "Send Reminder" action triggers <code>POST /{tenant}/invoices/{id}/send-reminder</code> → treasury-api publishes <code>treasury.invoice.reminder_sent</code> → notifications-api delivers.</p>
+<p><strong>Summary of Cross-Service References on Financial Documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field on Document</th>
+<th>Owner Service</th>
+<th>Reference Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>customer_id</code></td>
+<td>marketflow-api</td>
+<td>Nullable UUID FK + <code>customer_name/email/phone</code> snapshot</td>
+</tr>
+<tr>
+<td>line item <code>item_id</code></td>
+<td>inventory-api</td>
+<td>Nullable UUID FK + rate/tax_rate/description snapshot</td>
+</tr>
+<tr>
+<td>line item <code>sku</code></td>
+<td>inventory-api</td>
+<td>String snapshot (authoritative via <code>item_id</code>)</td>
+</tr>
+<tr>
+<td><code>logistics_task_id</code> (on quotation after DC conversion)</td>
+<td>logistics-api</td>
+<td>Nullable UUID FK</td>
+</tr>
+<tr>
+<td><code>order_id</code> (on quotation after SO conversion)</td>
+<td>ordering-backend</td>
+<td>Nullable UUID FK</td>
+</tr>
+<tr>
+<td><code>bank_account_id</code> (on payment receipt)</td>
+<td>treasury-api (self)</td>
+<td>Internal FK</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="logistics-service-logistics-api">Logistics-Service (logistics-api)<a class="headerlink" href="#logistics-service-logistics-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong>:
+- Rider/fleet member profiles (KYC, documents, vehicle); FleetMember now includes specialization_tags, has_cold_storage, max_weight_capacity_kg
+- Delivery tasks (expanded task_type: food_delivery, retail_delivery, outlet_transfer, commercial_courier, drop_shipping; now with package_weight_kg, package_dimensions_cm, temperature_control, fragile/heavy flags, carrier_id), availability
+- Telemetry and location, proof of delivery
+- Rider earnings and payouts (logistics-side)
+- <strong>PricingRule</strong> — dynamic pricing: distance/weight/time/surge/flat rate rules (NEW)
+- <strong>RiderShift</strong> — shift management with zone assignment (NEW)</p>
+<p><strong>Other services reference</strong>: <code>rider_id</code>, <code>logistics_task_id</code>, <code>pricing_rule_id</code>, <code>shift_id</code>; rider/task data via logistics APIs (e.g. GET /fleet-members, POST /tasks).</p>
+<p><strong>Reuse note:</strong> ambulance/emergency dispatch for <code>hospital-api</code> reuses this service as-is — <code>task_type</code> is a free-form string field (no schema change needed to add <code>ambulance_dispatch</code> as a value), <code>FleetMember</code> is tagged <code>ambulance</code> via <code>specialization_tags</code>, and <code>PricingRule</code>'s existing <code>rule_type: "distance"</code> + <code>distance_tiers</code> JSON matches Kenya's base-fee-plus-per-km ambulance pricing model. <code>hospital-api</code> stores only a reference <code>logistics_task_id</code> on its own <code>AmbulanceBooking</code> row — no new fleet/dispatch/pricing engine. See <code>hospital-service/hospital-api/docs/integrations.md</code> § 2A.</p>
+<hr />
+<h3 id="subscriptions-service-subscriptions-api">Subscriptions-Service (subscriptions-api)<a class="headerlink" href="#subscriptions-service-subscriptions-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong>:
+- Subscription plans, plan features, tier limits
+- Tenant subscriptions, usage, billing state</p>
+<p><strong>Other services</strong> do not store plan or entitlement data; they check subscription/entitlement via subscriptions-api before using inventory, POS, logistics, treasury, etc.</p>
+<hr />
+<h3 id="notifications-service-notifications-api">Notifications-Service (notifications-api)<a class="headerlink" href="#notifications-service-notifications-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong>:
+- Notification templates, delivery status
+- Channel preferences (per user, per tenant)</p>
+<p><strong>Other services reference</strong>: trigger sends via API or events; store only message/template IDs if needed for audit.</p>
+<hr />
+<h3 id="iot-service-iot-service-api">IoT-Service (iot-service-api)<a class="headerlink" href="#iot-service-iot-service-api" title="Permanent link">&para;</a></h3>
+<p><strong>Owns</strong>:
+- Devices, telemetry, rules, alerts</p>
+<p><strong>Consumers</strong>: inventory-api (e.g. temperature/compliance), notifications; optional POS/inventory hardware (terminals, scanners, scales, KDS) documented in architecture/integrations.</p>
+<hr />
+<h2 id="entities-that-must-not-exist-in-non-owner-services-no-duplication-no-legacy">Entities That Must Not Exist in Non-Owner Services (No Duplication, No Legacy)<a class="headerlink" href="#entities-that-must-not-exist-in-non-owner-services-no-duplication-no-legacy" title="Permanent link">&para;</a></h2>
+<p>The following entities belong to a single owner. <strong>No other service may store them.</strong> Remove any such tables and logic from non-owner services; use references (IDs) and API/event calls only.</p>
+<table>
+<thead>
+<tr>
+<th>Entity / Table(s)</th>
+<th>Owner</th>
+<th>Must NOT exist in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proof of delivery (signature, photo, OTP, recipient, rating)</td>
+<td><strong>logistics-api</strong></td>
+<td>ordering-backend, pos-api</td>
+</tr>
+<tr>
+<td>Delivery task lifecycle events (task created, assigned, completed)</td>
+<td><strong>logistics-api</strong></td>
+<td>ordering-backend (no <code>logistics_events</code> table)</td>
+</tr>
+<tr>
+<td>Notification templates, notification events, notification subscriptions</td>
+<td><strong>notifications-api</strong></td>
+<td>ordering-backend, pos-api, inventory-api</td>
+</tr>
+<tr>
+<td>Payment intents, payments, payment methods, refunds, treasury webhook events</td>
+<td><strong>treasury-api</strong></td>
+<td>ordering-backend, pos-api (only refs on order: e.g. <code>payment_intent_id</code> UUID, <code>payment_status</code>)</td>
+</tr>
+<tr>
+<td>PaymentSplit, Settlement, ReconciliationRun, InstallmentPlan/Installment</td>
+<td><strong>treasury-api</strong></td>
+<td>ordering-backend, pos-api, logistics-api</td>
+</tr>
+<tr>
+<td>Product master (items, units, recipes, BOM, product categories)</td>
+<td><strong>inventory-api</strong></td>
+<td>ordering-backend, pos-api (only projection/cache synced from inventory; no authoring)</td>
+</tr>
+<tr>
+<td>CustomFieldDefinition/Value, InventoryLot, VariantAttribute, Bundle/Component, Supplier, PurchaseOrder, StockTransfer, Warranty</td>
+<td><strong>inventory-api</strong></td>
+<td>ordering-backend, pos-api, logistics-api, treasury-api</td>
+</tr>
+<tr>
+<td>KDSStation/Ticket, Appointment, StaffMember, SerialNumberLog, CommissionRecord</td>
+<td><strong>pos-api</strong></td>
+<td>ordering-backend, inventory-api, logistics-api (only refs e.g. <code>appointment_id</code>, <code>staff_member_id</code>)</td>
+</tr>
+<tr>
+<td>Room/RoomGuest/RoomBooking/RoomFolioItem, Facility/FacilityBooking, EventBooking, MealEntitlement, HousekeepingTask (hotel <strong>operations</strong>)</td>
+<td><strong>pos-api</strong></td>
+<td>inventory-api, ordering-backend (only refs e.g. <code>room_guest_id</code>, <code>event_booking_id</code>)</td>
+</tr>
+<tr>
+<td>Room-type/facility/amenity masters &amp; <strong>rates</strong>, conference/event <strong>package</strong> definitions (room/facility pricing must NOT be authored in pos-api)</td>
+<td><strong>inventory-api</strong></td>
+<td>pos-api stores only <code>inventory_item_id</code>/<code>inventory_bundle_id</code> refs + synced price snapshot</td>
+</tr>
+<tr>
+<td>PricingRule, RiderShift</td>
+<td><strong>logistics-api</strong></td>
+<td>ordering-backend, pos-api, treasury-api</td>
+</tr>
+<tr>
+<td>Rider/fleet member profiles, KYC, vehicles, shifts</td>
+<td><strong>logistics-api</strong></td>
+<td>ordering-backend (only <code>rider_id</code>, <code>logistics_task_id</code> refs in order_assignments)</td>
+</tr>
+<tr>
+<td>Tenant and user identity (full profile, sessions, MFA, OAuth)</td>
+<td><strong>auth-api</strong></td>
+<td>ordering-backend, pos-api (only <code>tenant_id</code>, <code>user_id</code> refs; minimal JIT cache allowed for FK only)</td>
+</tr>
+<tr>
+<td>Quotations, quotation lines</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration), ordering-backend, pos-api</td>
+</tr>
+<tr>
+<td>Expenses, expense categories, expense claims</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration), ordering-backend, pos-api</td>
+</tr>
+<tr>
+<td>Tax codes, tax periods, tax filings, eTIMS devices, eTIMS invoices</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration), pos-api, inventory-api</td>
+</tr>
+<tr>
+<td>Budgets, budget lines</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration), ordering-backend, pos-api</td>
+</tr>
+<tr>
+<td>Approval workflow config for financial entities (approval workflows, steps, records)</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (generic approvals module stays for non-financial workflows; financial approval config migrates to treasury)</td>
+</tr>
+<tr>
+<td>Vendor bills, vendor bill lines</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration), inventory-api</td>
+</tr>
+<tr>
+<td>Bank accounts, bank statements, bank statement lines, reconciliation rules</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration)</td>
+</tr>
+<tr>
+<td>Forecasts, forecast data points</td>
+<td><strong>treasury-api</strong></td>
+<td>erp (remove after migration)</td>
+</tr>
+<tr>
+<td>Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks</td>
+<td><strong>marketflow-api</strong></td>
+<td>ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only <code>crm_contact_id</code> nullable FK)</td>
+</tr>
+<tr>
+<td>Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission (clinical workflow)</td>
+<td><strong>hospital-api</strong> (target owner, not yet migrated)</td>
+<td>pos-api (remove once hospital-api reaches feature parity)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ordering-backend cleanup (target state):</strong>
+- <strong>Remove</strong> (schemas + all associated logic): <code>proof_of_delivery</code>, <code>logistics_events</code>, <code>notification_templates</code>, <code>notification_events</code>, <code>notification_subscriptions</code>, <code>payment_intents</code>, <code>payments</code>, <code>payment_methods</code>, <code>refunds</code>, <code>treasury_events</code>.
+- <strong>Keep</strong> (refs only): <code>order_assignments</code> with <code>logistics_task_id</code>, <code>rider_id</code> (no PoD edge); <code>orders</code> with <code>payment_intent_id</code> (UUID), <code>payment_status</code>, and optional amount snapshot for display; trigger notifications via notifications-api API or events; get payment details from treasury-api when needed.
+- <strong>Catalog:</strong> <code>catalog_items</code> / <code>catalog_categories</code> only as read-only cache synced from inventory-api, or remove and proxy inventory-api for catalog (see plan).</p>
+<p><strong>Logistics-api (owner):</strong> Already has <code>proof_of_delivery</code> (task_id, fleet_member_id, signature_url, photo_url, etc.). ERD documents it. No ordering-backend copy.</p>
+<p><strong>Notifications-api (owner):</strong> Owns templates and delivery logs. Ordering and others send via API/events; no local template tables.</p>
+<p><strong>Treasury-api (owner):</strong> Owns payment intents, payments, refunds. Ordering and POS store only <code>payment_intent_id</code> and status on order; no local payment/refund tables.</p>
+<hr />
+<h2 id="how-data-is-accessed-no-duplication">How Data Is Accessed (No Duplication)<a class="headerlink" href="#how-data-is-accessed-no-duplication" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>REST:</strong> Primary for reads and commands: catalog (GET items/units/recipes from inventory-api), reserve/consume (ordering → inventory-api), payments (ordering/pos → treasury-api), rider/task (ordering → logistics-api), JWT validation (all → auth-api).</li>
+<li><strong>NATS events:</strong> For async sync and lifecycle: order lifecycle (<code>ordering.order.*</code>), stock/reservation (<code>inventory.stock.updated</code>, <code>inventory.reservation.confirmed</code>), sale finalised (<code>pos.sale.finalized</code> → inventory backflush), auth sync (<code>auth.user.*</code>, <code>auth.tenant.*</code>). Consumers must be idempotent.</li>
+<li><strong>gRPC (optional):</strong> For low-latency calls where needed (e.g. stock check before add-to-cart); document in each service’s architecture.md if introduced.</li>
+</ul>
+<hr />
+<h2 id="cross-service-event-subscription-matrix">Cross-Service Event Subscription Matrix<a class="headerlink" href="#cross-service-event-subscription-matrix" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Publisher</th>
+<th style="text-align: left;">Event Subject</th>
+<th style="text-align: left;">Subscriber</th>
+<th style="text-align: left;">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Auth Service</td>
+<td style="text-align: left;"><code>auth.user.created</code></td>
+<td style="text-align: left;">Ordering, Subscriptions, Notifications</td>
+<td style="text-align: left;">Create local user ref / trial / welcome</td>
+</tr>
+<tr>
+<td style="text-align: left;">Auth Service</td>
+<td style="text-align: left;"><code>auth.user.updated</code></td>
+<td style="text-align: left;">Ordering</td>
+<td style="text-align: left;">Sync profile</td>
+</tr>
+<tr>
+<td style="text-align: left;">Auth Service</td>
+<td style="text-align: left;"><code>auth.user.deactivated</code></td>
+<td style="text-align: left;">Ordering</td>
+<td style="text-align: left;">Deactivate local user</td>
+</tr>
+<tr>
+<td style="text-align: left;">Auth Service</td>
+<td style="text-align: left;"><code>auth.tenant.created</code></td>
+<td style="text-align: left;">Ordering, Subscriptions</td>
+<td style="text-align: left;">Init tenant / trial</td>
+</tr>
+<tr>
+<td style="text-align: left;">Auth Service</td>
+<td style="text-align: left;"><code>auth.tenant.updated</code></td>
+<td style="text-align: left;">Ordering</td>
+<td style="text-align: left;">Sync tenant</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ordering Service</td>
+<td style="text-align: left;"><code>ordering.order.created</code></td>
+<td style="text-align: left;">Inventory (reserve), Notifications, Treasury</td>
+<td style="text-align: left;">Reserve stock, confirm, payment intent</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ordering Service</td>
+<td style="text-align: left;"><code>ordering.order.ready</code></td>
+<td style="text-align: left;">Logistics</td>
+<td style="text-align: left;">Create delivery task</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ordering Service</td>
+<td style="text-align: left;"><code>ordering.order.completed</code></td>
+<td style="text-align: left;">Inventory</td>
+<td style="text-align: left;">Consume reservation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inventory Service</td>
+<td style="text-align: left;"><code>inventory.stock.updated</code>, <code>inventory.stock.low</code></td>
+<td style="text-align: left;">Ordering (optional)</td>
+<td style="text-align: left;">Availability / out-of-stock flags</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inventory Service</td>
+<td style="text-align: left;"><code>inventory.category.created/updated</code></td>
+<td style="text-align: left;">POS, Ordering</td>
+<td style="text-align: left;">Sync hierarchical categories</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inventory Service</td>
+<td style="text-align: left;"><code>inventory.bundle.created/updated</code></td>
+<td style="text-align: left;">POS</td>
+<td style="text-align: left;">Project conference/event packages &amp; rate plans into POS catalog</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inventory Service</td>
+<td style="text-align: left;"><code>inventory.lot.expiring_soon</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Expiry alerts to tenant admins</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inventory Service</td>
+<td style="text-align: left;"><code>inventory.purchase_order.received</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">PO receipt confirmation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Inventory Service</td>
+<td style="text-align: left;"><code>inventory.transfer.shipped</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Transfer dispatch notification</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>pos.sale.finalized</code></td>
+<td style="text-align: left;">Inventory</td>
+<td style="text-align: left;">Backflush / consumption</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>pos.kds.ticket.ready</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">KDS ticket ready alert</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>pos.appointment.created/completed</code></td>
+<td style="text-align: left;">Notifications, Ordering</td>
+<td style="text-align: left;">Appointment lifecycle sync</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>hotel.booking.created</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Multi-room booking confirmation</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>conference.event.booked</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Conference/event (BEO) booked</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>conference.mealcard.issued</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Delegate meal cards generated</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>conference.mealcard.redeemed</code></td>
+<td style="text-align: left;">Inventory, Notifications</td>
+<td style="text-align: left;">Meal voucher redeemed → backflush meal BOM</td>
+</tr>
+<tr>
+<td style="text-align: left;">POS Service</td>
+<td style="text-align: left;"><code>pos.inventory.consumption.failed</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Backflush failure alert (retry queue)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ordering Service</td>
+<td style="text-align: left;"><code>ordering.booking.created</code></td>
+<td style="text-align: left;">POS, Notifications</td>
+<td style="text-align: left;">Service booking created</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;">Payment webhooks (HTTP)</td>
+<td style="text-align: left;">Ordering</td>
+<td style="text-align: left;">Update order payment status</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.settlement.completed</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Settlement batch notification</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.installment.due</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Installment due reminder</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.invoice.created</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Invoice created notification</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.invoice.paid</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Invoice payment confirmation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.invoice.overdue</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Overdue invoice alert</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.expense.submitted</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Expense claim submitted for review</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.expense.approved</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Expense claim approved notification</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.quotation.sent</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Quotation email/WhatsApp delivery (recipient_email, public_token)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.quotation.accepted</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Quotation accepted notification</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.quotation.delivery_challan_created</code></td>
+<td style="text-align: left;">Logistics, Notifications</td>
+<td style="text-align: left;">Delivery challan created from quotation (logistics_task_id ref)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.quotation.converted_to_order</code></td>
+<td style="text-align: left;">Ordering, Notifications</td>
+<td style="text-align: left;">Quotation converted to sales order (order_id ref)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.invoice.sent</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Invoice email/WhatsApp delivery (recipient_email, public_token)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.invoice.reminder_sent</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">Payment reminder delivery</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.etims.transmitted</code></td>
+<td style="text-align: left;">Notifications</td>
+<td style="text-align: left;">eTIMS transmission confirmation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.budget.approved</code></td>
+<td style="text-align: left;">Projects, ERP</td>
+<td style="text-align: left;">Budget approved — update project/ERP budget refs</td>
+</tr>
+<tr>
+<td style="text-align: left;">Treasury Service</td>
+<td style="text-align: left;"><code>treasury.budget.rejected</code></td>
+<td style="text-align: left;">Projects, ERP</td>
+<td style="text-align: left;">Budget rejected — notify requestor</td>
+</tr>
+<tr>
+<td style="text-align: left;">Subscriptions Service</td>
+<td style="text-align: left;"><code>subscription.billing.renewal</code></td>
+<td style="text-align: left;">Treasury</td>
+<td style="text-align: left;">Process subscription renewal payment</td>
+</tr>
+<tr>
+<td style="text-align: left;">Subscriptions Service</td>
+<td style="text-align: left;"><code>subscription.billing.overage</code></td>
+<td style="text-align: left;">Treasury</td>
+<td style="text-align: left;">Process overage charges</td>
+</tr>
+<tr>
+<td style="text-align: left;">Subscriptions Service</td>
+<td style="text-align: left;"><code>subscription.billing.proration</code></td>
+<td style="text-align: left;">Treasury</td>
+<td style="text-align: left;">Process proration adjustment</td>
+</tr>
+<tr>
+<td style="text-align: left;">ERP Service</td>
+<td style="text-align: left;"><code>erp.payroll.processed</code></td>
+<td style="text-align: left;">Treasury</td>
+<td style="text-align: left;">Create payroll payment journal entries</td>
+</tr>
+<tr>
+<td style="text-align: left;">ERP Service</td>
+<td style="text-align: left;"><code>erp.purchase_order.received</code></td>
+<td style="text-align: left;">Treasury</td>
+<td style="text-align: left;">Create vendor bill from received PO</td>
+</tr>
+<tr>
+<td style="text-align: left;">Logistics Service</td>
+<td style="text-align: left;">Delivery webhooks (HTTP)</td>
+<td style="text-align: left;">Ordering</td>
+<td style="text-align: left;">Update order delivery status</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> Catalog and units are read via REST from inventory-api; ordering and POS do not duplicate product master. Event subjects follow <code>domain.entity.action</code> (e.g. <code>ordering.order.created</code>). See each service’s <code>integrations.md</code> for full event catalog.</p>
+<hr />
+<h2 id="user-management-patterns">User Management Patterns<a class="headerlink" href="#user-management-patterns" title="Permanent link">&para;</a></h2>
+<h3 id="pattern-1-service-specific-user-data">Pattern 1: Service-Specific User Data<a class="headerlink" href="#pattern-1-service-specific-user-data" title="Permanent link">&para;</a></h3>
+<p><strong>Example: Rider User Management</strong></p>
+<ol>
+<li><strong>User Identity</strong> (auth-service):</li>
+<li>User created in auth-service with email, password, tenant membership</li>
+<li>Role: <code>rider</code> assigned in auth-service</li>
+<li>
+<p>User authenticates via auth-service (SSO)</p>
+</li>
+<li>
+<p><strong>Rider Profile</strong> (logistics-service):</p>
+</li>
+<li>Rider-specific data stored in logistics-service:<ul>
+<li>KYC documents (national ID, license)</li>
+<li>Vehicle information</li>
+<li>Shift availability</li>
+<li>Earnings and payouts</li>
+</ul>
+</li>
+<li>
+<p>Linked to auth-service user via <code>auth_service_user_id</code></p>
+</li>
+<li>
+<p><strong>Rider Creation Flow</strong>:</p>
+</li>
+</ol>
+<p><strong>From ordering UI</strong> (ordering-frontend / cafe-website calling ordering-backend): the UI first checks <code>GET /api/v1/tenants/{tenant_id}/services</code> (subscriptions-api) for <code>logistics</code> in <code>enabled_services</code>; if it's missing, show an upgrade prompt. If enabled, either ordering-backend calls <code>POST /v1/{tenant}/fleet-members</code> on logistics-api server-side and stores only the returned <code>rider_id</code>, or the user is redirected to the logistics UI to self-onboard via SSO and ordering-backend picks up the <code>rider_id</code> on return.</p>
+<p><strong>Standalone logistics service</strong>: the user goes directly to the logistics UI, authenticates via SSO, and completes onboarding there. All rider data lives in logistics-api; ordering-backend is not involved.</p>
+<h3 id="pattern-2-tenant-service-availability-check">Pattern 2: Tenant Service Availability Check<a class="headerlink" href="#pattern-2-tenant-service-availability-check" title="Permanent link">&para;</a></h3>
+<p><strong>Before creating/referencing data in another service</strong> (except auth-api, which is always available):</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Pseudo-code example</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">createRider</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantID</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span><span class="p">,</span><span class="w"> </span><span class="nx">riderData</span><span class="w"> </span><span class="nx">RiderData</span><span class="p">)</span><span class="w"> </span><span class="kt">error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. Check tenant has logistics service enabled (subscriptions-api)</span>
+<span class="w">    </span><span class="nx">tenant</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">subscriptionService</span><span class="p">.</span><span class="nx">GetTenantServices</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantID</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">contains</span><span class="p">(</span><span class="nx">tenant</span><span class="p">.</span><span class="nx">EnabledServices</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;logistics&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrServiceNotAvailable</span><span class="p">(</span><span class="s">&quot;Logistics service not enabled for this tenant&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 2. Verify tenant exists in logistics-service</span>
+<span class="w">    </span><span class="nx">exists</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">logisticsService</span><span class="p">.</span><span class="nx">TenantExists</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantID</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">exists</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrTenantNotFound</span><span class="p">(</span><span class="s">&quot;Tenant not found in logistics-service&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 3. Create rider in logistics-service (only owner stores rider data)</span>
+<span class="w">    </span><span class="nx">riderID</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">logisticsService</span><span class="p">.</span><span class="nx">CreateFleetMember</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantID</span><span class="p">,</span><span class="w"> </span><span class="nx">riderData</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 4. Store only reference ID locally (no duplication of rider profile)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">orderingRepo</span><span class="p">.</span><span class="nx">StoreRiderReference</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantID</span><span class="p">,</span><span class="w"> </span><span class="nx">riderID</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="pattern-3-service-to-service-data-queries">Pattern 3: Service-to-Service Data Queries<a class="headerlink" href="#pattern-3-service-to-service-data-queries" title="Permanent link">&para;</a></h3>
+<p><strong>Never duplicate data, always query the owning service:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1">// ❌ WRONG: Storing rider data locally</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">OrderAssignment</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">RiderID</span><span class="w">      </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span>
+<span class="w">    </span><span class="nx">RiderName</span><span class="w">    </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don&#39;t store</span>
+<span class="w">    </span><span class="nx">RiderPhone</span><span class="w">   </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don&#39;t store</span>
+<span class="w">    </span><span class="nx">VehicleType</span><span class="w">  </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don&#39;t store</span>
+<span class="p">}</span>
+
+<span class="c1">// ✅ CORRECT: Store only reference, query when needed</span>
+<span class="kd">type</span><span class="w"> </span><span class="nx">OrderAssignment</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">RiderID</span><span class="w">      </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span><span class="w">  </span><span class="c1">// ✅ Only reference</span>
+<span class="p">}</span>
+
+<span class="c1">// Query rider data from logistics-service when needed</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">getRiderDetails</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">riderID</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">Rider</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">logisticsService</span><span class="p">.</span><span class="nx">GetFleetMember</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantID</span><span class="p">,</span><span class="w"> </span><span class="nx">riderID</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="subscription-plan-integration">Subscription Plan Integration<a class="headerlink" href="#subscription-plan-integration" title="Permanent link">&para;</a></h2>
+<h3 id="service-availability-check">Service Availability Check<a class="headerlink" href="#service-availability-check" title="Permanent link">&para;</a></h3>
+<p>Subscription plans (subscriptions-api) determine which services a tenant can use — e.g. a starter plan might grant only ordering, while higher tiers add logistics, inventory, POS, treasury, notifications, and so on. The exact plan-to-service mapping changes as pricing evolves, so treat subscriptions-api as the source of truth rather than any list here.</p>
+<p><strong>Before creating/referencing data in another service:</strong>
+1. Check tenant subscription plan: <code>GET /api/v1/tenants/{tenant_id}/subscription</code>
+2. Verify service in plan features: <code>plan.features.includes("logistics")</code>
+3. If not available: Show error or redirect to upgrade</p>
+<hr />
+<h2 id="authentication-sso">Authentication &amp; SSO<a class="headerlink" href="#authentication-sso" title="Permanent link">&para;</a></h2>
+<h3 id="single-sign-on-sso">Single Sign-On (SSO)<a class="headerlink" href="#single-sign-on-sso" title="Permanent link">&para;</a></h3>
+<ul>
+<li>All users authenticate via <strong>auth-service</strong> (<code>https://sso.codevertexafrica.com/</code>)</li>
+<li>JWT access tokens contain: <code>sub</code> (user_id), <code>tenant_id</code>, <code>tenant_slug</code>, <code>roles</code>, and <code>permissions</code> (canonical codes from auth-service role–permission table). All services use these same permission codes for authorization.</li>
+<li>All services validate tokens via JWKS from auth-service and read roles/permissions from the token (or from GET /me). If the token is valid but the service has no local user yet, the service <strong>JIT-provisions</strong> the user from token claims and continues (no 401 for "user not found").</li>
+<li>Service-specific profile data (e.g. rider KYC, vehicle) is <strong>not</strong> in the token. It is collected via <strong>service-specific onboarding</strong> after SSO login, with identity (email, name) prefilled from the token.</li>
+</ul>
+<h3 id="service-specific-roles">Service-Specific Roles<a class="headerlink" href="#service-specific-roles" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Auth-Service</strong>: Global roles (<code>superuser</code>, <code>admin</code>, <code>user</code>)</li>
+<li><strong>Ordering-Service</strong>: Ordering/cafe-specific roles (<code>customer</code>, <code>staff</code>, <code>admin</code>)</li>
+<li><strong>Logistics-Service</strong>: Logistics-specific roles (<code>rider</code>, <code>fleet_manager</code>)</li>
+<li><strong>Combined</strong>: User can have multiple roles across services</li>
+</ul>
+<hr />
+<h2 id="worked-example-order-assignment-with-a-rider">Worked Example: Order Assignment with a Rider<a class="headerlink" href="#worked-example-order-assignment-with-a-rider" title="Permanent link">&para;</a></h2>
+<p>Same shape as the rider-creation flow above, applied to assigning a rider to an order: ordering-backend calls <code>GET /v1/{tenant}/fleet-members?status=available</code> on logistics-api, stores only <code>rider_id</code> on <code>order_assignments</code>, and creates the delivery task via <code>POST /v1/{tenant}/tasks</code>. Logistics-api owns the task lifecycle; ordering-backend just consumes <code>logistics.task.assigned</code> / <code>logistics.task.completed</code>.</p>
+<hr />
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>No data duplication:</strong> Each entity lives in one service only; others hold references (IDs) and optionally minimal snapshots for audit.</li>
+<li><strong>Check service availability:</strong> Before creating or referencing data in another service, verify tenant has that service enabled (subscriptions-api); auth-api is always available.</li>
+<li><strong>Store only references:</strong> Never copy full entities across services; store <code>*_id</code> and call the owning service’s API or consume its events when you need data.</li>
+<li><strong>Catalog from inventory:</strong> Product master (items, units, recipes, categories) is owned by inventory-api; ordering and POS use REST or synced projection/cache only.</li>
+<li><strong>Use events for lifecycle sync:</strong> Use NATS for order lifecycle, stock updates, and auth sync; keep consumers idempotent.</li>
+<li><strong>Support standalone mode:</strong> Each service should work when it is the only one enabled for the tenant.</li>
+</ol>
+<hr />
+<h2 id="current-state-post-cleanup-target">Current State (Post-Cleanup Target)<a class="headerlink" href="#current-state-post-cleanup-target" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Ordering-backend:</strong> No proof_of_delivery, logistics_events, notification_* tables, or payment/payment_intent/refund/treasury_events tables. Only refs on orders and order_assignments; catalog from inventory (cache or proxy).</li>
+<li><strong>Logistics-api:</strong> Single source of truth for proof_of_delivery, tasks, riders; erd.md reflects this.</li>
+<li><strong>Inventory-api:</strong> Single source of truth for items (with barcode/compliance/weight/dimensions), units, recipes (with costing), recipe_ingredients, warehouses, balances (with auto-reorder), reservations, consumptions, hierarchical categories, custom fields, lots, variant attributes, bundles, suppliers, purchase orders, stock transfers, warranties.</li>
+<li><strong>POS-api:</strong> Single source of truth for KDS stations/tickets, appointments, staff members, serial number logs, commission records; catalog items synced from inventory via NATS events (inventory.item.created/updated) with full compliance flags, item_type, inventory_item_id FK, barcode, duration_minutes. Sync handler in <code>internal/modules/catalog/inventory_events.go</code>. POS ModifierGroups reference inventory via <code>inventory_modifier_group_id</code> FK.</li>
+<li><strong>Logistics-api:</strong> Single source of truth for expanded task types (food_delivery, retail_delivery, outlet_transfer, commercial_courier, drop_shipping), pricing rules, rider shifts with zone assignment; fleet members with specialization and capacity.</li>
+<li><strong>Notifications-api:</strong> Owns templates and delivery; no template storage in ordering or POS.</li>
+<li><strong>Treasury-api:</strong> Owns all payment entities including split payments, settlements/lines, reconciliation runs, installment plans/installments; ordering/POS hold only payment_intent_id and status refs.</li>
+</ul>
+<hr />
+<h2 id="migration-notes">Migration Notes<a class="headerlink" href="#migration-notes" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No backward compatibility for wrong ownership.</strong> Remove legacy or duplicate entities from non-owner services; do not keep them for compatibility.</li>
+<li>Legacy <code>riderprofile</code> and <code>riderdocument</code> in ordering-backend are <strong>removed</strong>. All rider data is in logistics-api; ordering-backend stores only <code>rider_id</code> and <code>logistics_task_id</code> refs.</li>
+<li><strong>Ordering-backend:</strong> Remove ProofOfDelivery, LogisticsEvent, NotificationTemplate, NotificationEvent, NotificationSubscription, Payment, PaymentIntent, PaymentMethod, Refund, TreasuryEvent schemas and all related handlers/repos; Order keeps payment_intent_id (UUID), payment_status; get PoD from logistics-api, payment details from treasury-api, send notifications via notifications-api.</li>
+<li>Catalog/menu: Source of truth is inventory-api. Ordering-backend must not own menu_items/menu_categories as master — either remove and proxy inventory-api, or keep as read-only cache synced from inventory-api (see plan and service erd.md).</li>
+</ul>
+<hr />
+<h2 id="shared-libraries-uniformity">Shared Libraries (Uniformity)<a class="headerlink" href="#shared-libraries-uniformity" title="Permanent link">&para;</a></h2>
+<p>All Go services should use these shared libraries from <code>github.com/Bengo-Hub/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Purpose</th>
+<th>Version</th>
+<th>Services</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>httpware</code></td>
+<td>HTTP middleware, tenant/user context, CORS</td>
+<td>v0.3.0</td>
+<td>All 7 services</td>
+</tr>
+<tr>
+<td><code>shared-events</code> (events)</td>
+<td>Transactional outbox, NATS publishing</td>
+<td>v0.2.0</td>
+<td>All 7 services</td>
+</tr>
+<tr>
+<td><code>auth-client</code></td>
+<td>JWT validation, JWKS, permissions middleware</td>
+<td>v0.4.x</td>
+<td>All 7 services</td>
+</tr>
+<tr>
+<td><code>cache</code></td>
+<td>Redis tenant cache (branding, config)</td>
+<td>v0.2.0</td>
+<td>ordering, inventory, logistics, notifications, subscriptions</td>
+</tr>
+<tr>
+<td><code>service-client</code></td>
+<td>gRPC/REST inter-service client</td>
+<td>v0.2.0</td>
+<td>ordering, notifications, treasury, subscriptions</td>
+</tr>
+<tr>
+<td><code>pagination</code></td>
+<td>Cursor/offset pagination helpers</td>
+<td>v0.1.0</td>
+<td>notifications (adopt in others as needed)</td>
+</tr>
+</tbody>
+</table>
+<p>Frontend shared package: <code>@bengo-hub/shared-ui-lib</code> v0.1.0 — SSOLoginModal, TreasuryPaymentModal, TrackingIframeModal. Used by ordering-frontend, pos-ui, inventory-ui, cafe-website. All must pin to <code>#v0.1.0</code>.</p>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../microservice-architecture/">Microservice Architecture for POS, Inventory, Orders</a> — research and use cases per service</li>
+<li>Per-service docs: each backend’s <code>docs/erd.md</code>, <code>docs/integrations.md</code>, <code>docs/architecture.md</code> reference this document for cross-service ownership</li>
+<li>Auth: auth-api <code>docs/integrations.md</code>; Ordering: ordering-backend <code>docs/CROSS-SERVICE-DATA-OWNERSHIP.md</code> (service-specific extension)</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 15:56:54 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
