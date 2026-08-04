@@ -214,9 +214,9 @@ Returns array of banks with `code` and `name`. Used to populate payout account f
 
 ---
 
-## 9. Transfers — Initiate Bulk Transfer (Equity Payouts)
+## 9. Transfers — Initiate Bulk Transfer
 
-**Purpose**: Send payouts to multiple equity holders in one API call.  
+**Purpose**: Send payouts to multiple recipients in one API call.  
 **Endpoint**: `POST /transfer/bulk`
 
 ```json
@@ -226,15 +226,15 @@ Returns array of banks with `code` and `name`. Used to populate payout account f
   "transfers": [
     {
       "amount": 150000,
-      "recipient": "RCP_holder1",
-      "reason": "Q1 2026 royalty — ordering service",
-      "reference": "EQUITY-holder1-Q12026"
+      "recipient": "RCP_recipient1",
+      "reason": "Vendor payout",
+      "reference": "PAYOUT-recipient1-001"
     },
     {
       "amount": 80000,
-      "recipient": "RCP_holder2",
-      "reason": "Q1 2026 shareholder dividend",
-      "reference": "EQUITY-holder2-Q12026"
+      "recipient": "RCP_recipient2",
+      "reason": "Vendor payout",
+      "reference": "PAYOUT-recipient2-001"
     }
   ]
 }

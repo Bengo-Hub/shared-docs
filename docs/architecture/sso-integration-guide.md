@@ -1,18 +1,5 @@
 # Codevertex SSO Integration Guide
 
-**Last Updated**: May 20, 2026
-**Status**: Production — all MVP frontends are integrated. Recent changes, most recent first:
-
-- **Subscription enforcement (Mar 29):** all services now gate mutations only — GET/HEAD/OPTIONS always pass through, POST/PUT/PATCH/DELETE require an active subscription. Frontends distinguish a subscription 403 (`code: subscription_inactive`, `upgrade: true`) from an auth 403, so an expired subscription no longer bounces the user back to the login screen. Every frontend implements `SubscriptionBanner`, `SubscriptionGate`, and `useSubscription()`.
-- **Service-level `/auth/me` enrichment (Mar 31):** ordering-backend and treasury-api now merge JWT claims with service-level RBAC roles/permissions from the local DB, matching the pattern notifications-api established first.
-- **JIT role assignment:** global JWT roles (superuser, admin, staff) now map to service-level roles on first login, across treasury, inventory, pos, logistics, and notifications.
-- Token refresh implemented in cafe-website (JSON body to `POST /api/v1/auth/refresh`); `AUTH_AUDIENCE` fixed to `"codevertex"` across all services; media upload handlers fall back to file extension for SVG/WebP detection.
-- Production domains come only from `devops-k8s/apps/*/values.yaml` — see the Progress and Production domains sections below.
-
----
-
-## Overview
-
 Codevertex uses a single centralised SSO (Single Sign-On) service for all authentication. Every frontend delegates login/register entirely to the SSO — no service handles passwords or sessions independently.
 
 | Component | Domain | Role |
@@ -21,15 +8,13 @@ Codevertex uses a single centralised SSO (Single Sign-On) service for all authen
 | **auth-ui** (login/register UI) | `accounts.codevertexafrica.com` | User-facing login/register forms |
 | All other frontends | `*.codevertexafrica.com` | Consume SSO tokens |
 
-**Progress (March 2026):**
+## How it works today
 
-- Auth-api issues JWT with `roles` and `permissions` (canonical codes, e.g. `catalog:view`, `catalog:manage`); login/register/refresh responses return these only at the top level, not duplicated under `user`.
-- Authorize URL supports `tenant=<slug>`; token exchange prefers that tenant when the user is a member.
-- `GET /api/v1/auth/me` is cached in Redis by user ID (TTL = token expiry, or 24h) to reduce DB load. Frontends should cache it with TanStack Query on a similar TTL (5 min–24h).
-- Go backends use JIT tenant sync and JIT user provisioning, and now map global JWT roles (superuser, admin, staff) to service-level roles during provisioning (e.g. superuser → finance_admin in treasury, inventory_admin in inventory, pos_admin in POS).
-- Subscription enforcement (mutations-only) is live on ordering-backend, logistics-api, treasury-api, inventory-api, pos-api, and projects-api. Core services — auth-api, subscriptions-api, notifications-api — don't enforce it; notifications instead rate-limits email by plan (`max_emails_per_day` from JWT `SubscriptionLimits`, Redis sliding window, 429 on breach).
-- OAuth clients: `pos-ui` and tenant-aware redirect URIs added for pos-ui, subscriptions-ui, treasury-ui, notifications-ui. Public menu endpoints (`/menu/*`) documented and used by cafe-website.
-- Fixed: treasury-ui's AuthProvider was checking `super_admin` instead of `superuser`/`isPlatformOwner`.
+Auth-api issues a JWT carrying `roles` and `permissions` (canonical codes, e.g. `catalog:view`, `catalog:manage`) at the top level of the token — not duplicated under `user`. The authorize URL supports `tenant=<slug>`, and token exchange prefers that tenant when the user is a member of it. `GET /api/v1/auth/me` is cached in Redis by user ID (TTL matches token expiry, or 24h) to keep repeated profile lookups cheap; frontends should cache it client-side with a similar TTL (TanStack Query, 5 min–24h).
+
+Every Go backend uses JIT (just-in-time) tenant sync and user provisioning: on first login, global JWT roles (superuser, admin, staff) map automatically to that service's own local role (e.g. superuser → `finance_admin` in treasury, `inventory_admin` in inventory, `pos_admin` in POS), and service-level `/auth/me` merges the JWT claims with service-level RBAC roles/permissions from the local database.
+
+Subscription enforcement is mutations-only, live across ordering-backend, logistics-api, treasury-api, inventory-api, pos-api, and projects-api — reads always pass through; only mutating requests require an active subscription. Core services (auth-api, subscriptions-api, notifications-api) don't enforce it directly; notifications instead rate-limits email by plan. A subscription 403 (`code: subscription_inactive`, `upgrade: true`) is distinguished from an auth 403 on the frontend, so an expired subscription shows an upgrade banner rather than bouncing the user back to the login screen — every frontend implements `SubscriptionBanner`, `SubscriptionGate`, and `useSubscription()` for this.
 
 ---
 

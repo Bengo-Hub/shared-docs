@@ -2,6 +2,16 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.3.0] — 2026-08-04
+
+Removes internal engineering planning content that had leaked into the public Technical Guide — sprint numbers, quarter-by-quarter roadmaps, and per-service migration tracking are internal project-management detail, not something an external integrator needs, and they reveal more about internal team velocity and priorities than we want public.
+
+### Changed
+- **`microservice-architecture.md`**: removed the entire "Migration Roadmap" section (a 4-phase, quarter-by-quarter checklist of library rollouts and feature work with `[x]`/`[ ]` tracking), the "Library Adoption Strategy" phase breakdown, and the "Implementation Status" section's per-service migration tables (outbox pattern adoption, circuit breaker migration, code-duplication percentages, priority levels). What's left states current capability plainly — implemented or not — without the internal sequencing/timeline detail. Trimmed the gRPC/Webhooks/WebSockets/GraphQL sections similarly: each now states current status and intended use case, not an internal rollout plan with target quarters and a per-service build order.
+- **`trinity-authorization-pattern.md`**, **`event-architecture.md`**, **`sso-integration-guide.md`**: replaced dated "Changelog"/"Recent changes"/"Progress" sections (which read like an engineering standup — "Fixed: treasury-ui's AuthProvider was checking the wrong field", "Sprint-0 scaffold", specific fix dates) with a single current-state description of how each system works today.
+- **`cross-service-data-ownership.md`**: removed a dated "ownership deltas" section that narrated an internal architecture-revamp decision history (with a literal internal plan-file path), and stripped `(2026-06-07)`-style date stamps scattered through the ownership tables — the tables now just state current ownership.
+- **Business-model disclosure**: an example Paystack bulk-transfer payload had `"reason": "Q1 2026 royalty — ordering service"` / `"shareholder dividend"` — genericized to a vendor-payout example. Removed a Paystack section header and purpose line that explicitly named "Equity Payouts" as the use case. Removed `EquityTransactions`/`DividendDeclarations`/`ShareholderReports` from a public data-ownership table. None of this is needed to integrate with the payment APIs, and it discloses the platform's internal equity/revenue-share structure to anyone reading the public docs.
+
 ## [1.2.0] — 2026-08-04
 
 Stops the site from publishing the platform's own list of infrastructure weaknesses, and finishes the tone pass started in 1.1.0.

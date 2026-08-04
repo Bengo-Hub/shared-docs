@@ -64,11 +64,11 @@ The `upgrade: true` field is the key discriminator frontends use to distinguish 
 | Service | Enforcement | Notes |
 |---------|------------|-------|
 | ordering-backend | Mutations only (inline) | Reference implementation |
-| pos-api | Mutations only (inline) | Fixed March 29, 2026 |
-| treasury-api | Mutations only (inline) | Fixed March 29, 2026 |
-| projects-api | Mutations only (inline) | Fixed March 29, 2026 |
-| inventory-api | Mutations only (per-route) | Already correct |
-| logistics-api | Mutations only (inline) | Already correct |
+| pos-api | Mutations only (inline) | |
+| treasury-api | Mutations only (inline) | |
+| projects-api | Mutations only (inline) | |
+| inventory-api | Mutations only (per-route) | |
+| logistics-api | Mutations only (inline) | |
 | auth-api | No enforcement | Core service (token authority) |
 | subscriptions-api | No enforcement | Core service (licensing authority) |
 | notifications-api | No enforcement | Uses plan-based email rate limiting instead |
