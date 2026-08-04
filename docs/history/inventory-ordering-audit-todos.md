@@ -1,3 +1,5 @@
+> **Archived (2026-08):** sprint-snapshot audit, moved out of the main docs nav during the shared-docs consolidation. Any items still genuinely open are tracked in the project memory's `deferred-and-open-items.md`, not here.
+
 # Inventory & Integrated Services — Audit Findings & TODOs
 
 _Audit date: 2026-06-25. Covers inventory-api/ui, pos-api/ui, ordering-backend/frontend, shared-ui-lib._

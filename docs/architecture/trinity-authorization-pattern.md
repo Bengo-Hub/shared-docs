@@ -142,7 +142,7 @@ if outletID != "" {
 - Frontends must discriminate subscription 403s from auth 403s: subscription 403 → show upgrade banner/toast, NOT redirect to login. Auth 403 → redirect to unauthorized page.
 
 **Frontend subscription gating pattern:**
-Each frontend implements lazy subscription loading via `useSubscription()` hook + `SubscriptionBanner` (persistent top banner) + `SubscriptionGate` (wraps gated features). Subscription info is fetched AFTER login from subscriptions-api; loading never blocks UI. Platform owners get automatic `active/enterprise` status.
+Each frontend implements lazy subscription loading via `useSubscription()` hook + `SubscriptionBanner` (persistent top banner) + `SubscriptionGate` (wraps gated features). Subscription info is fetched AFTER login from subscriptions-api; loading never blocks UI. Platform owners get automatic `active/enterprise` status. **See [subscription-gating-guide.md](./subscription-gating-guide.md) for the full implementation guide** (backend middleware code, frontend error-handler wiring, the mutations-only services table, and the step-by-step checklist for adding gating to a new service) — this file states the policy, that one is the how-to.
 
 **Example service-level permissions:**
 - `treasury.payments.add`, `treasury.payments.view`, `treasury.payments.manage`
@@ -609,7 +609,7 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 
 - [Subscription Service Integration](../../subscription-service/docs/integrations.md)
 - [Auth Service Integration](../../auth-service/auth-api/docs/integrations.md)
-- [Cross-Service Data Ownership](./CROSS-SERVICE-DATA-OWNERSHIP.md)
+- [Cross-Service Data Ownership](./cross-service-data-ownership.md)
 
 ---
 

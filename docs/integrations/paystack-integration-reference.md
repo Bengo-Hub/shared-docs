@@ -7,9 +7,9 @@
 
 ---
 
-## Treasury payment workflow (high level)
+## Treasury payment workflow
 
-Services create a payment intent (invoice) via treasury-api with `payment_method: "pending"`, then redirect users to the **shared pay page** (treasury-ui `/pay`). User selects Paystack (or M-Pesa, COD); the UI calls the service’s `initiate_url`, which calls treasury-api `POST .../intents/{id}/initiate` with `payment_method: "paystack"`. Treasury returns `authorization_url`; user is redirected to Paystack. After payment, user lands on the app’s **callback page**; webhooks update the intent. Payment modals support **QR code** (scan to pay) and **“I paid at till”** (manual confirmation). See [payment-workflow.md](payment-workflow.md).
+See [payment-workflow.md](payment-workflow.md) for the full end-to-end flow (intent creation, shared pay page, `initiate_url`, gateway redirect, callback page, webhooks). This page covers only the Paystack API specifics: hosted checkout, QR-code pay, transfers/payouts, and the credential model below.
 
 ---
 

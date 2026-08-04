@@ -1,7 +1,7 @@
 # Frontend user display standard
 
 **Last updated:** March 2026  
-**Related:** [sso-integration-guide.md](./sso-integration-guide.md), [SSO-AUTHENTICATED-REQUESTS-AND-401.md](./SSO-AUTHENTICATED-REQUESTS-AND-401.md)
+**Related:** [sso-integration-guide.md](../architecture/sso-integration-guide.md), [SSO-AUTHENTICATED-REQUESTS-AND-401.md](./SSO-AUTHENTICATED-REQUESTS-AND-401.md)
 
 ---
 

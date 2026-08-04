@@ -781,7 +781,7 @@ Frontend shared package: `@bengo-hub/shared-ui-lib` v0.1.0 — SSOLoginModal, Tr
 
 ## References
 
-- [Microservice Architecture for POS, Inventory, Orders](Microservice%20Architecture%20for%20POS,%20Inventory,%20Orders.md) — research and use cases per service
+- [Microservice Architecture for POS, Inventory, Orders](microservice-architecture.md) — research and use cases per service
 - Per-service docs: each backend’s `docs/erd.md`, `docs/integrations.md`, `docs/architecture.md` reference this document for cross-service ownership
 - Auth: auth-api `docs/integrations.md`; Ordering: ordering-backend `docs/CROSS-SERVICE-DATA-OWNERSHIP.md` (service-specific extension)
 

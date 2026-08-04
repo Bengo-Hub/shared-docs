@@ -745,8 +745,8 @@ This roadmap outlines the implementation order for all Codevertex microservices,
 
 - **[Auth & RBAC Audit Summary](./auth-rbac-audit-summary.md)** - **CRITICAL: All services must complete Sprint 1 (Auth/RBAC) before domain features**
 - [Microservices Architecture Audit Summary](./MICROSERVICES-ARCHITECTURE-AUDIT-SUMMARY.md)
-- [Cross-Service Data Ownership](./CROSS-SERVICE-DATA-OWNERSHIP.md)
-- [Trinity Authorization Pattern](./TRINITY-AUTHORIZATION-PATTERN.md)
+- [Cross-Service Data Ownership](../architecture/cross-service-data-ownership.md)
+- [Trinity Authorization Pattern](../architecture/trinity-authorization-pattern.md)
 - [Subscription Service Integrations](../subscription-service/docs/integrations.md)
 - [Cafe Website Plan](../Cafe/cafe-website/docs/plan.md)
 

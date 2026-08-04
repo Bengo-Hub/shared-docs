@@ -1,8 +1,10 @@
 # Codevertex Microservices Architecture
 
-**Date**: May 2026  
-**Version**: 1.1  
+**Date**: May 2026 (merged August 2026)  
+**Version**: 1.2  
 **Purpose**: Define a hybrid microservices architecture with seamless service-to-service communication, scalability, performance, and security for all Codevertex services.
+
+> **August 2026 update**: This document absorbed the genuinely unique, still-accurate content from `ARCHITECTURE-RECOMMENDATIONS.md` (Jan 2026) and `Microservice-Architecture-for-POS-Inventory-Orders.md`, both now retired in favor of this single canonical document.
 
 ---
 
@@ -311,6 +313,18 @@ apps/
 | **treasury-service** | `treasury` | `treasury.*` | ⚠️ Partial |
 | **projects-service** | `projects` | `projects.*` | ✅ Implemented |
 | **iot-service** | `iot` | `iot.*` | ✅ Implemented |
+
+### Published Event Catalog by Service
+
+| Publisher | Subject Prefix | Representative Events |
+|-----------|-----------------|------------------------|
+| auth-service | `auth.events` | `user.created`, `user.updated`, `user.deleted`, `tenant.created`, `tenant.updated`, `tenant.deleted`, `user.password_changed`, `user.2fa_enabled`, `user.session_created` |
+| subscription-service | `subscriptions.events` | `subscription.created`, `subscription.activated`, `subscription.cancelled`, `subscription.expired`, `subscription.upgraded`, `subscription.downgraded` |
+| ordering-service | `ordering.events` | `order.created`, `order.confirmed`, `order.ready`, `order.completed`, `order.cancelled` |
+| logistics-service | `logistics.events` | `task.created`, `task.assigned`, `task.completed`, `task.cancelled` |
+| notifications-service | `notifications.events` | Consumer only — email/SMS/push delivery, no domain events published |
+
+This complements the general `{service_name}.{entity}.{action}` subject pattern above. Services migrated to the transactional outbox (see "Recent Architecture Additions" further below) publish under a per-service `{service}.events` subject with an `event_type` field in the envelope instead.
 
 ### Gaps
 
@@ -775,6 +789,31 @@ Frontend receives real-time updates via WebSocket
 - Lower latency than polling
 - Efficient for continuous updates
 
+#### Example 5: Stock Reservation & Backflush Depletion (Ordering + Inventory)
+
+```
+Customer → Ordering Service (REST)
+  Add item to cart
+
+Ordering Service → Inventory Service (REST, synchronous)
+  POST /api/v1/reservations
+  Inventory places a temporary hold (soft reservation) on the requested quantity
+
+If order is finalized:
+  Ordering Service → Inventory Service (REST)
+    Consume reservation → permanent stock deduction
+
+If cart/hold expires without checkout:
+  Inventory Service releases the hold automatically
+```
+
+For recipe-based items (bakery, café), inventory-service also supports **backflush depletion**: when pos-service publishes a sale-finalized event, inventory-service resolves the item's BOM/recipe and deducts each ingredient in real time, rather than requiring the ingredients to be reserved individually up front.
+
+**Why This Pattern?**
+- Synchronous REST for the reservation call (ordering needs to know immediately if stock is available)
+- Time-bound holds prevent overselling without requiring a distributed lock
+- Event-driven backflush keeps POS sales low-latency — ingredient depletion happens asynchronously after the sale completes
+
 ---
 
 ## Shared Libraries & Abstractions
@@ -1233,6 +1272,51 @@ ERP Service → RabbitMQ → Celery Workers
 - TTL: 5-60 minutes
 - Invalidate on update events
 
+### Service Entity Ownership Matrix
+
+Beyond the core entities above, each service owns a broader set of domain objects and only references others by ID. This is the service-level "owns vs. references" summary (see [Cross-Service Data Ownership](./cross-service-data-ownership.md) for full entity-level detail):
+
+| Service | Owns | References |
+|---------|------|-------------|
+| **auth-service** | Users, Tenants, Sessions, MFA, OAuth Clients, API Keys | - |
+| **subscription-service** | Plans, Features, Entitlements, Usage Metrics | auth-service (`tenant_id`) |
+| **treasury-service** | Invoices, Payments, Refunds, Wallets, GL Entries, Settlements | auth (`user_id`), subscription (plan) |
+| **inventory-service** | Items, Variants, Warehouses, Balances, Purchase Orders, BOMs/Recipes | auth (`tenant_id`, `user_id`) |
+| **pos-service** | POS Orders, Devices, Cash Drawers, Sessions, Tables | auth, inventory (items) |
+| **ordering-service** | Carts, Orders, Addresses, Loyalty | auth, inventory (items), treasury |
+| **logistics-service** | Tasks, Zones, Drivers, Fleet, Routes | auth, ordering (orders), inventory |
+| **notifications-service** | Templates, Channels, Delivery Logs, Preferences | auth (`user_id`, `tenant_id`) |
+| **projects-service** | Projects, Tasks, Milestones, Time Entries | auth (`user_id`) |
+| **ticketing-service** | Tickets, Events, Venues, Attendees | auth, treasury |
+| **iot-service** | Devices, Sensors, Telemetry, Alerts, Geofences | auth (`tenant_id`), logistics |
+
+### Domain Entity Ownership: POS, Inventory & Order
+
+The POS, Inventory, and Ordering services never share a database table for "items" — each keeps a **service-specific projection** synchronized via events, so a restaurant's "Menu Item" (with modifiers) and a supermarket's "Product" (with barcode/weight) can coexist without compromising the stock records inventory-service owns:
+
+| Entity | Owner | Data Stored | Downstream Usage |
+|--------|-------|--------------|-------------------|
+| Product Master (SKU) | inventory-service | SKU, name, base UoM, barcode, compliance flags, dimensions | Referenced by ID from pos-service and ordering-service |
+| Stock Level | inventory-service | Quantity on hand, reserved quantity, bin location, auto-reorder settings | Queried by ordering-service for fulfillment/reservation |
+| Lot / Batch | inventory-service | Lot number, expiry date, supplier | Perishable/pharma compliance tracking |
+| BOM / Recipe | inventory-service | Ingredient list, quantities, wastage factor, costing (cost/portion, margin) | Drives stock depletion on POS sale (backflush) |
+| Menu Item / POS Catalog Item | pos-service | Local name, modifiers, UI category/price, item type, compliance flags | Used for immediate sales at terminals |
+| KDS Ticket | pos-service | Station, order, items, status, priority | Routed to kitchen display stations for prep |
+| Appointment | pos-service | Customer, staff member, service items, start/end time | Scheduled service delivery (salons, clinics) |
+| Fulfillment Item | ordering-service | Shipping weight, tax class, warehouse source | Used for logistics and checkout |
+
+This is a summary — the authoritative, field-level version lives in [Cross-Service Data Ownership](./cross-service-data-ownership.md).
+
+### Multi-Tenant Data Isolation Tiers
+
+Tenant isolation is layered on top of the per-service database model above. Three isolation strengths are available, selected by tenant scale/regulatory needs:
+
+1. **Shared database, shared schema** (standard tier) — all tenants share the same tables, `tenant_id` is indexed, and PostgreSQL Row-Level Security (RLS) prevents cross-tenant reads even on an application bug.
+2. **Shared database, separate schema** (professional tier) — each tenant gets its own schema, simplifying per-tenant migrations/backups while staying on shared infrastructure.
+3. **Separate database** (enterprise tier) — high-priority or regulated tenants get a dedicated database instance for maximum isolation and data-residency compliance.
+
+All transactional and inventory entities carry both `tenant_id` and `outlet_id`; a "Warehouse" and a "Store" are both modeled as outlets, each with its own stock records.
+
 ---
 
 ## Security & Authentication
@@ -1331,6 +1415,27 @@ type Claims struct {
 }
 ```
 
+### Token & API Key Security Parameters
+
+| Parameter | JWT | API Key |
+|-----------|-----|---------|
+| Signing/storage | RS256 (asymmetric) | SHA-256 hashed at rest |
+| Lifetime | 15-minute access token, 7-day refresh token | Long-lived, scoped, revocable |
+| Rotation | JWKS rotated every 90 days | Supports rotation; each key is service-account scoped |
+| Validation | Issuer + audience validated per service | Looked up via auth-service, response cached (5 min TTL) |
+| Audit | — | All validations audit-logged |
+
+Tenant isolation is enforced at the repository layer, not just at the auth boundary — every query MUST filter by `tenant_id`:
+
+```go
+// ALWAYS filter by tenant_id in queries
+func (r *OrderRepo) GetOrders(ctx context.Context, tenantID string) ([]*Order, error) {
+    return r.client.Order.Query().
+        Where(order.TenantID(tenantID)). // MANDATORY
+        All(ctx)
+}
+```
+
 ### Trinity Authorization Pattern
 
 Codevertex uses a 3-layer authorization model:
@@ -1362,6 +1467,16 @@ Codevertex uses a 3-layer authorization model:
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+### Service Boundary Rationale: Why subscription-service Stays Separate
+
+subscription-service, auth-service, and treasury-service form a tightly-integrated but intentionally separate 3-service ecosystem:
+
+- **auth-service** owns identity — users, tenants, JWT issuance, session management
+- **subscription-service** owns entitlements — plans, feature flags, usage limits, plan history
+- **treasury-service** owns money — invoices, payments, refunds
+
+Consolidating subscription-service into auth-service or treasury-service would blur a clear domain boundary: entitlement logic (what a tenant is *allowed* to do) is a distinct concern from identity (*who* they are) and billing (*how they pay*). The three communicate via events — subscription-service publishes feature/plan changes that auth-service consumes and embeds into JWT claims at login (see Claims Structure above), and treasury-service publishes payment status that subscription-service consumes to transition subscription state.
 
 ### Service-to-Service Authentication
 
@@ -1431,6 +1546,40 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
+### Combined Authorization Check Example (All Three Layers)
+
+A single access-control decision typically walks all three Trinity layers plus tenant isolation:
+
+```go
+func authorizeOrderAccess(ctx context.Context, orderID string) error {
+    claims, _ := authclient.ClaimsFromContext(ctx)
+
+    // Layer 1: RBAC - does the user have the required role/scope?
+    if !claims.HasScope("read:orders") && !claims.IsAdmin() {
+        return ErrForbidden
+    }
+
+    // Layer 2: Licensing - is the feature enabled for this tenant's plan?
+    if !claims.HasFeature("ordering_module") {
+        return ErrFeatureNotEnabled
+    }
+
+    // Layer 3: Resource ownership - does the user have access to this specific order?
+    order, err := repo.GetOrder(ctx, orderID)
+    if err != nil {
+        return err
+    }
+    if order.TenantID != claims.TenantID {
+        return ErrForbidden // tenant isolation
+    }
+    if order.UserID != claims.Subject && !claims.HasRole("manager") {
+        return ErrForbidden // resource ownership
+    }
+
+    return nil // access granted
+}
+```
+
 ### Gaps
 
 - ❌ No mTLS for service-to-service communication
@@ -1483,6 +1632,16 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 #### 5. Health Checks
 
 **Status**: ✅ **IMPLEMENTED** - All services have `/healthz` endpoints
+
+#### 6. Offline-First Resilience (pos-service)
+
+**Status**: ⚠️ **Design pattern** (verify current implementation status per deployment)
+
+Physical retail/hospitality locations can lose connectivity mid-shift, so pos-service is designed around an offline-first model rather than assuming the backend is always reachable:
+
+- **Local cache**: POS terminals keep a local database (e.g. SQLite) so sales can continue to be rung up while disconnected from the cloud backend
+- **Automatic reconciliation**: once connectivity returns, queued offline transactions sync to pos-service, which triggers the normal sale-finalized events for inventory-service and treasury-service
+- **Multi-carrier failover**: critical sites can be provisioned with cellular backup (multi-SIM) to minimize the window of disconnection
 
 ---
 
@@ -2069,7 +2228,7 @@ This hybrid architecture ensures optimal communication patterns for each use cas
 
 ## References
 
-- [Cross-Service Data Ownership](./CROSS-SERVICE-DATA-OWNERSHIP.md)
+- [Cross-Service Data Ownership](./cross-service-data-ownership.md)
 - [Platform Audit & Standardization](./PLATFORM-AUDIT-AND-STANDARDIZATION.md)
 - [Subscription Service Integrations](../subscription-service/docs/integrations.md)
 - [Logistics Service Integrations](../logistics-service/logistics-api/docs/integrations.md)

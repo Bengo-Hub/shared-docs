@@ -5,9 +5,9 @@
 
 ---
 
-## Treasury payment workflow (high level)
+## Treasury payment workflow
 
-Services create a payment intent via treasury-api with `payment_method: "pending"`, then redirect to the **shared pay page** (treasury-ui `/pay`). User selects M-Pesa; the modal sends phone number to the service’s `initiate_url`, which calls treasury-api `POST .../intents/{id}/initiate` with `payment_method: "mpesa"`. Treasury triggers STK Push; user completes on phone. Modals support **“I paid at till / agent”** for manual confirmation. See [payment-workflow.md](payment-workflow.md).
+See [payment-workflow.md](payment-workflow.md) for the full end-to-end flow (intent creation, shared pay page, `initiate_url`, gateway redirect). This page covers only the M-Pesa/Daraja API specifics: STK Push triggering, manual "I paid at till/agent" confirmation, and the credential model below.
 
 ---
 

@@ -1,6 +1,12 @@
 # Database Maintenance Procedures
 
-Centralized database maintenance scripts for all Go microservices. All services share a PostgreSQL instance in the `infra` namespace (`postgresql-0`).
+Centralized database maintenance scripts for all Go microservices. All services share a single PostgreSQL instance in the `infra` namespace (`postgresql-0`).
+
+## Connection pooling: apps go through PgBouncer, admin/DDL work bypasses it
+
+Since the 2026-04-16 migration, every application service connects through a shared **PgBouncer** (`pgbouncer.infra.svc.cluster.local:6432`, transaction-pooling mode), not directly at `postgresql.infra.svc.cluster.local:5432` — this dropped raw Postgres client connections from ~50 to ~19 with 2000-client capacity on the pooler side. Auth is via PgBouncer's `auth_query` against a `pgbouncer.user_lookup` function (dynamic SCRAM validation against `pg_shadow` — no per-user `userlist.txt` entries needed). New services get PgBouncer-pointed secrets automatically via `scripts/infrastructure/create-service-secrets.sh`. Full detail, service list, and rollback procedure: `devops-k8s/docs/pgbouncer-migration-2026-04-16.md`.
+
+**This matters for migrations specifically:** PgBouncer's transaction-pooling mode is incompatible with some DDL (`ERROR: cannot run inside a transaction block` / `prepared statement already exists`) — every service's migrate job needs a separate `POSTGRES_MIGRATE_URL` pointed at the **direct** Postgres host:port (see "Add postgres-migrate-url to K8s Secrets" below), while the app's own `POSTGRES_URL` stays pointed at PgBouncer. The admin scripts in this file all go through `kubectl exec` directly into the `postgresql-0` pod and run `psql` locally inside it — they never touch PgBouncer at all, which is the correct approach for admin/DDL/reset work regardless of what the apps use for their normal traffic.
 
 > **SECURITY NOTE:** This file must never contain real passwords. Fetch the admin password
 > from the K8s secret at runtime using the snippet below. If this file is ever exposed in
@@ -22,6 +28,10 @@ Centralized database maintenance scripts for all Go microservices. All services 
 | iot-api | iot | iot | iot_user | iot-api |
 | ticketing-api | ticketing | ticketing | ticketing_user | ticketing-api |
 | marketflow-api | marketflow | marketflow | marketflow_user | marketflow-api |
+| marketflow-ai | marketflow | marketflow | marketflow_user | marketflow-ai (shares the marketflow DB) |
+| erp-api | erp | bengo_erp | erp_user | erp-api (DB name is `bengo_erp`, not `erp` — see the ERP-decomposition memory) |
+| isp-billing-backend | isp-billing | isp_billing | isp_billing_user | isp-billing-backend (Python/FastAPI + SQLAlchemy, not Go) |
+| truload-backend | truload | truload | (Npgsql, .NET) | truload-backend (`ConnectionStrings__DefaultConnection`, not `POSTGRES_URL`) |
 
 **PostgreSQL Pod:** `postgresql-0` (Namespace: `infra`)
 **Admin User:** `admin_user`
