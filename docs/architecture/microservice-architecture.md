@@ -23,7 +23,6 @@
 11. [Shared Libraries & Abstractions](#shared-libraries--abstractions)
 12. [Architecture Diagram](#architecture-diagram)
 13. [Implementation Status](#implementation-status)
-14. [Migration Roadmap](#migration-roadmap)
 
 ---
 
@@ -363,138 +362,35 @@ None outstanding — all services have migrated to the shared HTTP client, and K
 
 ## 3. gRPC/ConnectRPC (High-Throughput)
 
-**Status**: ⚠️ Planned (not yet implemented)
+**Status**: Not yet implemented
 
-**Technology**: ConnectRPC (modern gRPC alternative)
-
-**Use For**:
-- High-throughput internal service communication
-- Bulk operations
-- Streaming data
-- Service-to-service RPCs
-
-### Architecture
-
-```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│   Service   │────────▶│  ConnectRPC  │────────▶│   Service   │
-│     A       │  gRPC   │   Gateway    │  gRPC   │     B       │
-└─────────────┘         └──────────────┘         └─────────────┘
-```
-
-### Implementation Plan
-
-- Use Protocol Buffers (`.proto`) for service definitions
-- ConnectRPC for the gRPC implementation
-- Start with subscription-service for feature checks
-- Follow with treasury-service for bulk payments
-
-### Services to Implement gRPC
-
-1. **subscription-service** → Feature checks, usage reporting
-2. **treasury-service** → Payment processing, bulk operations
-3. **notifications-service** → Bulk notifications
-4. **logistics-service** → Task assignments, streaming updates
-
-### Timeline
-
-- **Phase 1** (Q1 2026): Implement gRPC in subscription-service
-- **Phase 2** (Q2 2026): Implement gRPC in treasury-service
-- **Phase 3** (Q3 2026): Implement gRPC in notifications-service and logistics-service
+**Technology**: ConnectRPC, for high-throughput internal service communication, bulk operations, streaming data, and service-to-service RPCs where REST's overhead matters.
 
 ---
 
 ## 4. Webhooks (Callbacks)
 
-**Status**: ⚠️ Partially implemented
+**Technology**: HTTP POST with HMAC signature verification.
 
-**Technology**: HTTP POST with HMAC signature verification
+**External** (implemented): treasury-service handles M-Pesa and Paystack webhooks, with HMAC signature verification and retry logic on event processing.
 
-**Use For**: external service callbacks (payment providers, SendGrid, Twilio), and internal service-to-service callbacks (payment confirmations, delivery updates).
-
-### Current Implementation
-
-**External** (implemented): treasury-service handles M-Pesa and Stripe webhooks, with HMAC signature verification and retry logic on event processing. Notifications-service has SendGrid/Twilio delivery callbacks planned.
-
-**Internal** (planned, not built): auth-service has tenant/user discovery webhooks on the roadmap; no other service has internal webhook infrastructure yet. The planned design is a webhook registration API, event-driven delivery with HMAC signing, and exponential-backoff retries for failed deliveries.
-
-### Gaps
-
-- No internal webhook registration infrastructure
-- No internal webhook retry mechanism
-- No webhook delivery status tracking
-- No webhook management UI/API
+**Internal**: service-to-service communication uses NATS events rather than internal webhooks — see [Event Architecture](event-architecture.md).
 
 ---
 
 ## 5. WebSockets (Real-Time)
 
-**Status**: ⚠️ Planned (not yet implemented)
+**Status**: Not yet implemented
 
-**Technology**: WebSocket (WS/WSS) with gorilla/websocket or nhooyr.io/websocket
-
-**Use For**:
-- Real-time order tracking
-- Live driver/rider location updates
-- Live notifications
-- Collaborative features
-
-### Architecture
-
-```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│   Client    │◀───────▶│  WebSocket   │◀───────▶│   Service   │
-│  (Browser)  │   WS    │   Gateway    │   WS    │  (Backend)  │
-└─────────────┘         └──────────────┘         └─────────────┘
-                             │
-                             ▼
-                    ┌──────────────┐
-                    │  Redis       │
-                    │  Pub/Sub     │
-                    └──────────────┘
-```
-
-### Implementation Plan
-
-- WebSocket handler upgrades HTTP connections
-- Redis pub/sub broadcasts updates to connected clients
-- Real-time location and status updates for delivery tracking
-
-### Services to Implement WebSockets
-
-1. **logistics-service** → Real-time task tracking, rider location
-2. **ordering-service** → Live order status updates
-3. **notifications-service** → Live notification delivery (optional)
-
-### Timeline
-
-- **Phase 1** (Q2 2026): Implement WebSockets in logistics-service for task tracking
-- **Phase 2** (Q3 2026): Implement WebSockets in ordering-service for order tracking
+**Technology**: WebSocket (WS/WSS), for real-time order tracking, live driver/rider location updates, live notifications, and collaborative features. The intended design pairs a WebSocket gateway with Redis pub/sub to broadcast updates to connected clients.
 
 ---
 
 ## 6. GraphQL (Flexible Queries)
 
-**Status**: ⚠️ Future (not yet planned)
+**Status**: Not yet implemented
 
-**Technology**: GraphQL with gqlgen or graphql-go
-
-**Use For**:
-- Frontend data fetching
-- Complex nested queries
-- Mobile app APIs
-
-### Use Cases
-
-- Cafe website: Complex menu queries with filters
-- Admin dashboards: Aggregated data from multiple services
-- Mobile apps: Flexible data fetching
-
-### Implementation (Future)
-
-- GraphQL schema for flexible frontend queries
-- Resolvers aggregate data from multiple services
-- Complex nested queries with filters
+**Technology**: GraphQL, for frontend data fetching that needs complex nested queries or flexible field selection — dashboards aggregating data from multiple services, or mobile apps that want to avoid over-fetching.
 
 ---
 
@@ -810,28 +706,7 @@ publisher.PublishWithOutbox(ctx, &UserCreatedEvent{
 })
 ```
 
-#### 4. shared-observability — To be implemented
-
-Standardized logging, tracing, and metrics: structured logging (Zap) with request ID propagation, OpenTelemetry tracing, Prometheus metrics helpers, context propagation. Needed for consistent observability across services once built.
-
-#### 5. shared-config — To be implemented
-
-Standardized configuration loading and validation: env var parsing (envconfig), validation, default values, secret management integration. Needed to cut config boilerplate across services.
-
-### Library Adoption Strategy
-
-**Phase 1** (Q1 2026):
-1. Create `shared-service-client` with circuit breaker and retry — done
-2. Migrate all services to the shared HTTP client — in progress
-
-**Phase 2** (Q2 2026):
-1. Create `shared-events` with outbox pattern
-2. Standardize event publishing across all services
-
-**Phase 3** (Q3 2026):
-1. Create `shared-observability`
-2. Implement distributed tracing
-3. Standardize metrics collection
+Logging (via `shared/httpware`'s `zap` integration) and tracing (via `shared/service-client`'s OpenTelemetry spans) are already standardized — see [Observability](../platform-standards/observability.md). A dedicated `shared-config` package for standardized env-var parsing and validation doesn't exist yet; each service handles its own config loading today.
 
 ---
 
@@ -1314,159 +1189,12 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 
 ## Implementation Status
 
-**Last Updated**: May 2026
+- **NATS JetStream**, fleet-wide, for async events — every service uses the shared transactional-outbox pattern (`shared-events`) rather than publishing directly.
+- **REST APIs** for synchronous operations, via `shared-auth-client` (JWT/API-key auth, RBAC, subscription feature gating) and `shared-service-client` (circuit breaker, retry, tracing) on every Go service.
+- **Kubernetes DNS** for service discovery, Redis for caching/sessions, PostgreSQL per-service, NGINX Ingress as the API gateway, ArgoCD for GitOps deployment, HPA for autoscaling.
+- **mTLS and a service mesh** are not in use — the platform relies on Kubernetes network policies instead.
 
-### ✅ Fully Implemented & Production-Ready
-
-- **NATS JetStream** for async events (fleet-wide)
-- **REST APIs** for synchronous operations
-- **Shared auth-client library** (`shared-auth-client` v0.6.1) - JWT/API Key auth, RBAC, subscription feature gating
-- **Shared service-client library** (`shared-service-client`) - Circuit breaker, retry, tracing
-- **Shared events library** (`shared-events`) - Transactional outbox pattern
-- **Shared password-hasher library** (`shared-password-hasher`) - Argon2id hashing
-- **Shared middleware library** (`httpware` v0.4.1) - RequestID, Tenant, Logging, Recover, CORS
-- **Service Discovery** via Kubernetes DNS
-- **Redis** for caching and sessions
-- **PostgreSQL** per-service databases
-- **NGINX Ingress Controller** as API gateway
-- **Health checks** (`/healthz` endpoints)
-- **Structured logging** (Zap)
-- **Prometheus metrics** (ServiceMonitors)
-- **ArgoCD GitOps** deployment
-- **Horizontal Pod Autoscaling** (HPA)
-
-### Outbox Pattern Implementation Status
-
-| Service | Status | Library | Worker | Priority |
-|---------|--------|---------|--------|----------|
-| logistics-service | ✅ Implemented | shared-events | Yes | - |
-| finance-service | ✅ Implemented | shared-events | Yes (dedicated) | - |
-| notifications-service | ✅ Implemented | shared-events | Yes (dedicated) | - |
-| projects-service | ✅ Implemented | shared-events | Yes | - |
-| subscription-service | ✅ Implemented | shared-events | Yes | - |
-| iot-service | ✅ Implemented | shared-events | Yes | - |
-| **inventory-service** | ✅ Implemented | shared-events | Yes | - |
-| **pos-service** | ✅ Implemented | shared-events | Yes | - |
-| **ordering-service** | ✅ Implemented | shared-events | Yes | - |
-| auth-service | ⚠️ Partial | - | - | 🟡 Medium (Q2 2026) |
-| ticketing-service | ❌ Missing | - | - | 🟢 Low (Q2 2026) |
-
-### Circuit Breaker (shared-service-client) Adoption
-
-| Service | Status | Notes |
-|---------|--------|-------|
-| logistics-service | ✅ Migrated | Production |
-| subscription-service | ✅ Migrated | Production |
-| notifications-service | ✅ Migrated | Production |
-| finance-service | ✅ Migrated | Production |
-| projects-service | ✅ Migrated | Production |
-| ordering-service | ✅ Migrated | Production |
-| inventory-service | ✅ Migrated | Production |
-| pos-service | ✅ Migrated | Production |
-| auth-service | ⚠️ Partial | Q3 2026 |
-| ticketing-service | ⚠️ Partial | Q3 2026 |
-| iot-service | ✅ Migrated | Production |
-
-### Code Duplication Analysis
-
-**Identified duplications requiring shared libraries:**
-
-| Pattern | Duplication % | Location | Solution |
-|---------|--------------|----------|----------|
-| Middleware (RequestID, Tenant, Logging, Recover) | ✅ **Resolved** | `internal/shared/middleware/` | Migrated to `httpware` v0.4.1 |
-| Configuration struct | 95% | `internal/config/config.go` | Create `shared-config` |
-| Logger initialization | 100% | `internal/shared/logger/` | Create `shared-observability` |
-| Error response format | 80% | Various handlers | Create `shared-errors` |
-
-### ⚠️ Partially Implemented
-
-- **Webhooks**: External implemented (M-Pesa, Stripe), internal infrastructure missing
-- **Metrics**: Prometheus scraping enabled, custom metrics vary by service
-- **Distributed tracing**: OpenTelemetry collector deployed, integration in progress
-
-### ❌ Not Yet Implemented
-
-- **gRPC/ConnectRPC**: Planned Q2 2026 (subscription, treasury, notifications)
-- **WebSockets**: Planned Q2 2026 (logistics, ordering)
-- **GraphQL**: Future consideration
-- **Shared config library**: Planned Q2 2026
-- **Shared observability library**: Planned Q2 2026
-- **mTLS**: Not implemented (rely on Kubernetes network policies)
-- **Service mesh**: Not implemented (rely on Kubernetes networking)
-
----
-
-## Migration Roadmap
-
-### Phase 1: Foundation (Q1–Q2 2026) - Completed
-
-**Shared libraries (all services fully updated — May 2026):**
-- `shared-auth-client` v0.6.1 — JWT validation, JWKS caching, subscription claims, RBAC helpers, feature gating middleware
-- `shared-service-client` v0.2.0 — Circuit breaker, retry, tracing
-- `shared-events` v0.2.0 — Transactional outbox pattern
-- `shared-password-hasher` v0.1.1 — Argon2id password hashing
-- `httpware` v0.4.1 — HTTP middleware (RequestID, Tenant, Logging, Recover, CORS)
-- `@bengo-hub/shared-ui-lib` v0.1.5 — TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal
-- `@bengo-hub/maps` v0.2.6 — MapLibre-based map components
-
-**Outbox pattern migration — completed:**
-- [x] Add outbox to inventory-service
-- [x] Add outbox to pos-service
-- [x] Add outbox to ordering-service
-- [x] Integrate background publisher worker in all services
-- [x] Replace direct NATS publish with PublishWithOutbox
-
-**Circuit breaker migration — completed:**
-- [x] Migrate ordering-service to shared-service-client
-- [x] Migrate inventory-service to shared-service-client
-- [ ] Migrate pos-service to shared-service-client
-
-**Auth-client v0.2.0 upgrade — completed:**
-- [x] Upgrade ordering-service to auth-client v0.2.0 (Jan 2026)
-- [x] Upgrade inventory-service to auth-client v0.2.0 (Jan 2026)
-- [x] Upgrade pos-service to auth-client v0.2.0 (Jan 2026)
-
-**Code duplication reduction:**
-- [x] Create `httpware` package (RequestID, Tenant, Logging, Recover, CORS)
-- [x] Migrate all services to httpware v0.4.1
-
-### Phase 2: Standardization (Q3 2026) - In progress
-
-**Remaining migrations:**
-- [ ] Add outbox to auth-service (Q3 2026)
-- [ ] Add outbox to ticketing-service (Q3 2026)
-- [x] Complete shared-service-client migration for all services
-
-**New Shared Libraries:**
-- [ ] Create `shared-config` package
-- [ ] Create `shared-observability` package
-- [ ] Migrate all services to new shared packages
-
-**High-Performance Communication:**
-- [ ] Implement gRPC/ConnectRPC in subscription-service
-- [ ] Implement gRPC/ConnectRPC in treasury-service
-
-### Phase 3: Real-Time Features (Q3 2026)
-
-**WebSocket Implementation:**
-- [ ] Real-time tracking in logistics-service
-- [ ] Order status updates in ordering-service
-
-**Internal Webhooks:**
-- [ ] Webhook registration infrastructure
-- [ ] Webhook retry mechanism with exponential backoff
-
-**Observability:**
-- [ ] Full OpenTelemetry integration across all services
-- [ ] Distributed tracing visualization in Grafana
-
-### Phase 4: Advanced Features (Q4 2026+)
-
-**Optional Enhancements:**
-- [ ] GraphQL gateway for flexible frontend queries
-- [ ] Service mesh evaluation (Istio/Linkerd)
-- [ ] mTLS for service-to-service communication
-- [ ] gRPC in notifications-service and logistics-service
+See the [Technology Stack Summary](#technology-stack-summary) below for what's implemented vs. not per communication pattern, and [Observability](../platform-standards/observability.md) for the current logging/tracing tooling.
 
 ---
 
@@ -1474,17 +1202,17 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 
 | Layer | Technology | Status | Services Using |
 |-------|-----------|--------|----------------|
-| **Async Events** | NATS JetStream | ✅ Implemented | All Go services |
-| **Synchronous APIs** | REST (Chi/Gin) | ✅ Implemented | All services |
-| **High-Throughput** | ConnectRPC (gRPC) | ⚠️ Planned Q2 2026 | subscription, treasury |
-| **Real-Time** | WebSockets | ⚠️ Planned Q3 2026 | logistics, ordering |
-| **Flexible Queries** | GraphQL | ❌ Future | - |
-| **Callbacks** | Webhooks | ⚠️ Partial | treasury (external) |
-| **Service Discovery** | Kubernetes DNS | ✅ Implemented | All services |
-| **Authentication** | JWT (shared-auth-client v0.6.1) | ✅ Implemented | All Go services |
-| **Resilience** | Circuit Breaker (shared-service-client) | ✅ Implemented | All Go services |
-| **Event Reliability** | Outbox (shared-events) | ✅ Implemented | All Go services with events |
-| **Observability** | Zap + Prometheus + OTEL | ⚠️ Partial | All services (tracing in progress) |
+| **Async Events** | NATS JetStream | Implemented | All Go services |
+| **Synchronous APIs** | REST (Chi/Gin) | Implemented | All services |
+| **High-Throughput** | ConnectRPC (gRPC) | Not yet implemented | — |
+| **Real-Time** | WebSockets | Not yet implemented | — |
+| **Flexible Queries** | GraphQL | Not yet implemented | — |
+| **Callbacks** | Webhooks | Implemented for external gateways | treasury |
+| **Service Discovery** | Kubernetes DNS | Implemented | All services |
+| **Authentication** | JWT (`shared-auth-client`) | Implemented | All Go services |
+| **Resilience** | Circuit Breaker (`shared-service-client`) | Implemented | All Go services |
+| **Event Reliability** | Outbox (`shared-events`) | Implemented | All Go services with events |
+| **Observability** | Structured logging + tracing | See [Observability](../platform-standards/observability.md) | All services |
 
 ### Shared Libraries Summary
 
@@ -1767,12 +1495,7 @@ Codevertex's microservices architecture rests on a centralized, GitOps-managed D
 - Resilience: `shared-service-client` for circuit breaker, retry, and tracing on service-to-service calls
 - Event reliability: `shared-events` for the standardized outbox pattern
 
-### What's Next
-
-- **Short-term (Q2–Q3 2026)**: gRPC/ConnectRPC for high-throughput operations, WebSockets for real-time tracking, internal webhook infrastructure
-- **Long-term (Q4 2026+)**: service mesh evaluation (Istio/Linkerd), GraphQL for flexible frontend queries, full distributed tracing
-
-See [Migration Roadmap](#migration-roadmap) above for the detailed phase-by-phase status, and [Observability](../platform-standards/observability.md) for what's actually deployed today.
+Communication patterns not yet in use — gRPC/ConnectRPC, WebSockets, GraphQL — are covered above in [Communication Patterns](#communication-patterns) along with what each would be used for. See [Observability](../platform-standards/observability.md) for the current logging/tracing tooling.
 
 ---
 

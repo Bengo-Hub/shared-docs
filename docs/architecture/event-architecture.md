@@ -1,12 +1,6 @@
 # Codevertex Event Architecture
 
-**Status:** Production — all MVP backend services publish and consume events via NATS JetStream, using the transactional outbox pattern.
-
-**Changelog** (most recent first):
-
-- **Jul 31, 2026:** Added the `hospital-api` (Codevertex Afya) event catalog entry (`hospital.>` stream, `aggregate_type: hospital`) and its `Consumers by Service` row. hospital-api is a Sprint-0 scaffold as of this date — the subjects listed are the target contract, not yet published in code.
-- **Mar 25, 2026:** Enriched `inventory.item.created`/`updated` payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). The POS catalog sync handler now consumes the full payload, including the `inventory_item_id` FK.
-- **Earlier:** Multi-industry revamp added `inventory.category.created/updated`, `inventory.lot.expiring_soon`, `inventory.purchase_order.received`, `inventory.transfer.shipped`, `pos.kds.ticket.ready`, `pos.appointment.created/completed`, `ordering.booking.created`, `treasury.settlement.completed`, and `treasury.installment.due`.
+**Status:** Production — all backend services publish and consume events via NATS JetStream, using the transactional outbox pattern.
 
 ---
 
@@ -153,10 +147,9 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 ### hospital-api (JetStream, stream: `hospital`)
 
 Codevertex Afya hospital management service. Owns clinical-workflow entities (Patient, Visit,
-Triage, Examination, LabOrder, Prescription, Admission, specialized-care programmes) — see
-`hospital-service/hospital-api/docs/architecture.md` for the full data-authority table. As of
-2026-07-31 this service is a Sprint-0 scaffold; the events below are the target contract, not yet
-published in code.
+Triage, Examination, LabOrder, Prescription, Admission, specialized-care programmes). Clinical
+domain logic isn't built yet, so the events below describe the target contract, not something
+currently published in code.
 
 | Subject | Trigger | Key Payload Fields |
 |---------|---------|-------------------|
@@ -193,7 +186,7 @@ Notifications + messaging-credit billing are centralized in notifications-api; i
 | Treasury Payments | `treasury` | `treasury.>` | payment_success, payment_failed, payment_receipt, payout_completed, settlement_completed, installment_due |
 | Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
 | POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt, kds_ticket_ready, appointment_created, appointment_completed |
-| Hospital (Codevertex Afya) | `hospital` | `hospital.>` | appointment_reminder, lab_result_ready, prescription_ready (planned — Sprint 5+, not yet implemented) |
+| Hospital (Codevertex Afya) | `hospital` | `hospital.>` | appointment_reminder, lab_result_ready, prescription_ready (not yet implemented) |
 | ISP Billing | `isp` | `isp.>` | subscription_credentials (sms+whatsapp; gated on SMS credits / WhatsApp subscription), payment_received, subscription_renewal, subscription_expiring |
 | Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
 | Projects | `projects` | `project.>` | project_milestone_reached |
