@@ -1,6 +1,10 @@
 site_name: Codevertex Africa — Platform Documentation
 site_description: Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.
 site_author: Codevertex Africa
+site_url: https://bengo-hub.github.io/shared-docs/
+repo_url: https://github.com/Bengo-Hub/shared-docs
+repo_name: Bengo-Hub/shared-docs
+edit_uri: edit/master/docs/
 
 theme:
   name: material
@@ -13,6 +17,11 @@ theme:
     - search.highlight
   icon:
     repo: fontawesome/brands/github
+
+extra:
+  version:
+    provider: mike
+    default: latest
   palette:
     - scheme: default
       primary: indigo
@@ -55,6 +64,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Changelog: changelog.md
   - Architecture & Engineering Standards:
       - architecture/index.md
       - Microservice Architecture (master doc): architecture/microservice-architecture.md
