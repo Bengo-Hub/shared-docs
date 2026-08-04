@@ -19,7 +19,3 @@ PgBouncer's transaction-pooling mode is **incompatible with some DDL** — you'l
 1. Add the service via `create-service-secrets.sh <service-name>` (or the normal ArgoCD template) — it points `POSTGRES_URL` at PgBouncer and `POSTGRES_MIGRATE_URL` at direct Postgres automatically. Don't invent a third connection string convention.
 2. If your service isn't Go (the fleet also has a Python/FastAPI+SQLAlchemy service and a .NET/Npgsql one), the *host:port* convention is identical, just the env var name may differ per stack (`ConnectionStrings__DefaultConnection` for .NET, for example) — check `pgbouncer-migration-2026-04-16.md`'s service table for your stack's exact key name before inventing a new one.
 3. Client-side connection-pool tuning (`SetMaxOpenConns`, etc.) is **not** currently used anywhere in the fleet — pooling is handled entirely by PgBouncer. Don't add client-side pool limits without checking this stays true; two pooling layers fighting each other can cause more problems than one.
-
-## Known gap
-
-Both `postgresql-0` and the `pgbouncer` deployment run as a single replica in prod — there is no Postgres or PgBouncer HA/failover today. See the platform best-practices gap analysis for the proposed remediation and its current priority.

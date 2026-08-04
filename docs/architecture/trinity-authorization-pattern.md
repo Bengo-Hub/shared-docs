@@ -584,9 +584,9 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 
 ---
 
-## Monitoring & Alerts (Target State)
+## Monitoring & Alerts (Design Intent)
 
-These are the metrics and alerts this authorization model *should* be instrumented for. No metrics/tracing stack is currently running in the cluster — see [gap-analysis-and-remediation-plan.md](../platform-standards/gap-analysis-and-remediation-plan.md) and [observability.md](../platform-standards/observability.md) for the current state and remediation plan. Treat the list below as design intent, not a live dashboard.
+These are the metrics and alerts this authorization model is designed to be instrumented for, once a metrics pipeline is in place — see [Observability](../platform-standards/observability.md) for the logging and tracing that exist today. Treat the list below as design intent, not a live dashboard.
 
 - Feature check latency and success/failure rate
 - Usage reporting latency and failures

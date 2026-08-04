@@ -95,7 +95,6 @@ nav:
           - Observability: platform-standards/observability.md
           - AI Integrations & pgvector: platform-standards/ai-and-pgvector.md
           - N+1 Queries & Preloading: platform-standards/n-plus-one-queries.md
-          - Gap Analysis & Remediation Plan: platform-standards/gap-analysis-and-remediation-plan.md
       - Integrations:
           - integrations/index.md
           - Payment Workflow (hub): integrations/payment-workflow.md

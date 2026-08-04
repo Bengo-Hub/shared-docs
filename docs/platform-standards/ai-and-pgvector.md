@@ -16,6 +16,6 @@ In prod, `marketflow-ai` is deployed as its own service (namespace `marketflow`,
 2. If you need vector search, use the `shared/infrastructure/pgvector` extension against your service's own Postgres DB rather than standing up a separate vector database — pgvector as a Postgres extension keeps it inside the existing backup/PgBouncer/connection-pooling story (see [Connection Pooling & PgBouncer](connection-pooling-pgbouncer.md)) instead of adding a new kind of datastore to operate.
 3. Don't synthesize a foreign-key-referenced ID (e.g. a deterministic UUID derived from a tenant slug) instead of resolving the real one — this exact mistake broke `marketflow-ai`'s session-to-tenant linkage for two weeks in production before being caught (every `chat_sessions` insert was failing its FK silently). Resolve real IDs from their owning service, never derive a plausible-looking one.
 
-## Known gap
+## Scope of this page
 
-This page is a starting point, not a full architecture doc — a proper "AI integrations" architecture writeup (covering the KB embedding pipeline, tool-calling contract, and cross-service query pattern in detail) doesn't exist yet in shared-docs. If you're doing significant new AI work, consider writing that doc as part of the change rather than assuming this page covers it.
+This is a starting point, not a full architecture writeup — a deeper "AI integrations" doc (covering the KB embedding pipeline, tool-calling contract, and cross-service query pattern in detail) is a natural follow-up. If you're doing significant new AI work, consider contributing that doc as part of the change.

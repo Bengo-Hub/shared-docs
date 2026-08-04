@@ -21,7 +21,4 @@ Three named tiers, pick the one that matches your data's volatility rather than 
 1. Check whether the data you want to cache is already cached upstream (e.g. tenant branding — don't re-cache what `cache.GetTenantDetails()` already provides).
 2. Use `Aside[T]` rather than hand-rolling a `redis.Get`/`redis.Set` pair — it gets the get-or-set race and error handling right once, for everyone.
 3. Always set an `InvalidatePattern` path for anything that changes via an event (e.g. invalidate `tenant:<slug>` on `auth.tenant.updated`) — a cache with no invalidation path is a slow-motion bug waiting for a support ticket about "stale data."
-
-## Known gap
-
-Redis runs as a single replica (`redis-master-0`) in prod with no HA/replica — a Redis restart currently means every service's cache cold-starts simultaneously. Not urgent (all cached data is a projection of a source of truth elsewhere, never the only copy), but worth knowing before assuming Redis is always warm.
+4. Treat cached data as a projection, never the only copy — a cache is always rebuildable from its source of truth, so design new cache entries with that assumption in mind.
