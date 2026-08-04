@@ -4,14 +4,14 @@
 
 ## Overview
 
-Non-Go services (TruLoad/.NET, ERP/Python) that don't use NATS can send notifications via the notifications-api REST endpoint. Go services should prefer the NATS event-driven pattern documented in [event-architecture.md](../architecture/event-architecture.md).
+Services that don't participate in the NATS event bus can send notifications via this REST endpoint instead — today that's mainly TruLoad (.NET) and ISP Billing (Python/FastAPI). Every Go service, including the ERP and Ordering services (both fully Go, no longer their original Django/Python incarnations), should prefer the NATS event-driven pattern documented in [event-architecture.md](../architecture/event-architecture.md) and only fall back to this REST endpoint for a genuine one-off, non-event-driven send.
 
 ---
 
 ## Endpoint
 
 ```
-POST https://notifications-api.bengobox.svc.cluster.local:4000/{tenantId}/notifications/messages
+POST https://notifications-api.notifications.svc.cluster.local:4000/{tenantId}/notifications/messages
 ```
 
 **Production (via ingress):**
@@ -85,7 +85,7 @@ Either:
 | `truload/compliance_certificate` | name, certificate_number, vehicle_reg, expiry_date, download_link | Certificate available |
 | `truload/special_release` | name, release_number, vehicle_reg, reason, authorized_by, view_link | Special release issued |
 
-### ERP/Reports (Python/Django)
+### ERP / Reports
 
 | Template | Variables | Use Case |
 |----------|-----------|----------|
@@ -94,11 +94,15 @@ Either:
 | `reports/activity_report_approved` | name, project_name, activity_title, approved_by, approval_date, action_link | Report approved |
 | `reports/activity_report_rejected` | name, project_name, activity_title, rejected_by, rejection_reason, action_link | Report rejected |
 
-### Cafe (Python/Django)
+ERP is now a Go service and follows the standard NATS event pattern rather than calling this REST endpoint directly — these templates are kept here for reference in case any legacy call site still exists.
+
+### Ordering (Contact Form)
 
 | Template | Variables | Use Case |
 |----------|-----------|----------|
 | `cafe/cafe_contact_form` | name, email, message, submitted_at | Contact form submission |
+
+Sent from `ordering-backend` (the Go service that superseded the original "cafe" backend). The template ID still carries the old `cafe/` prefix — a rename is cosmetic and hasn't been prioritized since the current name doesn't collide with anything.
 
 ### ISP Billing (`ispbilling/*`)
 
@@ -124,7 +128,7 @@ Triggered via the `isp.*` events (see event-architecture.md), not direct REST ca
 
 ## Integration Examples
 
-### Python (requests)
+### Python (requests) — e.g. from ISP Billing's FastAPI backend
 
 ```python
 import requests
@@ -165,31 +169,6 @@ send_notification(
     subject="Your Weight Ticket is Ready",
     api_key="your-api-key",
 )
-```
-
-### Python/Celery Task
-
-```python
-from celery import shared_task
-
-@shared_task(bind=True, max_retries=3)
-def send_report_ready_notification(self, tenant_id, recipient_email, report_name, download_link):
-    try:
-        send_notification(
-            tenant_id=tenant_id,
-            template="reports/report_ready",
-            to=[recipient_email],
-            data={
-                "name": "User",
-                "report_name": report_name,
-                "report_type": "Analytics",
-                "download_link": download_link,
-            },
-            subject=f"Report Ready: {report_name}",
-            api_key=settings.NOTIFICATIONS_API_KEY,
-        )
-    except Exception as exc:
-        self.retry(exc=exc, countdown=60)
 ```
 
 ### C# (.NET/Hangfire)

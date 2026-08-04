@@ -1,7 +1,13 @@
 # Codevertex SSO Integration Guide
 
 **Last Updated**: May 20, 2026
-**Status**: Production — all MVP frontends integrated. SSO revamp (JWT permissions, JIT, public menu, canonical codes, tenant-in-URL token minting, auth/me Redis cache) implemented. **JIT role assignment** now maps global JWT roles to service-level roles on first login across all backends (treasury, inventory, pos, logistics, notifications). **Service-level auth/me enrichment (March 31 fix):** ordering-backend and treasury-api `/auth/me` endpoints now merge JWT claims with service-level RBAC roles/permissions from local DB (following notifications-api gold standard). Token refresh implemented in cafe-website (JSON body to POST /api/v1/auth/refresh). AUTH_AUDIENCE fixed to "codevertex" across all services. Media upload handlers now fall back to file extension for SVG/WebP detection. **Subscription enforcement (March 29 fix):** ALL services now use mutations-only enforcement — GET requests pass through unconditionally; only POST/PUT/PATCH/DELETE require active subscription. Frontend 403 discrimination distinguishes subscription 403 (`code: subscription_inactive`, `upgrade: true`) from auth 403 to prevent login redirect loops. All frontends implement `SubscriptionBanner` + `SubscriptionGate` + `useSubscription()` hook for UI-level gating. **Production domains** align with devops-k8s/apps/*/values.yaml only (no alternate domains); see Progress and Production domains table below.
+**Status**: Production — all MVP frontends are integrated. Recent changes, most recent first:
+
+- **Subscription enforcement (Mar 29):** all services now gate mutations only — GET/HEAD/OPTIONS always pass through, POST/PUT/PATCH/DELETE require an active subscription. Frontends distinguish a subscription 403 (`code: subscription_inactive`, `upgrade: true`) from an auth 403, so an expired subscription no longer bounces the user back to the login screen. Every frontend implements `SubscriptionBanner`, `SubscriptionGate`, and `useSubscription()`.
+- **Service-level `/auth/me` enrichment (Mar 31):** ordering-backend and treasury-api now merge JWT claims with service-level RBAC roles/permissions from the local DB, matching the pattern notifications-api established first.
+- **JIT role assignment:** global JWT roles (superuser, admin, staff) now map to service-level roles on first login, across treasury, inventory, pos, logistics, and notifications.
+- Token refresh implemented in cafe-website (JSON body to `POST /api/v1/auth/refresh`); `AUTH_AUDIENCE` fixed to `"codevertex"` across all services; media upload handlers fall back to file extension for SVG/WebP detection.
+- Production domains come only from `devops-k8s/apps/*/values.yaml` — see the Progress and Production domains sections below.
 
 ---
 
@@ -15,7 +21,15 @@ Codevertex uses a single centralised SSO (Single Sign-On) service for all authen
 | **auth-ui** (login/register UI) | `accounts.codevertexafrica.com` | User-facing login/register forms |
 | All other frontends | `*.codevertexafrica.com` | Consume SSO tokens |
 
-**Progress (March 2026):** Auth-api issues JWT with `roles` and `permissions` (canonical codes: e.g. `catalog:view`, `catalog:manage`). Login/register/refresh responses return `roles` and `permissions` only at the top level (not duplicated under `user`). Authorize URL supports `tenant=<slug>`; token exchange prefers that tenant when the user is a member. GET `/api/v1/auth/me` is cached in Redis by user ID with TTL = token expiry (or 24h) to reduce DB load; frontends should use TanStack Query with a similar TTL (e.g. 5 min–24h). Ordering-backend (and other Go backends) use JIT tenant sync and JIT user provisioning. OAuth clients: `pos-ui` and tenant-aware redirect URIs for pos-ui, subscriptions-ui, treasury-ui, notifications-ui. Public menu endpoints (`/menu/*`) documented and used by cafe-website. **JIT role assignment:** All backends now map global JWT roles (superuser, admin, staff) to service-level roles during JIT provisioning (e.g. superuser → finance_admin in treasury, inventory_admin in inventory, pos_admin in POS). **Subscription enforcement:** ordering-backend (mutations), logistics-api (mutations), treasury-api, inventory-api, pos-api, projects-api enforce RequireActiveSubscription; core services (auth-api, subscriptions-api, notifications-api) do not. **Notifications rate limiting:** Email sending is rate-limited by plan via `max_emails_per_day` from JWT SubscriptionLimits (Redis sliding window, returns 429). **Treasury-ui platform fix:** AuthProvider now checks `superuser` role and `isPlatformOwner` flag (was incorrectly checking `super_admin`). Docs updated: JWT claims, JIT role assignment, subscription enforcement, rate limiting, debugging table.
+**Progress (March 2026):**
+
+- Auth-api issues JWT with `roles` and `permissions` (canonical codes, e.g. `catalog:view`, `catalog:manage`); login/register/refresh responses return these only at the top level, not duplicated under `user`.
+- Authorize URL supports `tenant=<slug>`; token exchange prefers that tenant when the user is a member.
+- `GET /api/v1/auth/me` is cached in Redis by user ID (TTL = token expiry, or 24h) to reduce DB load. Frontends should cache it with TanStack Query on a similar TTL (5 min–24h).
+- Go backends use JIT tenant sync and JIT user provisioning, and now map global JWT roles (superuser, admin, staff) to service-level roles during provisioning (e.g. superuser → finance_admin in treasury, inventory_admin in inventory, pos_admin in POS).
+- Subscription enforcement (mutations-only) is live on ordering-backend, logistics-api, treasury-api, inventory-api, pos-api, and projects-api. Core services — auth-api, subscriptions-api, notifications-api — don't enforce it; notifications instead rate-limits email by plan (`max_emails_per_day` from JWT `SubscriptionLimits`, Redis sliding window, 429 on breach).
+- OAuth clients: `pos-ui` and tenant-aware redirect URIs added for pos-ui, subscriptions-ui, treasury-ui, notifications-ui. Public menu endpoints (`/menu/*`) documented and used by cafe-website.
+- Fixed: treasury-ui's AuthProvider was checking `super_admin` instead of `superuser`/`isPlatformOwner`.
 
 ---
 
@@ -122,7 +136,7 @@ To keep the ecosystem maintainable, **every frontend and backend that integrates
 |------|-------------|
 | **1. Login entry** | Redirect to SSO authorize URL with PKCE (`code_challenge`, `code_verifier`, `state`). Pass `tenant` only when the user is already in a tenant context (e.g. path `/{orgSlug}/menu` → pass `orgSlug`). When the user lands on auth-ui directly (no `?tenant=`), auth-ui sends **no tenant**; auth-api resolves tenant from the user's primary org. |
 | **2. Callback** | Exchange `code` + `code_verifier` at `POST /api/v1/token`. Store `access_token`, `refresh_token`, `expires_at`. Attach token getter to the API client so **every** request sends `Authorization: Bearer <token>`. |
-| **3. Tenant context** | After first successful profile response, store `tenant_id` and `tenant_slug` (from SSO or service `/me`) in localStorage. Send `X-Tenant-ID` (must be the **tenant UUID** from auth-api, not a slug or custom string like `tenant-urban-loft`) and `X-Tenant-Slug` on **every** request to tenant-scoped backends. Backends expect `X-Tenant-ID` to be a valid UUID. |
+| **3. Tenant context** | After first successful profile response, store `tenant_id` and `tenant_slug` (from SSO or service `/me`) in localStorage. Send `X-Tenant-ID` (must be the **tenant UUID** from auth-api, not a slug or custom string like `tenant-acme-retail`) and `X-Tenant-Slug` on **every** request to tenant-scoped backends. Backends expect `X-Tenant-ID` to be a valid UUID. |
 | **3b. Outlet context** | After the service-level outlet preselection step (11 above), send `X-Outlet-ID` (outlet UUID) on every API request via `apiClient.setOutletID(outletId)`. Platform owners omit `X-Tenant-ID`/`X-Tenant-Slug` but still send `X-Outlet-ID` when an outlet is selected. Backends treat `X-Outlet-ID` as **optional** — requests without it pass through and return all data for the tenant. See **Outlet/Branch Context** section below. |
 | **4. Profile** | Two-step enrichment: (a) Call SSO `GET /api/v1/auth/me` → get user identity + global roles + auth-service permissions. (b) Call the service's own `/auth/me` (e.g. `GET /api/v1/{tenant}/pos/auth/me` for pos-ui) → get service-level role + service permissions (pos.*.* for pos-ui). Auth-api issues only auth-service permissions in the JWT; service permissions come exclusively from the service's local RBAC. Merge: use SSO identity (id, email, name, tenant) + service permissions for RBAC. If the service /auth/me returns 404 (user not yet JIT-provisioned), fall back to role inference from global JWT roles. |
 | **5. 401 handling** | Register a global 401 handler (e.g. axios interceptor) that (a) **attempts token refresh first** via `refreshAccessToken()` mutex (calls `POST /api/v1/auth/refresh` with `refresh_token` + `client_id`), (b) retries the original request with the new token, (c) only fires the logout callback if refresh fails or the retry still returns 401. The 401 callback must check `status !== 'syncing' && status !== 'loading'` and skip if within 15 seconds of successful auth (`lastAuthenticatedAt` grace period). When firing: clear TanStack query cache (`queryClient.clear()`), reset auth store, redirect to SSO logout. **Skip 401 for `/auth/me`** (JIT sync delay). Reference implementation: cafe-website `src/lib/api/client.ts` + `src/lib/auth/token-refresh.ts` + `src/components/providers/Providers.tsx`. |
@@ -157,7 +171,7 @@ Reference implementation: `cafe-website/src/lib/auth/token-refresh.ts`, `cafe-we
 
 ### E2E tests
 
-- Tests must mirror **real user experience**: no forged query params (e.g. no `?tenant=urban-loft` for tenant admin). User opens `/login`, enters email and password only, submits; backend resolves tenant from email.
+- Tests must mirror **real user experience**: no forged query params (e.g. no `?tenant=acme-retail` for tenant admin). User opens `/login`, enters email and password only, submits; backend resolves tenant from email.
 - After login, assert that **authenticated requests succeed** (e.g. no 401 when calling `/auth/me` or a protected endpoint with the token in headers).
 
 ---
@@ -177,7 +191,7 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 | `treasury-ui` | treasury-ui | `https://books.codevertexafrica.com/{tenant}/auth/callback` and `/auth/callback` | Yes |
 | `logistics-ui` | logistics-ui | `https://logistics.codevertexafrica.com/auth/callback` | Yes |
 | `auth-ui` | auth-ui | `https://accounts.codevertexafrica.com/auth/callback`, `https://sso.codevertexafrica.com/auth/callback` | Yes |
-| `cafe-website` | cafe-website | `https://theurbanloftcafe.com/auth/callback` | Yes (PKCE) |
+| `cafe-website` | cafe-website | `https://example-tenant.com/auth/callback` | Yes (PKCE) |
 | `marketflow-ui` | marketflow-ui | `https://marketflow.codevertexafrica.com/auth/callback` and `/{tenant}/auth/callback` | Yes |
 
 **The seed uses upsert** — re-running it fixes misconfigured redirect URIs automatically. For tenant-aware apps, seed includes both `/{tenant}/auth/callback` and `/auth/callback` so either pattern works.
@@ -191,7 +205,7 @@ Each frontend must be registered as an OAuth client in auth-api. The seed runs o
 | auth-api (SSO) | `sso.codevertexafrica.com` |
 | auth-ui | `accounts.codevertexafrica.com` |
 | ordering-frontend | `ordering.codevertexafrica.com` |
-| cafe-website | `theurbanloftcafe.com` |
+| cafe-website | `example-tenant.com` |
 | notifications-ui | `notifications.codevertexafrica.com` |
 | rider-app | `riderapp.codevertexafrica.com` |
 | subscriptions-ui | `pricing.codevertexafrica.com` |
@@ -215,12 +229,12 @@ All SSO requests should include tenant context so auth-api can mint the token fo
 
 ```typescript
 // In buildAuthorizeUrl():
-url.searchParams.set("tenant", orgSlug ?? "urban-loft");  // default tenant: urban-loft
+url.searchParams.set("tenant", orgSlug ?? "acme-retail");  // default tenant: acme-retail
 ```
 
 - **Authorize URL:** `tenant=<slug>` is optional; when present, auth-api stores it on the authorization code and prefers that tenant when minting the access token (if the user is a member).
-- **Default tenant:** `urban-loft` is the default app tenant; frontends should pass it (or the current org slug from the path) so the token carries the correct tenant.
-- **Platform vs tenant orgs:** **Platform organisation** = `codevertex` (operates the platform; users may have cross-tenant access and do not consume tenant subscriptions). **Tenant organisations** = customer orgs (e.g. `urban-loft`, `mss`) that have subscriptions and use the product. Organisation slug `codevertex` is the platform owner; users with that primary tenant have elevated access.
+- **Default tenant:** `acme-retail` is the default app tenant; frontends should pass it (or the current org slug from the path) so the token carries the correct tenant.
+- **Platform vs tenant orgs:** **Platform organisation** = `codevertex` (operates the platform; users may have cross-tenant access and do not consume tenant subscriptions). **Tenant organisations** = customer orgs (e.g. `acme-retail`, `acme-wholesale`) that have subscriptions and use the product. Organisation slug `codevertex` is the platform owner; users with that primary tenant have elevated access.
 
 ### Login without tenant_slug: tenant resolved from user's primary tenant
 
@@ -242,7 +256,7 @@ After login, the JWT claims include `tenant_id` and `tenant_slug`. All service A
 
 1. JWT contains `tenant_id` (UUID) and `tenant_slug` from auth-api.
 2. **Profile source:** Frontends must load user/roles/permissions from **auth-api (SSO)** `GET /api/v1/auth/me` (Bearer token). Do not call the service’s own API for profile unless that service exposes a dedicated /auth/me (e.g. ordering-backend `GET /api/v1/{tenant}/auth/me` for its synced user). Treasury-ui, notifications-ui, subscriptions-ui, etc. call **SSO** for `/api/v1/auth/me`; treasury-api also exposes `GET /api/v1/auth/me` (JWT claims) as an optional fallback.
-3. Frontends should store `tenant_id` (e.g. in localStorage) after the first successful profile load and send it as `X-Tenant-ID` on subsequent requests; use `tenant_slug` in the URL path (e.g. `/api/v1/urban-loft/...`).
+3. Frontends should store `tenant_id` (e.g. in localStorage) after the first successful profile load and send it as `X-Tenant-ID` on subsequent requests; use `tenant_slug` in the URL path (e.g. `/api/v1/acme-retail/...`).
 4. When syncing users or tenants from events (e.g. NATS `auth.user.created`), downstream services must use the tenant UUID from the event (auth-api-issued), not generate a new one.
 
 ---
@@ -282,9 +296,9 @@ outlet_id in JWT && !is_hq_user?
 
 | User Type | Tenant Filter | Outlet Filter |
 |-----------|--------------|---------------|
-| **Platform owner** (`is_platform_owner = true`) | ✅ Dropdown (all tenants) | ✅ Dropdown (outlets of selected tenant) |
-| **Tenant HQ/admin** (`is_hq_user = true` or role = admin/manager) | ❌ Not shown | ✅ Dropdown ("All Outlets" default) |
-| **Regular staff** (`outlet_id` in JWT, `is_hq_user = false`) | ❌ Not shown | ✅ Read-only badge (their assigned outlet, no dropdown) |
+| **Platform owner** (`is_platform_owner = true`) | Dropdown (all tenants) | Dropdown (outlets of selected tenant) |
+| **Tenant HQ/admin** (`is_hq_user = true` or role = admin/manager) | Not shown | Dropdown ("All Outlets" default) |
+| **Regular staff** (`outlet_id` in JWT, `is_hq_user = false`) | Not shown | Read-only badge (their assigned outlet, no dropdown) |
 
 **Key files:**
 - Outlet filter component template: `inventory-service/inventory-ui/src/components/outlet-filter.tsx`
@@ -378,13 +392,13 @@ Filter out `status = "archived"` outlets before showing in UI.
 
 | Service | Frontend | Backend | Outlet FK | Notes |
 |---------|----------|---------|-----------|-------|
-| POS | ✅ Full (select-outlet + header filter) | ✅ OutletContext middleware + outlet_id FK | ✅ orders, staff | Gold standard |
-| Inventory | ✅ Full | ✅ OutletContext middleware + warehouse outlet_id | ✅ warehouses | |
-| Ordering | ✅ Full | ✅ OutletContext middleware + outlet_id FK | ✅ orders | |
-| Logistics | ✅ Full | ✅ OutletContext middleware + outlet_id FK | ✅ tasks | |
-| Treasury | ✅ Full (TenantFilter + OutletFilter) | ✅ CORS + middleware | Optional | |
-| MarketFlow | ✅ OutletFilter in header | ✅ CORS + middleware | Optional | |
-| Projects | ✅ OutletFilter in header | ✅ CORS + middleware | Optional | |
+| POS | Full (select-outlet + header filter) | OutletContext middleware + outlet_id FK | orders, staff | Reference implementation |
+| Inventory | Full | OutletContext middleware + warehouse outlet_id | warehouses | |
+| Ordering | Full | OutletContext middleware + outlet_id FK | orders | |
+| Logistics | Full | OutletContext middleware + outlet_id FK | tasks | |
+| Treasury | Full (TenantFilter + OutletFilter) | CORS + middleware | Optional | |
+| MarketFlow | OutletFilter in header | CORS + middleware | Optional | |
+| Projects | OutletFilter in header | CORS + middleware | Optional | |
 
 ---
 
@@ -451,7 +465,7 @@ auth-ui validates `return_to` with `isValidReturnUrl` (allows relative paths and
 ### ordering-frontend
 - Client ID: `ordering-ui`
 - Callback: `/{orgSlug}/auth/callback` (tenant-aware)
-- Authorize URL: pass `tenant` from path (`orgSlug`) or default `urban-loft` so token is minted for the correct org
+- Authorize URL: pass `tenant` from path (`orgSlug`) or default `acme-retail` so token is minted for the correct org
 - After sync: redirect to returnTo URL (e.g. `/{orgSlug}/menu`)
 - Source: `src/lib/auth/api.ts`, `src/store/auth.ts`
 
@@ -461,7 +475,7 @@ auth-ui validates `return_to` with `isValidReturnUrl` (allows relative paths and
 - Profile: Call **SSO** `GET /api/v1/auth/me` (Bearer token) — not logistics-api. Implemented in `lib/auth-api.ts` (`fetchMe(accessToken)`); response is normalized to User (id, email, roles, tenants). Fixes "Syncing your account..." stuck screen when logistics-api `/riders/me` returns 404.
 - After sync: check status → pending page or dashboard
 - After admin approval: redirect to `/{orgSlug}/profile` for profile completion
-- Invitation flow: `/join?invite_code=ABC&org=urban-loft` → SSO → pending → profile
+- Invitation flow: `/join?invite_code=ABC&org=acme-retail` → SSO → pending → profile
 - Source: `src/lib/auth-api.ts`, `src/store/auth-store.ts`, `src/hooks/useAuth.ts`
 
 ### notifications-ui

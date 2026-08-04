@@ -11,7 +11,7 @@ Phase A / Sprint 4, a separate later effort. **Prior:** July 31, 2026 — Regist
 
 ## Overview
 
-The Trinity Authorization Pattern is a comprehensive authorization strategy that combines three layers of access control to provide robust, scalable, and flexible authorization across the entire Codevertex ecosystem.
+The Trinity Authorization Pattern combines three layers of access control — identity/RBAC, subscription licensing, and service-level permissions — into a single authorization model used across the Codevertex ecosystem.
 
 ```
 Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resources (Domain Services)
@@ -87,9 +87,9 @@ Authorization = RBAC (Auth-Service) + Licensing (Subscription-Service) + Resourc
 - Business rule enforcement
 - Data ownership and isolation
 
-**Service-Level Permission System (Django-style RBAC):**
+**Service-Level Permission System:**
 
-Each domain service implements its own fine-grained permission system stored in its database. Permission codes follow the format `{service}.{module}.{action}` with Django-style actions: `add`, `view`, `view_own`, `change`, `change_own`, `delete`, `delete_own`, `manage`, `manage_own`.
+Each domain service implements its own fine-grained permission system stored in its database. Permission codes follow the format `{service}.{module}.{action}`, with a fixed action vocabulary: `add`, `view`, `view_own`, `change`, `change_own`, `delete`, `delete_own`, `manage`, `manage_own`.
 
 **Ent schemas per service** (following the treasury-api reference pattern):
 - `{Service}Permission` — permission_code (unique), module, action, resource, description
@@ -172,7 +172,7 @@ Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes iss
 
 **Services implementing this pattern:**
 - pos-api: `GET /{tenant}/pos/auth/me` → returns pos_role + pos.*.* permissions
-- ordering-backend: `GET /{tenant}/auth/me` → ordering role + permissions (gold standard)
+- ordering-backend: `GET /{tenant}/auth/me` → ordering role + permissions (reference implementation)
 - treasury-api: `GET /api/v1/auth/me` → finance role + permissions
 - notifications-api: `GET /{tenant}/auth/me` → notifications role + permissions
 
@@ -180,7 +180,7 @@ Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes iss
 
 **Outlet/branch context (Layer 3 extension):** Services that support multi-outlet operations (ordering, inventory, logistics, POS, treasury) accept `X-Outlet-ID` (outlet UUID) as an optional header. When present, handlers filter their data to that outlet. When absent, all tenant-scoped data is returned. This allows platform owners and HQ admin users to see cross-outlet aggregates while individual staff see only their assigned outlet. CORS `AllowedHeaders` must include `X-Outlet-ID` on all services. See `sso-integration-guide.md` → **Outlet/Branch Context** section for frontend preselection rules and the select-outlet page pattern.
 
-**Tenant ID format:** Frontends must send `X-Tenant-ID` as the **tenant UUID** from auth-api (e.g. from GET `/api/v1/auth/me` response `tenant_id`). Do not send a slug or custom string (e.g. `tenant-urban-loft`). Auth-api and all SSO-integrated backends must include `X-Tenant-ID` in CORS `Access-Control-Allow-Headers` (app and ingress) so browser preflights succeed.
+**Tenant ID format:** Frontends must send `X-Tenant-ID` as the **tenant UUID** from auth-api (e.g. from GET `/api/v1/auth/me` response `tenant_id`). Do not send a slug or custom string (e.g. `tenant-acme-retail`). Auth-api and all SSO-integrated backends must include `X-Tenant-ID` in CORS `Access-Control-Allow-Headers` (app and ingress) so browser preflights succeed.
 
 **Auth/me caching:** Auth-api caches GET `/api/v1/auth/me` in Redis by user ID with TTL = token expiry. Frontends should use TanStack Query (or similar) with a TTL aligned to token lifetime so the first read is fast and DB load is reduced.
 
@@ -584,24 +584,15 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 
 ---
 
-## Monitoring & Alerts
+## Monitoring & Alerts (Target State)
 
-### Metrics to Track
+These are the metrics and alerts this authorization model *should* be instrumented for. No metrics/tracing stack is currently running in the cluster — see [gap-analysis-and-remediation-plan.md](../platform-standards/gap-analysis-and-remediation-plan.md) and [observability.md](../platform-standards/observability.md) for the current state and remediation plan. Treat the list below as design intent, not a live dashboard.
 
-- Feature check latency (p50, p95, p99)
-- Feature check success/failure rates
-- Usage reporting latency
-- Limit enforcement accuracy
-- Overage detection accuracy
-- Plan transition success rates
-
-### Alerts
-
-- High feature check failure rate (>5%)
-- Subscription service unavailable
-- Usage reporting failures
-- Overage calculation errors
-- Plan transition failures
+- Feature check latency and success/failure rate
+- Usage reporting latency and failures
+- Limit enforcement and overage detection accuracy
+- Plan transition success/failure rate
+- Subscription service availability
 
 ---
 
@@ -713,13 +704,13 @@ After successful login, **every frontend** (except auth-ui itself) must:
 > Auth-api generates UUIDs at runtime (DB-generated). Hardcoded UUIDs will never match.
 
 ### Resolution Order
-1. **Env var override**: `TENANT_ID_{SLUG_UPPER}` (e.g. `TENANT_ID_URBAN_LOFT=<uuid>`)
+1. **Env var override**: `TENANT_ID_{SLUG_UPPER}` (e.g. `TENANT_ID_ACME_RETAIL=<uuid>`)
 2. **Auth-api public endpoint**: `GET /api/v1/tenants/by-slug/{slug}` (no auth required)
 3. **Skip with warning**: if auth-api unreachable and no env var, log and continue
 
 ### Env Var Override (for CI/offline seeding)
 ```bash
-TENANT_ID_URBAN_LOFT=<uuid-from-auth-api-db>
+TENANT_ID_ACME_RETAIL=<uuid-from-auth-api-db>
 TENANT_ID_CODEVERTEX=<uuid-from-auth-api-db>
 AUTH_API_URL=https://sso.codevertexafrica.com  # default
 ```

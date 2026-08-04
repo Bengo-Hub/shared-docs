@@ -65,53 +65,42 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Changelog: changelog.md
-  - Architecture & Engineering Standards:
-      - architecture/index.md
-      - Microservice Architecture (master doc): architecture/microservice-architecture.md
-      - Trinity Authorization Pattern: architecture/trinity-authorization-pattern.md
-      - Event Architecture (NATS/JetStream): architecture/event-architecture.md
-      - SSO Integration Guide: architecture/sso-integration-guide.md
-      - Login Flow Contract: architecture/login-flow-contract.md
-      - Subscription Gating Guide: architecture/subscription-gating-guide.md
-      - Cross-Service Data Ownership: architecture/cross-service-data-ownership.md
-      - Go Backend — Ent + Atlas Migrations: architecture/go-backend-ent-atlas-migrations.md
-      - DevOps-K8s Ingress & CORS: architecture/devops-k8s-ingress-cors.md
-  - Platform Engineering Standards:
-      - platform-standards/index.md
-      - Webhooks vs Polling: platform-standards/webhooks-vs-polling.md
-      - Connection Pooling & PgBouncer: platform-standards/connection-pooling-pgbouncer.md
-      - Caching: platform-standards/caching.md
-      - Idempotency & the Outbox Pattern: platform-standards/idempotency-and-outbox.md
-      - Resilience — Circuit Breakers & Retries: platform-standards/resilience-and-retries.md
-      - Rate Limiting: platform-standards/rate-limiting.md
-      - Service-to-Service (S2S) Conventions: platform-standards/s2s-conventions.md
-      - Secrets Management: platform-standards/secrets-management.md
-      - Observability: platform-standards/observability.md
-      - AI Integrations & pgvector: platform-standards/ai-and-pgvector.md
-      - N+1 Queries & Preloading: platform-standards/n-plus-one-queries.md
-      - Gap Analysis & Remediation Plan: platform-standards/gap-analysis-and-remediation-plan.md
-  - Integrations:
-      - integrations/index.md
-      - Payment Workflow (hub): integrations/payment-workflow.md
-      - M-Pesa (Daraja) Reference: integrations/mpesa-integration-reference.md
-      - Paystack Reference: integrations/paystack-integration-reference.md
-      - Paystack Callback Page: integrations/paystack-callback-page.md
-      - Notifications REST API: integrations/notifications-rest-api-integration.md
-      - Finance Integration Map: integrations/finance-integration-map.md
-  - Operations & Runbooks:
-      - operations/index.md
-      - Database Maintenance: operations/database-maintenance.md
-  - Business & Governance:
-      - business/index.md
-      - Roadmap: business/roadmap.md
-      - Equity Governance Directive: business/equity-governance-directive.md
-      - Revenue-Agnostic Equity Framework: business/revenue-agnostic-equity-framework.md
-      - Pricing Model: business/codevertex-pricing-model.md
-      - Frontend User Display Standard: business/frontend-user-display.md
-  - Client Deliverables:
-      - client-deliverables/index.md
-  - History (Archive):
-      - history/index.md
-      - Inventory/Ordering Audit TODOs (2026-06-25): history/inventory-ordering-audit-todos.md
-      - POS QA Remediation Sprint (2026-07-06): history/pos-qa-remediation-2026-07.md
-      - WhatsApp Provider Evaluation (2026-06): history/whatsapp-provider-evaluation.md
+  - User Guide:
+      - user-guide/index.md
+      - Platform Overview: user-guide/platform-overview.md
+      - Getting Started: user-guide/getting-started.md
+      - Subscriptions & Billing: user-guide/subscriptions-and-billing.md
+  - Technical Guide:
+      - Architecture:
+          - architecture/index.md
+          - Microservice Architecture (master doc): architecture/microservice-architecture.md
+          - Trinity Authorization Pattern: architecture/trinity-authorization-pattern.md
+          - Event Architecture (NATS/JetStream): architecture/event-architecture.md
+          - SSO Integration Guide: architecture/sso-integration-guide.md
+          - Login Flow Contract: architecture/login-flow-contract.md
+          - Subscription Gating Guide: architecture/subscription-gating-guide.md
+          - Cross-Service Data Ownership: architecture/cross-service-data-ownership.md
+          - Go Backend — Ent + Atlas Migrations: architecture/go-backend-ent-atlas-migrations.md
+          - DevOps-K8s Ingress & CORS: architecture/devops-k8s-ingress-cors.md
+      - Platform Engineering Standards:
+          - platform-standards/index.md
+          - Webhooks vs Polling: platform-standards/webhooks-vs-polling.md
+          - Connection Pooling & PgBouncer: platform-standards/connection-pooling-pgbouncer.md
+          - Caching: platform-standards/caching.md
+          - Idempotency & the Outbox Pattern: platform-standards/idempotency-and-outbox.md
+          - Resilience — Circuit Breakers & Retries: platform-standards/resilience-and-retries.md
+          - Rate Limiting: platform-standards/rate-limiting.md
+          - Service-to-Service (S2S) Conventions: platform-standards/s2s-conventions.md
+          - Secrets Management: platform-standards/secrets-management.md
+          - Observability: platform-standards/observability.md
+          - AI Integrations & pgvector: platform-standards/ai-and-pgvector.md
+          - N+1 Queries & Preloading: platform-standards/n-plus-one-queries.md
+          - Gap Analysis & Remediation Plan: platform-standards/gap-analysis-and-remediation-plan.md
+      - Integrations:
+          - integrations/index.md
+          - Payment Workflow (hub): integrations/payment-workflow.md
+          - M-Pesa (Daraja) Reference: integrations/mpesa-integration-reference.md
+          - Paystack Reference: integrations/paystack-integration-reference.md
+          - Paystack Callback Page: integrations/paystack-callback-page.md
+          - Notifications REST API: integrations/notifications-rest-api-integration.md
+          - Finance Integration Map: integrations/finance-integration-map.md

@@ -340,7 +340,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 
 ```json
 {
-  "MerchantName": "Urban Loft Cafe",
+  "MerchantName": "Acme Retail",
   "RefNo": "cafe-checkout-01",
   "Amount": "500",
   "TrxCode": "PB",

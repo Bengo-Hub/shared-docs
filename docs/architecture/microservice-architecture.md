@@ -91,14 +91,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - Usage: Primary async communication for Go services
 - Streams: `{service}.{domain}` (e.g., `subscription.billing`, `logistics.tasks`)
 
-**RabbitMQ** (Legacy - Python/Django services):
-- Service: `rabbitmq.messaging.svc.cluster.local:5672`
-- Usage: Celery broker for ERP service (Django)
-- Virtual hosts: Per-service isolation
-
-**Why NATS for Go, RabbitMQ for Python?**
-- **NATS**: Native Go client, lightweight, perfect for Go services
-- **RabbitMQ**: Celery (Python) has mature RabbitMQ support, Django ecosystem standard
+RabbitMQ previously ran alongside NATS as the Celery broker for the original Django-based ERP service. That ERP service has since been fully rebuilt on Go (`erp-api`, part of the same event-driven fleet as every other backend), and RabbitMQ was decommissioned during the 2026-04 infrastructure optimization pass — it no longer runs anywhere in the cluster. NATS JetStream is now the platform's single async messaging layer, used uniformly across all backend services.
 
 #### 2. **Caching & Session Storage** (Namespace: `infra`)
 
@@ -129,7 +122,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - `notifications-service` → PostgreSQL
 - `inventory-service` → PostgreSQL
 - `pos-service` → PostgreSQL
-- `erp-service` → PostgreSQL (Django)
+- `erp-service` → PostgreSQL
 
 #### 4. **Object Storage** (Namespace: `storage`)
 
@@ -145,14 +138,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - Usage: Centralized trace/metric collection
 - Export: All services export traces/metrics to collector
 
-**Prometheus**:
-- Scrapes metrics from all services via ServiceMonitors
-- ServiceMonitors configured per service
-- Namespace: `infra`
-
-**Grafana**:
-- Dashboard visualization for metrics
-- External URL: `grafana.masterspace.co.ke`
+**Metrics/dashboards**: a `ServiceMonitor` Helm template exists so any service can expose Prometheus-scrapeable metrics, but no Prometheus/Grafana instance is currently deployed to consume it — this is a tracked gap, not a running system. See the [Gap Analysis & Remediation Plan](../platform-standards/gap-analysis-and-remediation-plan.md).
 
 ### API Gateway & Ingress
 
@@ -176,7 +162,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - Notifications: `notifications.codevertexafrica.com`
 - Ordering API: `orderingapi.codevertexafrica.com`
 - Ordering UI: `ordering.codevertexafrica.com`
-- Cafe Website: `theurbanloftcafe.com`
+- Cafe/Ordering storefront: per-tenant custom domain (example: `example-tenant.com`)
 - POS API: `posapi.codevertexafrica.com`
 - POS UI: `pos.codevertexafrica.com`
 - Subscription API: `pricingapi.codevertexafrica.com`
@@ -187,7 +173,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - ISP Billing UI: `ispbilling.codevertexafrica.com`
 - Ticketing API: `ticketingapi.codevertexafrica.com`
 - Ticketing UI: `ticketing.codevertexafrica.com`
-- ERP: `erpapi.masterspace.co.ke` (legacy)
+- ERP API: `erpapi.codevertexafrica.com`
 
 ### GitOps & Deployment
 
@@ -195,7 +181,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 - GitOps deployment orchestrator
 - Monitors `devops-k8s` repository
 - Root application syncs all child applications
-- External URL: `argocd.masterspace.co.ke`
+- Internal admin tool — URL intentionally not published here
 
 **Helm Charts**:
 - Generic reusable chart in `charts/app/`
@@ -221,7 +207,7 @@ Codevertex uses a **centralized DevOps repository** (`devops-k8s`) that provides
 
 **KEDA** (Future):
 - Queue-driven autoscaling
-- NATS/RabbitMQ queue depth scaling
+- NATS queue depth scaling
 
 ### Deployment Pattern
 
@@ -236,7 +222,7 @@ apps/
 
 **Reusable Helm Chart** (`charts/app/`):
 - Generic deployment templates
-- Supports: HTTP services, Celery workers, migrations, seeding
+- Supports: HTTP services, background workers, migrations, seeding
 - Standardized health checks, monitoring, ingress
 
 ---
@@ -584,9 +570,7 @@ All services communicate via Kubernetes DNS service names following the pattern:
 **Infrastructure Services** (Shared resources):
 - Redis: `redis-master.infra.svc.cluster.local:6379`
 - NATS: `nats.messaging.svc.cluster.local:4222`
-- RabbitMQ: `rabbitmq.messaging.svc.cluster.local:5672`
 - MinIO: `minio.storage.svc.cluster.local:9000`
-- OpenTelemetry: `otel-collector.infra.svc.cluster.local:4317`
 
 **External Service Communication** (Frontend-to-Backend):
 - Auth API: `https://sso.codevertexafrica.com`
@@ -596,7 +580,7 @@ All services communicate via Kubernetes DNS service names following the pattern:
 - Notifications Service: `https://notifications.codevertexafrica.com`
 - Ordering API: `https://orderingapi.codevertexafrica.com`
 - Ordering UI: `https://ordering.codevertexafrica.com`
-- Cafe Website: `https://theurbanloftcafe.com`
+- Cafe Website: `https://example-tenant.com`
 - POS API: `https://posapi.codevertexafrica.com`
 - POS UI: `https://pos.codevertexafrica.com`
 - Subscription API: `https://pricingapi.codevertexafrica.com`
@@ -611,8 +595,8 @@ All services communicate via Kubernetes DNS service names following the pattern:
 ### Namespace Organization
 
 **Infrastructure Namespaces**:
-- `infra` - Shared infrastructure (Redis, PostgreSQL, Prometheus, OpenTelemetry)
-- `messaging` - Message brokers (NATS JetStream, RabbitMQ)
+- `infra` - Shared infrastructure (Redis, PostgreSQL)
+- `messaging` - NATS JetStream
 - `storage` - Object storage (MinIO)
 
 **Service Namespaces**:
@@ -624,7 +608,7 @@ All services communicate via Kubernetes DNS service names following the pattern:
 - `cafe` / `ordering` - Ordering service
 - `pos` - POS service
 - `inventory` - Inventory service
-- `erp` - ERP service (Django)
+- `erp` - ERP service
 
 ### Service URLs Configuration
 
@@ -677,7 +661,7 @@ env:
 | **ordering-service** | REST + WebSocket | NATS JetStream | PostgreSQL | Redis | REST for orders, WebSocket for live updates, NATS for order lifecycle events |
 | **inventory-service** | REST | NATS JetStream | PostgreSQL | Redis | REST for stock queries, NATS for stock update events |
 | **pos-service** | REST | NATS JetStream | PostgreSQL | Redis | REST for POS operations, NATS for order events |
-| **erp-service** (Django) | REST + WebSocket | RabbitMQ (Celery) | PostgreSQL | Redis | REST for API, RabbitMQ for Celery tasks (Django standard), WebSocket for real-time payroll |
+| **erp-service** | REST | NATS JetStream | PostgreSQL | Redis | REST for API, NATS for async events — same pattern as the rest of the Go fleet |
 
 ### Communication Pattern Decision Tree
 
@@ -714,11 +698,6 @@ env:
 - ✅ Internal service-to-service callbacks
 - ✅ Event delivery to external systems
 
-**When to Use RabbitMQ**:
-- ✅ Python/Django services with Celery
-- ✅ Long-running background tasks
-- ✅ Task queue requirements
-
 ### Service Communication Examples
 
 #### Example 1: Order Creation Flow (REST + NATS)
@@ -729,11 +708,11 @@ Ordering Service → Treasury Service (REST)
   Response: {payment_intent_id, status}
 
 Ordering Service → Logistics Service (NATS)
-  Event: cafe.order.created
+  Event: ordering.order.created
   Payload: {order_id, delivery_address, items}
 
 Ordering Service → Notifications Service (NATS)
-  Event: cafe.order.created
+  Event: ordering.order.created
   Payload: {customer_id, order_id, template: "order_confirmation"}
 ```
 
@@ -1193,30 +1172,15 @@ Frontend → logistics-service (WebSocket)
 
 ---
 
-#### 9. **erp-service** (Django)
+#### 9. **erp-service**
 
-**Current Stack**:
-- **Protocol**: REST (HTTP) + WebSocket (Django Channels)
-- **Message Broker**: RabbitMQ (Celery)
+**Current stack**:
+- **Protocol**: REST (HTTP)
+- **Async events**: NATS JetStream
 - **Database**: PostgreSQL
 - **Cache**: Redis
 
-**Why RabbitMQ Instead of NATS?**:
-- ✅ Django ecosystem standard (Celery)
-- ✅ Mature Celery integration
-- ✅ Long-running task support
-- ✅ Better suited for Django/Python stack
-
-**Why WebSocket (Django Channels)?**:
-- Real-time payroll updates
-- Live dashboard updates
-- Django Channels provides native WebSocket support
-
-**Architecture**:
-```
-ERP Service → RabbitMQ → Celery Workers
-            → WebSocket (Django Channels) → Frontend
-```
+ERP started life as a Django application using RabbitMQ/Celery for background work. It was later rebuilt on Go, and now follows the exact same pattern as the rest of the backend fleet — REST for synchronous calls, NATS JetStream for async events, Ent + Atlas for schema/migrations.
 
 ---
 
@@ -1225,10 +1189,9 @@ ERP Service → RabbitMQ → Celery Workers
 | Technology | Services Using | Reason |
 |------------|---------------|--------|
 | **REST API** | All services | Standard synchronous communication, immediate responses |
-| **NATS JetStream** | All Go services | Lightweight, native Go support, perfect for async events |
-| **RabbitMQ** | ERP (Django) | Celery ecosystem standard, mature Python integration |
+| **NATS JetStream** | All services | Lightweight, native Go support, uniform async-event layer |
 | **gRPC** | subscription, notifications, treasury (planned) | High-throughput, bulk operations, low latency |
-| **WebSocket** | logistics, ordering, erp (planned) | Real-time tracking, live updates, bidirectional |
+| **WebSocket** | logistics, ordering (planned) | Real-time tracking, live updates, bidirectional |
 | **GraphQL** | ordering (future), subscription (future) | Flexible frontend queries, complex nested data |
 | **PostGIS** | logistics | Geo-spatial queries, route optimization |
 
@@ -1672,8 +1635,7 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 
 ### ✅ Fully Implemented & Production-Ready
 
-- **NATS JetStream** for async events (all Go services)
-- **RabbitMQ** for Celery tasks (Django/ERP service)
+- **NATS JetStream** for async events (fleet-wide)
 - **REST APIs** for synchronous operations
 - **Shared auth-client library** (`shared-auth-client` v0.6.1) - JWT/API Key auth, RBAC, subscription feature gating
 - **Shared service-client library** (`shared-service-client`) - Circuit breaker, retry, tracing
@@ -1861,124 +1823,72 @@ Physical retail/hospitality locations can lose connectivity mid-shift, so pos-se
 
 ## Architecture Diagram
 
-### Complete Microservices Architecture Layout
+### Request path, top to bottom
 
+```mermaid
+flowchart TB
+    Users["Web browsers · mobile apps · third-party API callers"]
+    Ingress["NGINX Ingress<br/>TLS via cert-manager / Let's Encrypt"]
+    Users -->|HTTPS| Ingress
+
+    subgraph Frontends["Frontend apps (Next.js, one per product)"]
+        direction LR
+        FE1["auth-ui"]
+        FE2["treasury-ui"]
+        FE3["pos-ui"]
+        FE4["inventory-ui"]
+        FE5["erp-ui"]
+        FE6["… and the rest of the fleet"]
+    end
+    Ingress -->|HTTP| Frontends
+
+    subgraph Backends["Backend services (Go, one per domain)"]
+        direction LR
+        BE1["auth-api"]
+        BE2["treasury-api"]
+        BE3["pos-api"]
+        BE4["inventory-api"]
+        BE5["erp-api"]
+        BE6["… and the rest of the fleet"]
+    end
+    Frontends -->|REST| Backends
+    Ingress -->|REST, direct API calls| Backends
+
+    subgraph Infra["Shared infrastructure"]
+        direction LR
+        PG["PostgreSQL<br/>(one DB per service)"]
+        Redis["Redis<br/>(cache/sessions, single instance)"]
+        NATS["NATS JetStream<br/>(async events, fleet-wide)"]
+        MinIO["MinIO<br/>(object storage)"]
+    end
+    Backends --> Infra
 ```
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 EXTERNAL USERS & CLIENTS                                                      │
-│                         (Web Browsers, Mobile Apps, Third-Party APIs)                                        │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-                                              │
-                                              │ HTTPS/TLS
-                                              ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                         NGINX INGRESS CONTROLLER                                              │
-│                                 (API Gateway / Load Balancer)                                                │
-│                              cert-manager (Let's Encrypt TLS)                                                │
-│                                                                                                               │
-│  Domains:                                                                                                     │
-│  • sso.codevertexafrica.com → auth-api                                                                  │
-│  • accounts.codevertexafrica.com → auth-ui                                                              │
-│  • notifications.codevertexafrica.com → notifications-service                                           │
-│  • booksapi.codevertexafrica.com → treasury-api                                                         │
-│  • books.codevertexafrica.com → treasury-ui                                                             │
-│  • orderingapi.codevertexafrica.com → ordering-backend                                                     │
-│  • ordering.codevertexafrica.com → ordering-frontend                                                   │
-│  • theurbanloftcafe.com → cafe-website                                                             │
-│  • posapi.codevertexafrica.com → pos-api                                                                │
-│  • pos.codevertexafrica.com → pos-ui                                                                    │
-│  • pricingapi.codevertexafrica.com → subscription-api                                                   │
-│  • projectsapi.codevertexafrica.com → projects-api                                                      │
-│  • projects.codevertexafrica.com → projects-ui                                                          │
-│  • iot.codevertexafrica.com → iot-api                                                                   │
-│  • ispbillingapi.codevertexafrica.com → isp-billing-backend                                             │
-│  • ispbilling.codevertexafrica.com → isp-billing-frontend                                               │
-│  • ticketingapi.codevertexafrica.com → ticketing-api                                                     │
-│  • ticketing.codevertexafrica.com → ticketing-ui                                                         │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-                                              │
-                                              │ HTTP (Internal)
-                                              ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                    FRONTEND SERVICES (UI)                                                     │
-│                                                                                                               │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                │
-│  │  auth-ui     │  │ treasury-ui  │  │  cafe-ui     │  │   pos-ui     │  │   erp-ui     │                │
-│  │  (Next.js)   │  │  (Next.js)   │  │  (Next.js)   │  │  (Next.js)   │  │   (Vue.js)   │                │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘                │
-│         │                 │                  │                 │                 │                          │
-│         └─────────────────┴──────────────────┴─────────────────┴─────────────────┘                          │
-│                                    │ HTTPS (External URLs)                                                   │
-└────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                    BACKEND SERVICES (APIs)                                                    │
-│                                                                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐   │
-│  │                                    CORE SERVICES (Go)                                                 │   │
-│  │                                                                                                       │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │   │
-│  │  │auth-service  │  │subscription- │  │notifications │  │treasury-     │  │logistics-    │        │   │
-│  │  │  :4101       │  │service       │  │service       │  │service       │  │service       │        │   │
-│  │  │  (REST)      │  │  :4005       │  │  :4000       │  │  :4000       │  │  :4000       │        │   │
-│  │  │              │  │  (REST+gRPC) │  │  (REST+gRPC) │  │  (REST+gRPC) │  │  (REST+WS)   │        │   │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘        │   │
-│  │         │                 │                  │                 │                 │                  │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │   │
-│  │  │ordering-     │  │inventory-    │  │pos-service   │  │iot-service   │  │projects-     │        │   │
-│  │  │service       │  │service       │  │  :4000       │  │  :4000       │  │service       │        │   │
-│  │  │  :4000       │  │  :4000       │  │  (REST)      │  │  (REST)      │  │  :4000       │        │   │
-│  │  │  (REST+WS)   │  │  (REST)      │  │              │  │              │  │  (REST)      │        │   │
-│  │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘        │   │
-│  │         │                 │                  │                 │                 │                  │   │
-│  └─────────┼─────────────────┼──────────────────┼─────────────────┼─────────────────┼──────────────────┘   │
-│            │                 │                  │                 │                 │                      │
-│  ┌─────────┴─────────────────┴──────────────────┴─────────────────┴─────────────────┴──────────────────┐  │
-│  │                                    LEGACY SERVICES (Python/Django)                                  │  │
-│  │                                                                                                      │  │
-│  │  ┌──────────────┐                                                                                  │  │
-│  │  │erp-service   │                                                                                  │  │
-│  │  │  :4000       │                                                                                  │  │
-│  │  │  (REST+WS)   │                                                                                  │  │
-│  │  │  Celery      │                                                                                  │  │
-│  │  └──────┬───────┘                                                                                  │  │
-│  └─────────┼───────────────────────────────────────────────────────────────────────────────────────────┘  │
-│            │                                                                                                │
-└────────────┼────────────────────────────────────────────────────────────────────────────────────────────────┘
-             │
-             │ Kubernetes DNS Service Discovery
-             │ {service}.{namespace}.svc.cluster.local
-             │
-             ├──────────────────────────────────────────────────────────────────────────────────────────────┐
-             │                                                                                                │
-             ▼                                  ▼                                  ▼                          ▼
-┌──────────────────────────┐    ┌──────────────────────────┐    ┌──────────────────────────┐    ┌──────────────┐
-│   INFRASTRUCTURE LAYER   │    │    MESSAGING LAYER       │    │    STORAGE LAYER         │    │ OBSERVABILITY│
-│   (Namespace: infra)     │    │   (Namespace: messaging) │    │   (Namespace: storage)   │    │   (infra)    │
-│                          │    │                          │    │                          │    │              │
-│  ┌────────────────────┐ │    │  ┌────────────────────┐ │    │  ┌────────────────────┐ │    │  ┌──────────┐ │
-│  │  Redis             │ │    │  │  NATS JetStream    │ │    │  │  MinIO (S3)        │ │    │  │Prometheus│ │
-│  │  :6379             │ │    │  │  :4222             │ │    │  │  :9000             │ │    │  │          │ │
-│  │  (Cache/Sessions)  │ │    │  │  (Go services)     │ │    │  │  (Object Storage)  │ │    │  │Grafana   │ │
-│  └────────────────────┘ │    │  └────────────────────┘ │    │  └────────────────────┘ │    │  │          │ │
-│                          │    │                          │    │                          │    │  │OTEL      │ │
-│  ┌────────────────────┐ │    │  ┌────────────────────┐ │    │                          │    │  │Collector │ │
-│  │  PostgreSQL        │ │    │  │  RabbitMQ          │ │    │                          │    │  │:4317     │ │
-│  │  (Per-service DBs) │ │    │  │  :5672             │ │    │                          │    │  └──────────┘ │
-│  │                    │ │    │  │  (Django/Celery)   │ │    │                          │    │              │
-│  │  • auth-db         │ │    │  └────────────────────┘ │    │                          │    │              │
-│  │  • subscription-db │ │    │                          │    │                          │    │              │
-│  │  • treasury-db     │ │    │                          │    │                          │    │              │
-│  │  • logistics-db    │ │    │                          │    │                          │    │              │
-│  │  • ordering-db     │ │    │                          │    │                          │    │              │
-│  │  • notifications-db│ │    │                          │    │                          │    │              │
-│  │  • inventory-db    │ │    │                          │    │                          │    │              │
-│  │  • pos-db          │ │    │                          │    │                          │    │              │
-│  │  • erp-db          │ │    │                          │    │                          │    │              │
-│  └────────────────────┘ │    │                          │    │                          │    │              │
-└──────────────────────────┘    └──────────────────────────┘    └──────────────────────────┘    └──────────────┘
-```
+
+Every backend service talks to its own PostgreSQL database, shares one Redis instance for caching, and publishes/consumes events through a single NATS JetStream cluster — there's no per-service message broker split. (An earlier version of the platform ran the original Django-based ERP service on RabbitMQ/Celery; that service was fully rebuilt on Go, and RabbitMQ was decommissioned along with it.) A dedicated metrics/tracing/alerting stack is a known, tracked gap rather than something already running — see the [Gap Analysis & Remediation Plan](../platform-standards/gap-analysis-and-remediation-plan.md) for what observability tooling exists today versus what's planned.
+
+### Domain routing (ingress → service)
+
+| Domain | Routes to |
+|---|---|
+| `sso.codevertexafrica.com` | auth-api |
+| `accounts.codevertexafrica.com` | auth-ui |
+| `notifications.codevertexafrica.com` | notifications-api |
+| `booksapi.codevertexafrica.com` | treasury-api |
+| `books.codevertexafrica.com` | treasury-ui |
+| `orderingapi.codevertexafrica.com` | ordering-backend |
+| `ordering.codevertexafrica.com` | ordering-frontend |
+| `posapi.codevertexafrica.com` | pos-api |
+| `pos.codevertexafrica.com` | pos-ui |
+| `pricingapi.codevertexafrica.com` | subscription-api |
+| `projectsapi.codevertexafrica.com` | projects-api |
+| `projects.codevertexafrica.com` | projects-ui |
+| `ispbillingapi.codevertexafrica.com` | isp-billing-backend |
+| `ispbilling.codevertexafrica.com` | isp-billing-frontend |
+| `ticketingapi.codevertexafrica.com` | ticketing-api |
+| `ticketing.codevertexafrica.com` | ticketing-ui |
+
+This is illustrative, not exhaustive — every service follows the same `{service}api.codevertexafrica.com` / `{service}.codevertexafrica.com` convention. The devops-k8s ingress manifests are the authoritative source for the current, complete list.
+
 
 ### Service Communication Flow
 
@@ -2014,12 +1924,12 @@ Frontend → WebSocket → Backend Service → Redis Pub/Sub → WebSocket → F
 - **TLS**: cert-manager + Let's Encrypt
 
 #### **Application Layer (Backend Services)**
-- **Language**: Go (primary), Python (Django - ERP)
-- **REST APIs**: Chi Router (Go), Gin (Go), Django REST Framework (Python)
-- **Real-Time**: WebSocket (planned), Django Channels (ERP)
+- **Language**: Go (primary), with a few non-Go services where the domain calls for it (TruLoad on .NET, ISP Billing on Python/FastAPI)
+- **REST APIs**: Chi Router / Gin (Go), each non-Go service using its own idiomatic framework
+- **Real-Time**: WebSocket (planned)
 
 #### **Communication Layer**
-- **Async Events**: NATS JetStream (Go services), RabbitMQ (Django/Celery)
+- **Async Events**: NATS JetStream, fleet-wide
 - **Service Discovery**: Kubernetes DNS
 - **Load Balancing**: Kubernetes Service
 
@@ -2100,7 +2010,7 @@ The **inventory-service** was upgraded from scaffold-only to a full MVP with bus
 
 - **5 Ent schemas**: item, warehouse, inventorybalance, reservation, consumption
 - **8 HTTP endpoints** matching ordering-backend's inventory client DTOs: stock availability, bulk availability, reservation CRUD (create/get/release/consume), direct consumption
-- **Seed data**: 39 Urban Loft Cafe menu items across 7 categories with realistic KES prices
+- **Seed data**: 39 Acme Retail menu items across 7 categories with realistic KES prices
 - **Shared library alignment**: httpware v0.2.0, shared-events v0.2.0, shared-auth-client v0.3.1
 - **Cross-service integration**: Ordering-backend calls inventory-service synchronously for stock checks and reservations during order placement
 
@@ -2189,8 +2099,8 @@ Codevertex's microservices architecture is built on **solid production-ready fou
 
 1. **✅ Production Infrastructure**: Fully operational Kubernetes cluster with centralized `devops-k8s` repository
 2. **✅ Service Discovery**: Kubernetes DNS-based discovery eliminates need for service registry
-3. **✅ Message Brokers**: NATS JetStream for Go services, RabbitMQ for Django/Celery (optimal tech stack per service type)
-4. **✅ Shared Infrastructure**: Centralized Redis, NATS, monitoring, and observability
+3. **✅ Uniform Async Messaging**: NATS JetStream, fleet-wide, with a shared idempotency/outbox pattern
+4. **✅ Shared Infrastructure**: Centralized Redis and NATS
 5. **✅ GitOps**: ArgoCD-based deployments ensure consistency and reliability
 6. **✅ Standardized Auth**: `shared-auth-client` provides consistent JWT validation across all services
 7. **✅ Resilience**: `shared-service-client` provides circuit breaker, retry, and tracing for service-to-service calls
@@ -2217,10 +2127,9 @@ Codevertex's microservices architecture is built on **solid production-ready fou
 ### Architecture Highlights
 
 - **Hybrid Communication**: Right tool for each use case (REST for sync, NATS for async, WebSocket for real-time)
-- **Technology Fit**: Go services use NATS, Python/Django uses RabbitMQ (optimal for each ecosystem)
 - **Zero Duplication**: Clear data ownership with reference-only patterns
 - **Scalable Foundation**: Kubernetes-native architecture with auto-scaling and GitOps
-- **Production-Ready**: Fully operational infrastructure with monitoring, logging, and observability
+- **Production-Ready**: Fully operational infrastructure with structured logging; a dedicated metrics/tracing/alerting stack is tracked as a gap, not yet built — see [Gap Analysis & Remediation Plan](../platform-standards/gap-analysis-and-remediation-plan.md)
 
 This hybrid architecture ensures optimal communication patterns for each use case while maintaining scalability, performance, and security across all Codevertex microservices.
 

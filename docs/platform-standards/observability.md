@@ -20,4 +20,4 @@ Deploy `kube-prometheus-stack` (Prometheus + Grafana + Alertmanager) wired to th
 
 ## In the meantime
 
-Until the stack above exists, rely on: `kubectl logs`/`kubectl get events`/`kubectl top pods` for live diagnosis (see [Database Maintenance](../operations/database-maintenance.md) for the DB-specific equivalents), and the structured `zap` fields already emitted by every service (tenant_id, request_id) to correlate a specific request across services by grepping logs, since there's no tracing backend to click through yet.
+Until the stack above exists, rely on: `kubectl logs`/`kubectl get events`/`kubectl top pods` for live diagnosis, and the structured `zap` fields already emitted by every service (tenant_id, request_id) to correlate a specific request across services by grepping logs, since there's no tracing backend to click through yet.

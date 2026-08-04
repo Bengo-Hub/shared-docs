@@ -154,7 +154,7 @@ Full refund: omit `amount`. Partial refund: specify `amount` in lowest denominat
 ```json
 {
   "type": "nuban",
-  "name": "Urban Loft Cafe",
+  "name": "Acme Retail",
   "account_number": "0001234567",
   "bank_code": "068",
   "currency": "KES"
@@ -165,7 +165,7 @@ Full refund: omit `amount`. Partial refund: specify `amount` in lowest denominat
 ```json
 {
   "type": "mobile_money",
-  "name": "Urban Loft Cafe",
+  "name": "Acme Retail",
   "account_number": "0712345678",
   "bank_code": "MPESA_KE",
   "currency": "KES"

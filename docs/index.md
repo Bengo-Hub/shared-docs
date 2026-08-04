@@ -1,20 +1,21 @@
 # Codevertex Africa — Platform Documentation
 
-This is the ecosystem-wide documentation for Codevertex Africa's microservices platform: a multi-tenant SaaS suite (POS, Inventory, Treasury, ERP, Ordering, Logistics, Subscriptions, Notifications, Hospital, Library, TruLoad, ISP Billing, MarketFlow, and more) sharing a common auth/RBAC model, event bus, and set of Go/TypeScript libraries.
+Codevertex Africa is a suite of business management products — point of sale, inventory, accounting, HR, and more — for African SMEs and growing enterprises, all sharing one account and one login.
 
-This site covers the **cross-service** concerns — architecture, integration contracts, and engineering standards that apply across the platform. Each service's own repo carries its own service-specific docs (`docs/` folder, `README.md`) for things scoped only to that service.
+This site has two parts:
+
+- **[User Guide](user-guide/index.md)** — for business owners, managers, and staff using the products. High-level, no technical background required.
+- **[Technical Guide](architecture/index.md)** — for developers and integrators, covering how the platform is built: architecture, engineering standards, and integration contracts.
 
 ## Where to start
 
-- **New to the platform architecture?** Start with [Microservice Architecture](architecture/microservice-architecture.md), then [Trinity Authorization Pattern](architecture/trinity-authorization-pattern.md) (how auth, subscriptions, and RBAC compose).
-- **Integrating a new service with the platform?** See [Platform Engineering Standards](platform-standards/index.md) for the conventions every service is expected to follow (S2S auth, caching, idempotency, rate limiting, secrets, migrations), and [Cross-Service Data Ownership](architecture/cross-service-data-ownership.md) to find out which service owns the data you need.
-- **Working on payments?** [Payment Workflow](integrations/payment-workflow.md) is the hub; gateway-specific detail lives in the M-Pesa and Paystack reference pages.
-- **Running database or infra maintenance?** See [Operations & Runbooks](operations/index.md).
-- **Looking for a past sprint audit or decision record?** See [History](history/index.md) — these are kept for context but are not actively maintained.
+**Using the products?** Start with the [Platform Overview](user-guide/platform-overview.md) to see which product fits your business, then [Getting Started](user-guide/getting-started.md) to sign up.
+
+**Building on the platform?** Start with [Microservice Architecture](architecture/microservice-architecture.md) for the big picture, then [Platform Engineering Standards](platform-standards/index.md) for the conventions every service follows (caching, idempotency, rate limiting, secrets, migrations). Working on payments specifically? [Payment Workflow](integrations/payment-workflow.md) is the hub, with gateway-specific detail in the M-Pesa and Paystack reference pages.
 
 ## How this site is organized
 
-Mirrors the pattern already proven out in `TruLoad/truload-docs`: [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) with automatic "last updated" dates per page (via `git-revision-date-localized`) so staleness is visible at a glance, organized by audience — architecture for engineers designing new services, platform standards for anyone integrating with the shared libraries, integrations for anyone touching payments/notifications, operations for on-call/ops work, and business/governance for the non-engineering policy docs that still need a durable home.
+Built with [mkdocs-material](https://squidfunk.github.io/mkdocs-material/), with an automatic "last updated" date on every page so staleness is visible at a glance.
 
 ## Building this site locally
 

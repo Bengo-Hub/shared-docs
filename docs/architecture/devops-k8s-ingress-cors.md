@@ -17,7 +17,7 @@ Use this list for both **backend env** (`HTTP_ALLOWED_ORIGINS` / app CORS) and *
 | Origin | Service type |
 |--------|----------------|
 | `https://ordering.codevertexafrica.com` | Ordering frontend |
-| `https://theurbanloftcafe.com` | Cafe website |
+| `https://example-tenant.com` | Cafe website |
 | `https://accounts.codevertexafrica.com` | Auth UI |
 | `https://sso.codevertexafrica.com` | Auth API (SSO) |
 | `https://notifications.codevertexafrica.com` | Notifications UI |
@@ -52,7 +52,7 @@ If your Ingress uses **NGINX Ingress Controller**, add these annotations to the 
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://notifications.codevertexafrica.com, https://riderapp.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, https://pos.codevertexafrica.com, https://logistics.codevertexafrica.com, https://inventory.codevertexafrica.com, https://ticketing.codevertexafrica.com, https://projects.codevertexafrica.com, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://127.0.0.1:3000, http://127.0.0.1:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://example-tenant.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://notifications.codevertexafrica.com, https://riderapp.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, https://pos.codevertexafrica.com, https://logistics.codevertexafrica.com, https://inventory.codevertexafrica.com, https://ticketing.codevertexafrica.com, https://projects.codevertexafrica.com, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://127.0.0.1:3000, http://127.0.0.1:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Request-ID, X-Requested-With, X-API-Key, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -63,14 +63,14 @@ metadata:
 
 ### 2.2 ordering-backend
 
-**Host:** `orderingapi.codevertexafrica.com` (or `orderingapi.codevertexafrica.com`)  
+**Host:** `orderingapi.codevertexafrica.com`  
 **Path in devops-k8s:** `apps/ordering-backend/` (or `apps/ordering-backend/values.yaml` under ingress)
 
 ```yaml
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://pos.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://notifications.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, https://logistics.codevertexafrica.com, http://localhost:3001, http://127.0.0.1:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://example-tenant.com, https://pos.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, https://notifications.codevertexafrica.com, https://pricing.codevertexafrica.com, https://books.codevertexafrica.com, https://logistics.codevertexafrica.com, http://localhost:3001, http://127.0.0.1:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Request-ID, X-Tenant-ID, X-Tenant-Slug, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -118,7 +118,7 @@ metadata:
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://books.codevertexafrica.com, https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://pos.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, http://localhost:3011, http://localhost:3001, http://localhost:4201"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://books.codevertexafrica.com, https://ordering.codevertexafrica.com, https://example-tenant.com, https://pos.codevertexafrica.com, https://accounts.codevertexafrica.com, https://sso.codevertexafrica.com, http://localhost:3011, http://localhost:3001, http://localhost:4201"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -134,7 +134,7 @@ metadata:
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, https://pos.codevertexafrica.com, https://inventory.codevertexafrica.com, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ordering.codevertexafrica.com, https://example-tenant.com, https://pos.codevertexafrica.com, https://inventory.codevertexafrica.com, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -150,7 +150,7 @@ metadata:
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pos.codevertexafrica.com, https://ordering.codevertexafrica.com, https://theurbanloftcafe.com, http://localhost:3001"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://pos.codevertexafrica.com, https://ordering.codevertexafrica.com, https://example-tenant.com, http://localhost:3001"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, PATCH, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Accept, Authorization, Content-Type, X-Tenant-Slug, X-Tenant-ID"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -181,8 +181,8 @@ For backends that read CORS from env (e.g. ordering-backend `HTTP_ALLOWED_ORIGIN
 
 | App | Env var | Example value |
 |-----|---------|----------------|
-| ordering-backend | `HTTP_ALLOWED_ORIGINS` | `https://ordering.codevertexafrica.com,https://theurbanloftcafe.com,https://pos.codevertexafrica.com,https://notifications.codevertexafrica.com,https://pricing.codevertexafrica.com,https://books.codevertexafrica.com,https://logistics.codevertexafrica.com,https://accounts.codevertexafrica.com,https://sso.codevertexafrica.com,http://localhost:3001,http://127.0.0.1:3001` |
-| auth-api | (CORS via ingress only) | See ?2.1; origins = configured frontend hosts from values.yaml |
+| ordering-backend | `HTTP_ALLOWED_ORIGINS` | `https://ordering.codevertexafrica.com,https://example-tenant.com,https://pos.codevertexafrica.com,https://notifications.codevertexafrica.com,https://pricing.codevertexafrica.com,https://books.codevertexafrica.com,https://logistics.codevertexafrica.com,https://accounts.codevertexafrica.com,https://sso.codevertexafrica.com,http://localhost:3001,http://127.0.0.1:3001` |
+| auth-api | (CORS via ingress only) | See §2.1; origins = configured frontend hosts from values.yaml |
 | notifications-api | (if supported) | Same pattern: frontend origins only |
 | logistics-api | (if supported) | Same pattern |
 | treasury-api | (if supported) | Same pattern |
@@ -196,20 +196,20 @@ For backends that read CORS from env (e.g. ordering-backend `HTTP_ALLOWED_ORIGIN
 
 Frontend apps (ordering-frontend, cafe-website, notifications-ui, auth-ui, rider-app, logistics-ui, treasury-ui at books, pos-ui, subscriptions-ui at pricing, inventory-ui, ticketing-ui, projects-ui) are **origins** that call backends. Their Ingress resources do **not** need CORS annotations for their own domain; CORS is required on the **backend** ingress (and app) so that these origins are allowed when the browser sends requests to the API.
 
-Ensure each frontend's **build** receives the correct production API/SSO URLs (see `shared-docs/mvp-critical-path.md` ?9.2).
+Ensure each frontend's **build** receives the correct production API/SSO URLs (see `shared-docs/mvp-critical-path.md` §9.2).
 
 ---
 
 ## 5. Checklist (devops-k8s repo)
 
-- [ ] **auth-api** ingress: CORS annotations per ?2.1
-- [ ] **ordering-backend** ingress: CORS annotations per ?2.2; `HTTP_ALLOWED_ORIGINS` in values.yaml per ?3
-- [ ] **notifications-api** ingress: CORS annotations per ?2.3
-- [ ] **logistics-api** ingress: CORS annotations per ?2.4
-- [ ] **treasury-api** ingress: CORS annotations per ?2.5
-- [ ] **inventory-api** ingress: CORS annotations per ?2.6
-- [ ] **pos-api** ingress: CORS annotations per ?2.7
-- [ ] **subscriptions-api** ingress: CORS annotations per ?2.8
+- [ ] **auth-api** ingress: CORS annotations per §2.1
+- [ ] **ordering-backend** ingress: CORS annotations per §2.2; `HTTP_ALLOWED_ORIGINS` in values.yaml per §3
+- [ ] **notifications-api** ingress: CORS annotations per §2.3
+- [ ] **logistics-api** ingress: CORS annotations per §2.4
+- [ ] **treasury-api** ingress: CORS annotations per §2.5
+- [ ] **inventory-api** ingress: CORS annotations per §2.6
+- [ ] **pos-api** ingress: CORS annotations per §2.7
+- [ ] **subscriptions-api** ingress: CORS annotations per §2.8
 - [ ] All backend values.yaml: env for CORS/allowed-origins where the app supports it
 
 ---
@@ -217,4 +217,4 @@ Ensure each frontend's **build** receives the correct production API/SSO URLs (s
 ## 6. Reference
 
 - NGINX Ingress CORS: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#enable-cors
-- Application-level CORS: `mvp-critical-path.md` ?9 (CORS and production domains)
+- Application-level CORS: `mvp-critical-path.md` §9 (CORS and production domains)

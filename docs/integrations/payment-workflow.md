@@ -171,8 +171,7 @@ import { TreasuryPaymentModal } from "@bengo-hub/shared-ui-lib/payments";
 
 **Paystack redirect URL** (v0.1.5+) includes `intent_id` and `amount` as query params so the callback page can verify and display the correct order details.
 
-**Current version**: `@bengo-hub/shared-ui-lib` **v0.1.5**  
-**Services using it**: ordering-frontend, pos-ui, cafe-website, subscriptions-ui, notifications-ui, inventory-ui, truload-frontend
+**Services using it**: ordering-frontend, pos-ui, cafe-website, subscriptions-ui, notifications-ui, inventory-ui, truload-frontend — check the consuming service's `package.json` for the exact `@bengo-hub/shared-ui-lib` version in use, since it's updated frequently.
 
 ---
 
