@@ -1,0 +1,3386 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.">
+      
+      
+        <meta name="author" content="Codevertex Africa">
+      
+      
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.0.0/business/codevertex-pricing-model/">
+      
+      
+        <link rel="prev" href="../revenue-agnostic-equity-framework/">
+      
+      
+        <link rel="next" href="../frontend-user-display/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Pricing Model - Codevertex Africa — Platform Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#codevertex-africa-revised-pricing-model-strategy-report-2026" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Codevertex Africa — Platform Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Pricing Model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Architecture & Engineering Standards
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../platform-standards/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Platform Engineering Standards
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integrations/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Integrations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../operations/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Operations & Runbooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Business & Governance
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../client-deliverables/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Client Deliverables
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../history/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  History (Archive)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Codevertex Africa — Platform Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../architecture/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & Engineering Standards
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture & Engineering Standards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/microservice-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservice Architecture (master doc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/trinity-authorization-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trinity Authorization Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/event-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Architecture (NATS/JetStream)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/sso-integration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/login-flow-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Login Flow Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/subscription-gating-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscription Gating Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/cross-service-data-ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Service Data Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/go-backend-ent-atlas-migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Backend — Ent + Atlas Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/devops-k8s-ingress-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps-K8s Ingress & CORS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../platform-standards/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Engineering Standards
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform Engineering Standards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/webhooks-vs-polling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhooks vs Polling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/connection-pooling-pgbouncer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection Pooling & PgBouncer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/idempotency-and-outbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotency & the Outbox Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/resilience-and-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resilience — Circuit Breakers & Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/rate-limiting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/s2s-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service-to-Service (S2S) Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/secrets-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secrets Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/ai-and-pgvector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Integrations & pgvector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/n-plus-one-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N+1 Queries & Preloading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/gap-analysis-and-remediation-plan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gap Analysis & Remediation Plan
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../integrations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/payment-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Workflow (hub)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/mpesa-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M-Pesa (Daraja) Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-callback-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Callback Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/notifications-rest-api-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications REST API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/finance-integration-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../operations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations & Runbooks
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations & Runbooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/database-maintenance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Maintenance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business & Governance
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Business & Governance
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equity-governance-directive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equity Governance Directive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revenue-agnostic-equity-framework/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Revenue-Agnostic Equity Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pricing Model
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pricing Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Executive summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-market-research-kenya-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Market research (Kenya, 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Market research (Kenya, 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kenyan-payment-gateway-fees-the-benchmark-for-our-service-charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kenyan payment-gateway fees (the benchmark for our service charge)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-billing-model-taxonomy-read-this-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Billing-model taxonomy (read this first)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Billing-model taxonomy (read this first)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payg-vs-prepaid-credit-bundles-the-critical-distinction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAYG vs Prepaid credit bundles — the critical distinction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-codevertex-flex-payg-service-charge-revised-per-2026-market-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Codevertex Flex — PAYG service charge (revised per 2026 market research)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Codevertex Flex — PAYG service charge (revised per 2026 market research)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payg-payment-method-restriction-so-the-platform-can-actually-collect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAYG payment-method restriction (so the platform can actually collect)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-revised-pricing-pos-product-lines-revenue-banded-ladder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Revised pricing — POS product lines (revenue-banded ladder)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Revised pricing — POS product lines (revenue-banded ladder)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-codevertex-pos-hospitality-hotels-restaurants-bars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Codevertex POS (Hospitality — hotels, restaurants, bars)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-codevertex-duka-general-retail-shops-supermarkets-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Codevertex Duka (General retail — shops, supermarkets, hardware)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-codevertex-dawa-pharmacy-chemists-pharmacies-dispensaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Codevertex Dawa (Pharmacy — chemists, pharmacies, dispensaries)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-hardware-bundles-optional-customer-can-byod" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Hardware bundles (optional — customer can BYOD)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-pricing-all-other-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Pricing — all other services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-feature-tier-mapping-core-pos-vs-competitive-differentiators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Feature → tier mapping (core POS vs competitive differentiators)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Feature → tier mapping (core POS vs competitive differentiators)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-core-pos-included-in-every-tier-including-micro-payg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Core POS — included in EVERY tier, including Micro / PAYG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-competitive-differentiators-by-tier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Competitive differentiators by tier
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-competitive-advantage-call-outs-vs-loyverse-kyte-pesapal-rack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Competitive-advantage call-outs (vs Loyverse / Kyte / Pesapal-RACK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-prepaid-credit-bundles-separate-from-payg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Prepaid credit bundles (separate from PAYG)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-subscription-gating-correctness-data-sync-entitlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Subscription-gating correctness (data-sync entitlement)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-implementation-status-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Implementation status &amp; references
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frontend-user-display/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frontend User Display Standard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../client-deliverables/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client Deliverables
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Client Deliverables
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../history/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    History (Archive)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    History (Archive)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../history/inventory-ordering-audit-todos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory/Ordering Audit TODOs (2026-06-25)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../history/pos-qa-remediation-2026-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    POS QA Remediation Sprint (2026-07-06)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../history/whatsapp-provider-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WhatsApp Provider Evaluation (2026-06)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Executive summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-market-research-kenya-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Market research (Kenya, 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Market research (Kenya, 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kenyan-payment-gateway-fees-the-benchmark-for-our-service-charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kenyan payment-gateway fees (the benchmark for our service charge)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-billing-model-taxonomy-read-this-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Billing-model taxonomy (read this first)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Billing-model taxonomy (read this first)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payg-vs-prepaid-credit-bundles-the-critical-distinction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAYG vs Prepaid credit bundles — the critical distinction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-codevertex-flex-payg-service-charge-revised-per-2026-market-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Codevertex Flex — PAYG service charge (revised per 2026 market research)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Codevertex Flex — PAYG service charge (revised per 2026 market research)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payg-payment-method-restriction-so-the-platform-can-actually-collect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAYG payment-method restriction (so the platform can actually collect)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-revised-pricing-pos-product-lines-revenue-banded-ladder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Revised pricing — POS product lines (revenue-banded ladder)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Revised pricing — POS product lines (revenue-banded ladder)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-codevertex-pos-hospitality-hotels-restaurants-bars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Codevertex POS (Hospitality — hotels, restaurants, bars)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-codevertex-duka-general-retail-shops-supermarkets-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Codevertex Duka (General retail — shops, supermarkets, hardware)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-codevertex-dawa-pharmacy-chemists-pharmacies-dispensaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Codevertex Dawa (Pharmacy — chemists, pharmacies, dispensaries)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-hardware-bundles-optional-customer-can-byod" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Hardware bundles (optional — customer can BYOD)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-pricing-all-other-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Pricing — all other services
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-feature-tier-mapping-core-pos-vs-competitive-differentiators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Feature → tier mapping (core POS vs competitive differentiators)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Feature → tier mapping (core POS vs competitive differentiators)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-core-pos-included-in-every-tier-including-micro-payg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Core POS — included in EVERY tier, including Micro / PAYG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-competitive-differentiators-by-tier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Competitive differentiators by tier
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-competitive-advantage-call-outs-vs-loyverse-kyte-pesapal-rack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Competitive-advantage call-outs (vs Loyverse / Kyte / Pesapal-RACK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-prepaid-credit-bundles-separate-from-payg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Prepaid credit bundles (separate from PAYG)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-subscription-gating-correctness-data-sync-entitlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Subscription-gating correctness (data-sync entitlement)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-implementation-status-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Implementation status &amp; references
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="codevertex-africa-revised-pricing-model-strategy-report-2026">Codevertex Africa — Revised Pricing Model &amp; Strategy Report (2026)<a class="headerlink" href="#codevertex-africa-revised-pricing-model-strategy-report-2026" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Supersedes the flat <code>CODEVERTEX AFRICA POS SYSTEMS PRICING MODEL</code> document. Covers all product
+lines and services, introduces the <strong>PAYG (pay-as-you-go) service charge</strong> for micro-businesses,
+separates <strong>PAYG from prepaid credit bundles</strong>, and maps platform features to tiers with the exact
+entitlement codes used by <code>subscriptions-api</code>.</p>
+</blockquote>
+<hr />
+<h2 id="1-executive-summary">1. Executive summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
+<p>The original document priced only the three POS product lines (POS / Duka / Dawa) on a monthly +
+one-time-license + implementation + annual-support basis. Benchmarking against the 2026 Kenyan POS
+market shows:</p>
+<ul>
+<li><strong>Monthly fees</strong> are already competitive and were largely kept.</li>
+<li><strong>One-time licenses (90k–350k)</strong> sat <strong>above</strong> the Kenyan market band of <strong>KES 30k–150k</strong> and have
+  been <strong>repositioned down</strong> (value-competitive posture).</li>
+<li>The market has a large <strong>micro-business segment</strong> that cannot afford a subscription or a license but
+  will pay a <strong>small per-sale commission</strong> (the way they already pay M-Pesa/Paystack). We introduce
+  <strong>Codevertex Flex — a PAYG service charge of 1.5% of each sale, floored at KES 2 and capped at KES
+  250</strong> (the 1.5% rate anchored to the ~1.5% M-Pesa till rate merchants already know), which <strong>replaces</strong> the
+  subscription for that tenant. A <strong>&gt;60-day dormancy fee</strong> prevents idle-account clutter.</li>
+<li>Tiers are now <strong>grouped by monthly revenue band</strong> (Flex → Starter → Professional → Enterprise) and
+  <strong>implementation fees cut to 5k/10k/20k</strong> to match local competitors that bundle/waive setup.</li>
+<li>Inconsistent annual-support figures were normalized (the old Hospitality T3 support of 18k was below
+  its own T2 of 32k — a typo).</li>
+</ul>
+<p>The platform's feature depth (eTIMS, hotel/folio, multi-station KDS, recipe/BOM, AR/AP + double-entry
+ledger, offline-sync PWA, integrated CRM) <strong>exceeds</strong> typical Loyverse / Kyte / Pesapal-RACK feature
+sets — this is the competitive advantage to lead with in the higher tiers.</p>
+<hr />
+<h2 id="2-market-research-kenya-2026">2. Market research (Kenya, 2026)<a class="headerlink" href="#2-market-research-kenya-2026" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Segment</th>
+<th>Typical monthly (KES)</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Budget / freemium</td>
+<td>0 – 2,000</td>
+<td>Loyverse, Kyte (free/freemium, ad-supported or feature-limited)</td>
+</tr>
+<tr>
+<td>Starter cloud POS</td>
+<td>2,000 – 5,000</td>
+<td>1 user, sales, basic inventory, receipts</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>5,000 – 10,000</td>
+<td>3–5 users, eTIMS, M-Pesa, reports, loyalty</td>
+</tr>
+<tr>
+<td>Professional</td>
+<td>10,000 – 25,000</td>
+<td>10+ users, multi-branch, analytics</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>25,000+</td>
+<td>unlimited users, API, dedicated support</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>One-time licenses:</strong> cluster at <strong>KES 30,000–150,000</strong> (e.g. PharmaPOS 45k–150k one-time, no monthly).</li>
+<li><strong>Setup / implementation:</strong> KES 5,000–30,000 (ours already in band).</li>
+<li><strong>Hardware:</strong> KES 35,000–200,000; Pesapal POS terminal ~KES 12,000.</li>
+</ul>
+<h3 id="kenyan-payment-gateway-fees-the-benchmark-for-our-service-charge">Kenyan payment-gateway fees (the benchmark for our service charge)<a class="headerlink" href="#kenyan-payment-gateway-fees-the-benchmark-for-our-service-charge" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Fee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M-Pesa Till (merchant)</td>
+<td>~0.5%</td>
+</tr>
+<tr>
+<td>Paystack (local)</td>
+<td>1.5% + flat</td>
+</tr>
+<tr>
+<td>IntaSend / Flutterwave</td>
+<td>~1.5% – 3.8%</td>
+</tr>
+<tr>
+<td>Pesapal</td>
+<td>3% – 5.5% (highest)</td>
+</tr>
+</tbody>
+</table>
+<p>Our <strong>Flex service charge of 1.5%</strong> is set to <strong>match the M-Pesa business-till rate (~1.5%)</strong> merchants
+already pay, so the rate feels familiar and easy to reason about while the platform earns predictably as
+the merchant grows. (An earlier draft used 1% / min 2 / cap 50; the 2026 market review revised this up to
+the M-Pesa-anchored 1.5% / min 2 / cap 250.)</p>
+<p><em>Sources: cuteprofit (restaurant POS cost 2026), eliteteqpos (POS cost guide 2026), iosoftsolutions,
+posmart, nids, medsoftwares (pharmacy 2026), creativekigen &amp; transfer.co.ke (gateway fees), pesapal;
+plus a 2026 external market review (Kenyan POS pricing &amp; PAYG benchmarking).</em></p>
+<hr />
+<h2 id="3-billing-model-taxonomy-read-this-first">3. Billing-model taxonomy (read this first)<a class="headerlink" href="#3-billing-model-taxonomy-read-this-first" title="Permanent link">&para;</a></h2>
+<p>These are <strong>distinct</strong> billing models. Conflating them (especially PAYG vs credit bundles) has caused
+confusion; keep them separate.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>What the customer pays</th>
+<th>When</th>
+<th>Mechanism in code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Subscription</strong></td>
+<td>Recurring tier fee (monthly/annual)</td>
+<td>Each cycle</td>
+<td><code>subscription_plan.base_price</code>, <code>billing_cycle</code></td>
+</tr>
+<tr>
+<td><strong>One-time license</strong></td>
+<td>Perpetual access fee</td>
+<td>Once</td>
+<td><code>billing_cycle = ONE_TIME</code>, <code>IsPerpetual</code></td>
+</tr>
+<tr>
+<td><strong>Implementation / setup</strong></td>
+<td>One-off onboarding</td>
+<td>Once at start</td>
+<td><code>subscription_plan.setup_fee</code> / <code>cmd/seed/setup_fees.go</code></td>
+</tr>
+<tr>
+<td><strong>PAYG service charge</strong></td>
+<td><strong>% commission on their own sales</strong></td>
+<td>Per transaction</td>
+<td><code>service_charge_plan</code> (PERCENTAGE), <code>billing_mode = service_charge</code></td>
+</tr>
+<tr>
+<td><strong>Prepaid credit bundles</strong></td>
+<td><strong>Consumable top-ups</strong> (SMS / WhatsApp / AI)</td>
+<td>Bought upfront, drawn down per unit</td>
+<td>notifications <code>TenantCredit</code> ledger (TOPUP/DEDUCTION); <code>ai_credits_monthly</code></td>
+</tr>
+<tr>
+<td><strong>Overage</strong></td>
+<td>Pay-as-you-go on metered throughput over a subscription cap</td>
+<td>At renewal</td>
+<td><code>allow_overage</code> + <code>overage_charge</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="payg-vs-prepaid-credit-bundles-the-critical-distinction">PAYG vs Prepaid credit bundles — the critical distinction<a class="headerlink" href="#payg-vs-prepaid-credit-bundles-the-critical-distinction" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>PAYG service charge</strong> is a <strong>percentage of the tenant's sales/transactions</strong>. It is the tenant's
+  <em>primary billing relationship</em> (replaces subscription). Collected by netting the platform's cut at
+  settlement (<code>PaymentIntent.service_charge_amount</code> / <code>net_amount</code> in treasury).</li>
+<li><strong>Prepaid credit bundles</strong> are <strong>consumables</strong> (SMS, WhatsApp messages, AI chat credits) bought in
+  advance and consumed per unit. They are <strong>add-ons available to ANY tenant</strong> — a subscription tenant, a
+  one-time-license tenant, or a PAYG tenant can all buy SMS/AI credits. They are <strong>not</strong> a percentage of
+  sales and are <strong>not</strong> a billing mode.</li>
+</ul>
+<blockquote>
+<p><strong>Cleanup item:</strong> <code>SC_MARKETFLOW_AI_CREDIT</code> is currently modelled as a <code>service_charge_plan</code> but
+behaves as a consumable credit. It should be presented and sold as a <strong>prepaid AI-credit pack</strong>
+(consistent with the notifications <code>TenantCredit</code> SMS/WhatsApp model and the <code>ai_credits_monthly</code>
+catalog limit), not as a PAYG commission. See §8.</p>
+</blockquote>
+<hr />
+<h2 id="4-codevertex-flex-payg-service-charge-revised-per-2026-market-research">4. Codevertex Flex — PAYG service charge (revised per 2026 market research)<a class="headerlink" href="#4-codevertex-flex-payg-service-charge-revised-per-2026-market-research" title="Permanent link">&para;</a></h2>
+<p><strong>Chosen structure: 1.5% of sale · minimum KES 2 · capped at KES 250 per transaction.</strong> Branded
+<strong>Codevertex Flex</strong>, this is the smallest rung of the revenue-banded tier ladder (see §5). Seed:
+<code>SC_POS_FLEX</code> (<code>cmd/seed/service_charges.go</code>); the earlier <code>SC_POS_MICRO_1PCT</code> (1% / min 2 / cap 50) is
+deactivated by the seed.</p>
+<blockquote>
+<p><strong>Rate rationale (revision):</strong> an external market review recommended pricing the service charge to
+<em>mirror the ~1.5% M-Pesa business-till rate</em> merchants already pay and understand, rather than the
+earlier under-market 1%. The floor (KES 2) covers very small tickets; the cap (KES 250) protects
+the merchant on large-ticket sales. This is the M-Pesa-anchored "easy to understand" framing.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Percentage</td>
+<td><strong>1.5%</strong></td>
+<td>Mirrors the M-Pesa till rate; merchants grasp it instantly</td>
+</tr>
+<tr>
+<td>Floor (min)</td>
+<td><strong>KES 2</strong></td>
+<td>Covers processing on very small transactions</td>
+</tr>
+<tr>
+<td>Cap (max)</td>
+<td><strong>KES 250</strong></td>
+<td>Protects the merchant on large-ticket sales</td>
+</tr>
+<tr>
+<td>One-time setup</td>
+<td><strong>KES 5,000</strong></td>
+<td>POS + eTIMS onboarding (the only upfront cost)</td>
+</tr>
+<tr>
+<td>Applies to</td>
+<td>POS transactions across all three lines (POS/Duka/Dawa)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Worked examples:</strong> KES 100 sale → KES 2 (floor; 1.5% would be 1.5). KES 2,000 sale → KES 30 (1.5%).
+KES 10,000 sale → KES 150. Sales above ~KES 16,700 → KES 250 (cap). KES 50,000 sale → KES 250 (cap).</p>
+<p><strong>Included features (Flex):</strong> POS till, M-Pesa automation, KRA eTIMS invoicing, end-of-day sales reports.
+(A service-charge tenant is gating-exempt — <code>billing_mode = service_charge</code> — so features are unlocked;
+the list above is the marketed scope.)</p>
+<p><strong>Dormancy clause (risk control):</strong> if a Flex account is idle for <strong>&gt; 60 days</strong>, apply a small monthly
+platform-maintenance fee to keep it active. Prevents dormant-account clutter and overhead with zero
+recurring revenue. <strong>Implementation-fee waiver:</strong> waive the setup fee for clients who prepay 6–12 months
+of a monthly tier (cash-flow incentive to graduate off Flex).</p>
+<h3 id="payg-payment-method-restriction-so-the-platform-can-actually-collect">PAYG payment-method restriction (so the platform can actually collect)<a class="headerlink" href="#payg-payment-method-restriction-so-the-platform-can-actually-collect" title="Permanent link">&para;</a></h3>
+<p>A merchant on PAYG pays nothing up front, so the platform's only revenue is the per-sale commission.
+<strong>Cash and offline/manual payments cannot be auto-deducted</strong> — they would let commission leak. Therefore
+<strong>PAYG tenants are restricted to platform-collectable online rails</strong>:</p>
+<ul>
+<li>✅ Allowed: <strong>platform-routed M-Pesa</strong>, <strong>card via the platform gateway (Paystack)</strong> — methods where
+  treasury nets <code>service_charge_amount</code> at settlement.</li>
+<li>❌ Hidden for PAYG tenants: <strong>cash</strong>, <strong>manual</strong>, <strong>room-charge</strong>, <strong>cash-on-delivery (COD)</strong>, and
+  <strong>on-account / credit</strong> tenders.</li>
+</ul>
+<p>This is enforced at the gateway-list chokepoint (treasury) and defended again at the POS/ordering tender
+list. A subscription or one-time-license tenant is unaffected — they keep all payment methods, because
+the platform's revenue from them does not depend on intercepting each sale.</p>
+<hr />
+<h2 id="5-revised-pricing-pos-product-lines-revenue-banded-ladder">5. Revised pricing — POS product lines (revenue-banded ladder)<a class="headerlink" href="#5-revised-pricing-pos-product-lines-revenue-banded-ladder" title="Permanent link">&para;</a></h2>
+<p>Tiers are grouped by the tenant's <strong>monthly turnover</strong>, smallest first: <strong>Flex → Starter → Professional →
+Enterprise</strong>. Implementation fees were cut to the market-competitive <strong>5k / 10k / 20k</strong> band (local
+competitors increasingly bundle or waive setup to win deals). <strong>Every tier files KRA eTIMS</strong> — including
+Starter — since eTIMS is mandatory and a primary marketing hook. The <strong>Flex</strong> row is the service charge
+from §4 (no monthly fee, online payments only); setup is the KES 5,000 Flex onboarding.</p>
+<h3 id="51-codevertex-pos-hospitality-hotels-restaurants-bars">5.1 Codevertex POS (Hospitality — hotels, restaurants, bars)<a class="headerlink" href="#51-codevertex-pos-hospitality-hotels-restaurants-bars" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Revenue band (≈ /month)</th>
+<th>Monthly</th>
+<th>Implementation</th>
+<th>One-time License</th>
+<th>Annual Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Flex (PAYG)</strong></td>
+<td>starting out / variable</td>
+<td>1.5% (min 2 / cap 250)</td>
+<td>5,000</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Starter</td>
+<td>up to ~300k</td>
+<td>2,500</td>
+<td>5,000</td>
+<td>45,000</td>
+<td>9,000</td>
+</tr>
+<tr>
+<td>Professional</td>
+<td>~300k – 2M</td>
+<td>4,000</td>
+<td>10,000</td>
+<td>95,000</td>
+<td>19,000</td>
+</tr>
+<tr>
+<td>Hospitality</td>
+<td>~2M+</td>
+<td>6,500</td>
+<td>20,000</td>
+<td>150,000</td>
+<td>30,000</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-codevertex-duka-general-retail-shops-supermarkets-hardware">5.2 Codevertex Duka (General retail — shops, supermarkets, hardware)<a class="headerlink" href="#52-codevertex-duka-general-retail-shops-supermarkets-hardware" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Revenue band (≈ /month)</th>
+<th>Monthly</th>
+<th>Implementation</th>
+<th>One-time License</th>
+<th>Annual Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Flex (PAYG)</strong></td>
+<td>starting out / variable</td>
+<td>1.5% (min 2 / cap 250)</td>
+<td>5,000</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Starter</td>
+<td>up to ~300k</td>
+<td>2,500</td>
+<td>5,000</td>
+<td>45,000</td>
+<td>9,000</td>
+</tr>
+<tr>
+<td>Professional</td>
+<td>~300k – 2M</td>
+<td>4,500</td>
+<td>10,000</td>
+<td>90,000</td>
+<td>18,000</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>~2M+</td>
+<td>7,500</td>
+<td>20,000</td>
+<td>150,000</td>
+<td>30,000</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-codevertex-dawa-pharmacy-chemists-pharmacies-dispensaries">5.3 Codevertex Dawa (Pharmacy — chemists, pharmacies, dispensaries)<a class="headerlink" href="#53-codevertex-dawa-pharmacy-chemists-pharmacies-dispensaries" title="Permanent link">&para;</a></h3>
+<p>Priced with a modest premium for compliance depth (batch/expiry, PPB controls, NHIF claims).</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Revenue band (≈ /month)</th>
+<th>Monthly</th>
+<th>Implementation</th>
+<th>One-time License</th>
+<th>Annual Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Flex (PAYG)</strong></td>
+<td>starting out / variable</td>
+<td>1.5% (min 2 / cap 250)</td>
+<td>5,000</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Starter</td>
+<td>up to ~300k</td>
+<td>1,500</td>
+<td>6,000</td>
+<td>55,000</td>
+<td>11,000</td>
+</tr>
+<tr>
+<td>Professional</td>
+<td>~300k – 2M</td>
+<td>3,000</td>
+<td>12,000</td>
+<td>110,000</td>
+<td>22,000</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>~2M+</td>
+<td>6,000</td>
+<td>22,000</td>
+<td>165,000</td>
+<td>33,000</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-hardware-bundles-optional-customer-can-byod">5.4 Hardware bundles (optional — customer can BYOD)<a class="headerlink" href="#54-hardware-bundles-optional-customer-can-byod" title="Permanent link">&para;</a></h3>
+<p>Unchanged from the original document (Mobile Starter 13–15k, Tablet Bundle 25–30k, Retail Pro 40–50k,
+Pharmacy Pro 60–75k, Hospitality Pro 75–100k).</p>
+<hr />
+<h2 id="6-pricing-all-other-services">6. Pricing — all other services<a class="headerlink" href="#6-pricing-all-other-services" title="Permanent link">&para;</a></h2>
+<p>These services are already tiered in <code>subscriptions-api</code>; the values below are the published, value-
+competitive reference (reconcile with <code>cmd/seed/plans_&lt;svc&gt;.go</code>). Each also has a PAYG option where a
+transaction/fee stream exists.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Starter</th>
+<th>Growth / Pro</th>
+<th>Enterprise / Pro+</th>
+<th>PAYG option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ordering</strong> (storefront + delivery)</td>
+<td>2,500</td>
+<td>6,000</td>
+<td>12,500</td>
+<td>5% of order value (<code>SC_ORDERING_5PCT</code>), 3% high-volume</td>
+</tr>
+<tr>
+<td><strong>Inventory</strong> (standalone WMS)</td>
+<td>2,000</td>
+<td>4,500</td>
+<td>9,000</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Treasury / Finance</strong> (invoicing, AR/AP, eTIMS)</td>
+<td>2,500</td>
+<td>6,000</td>
+<td>12,000</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Logistics</strong> (fleet / dispatch)</td>
+<td>3,000</td>
+<td>7,000</td>
+<td>14,000</td>
+<td>7% of delivery fees (<code>SC_LOGISTICS_7PCT</code>)</td>
+</tr>
+<tr>
+<td><strong>ERP</strong> (HR, payroll, procurement)</td>
+<td>—</td>
+<td>15,000</td>
+<td>30,000+</td>
+<td>— (implementation-heavy)</td>
+</tr>
+<tr>
+<td><strong>MarketFlow</strong> (CRM / ads / AI)</td>
+<td>3,000</td>
+<td>7,500</td>
+<td>15,000</td>
+<td>Ads 5% (<code>SC_MARKETFLOW_ADS</code>) + AI credit packs (§8)</td>
+</tr>
+<tr>
+<td><strong>TruLoad</strong> (weighbridge)</td>
+<td>4,000</td>
+<td>9,000</td>
+<td>—</td>
+<td>10% of weighing/fine txns (<code>SC_TRULOAD_10PCT</code>)</td>
+</tr>
+<tr>
+<td><strong>ISP Billing</strong> (hotspot + PPPoE)</td>
+<td>— single plan —</td>
+<td>—</td>
+<td>—</td>
+<td><strong>KES 500/mo base + 3% of hotspot revenue above KES 10k/mo + KES 35/active PPPoE subscriber/mo</strong> (<code>ISP_BILLING_STARTER</code>)</td>
+</tr>
+<tr>
+<td><strong>Projects &amp; Invoicing</strong></td>
+<td>2,500</td>
+<td>8,000</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>ISP Billing pricing (Centipid-aligned, centipidbilling.com).</strong> ONE pay-as-you-grow plan for ISP
+providers (covers hotspot <strong>and</strong> PPPoE), <strong>no feature limits</strong>. Monthly charge =
+<strong>KES 500 base (always)</strong> + <strong>3% of hotspot revenue, but only when monthly hotspot sales exceed
+KES 10,000</strong> (charged on the full sales amount, not the excess) + <strong>KES 35 (~$0.25) per active PPPoE
+subscriber/month</strong> (always, threshold-independent). <em>Example:</em> 12,000 hotspot sales → 500 + 3%×12,000 =
+<strong>KES 860</strong> (+ PPPoE subscriber fees). Unlimited MikroTiks/users/customers/vouchers; captive portal,
+remote WinBox, payment gateways, automated invoicing, real-time notifications; 14-day free trial.
+SMS/WhatsApp are prepaid credit bundles (§8), not plan limits. The billing engine reads
+<code>service_charge_percentage</code> / <code>service_charge_threshold</code> / <code>pppoe_per_subscriber_fee</code> from the plan's
+<code>tier_limits</code>. Seed: <code>ISP_BILLING_STARTER</code> (<code>cmd/seed/plans_isp_billing.go</code>) + <code>max_pppoe_subscribers</code>
+(<code>cmd/seed/feature_catalog.go</code>). The earlier flat tiers + <code>SC_ISP_BILLING</code> service charge are retired and
+existing ISP subscriptions migrated to this plan.</p>
+</blockquote>
+<p><strong>Bundles</strong> (<code>POS_SUITE_*</code>, <code>POWERSUITE_*</code>) remain available and combine product lines at a discount.</p>
+<hr />
+<h2 id="7-feature-tier-mapping-core-pos-vs-competitive-differentiators">7. Feature → tier mapping (core POS vs competitive differentiators)<a class="headerlink" href="#7-feature-tier-mapping-core-pos-vs-competitive-differentiators" title="Permanent link">&para;</a></h2>
+<p>Codes in <code>code</code> font are the <strong>exact entitlement codes</strong> in <code>subscriptions-api</code>
+<code>cmd/seed/feature_catalog.go</code>, so gating is real and enforceable.</p>
+<h3 id="71-core-pos-included-in-every-tier-including-micro-payg">7.1 Core POS — included in EVERY tier, including Micro / PAYG<a class="headerlink" href="#71-core-pos-included-in-every-tier-including-micro-payg" title="Permanent link">&para;</a></h3>
+<p><code>pos_terminal</code>, <code>order_management</code>, <code>receipt_printing</code>, <code>daily_reports</code>, <code>shift_reports</code>, <code>mpesa_pos</code>
+(M-Pesa Till), basic inventory deduction (<code>basic_inventory_access</code>), cash drawer, single outlet, basic
+treasury (<code>basic_treasury_access</code>). These are the non-negotiable point-of-sale essentials.</p>
+<h3 id="72-competitive-differentiators-by-tier">7.2 Competitive differentiators by tier<a class="headerlink" href="#72-competitive-differentiators-by-tier" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Hospitality (POS)</th>
+<th>Retail (Duka)</th>
+<th>Pharmacy (Dawa)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Starter</strong></td>
+<td>+ <code>loyalty_program</code> (basic), <code>table_management</code></td>
+<td>+ <code>loyalty_program</code>, <code>barcode_scanning</code></td>
+<td>+ <code>etims_integration</code>, <code>batch_expiry_tracking</code>, <code>prescription_management</code></td>
+</tr>
+<tr>
+<td><strong>Professional</strong></td>
+<td>+ <code>kds</code>, bill-splitting, recipe/BOM, <code>etims_integration</code>, <code>invoice_generation</code>, supplier mgmt &amp; POs, <code>multi_cashier</code></td>
+<td>+ real-time stock, low-stock alerts, supplier lists, <code>etims_integration</code>, sales analytics</td>
+<td>+ <code>patient_history</code>, <code>insurance_claims</code> (NHIF), PPB audit reports, <code>multi_cashier</code></td>
+</tr>
+<tr>
+<td><strong>Enterprise / Hospitality</strong></td>
+<td>+ <code>hotel_module</code> (reception, check-in/out, room inventory, charge-to-room, guest folio), <code>conference_events</code>, <code>multi_outlet</code>, <code>advanced_analytics</code>, <code>api_access</code>, <code>offline_sync</code>, <code>priority_support</code></td>
+<td>+ <code>multi_outlet</code>, consolidated reporting, <code>advanced_analytics</code>, <code>api_access</code>, <code>priority_support</code></td>
+<td>+ <code>multi_outlet</code>, consolidated reporting, <code>advanced_analytics</code>, <code>api_access</code>, label-printer integration, <code>priority_support</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-competitive-advantage-call-outs-vs-loyverse-kyte-pesapal-rack">7.3 Competitive-advantage call-outs (vs Loyverse / Kyte / Pesapal-RACK)<a class="headerlink" href="#73-competitive-advantage-call-outs-vs-loyverse-kyte-pesapal-rack" title="Permanent link">&para;</a></h3>
+<p>eTIMS / KRA compliance, hotel &amp; guest-folio module, multi-station KDS, recipe/BOM costing, full AR/AP +
+double-entry ledger, offline-first PWA with auto-sync, integrated CRM (MarketFlow), and pharmacy
+batch/expiry + NHIF claims. Lead with these in Professional/Enterprise sales.</p>
+<hr />
+<h2 id="8-prepaid-credit-bundles-separate-from-payg">8. Prepaid credit bundles (separate from PAYG)<a class="headerlink" href="#8-prepaid-credit-bundles-separate-from-payg" title="Permanent link">&para;</a></h2>
+<p>Consumables, available to <strong>any</strong> tenant regardless of billing mode:</p>
+<table>
+<thead>
+<tr>
+<th>Bundle</th>
+<th>Unit price</th>
+<th>Ledger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMS</td>
+<td>~KES 1 / SMS (provider cost + platform margin)</td>
+<td>notifications <code>TenantCredit</code> (type=SMS)</td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td>per-message</td>
+<td>notifications <code>TenantCredit</code> (type=WHATSAPP)</td>
+</tr>
+<tr>
+<td>AI chat credits</td>
+<td>KES 10 / credit</td>
+<td><code>ai_credits_monthly</code> allowance + prepaid top-up pack</td>
+</tr>
+</tbody>
+</table>
+<p>Sold as <strong>TOPUP</strong> transactions and drawn down via <strong>DEDUCTION</strong> as messages/credits are consumed. These
+must <strong>not</strong> be modelled as PAYG service charges.</p>
+<hr />
+<h2 id="9-subscription-gating-correctness-data-sync-entitlement">9. Subscription-gating correctness (data-sync entitlement)<a class="headerlink" href="#9-subscription-gating-correctness-data-sync-entitlement" title="Permanent link">&para;</a></h2>
+<p>Gating historically applied only at the HTTP/API layer. Cross-service <strong>event consumers</strong> wrote data into
+their own schema <strong>without checking entitlements</strong>, so blocked-feature data (KDS tickets, eTIMS invoice
+numbers, inventory availability) could still land for an un-entitled tenant.</p>
+<p><strong>Fix:</strong> event consumers now check the tenant's entitlements (via the subscriptions S2S
+<code>GetEntitlements</code>) before writing, and <strong>drop</strong> (Ack without writing) when the corresponding feature is
+not entitled. Demo / platform-owner / <code>service_charge</code> tenants remain exempt. Identity-provisioning
+consumers (outlet → warehouse/outlet projection) stay ungated.</p>
+<table>
+<thead>
+<tr>
+<th>Synced data</th>
+<th>Required feature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inventory stock → POS catalog availability</td>
+<td><code>basic_inventory_access</code></td>
+</tr>
+<tr>
+<td>Ordering status → POS KDS tickets</td>
+<td><code>kds</code></td>
+</tr>
+<tr>
+<td>Treasury eTIMS → POS order tax fields</td>
+<td><code>etims_integration</code></td>
+</tr>
+<tr>
+<td>Treasury payments → POS / ordering order status</td>
+<td><code>basic_treasury_access</code></td>
+</tr>
+<tr>
+<td>Inventory item → ordering catalog override</td>
+<td><code>basic_inventory_access</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-implementation-status-references">10. Implementation status &amp; references<a class="headerlink" href="#10-implementation-status-references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Pricing data</strong> lives in <code>subscriptions-api</code> seeds: <code>cmd/seed/plans_pos_lines.go</code> (the three POS
+  product lines), <code>cmd/seed/service_charges.go</code> (<code>SC_POS_FLEX</code> PAYG — supersedes <code>SC_POS_MICRO_1PCT</code>), <code>cmd/seed/feature_catalog.go</code>
+  (pharmacy feature codes), and the per-service <code>plans_*.go</code>.</li>
+<li><strong>Gating-sync fix</strong> lives in the POS and ordering event consumers.</li>
+<li><strong>PAYG payment restriction</strong> lives in <code>treasury-api</code> gateway listing + POS/ordering tender lists.</li>
+<li>The subscriptions UI (<code>subscriptions-ui/src/app/plans/page.tsx</code>) is catalog-driven and renders new
+  plans automatically by plan-code prefix.</li>
+</ul>
+<p><em>All figures in KES. Tier values are the recommended, tunable reference; adjust in the seed files and
+re-run the seed (must be warning-free) to publish.</em></p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
