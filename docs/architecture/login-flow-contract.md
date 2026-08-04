@@ -20,7 +20,7 @@ redirectToSSO(returnTo?: string, tenant?: string): Promise<void>
 handleSSOCallback(code: string, callbackUrl: string, tenantSlug?: string): Promise<void>
 ```
 
-- **Tenant-scoped UIs** (ordering, logistics, treasury, pos, inventory): When the user is on a route that includes `orgSlug` (e.g. `/[orgSlug]/dashboard`), pass that slug as `tenant` / `tenantSlug` so the authorize URL includes `?tenant=<slug>` and the token is minted for that org. Callback URL must match seed (e.g. `https://ordering.../urban-loft/auth/callback`).
+- **Tenant-scoped UIs** (ordering, logistics, treasury, pos, inventory): When the user is on a route that includes `orgSlug` (e.g. `/[orgSlug]/dashboard`), pass that slug as `tenant` / `tenantSlug` so the authorize URL includes `?tenant=<slug>` and the token is minted for that org. Callback URL must match seed (e.g. `https://ordering.../acme-retail/auth/callback`).
 - **Platform / mixed UIs** (notifications, subscriptions): Support both platform-level and tenant-level access. When in tenant context (e.g. route or selection), pass `tenant`; when at platform level, omit it. Backend and filters behave per section 3 below.
 
 ### Variant (treasury-ui, pos-ui, inventory-ui)
@@ -112,7 +112,7 @@ This keeps “show tenant filter vs not” and “send tenant headers vs not” 
 For services that want to trigger login without a full-page redirect to `accounts.codevertexafrica.com`, the **`@bengo-hub/shared-ui-lib`** provides `SSOLoginModal` — a React component that embeds auth-ui in a modal iframe.
 
 ```tsx
-import { SSOLoginModal } from “@bengo-hub/shared-ui-lib/auth”;
+import { SSOLoginModal } from "@bengo-hub/shared-ui-lib/auth";
 
 <SSOLoginModal
   isOpen={isOpen}

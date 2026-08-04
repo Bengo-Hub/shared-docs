@@ -21,16 +21,10 @@ This document is the **canonical** definition of data ownership across Codeverte
 
 1. **Single Source of Truth**: Each service owns and manages all data related to its domain; no other service duplicates that data.
 2. **Reference Only**: Other services store only reference IDs (and optional audit snapshots), never full copies of entities they do not own.
-3. **Access via REST / events / gRPC**: To use another service’s data, call its API or consume its events; do not replicate tables.
+3. **Access via REST / events / gRPC**: To use another service's data, call its API or consume its events; do not replicate tables.
 4. **Tenant Service Availability**: Check tenant subscription (subscriptions-api) before creating or referencing data in a dependent service (except auth-api, which is always available).
 5. **SSO Authentication**: All users authenticate via auth-service (SSO); service-specific data (e.g. rider profile, loyalty) is stored only in the owning service.
 6. **Service Independence**: Services can operate standalone or in combination based on tenant subscription.
-1.  **Single Source of Truth**: Each service owns and manages all data related to its domain; no other service duplicates that data.
-2.  **Reference Only**: Other services store only reference IDs (and optional audit snapshots), never full copies of entities they do not own.
-3.  **Access via REST / events / gRPC**: To use another service’s data, call its API or consume its events; do not replicate tables.
-4.  **Tenant Service Availability**: Check tenant subscription (subscriptions-api) before creating or referencing data in a dependent service (except auth-api, which is always available).
-5.  **SSO Authentication**: All users authenticate via auth-service (SSO); service-specific data (e.g. rider profile, loyalty) is stored only in the owning service.
-6.  **Service Independence**: Services can operate standalone or in combination based on tenant subscription.
 
 ---
 
@@ -62,9 +56,9 @@ Driven by the retail-POS competitive audit (`/.claude/plans/_audit-parts/retail-
 3. **Supplier rebates = treasury** vendor credit notes (inventory may flag a rebate accrual on PO lines). **cost_center** = treasury dimension on expense/journal lines.
 4. **Breakdown (bulk→unit) = inventory-api** `StockBreakdown` (multi-UoM explode carrying cost parent→child; IAS-2 FIFO/moving-average), distinct from BOM production.
 5. **Financial documents = treasury-api (2026-06-09)**: invoices, **quotations**, **sales credit-notes** (eTIMS VAT reversal, `invoice_type=credit_note` via `invoicing.CreateCreditNote`). pos NEVER defines a parallel quotation/credit-note entity (one was built + discarded) — it CREATES them via S2S from a pos context (return → `POST /s2s/{tenant}/invoices/{id}/create-credit-note`; "Save as Quotation" from a cart → treasury quotation S2S). **UI rule: pos-ui LINKS to treasury-ui / inventory-ui / marketflow-ui pages (external redirect; the target service enforces its own RBAC) — never recreate another service's pages; only the pos↔service integration ACTION lives in pos-ui.**
-5. **Repair/job-card = pos-api services module** (not a new service, not ticketing-service).
-6. New/used events: `pos.loyalty.earned`, `pos.loyalty.redeemed`, `pos.referral.rewarded`, `inventory.stock.broken_down`, `inventory.goods_receipt.posted` → treasury (GR/IR accrual + 3-way match), `treasury.customer_balance.updated`, `pos.repair.*`.
-7. CRM unchanged: marketflow remains customer SoT; pos adds in-register contact search/create via marketflow S2S; **Customer Groups = marketflow segments**.
+6. **Repair/job-card = pos-api services module** (not a new service, not ticketing-service).
+7. New/used events: `pos.loyalty.earned`, `pos.loyalty.redeemed`, `pos.referral.rewarded`, `inventory.stock.broken_down`, `inventory.goods_receipt.posted` → treasury (GR/IR accrual + 3-way match), `treasury.customer_balance.updated`, `pos.repair.*`.
+8. CRM unchanged: marketflow remains customer SoT; pos adds in-register contact search/create via marketflow S2S; **Customer Groups = marketflow segments**.
 
 ---
 
@@ -531,34 +525,9 @@ The following entities belong to a single owner. **No other service may store th
 
 3. **Rider Creation Flow**:
 
-   **From Ordering / Cafe UI** (ordering-backend; cafe-website and ordering-frontend call ordering-backend):
-   ```
-   1. User initiates rider onboarding in cafe/ordering UI
-   2. Check tenant has logistics service enabled:
-      GET /api/v1/tenants/{tenant_id}/services (subscriptions-api)
-      → Verify "logistics" in enabled_services
-   3. If not enabled: Show error "Logistics service not available. Upgrade plan."
-   4. If enabled, choose one:
-      Option A - API Push:
-        - POST to ordering-backend → ordering-backend calls logistics-api:
-          POST /v1/{tenant}/fleet-members
-        - Logistics-api creates rider (auth user if needed)
-        - Returns rider_id
-        - Ordering-backend stores only rider_id reference
-      Option B - UI Redirect:
-        - Redirect to logistics UI for onboarding
-        - User authenticates with auth-service (SSO)
-        - Logistics-api stores rider profile; redirect back with rider_id
-   ```
+   **From ordering UI** (ordering-frontend / cafe-website calling ordering-backend): the UI first checks `GET /api/v1/tenants/{tenant_id}/services` (subscriptions-api) for `logistics` in `enabled_services`; if it's missing, show an upgrade prompt. If enabled, either ordering-backend calls `POST /v1/{tenant}/fleet-members` on logistics-api server-side and stores only the returned `rider_id`, or the user is redirected to the logistics UI to self-onboard via SSO and ordering-backend picks up the `rider_id` on return.
 
-   **Standalone Logistics Service**:
-   ```
-   1. User goes directly to logistics-service UI
-   2. User authenticates via auth-service (SSO)
-   3. User completes rider onboarding
-   4. All rider data stored in logistics-service (no duplication in ordering-backend)
-   5. No ordering-backend involvement
-   ```
+   **Standalone logistics service**: the user goes directly to the logistics UI, authenticates via SSO, and completes onboarding there. All rider data lives in logistics-api; ordering-backend is not involved.
 
 ### Pattern 2: Tenant Service Availability Check
 
@@ -626,10 +595,7 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 
 ### Service Availability Check
 
-**Subscription Plans** define which services are available:
-- Starter Plan: cafe-service only
-- Growth Plan: cafe-service + logistics-service
-- Professional Plan: All services (cafe, logistics, inventory, POS, treasury, notifications)
+Subscription plans (subscriptions-api) determine which services a tenant can use — e.g. a starter plan might grant only ordering, while higher tiers add logistics, inventory, POS, treasury, notifications, and so on. The exact plan-to-service mapping changes as pricing evolves, so treat subscriptions-api as the source of truth rather than any list here.
 
 **Before creating/referencing data in another service:**
 1. Check tenant subscription plan: `GET /api/v1/tenants/{tenant_id}/subscription`
@@ -650,83 +616,15 @@ func getRiderDetails(ctx context.Context, riderID uuid.UUID) (*Rider, error) {
 ### Service-Specific Roles
 
 - **Auth-Service**: Global roles (`superuser`, `admin`, `user`)
-- **Cafe-Service**: Cafe-specific roles (`customer`, `staff`, `admin`)
+- **Ordering-Service**: Ordering/cafe-specific roles (`customer`, `staff`, `admin`)
 - **Logistics-Service**: Logistics-specific roles (`rider`, `fleet_manager`)
 - **Combined**: User can have multiple roles across services
 
 ---
 
-## Examples
+## Worked Example: Order Assignment with a Rider
 
-### Example 1: Creating a Rider from Ordering / Cafe
-
-**Scenario**: Tenant has ordering and logistics enabled
-
-1. User clicks "Become a Rider" in cafe/ordering UI
-2. Frontend checks tenant services: `GET /api/v1/tenants/{tenant_id}/services` (subscriptions-api)
-3. If logistics enabled:
-   - Option A: Submit to ordering-backend → ordering-backend calls logistics-api (no rider data stored in ordering DB)
-   - Option B: Redirect to logistics UI for self-onboarding
-4. Logistics-api creates rider (and auth user if needed); stores all rider data
-5. Returns `rider_id` to ordering-backend
-6. Ordering-backend stores only `rider_id` reference (no duplication of rider profile)
-
-### Example 2: Standalone Logistics Service
-
-**Scenario**: Tenant only has logistics (no ordering)
-
-1. User goes to logistics-service UI
-2. User authenticates via auth-service (SSO)
-3. User completes rider onboarding
-4. All rider data stored in logistics-service
-5. No ordering-backend involvement
-
-### Example 3: Order Assignment with Rider
-
-**Scenario**: Assign rider to order
-
-1. Ordering-backend queries riders via logistics-api: `GET /v1/{tenant}/fleet-members?status=available`
-2. Logistics-api returns rider list (data stays in logistics; ordering does not copy it)
-3. Ordering-backend stores only `rider_id` in order_assignments
-4. Ordering-backend creates delivery task: `POST /v1/{tenant}/tasks` with `order_id`, `rider_id`
-5. Logistics-api owns task lifecycle; ordering-backend consumes events: `logistics.task.assigned`, `logistics.task.completed`
-
----
-
-## Event Subscription Matrix (Detail)
-
-| Publisher | Event | Subscribers |
-|:---|:---|:---|
-| auth-service | `auth.user.created` | subscription-service (trial), notifications-service (welcome) |
-| auth-service | `auth.tenant.created` | subscription-service (trial), notifications-service (onboarding) |
-| auth-service | `auth.user.password_changed` | notifications-service (security alert) |
-| subscription-service | `subscription.activated` | auth-service (JWT refresh), notifications-service |
-| subscription-service | `subscription.upgraded` / `cancelled` | auth-service, notifications-service |
-| ordering-service | `ordering.order.created` | inventory (reserve), logistics (task), notifications, treasury |
-| ordering-service | `ordering.order.ready` | logistics-service (delivery task) |
-| ordering-service | `ordering.order.completed` | inventory (consume), notifications |
-| inventory-service | `inventory.stock.updated`, `inventory.stock.low` | ordering (optional availability) |
-| pos-service | `pos.sale.finalized` | inventory-service (backflush/consumption) |
-| logistics-service | `logistics.task.completed`, `task.assigned` | ordering-service, notifications-service |
-| treasury-service | Payment webhooks / `payment.completed` | ordering-service, notifications-service |
-| treasury-service | `treasury.invoice.created` | notifications-service (invoice notification) |
-| treasury-service | `treasury.invoice.paid` | notifications-service (payment confirmation) |
-| treasury-service | `treasury.invoice.overdue` | notifications-service (overdue alert) |
-| treasury-service | `treasury.expense.submitted` | notifications-service (expense review) |
-| treasury-service | `treasury.expense.approved` | notifications-service (expense approved) |
-| treasury-service | `treasury.quotation.sent` | notifications-service (quotation email/WhatsApp delivery) |
-| treasury-service | `treasury.quotation.accepted` | notifications-service (quotation accepted) |
-| treasury-service | `treasury.quotation.delivery_challan_created` | logistics-service (task created from quotation), notifications-service |
-| treasury-service | `treasury.quotation.converted_to_order` | ordering-backend (order created from quotation), notifications-service |
-| treasury-service | `treasury.invoice.sent` | notifications-service (invoice email/WhatsApp delivery) |
-| treasury-service | `treasury.invoice.reminder_sent` | notifications-service (payment reminder) |
-| treasury-service | `treasury.etims.transmitted` | notifications-service (eTIMS confirmation) |
-| treasury-service | `treasury.budget.approved` / `rejected` | projects-service, erp (budget lifecycle) |
-| subscription-service | `subscription.billing.renewal` | treasury-service (renewal payment) |
-| subscription-service | `subscription.billing.overage` | treasury-service (overage charges) |
-| subscription-service | `subscription.billing.proration` | treasury-service (proration adjustment) |
-| erp-service | `erp.payroll.processed` | treasury-service (payroll journal entries) |
-| erp-service | `erp.purchase_order.received` | treasury-service (vendor bill creation) |
+Same shape as the rider-creation flow above, applied to assigning a rider to an order: ordering-backend calls `GET /v1/{tenant}/fleet-members?status=available` on logistics-api, stores only `rider_id` on `order_assignments`, and creates the delivery task via `POST /v1/{tenant}/tasks`. Logistics-api owns the task lifecycle; ordering-backend just consumes `logistics.task.assigned` / `logistics.task.completed`.
 
 ---
 

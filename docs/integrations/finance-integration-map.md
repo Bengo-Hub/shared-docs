@@ -25,7 +25,7 @@ posting is **event-driven** (NATS JetStream via the transactional outbox) and **
 | Source event | Treasury consumer | GL posting |
 |---|---|---|
 | `pos.sale.finalized` | pos subscriber | DR Cash / CR Revenue / CR VAT |
-| `inventory.purchase_order.received` | arpa + vendors | vendor bill (DR COGS/Inventory / CR AP) + supplier auto-payout; carries `project_id` for cost attribution |
+| `inventory.purchase_order.received` | vendor-bill subscriber | vendor bill (DR COGS/Inventory / CR AP) + supplier auto-payout; carries `project_id` for cost attribution |
 | `inventory.asset.created` | assets `CapitalizationSubscriber` | auto-register capital-allowance asset (linked by `source_asset_id`) + DR Fixed Assets 1750 / CR Asset Clearing 1760 |
 | `inventory.asset.disposed` | assets `CapitalizationSubscriber` | retire CA asset + record capital gain/loss (proceeds − WDV) |
 | `inventory.asset.depreciation_due` | assets `DepreciationSubscriber` | DR Depreciation 6500 / CR Accum Depr 1700 |

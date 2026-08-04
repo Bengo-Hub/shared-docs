@@ -1,7 +1,12 @@
 # Codevertex Event Architecture
 
-**Last Updated:** July 31, 2026 — Added the `hospital-api` (Codevertex Afya) service event catalog entry (`hospital.>` stream, aggregate_type `hospital`) and its `Consumers by Service` row. hospital-api is a new Sprint-0 scaffold as of this date; the listed subjects are the target contract, not yet published in code. **Previous:** March 25, 2026 — Enriched inventory.item.created/updated event payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). POS catalog sync handler updated to consume full payload including inventory_item_id FK. Prior: Multi-industry revamp with inventory.category.created/updated, inventory.lot.expiring_soon, inventory.purchase_order.received, inventory.transfer.shipped, pos.kds.ticket.ready, pos.appointment.created/completed, ordering.booking.created, treasury.settlement.completed, treasury.installment.due.
-**Status:** Production — All MVP backend services publish and consume events via NATS JetStream with transactional outbox pattern.
+**Status:** Production — all MVP backend services publish and consume events via NATS JetStream, using the transactional outbox pattern.
+
+**Changelog** (most recent first):
+
+- **Jul 31, 2026:** Added the `hospital-api` (Codevertex Afya) event catalog entry (`hospital.>` stream, `aggregate_type: hospital`) and its `Consumers by Service` row. hospital-api is a Sprint-0 scaffold as of this date — the subjects listed are the target contract, not yet published in code.
+- **Mar 25, 2026:** Enriched `inventory.item.created`/`updated` payloads with compliance, physical, and service fields (barcode, barcode_type, requires_age_verification, is_controlled_substance, is_perishable, track_serial_numbers, track_lots, weight_kg, dimensions_cm, duration_minutes). The POS catalog sync handler now consumes the full payload, including the `inventory_item_id` FK.
+- **Earlier:** Multi-industry revamp added `inventory.category.created/updated`, `inventory.lot.expiring_soon`, `inventory.purchase_order.received`, `inventory.transfer.shipped`, `pos.kds.ticket.ready`, `pos.appointment.created/completed`, `ordering.booking.created`, `treasury.settlement.completed`, and `treasury.installment.due`.
 
 ---
 
