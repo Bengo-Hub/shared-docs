@@ -8,9 +8,9 @@ Every service's ingress carries `nginx.ingress.kubernetes.io/limit-rps` and `lim
 
 ## Application-level
 
-Two existing patterns, depending on what you need:
+Application-level rate limiting lives in one shared module — [`github.com/Bengo-Hub/shared-ratelimit`](https://github.com/Bengo-Hub/shared-ratelimit) — with two primitives for two different problems. treasury-api and notifications-api each independently built one of these before the extraction; both now import the shared package instead of maintaining their own copy.
 
-- **Flat per-IP limiting** (treasury-api, `internal/http/router/router.go`): `mw.NewRateLimiter(redisClient, log)` → `IPRateLimit(120, time.Minute)` — a flat request-per-minute cap per IP, with `X-RateLimit-*`/`Retry-After` response headers.
-- **Per-tenant, per-feature limiting** (notifications-api, `internal/shared/middleware/ratelimit.go`): a Redis sliding-window limiter keyed `ratelimit:{tenantID}:{feature}:{date}` via `INCR`, enforcing limits sourced from the tenant's subscription plan (e.g. `max_emails_per_day` from the JWT's subscription claims — see [Trinity Authorization Pattern](../architecture/trinity-authorization-pattern.md)).
+- **`ratelimit.Limiter`** — a Redis sliding-window request limiter (sorted-set log), for abuse throttling by IP or tenant. treasury-api's usage: `ratelimit.NewLimiter(redisClient, log, "treasury")` → `rateLimiter.Middleware(ratelimit.IPKey, 120, time.Minute)` — 120 req/min per IP, with `X-RateLimit-*` response headers and a 429 JSON body on rejection.
+- **`ratelimit.Quota`** — a Redis daily usage-quota counter (`INCR`, calendar-day-bucketed key, ~25h expiry), for per-tenant/per-feature metering sourced from the tenant's subscription plan (e.g. `email_notifications_per_day` from the JWT's subscription claims — see [Trinity Authorization Pattern](../architecture/trinity-authorization-pattern.md)). notifications-api's usage: `ratelimit.NewQuota(redisClient)` → `quota.Check(ctx, tenantID, featureKey, limit)`, or `ratelimit.RequireQuota(quota, featureKey, claimsFn)` as middleware.
 
-If you're adding application-level rate limiting to a new service, the sliding-window, per-tenant/per-feature pattern is the more generally useful of the two — follow that shape unless you specifically need a flat per-IP limit.
+If you're adding application-level rate limiting to a new service: import `shared-ratelimit` rather than writing a third implementation. Use `Limiter` for abuse/traffic protection (the limit is a fixed config value, not tied to a plan); use `Quota` for plan/feature metering (the limit comes from the caller's subscription tier via JWT claims).
