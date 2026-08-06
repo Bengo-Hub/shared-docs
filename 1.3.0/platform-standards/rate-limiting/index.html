@@ -1776,12 +1776,12 @@
 <h2 id="ingress-level">Ingress-level<a class="headerlink" href="#ingress-level" title="Permanent link">&para;</a></h2>
 <p>Every service's ingress carries <code>nginx.ingress.kubernetes.io/limit-rps</code> and <code>limit-connections</code> annotations, tuned per service (for example, auth-api at 20 rps / 100 connections, ordering-backend at 50 rps / 200 connections). This is the first line of defense against abusive traffic, applied before a request even reaches a pod — see <a href="../../architecture/devops-k8s-ingress-cors/">DevOps-K8s Ingress &amp; CORS</a> for the per-service values.</p>
 <h2 id="application-level">Application-level<a class="headerlink" href="#application-level" title="Permanent link">&para;</a></h2>
-<p>Two existing patterns, depending on what you need:</p>
+<p>Application-level rate limiting lives in one shared module — <a href="https://github.com/Bengo-Hub/shared-ratelimit"><code>github.com/Bengo-Hub/shared-ratelimit</code></a> — with two primitives for two different problems. treasury-api and notifications-api each independently built one of these before the extraction; both now import the shared package instead of maintaining their own copy.</p>
 <ul>
-<li><strong>Flat per-IP limiting</strong> (treasury-api, <code>internal/http/router/router.go</code>): <code>mw.NewRateLimiter(redisClient, log)</code> → <code>IPRateLimit(120, time.Minute)</code> — a flat request-per-minute cap per IP, with <code>X-RateLimit-*</code>/<code>Retry-After</code> response headers.</li>
-<li><strong>Per-tenant, per-feature limiting</strong> (notifications-api, <code>internal/shared/middleware/ratelimit.go</code>): a Redis sliding-window limiter keyed <code>ratelimit:{tenantID}:{feature}:{date}</code> via <code>INCR</code>, enforcing limits sourced from the tenant's subscription plan (e.g. <code>max_emails_per_day</code> from the JWT's subscription claims — see <a href="../../architecture/trinity-authorization-pattern/">Trinity Authorization Pattern</a>).</li>
+<li><strong><code>ratelimit.Limiter</code></strong> — a Redis sliding-window request limiter (sorted-set log), for abuse throttling by IP or tenant. treasury-api's usage: <code>ratelimit.NewLimiter(redisClient, log, "treasury")</code> → <code>rateLimiter.Middleware(ratelimit.IPKey, 120, time.Minute)</code> — 120 req/min per IP, with <code>X-RateLimit-*</code> response headers and a 429 JSON body on rejection.</li>
+<li><strong><code>ratelimit.Quota</code></strong> — a Redis daily usage-quota counter (<code>INCR</code>, calendar-day-bucketed key, ~25h expiry), for per-tenant/per-feature metering sourced from the tenant's subscription plan (e.g. <code>email_notifications_per_day</code> from the JWT's subscription claims — see <a href="../../architecture/trinity-authorization-pattern/">Trinity Authorization Pattern</a>). notifications-api's usage: <code>ratelimit.NewQuota(redisClient)</code> → <code>quota.Check(ctx, tenantID, featureKey, limit)</code>, or <code>ratelimit.RequireQuota(quota, featureKey, claimsFn)</code> as middleware.</li>
 </ul>
-<p>If you're adding application-level rate limiting to a new service, the sliding-window, per-tenant/per-feature pattern is the more generally useful of the two — follow that shape unless you specifically need a flat per-IP limit.</p>
+<p>If you're adding application-level rate limiting to a new service: import <code>shared-ratelimit</code> rather than writing a third implementation. Use <code>Limiter</code> for abuse/traffic protection (the limit is a fixed config value, not tied to a plan); use <code>Quota</code> for plan/feature metering (the limit comes from the caller's subscription tier via JWT claims).</p>
 
 
 
@@ -1804,7 +1804,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 12:08:08 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 6, 2026 08:08:02 UTC">August 6, 2026</span>
   </span>
 
     
