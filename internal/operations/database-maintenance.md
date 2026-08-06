@@ -148,6 +148,62 @@ kubectl rollout status deployment/$DEPLOYMENT -n $NAMESPACE --timeout=180s
 
 ---
 
+## Streaming Replica (postgresql-replica-0) — Monitoring & Manual Promotion
+
+Added 2026-08-06 as part of the fleet's DB-HA remediation pass (`shared-docs/internal/platform-standards/gap-analysis-and-remediation-plan.md` item 3). `postgresql-replica-0` (StatefulSet `postgresql-replica`, namespace `infra`, manifest `devops-k8s/manifests/databases/postgresql-replica-statefulset.yaml`) is a hot standby, primed via `pg_basebackup -R` and streaming continuously from `postgresql-0`.
+
+**What this is, and isn't:** this is a single-node cluster — both pods share the same physical disk/node, so this protects against a **primary pod crash, OOM, or bad migration**, not against node or disk failure. There is no automatic failover — promotion is always a deliberate, manual, human decision. Nothing reads from the replica today: PgBouncer and every app service still point only at the primary.
+
+### Check Replication Health
+
+```bash
+kubectl exec -n infra postgresql-0 -c postgresql -- psql -U admin_user -d postgres -tAc \
+  "SELECT client_addr, state, sync_state, replay_lag, write_lag FROM pg_stat_replication;"
+```
+One row, `state=streaming`, should always be present. No row = the replica has disconnected (check `kubectl logs -n infra postgresql-replica-0 -c postgresql` and confirm the pod is `Running`/`1/1`). `replay_lag` should stay in the low milliseconds under normal load.
+
+```bash
+# From the replica itself — confirms it's still in recovery/standby mode
+kubectl exec -n infra postgresql-replica-0 -c postgresql -- psql -U admin_user -d postgres -tAc "SELECT pg_is_in_recovery();"
+```
+Must return `t`. If it ever returns `f` without a deliberate promotion having been run, treat it as an incident — something wrote to what should be a read-only standby.
+
+### Manual Promotion (Incident Recovery Only)
+
+Only do this when the primary is genuinely down/unrecoverable and you've decided to fail over. This is a **one-way, high-blast-radius** action — get explicit sign-off before running it, never automate it.
+
+```bash
+# 1. Confirm the primary really is unreachable — do not promote a healthy primary's replica.
+kubectl exec -n infra postgresql-0 -c postgresql -- pg_isready -U admin_user -d postgres || echo "primary unreachable, proceeding"
+
+# 2. Promote the replica — this ends recovery mode and makes it a standalone read/write primary.
+kubectl exec -n infra postgresql-replica-0 -c postgresql -- psql -U admin_user -d postgres -tAc "SELECT pg_promote();"
+
+# 3. Confirm promotion succeeded (should now return false)
+kubectl exec -n infra postgresql-replica-0 -c postgresql -- psql -U admin_user -d postgres -tAc "SELECT pg_is_in_recovery();"
+
+# 4. Repoint every service's POSTGRES_URL / POSTGRES_MIGRATE_URL and PgBouncer's
+#    pgbouncer.ini "host=" entries from postgresql.infra.svc.cluster.local to
+#    postgresql-replica.infra.svc.cluster.local (or swap Service selectors instead
+#    of touching every secret, if time-pressured — either way, PgBouncer pods need
+#    a rolling restart afterward to pick up the change).
+```
+
+**After a real promotion**, the old primary (if it comes back) is now diverged and must NOT be allowed to resume as if nothing happened — it needs to be re-initialized as a fresh replica of the newly-promoted node (repeat the `pg_basebackup` priming this replica used, in reverse) before it can rejoin. Do not just restart it.
+
+### If the Replica Falls Behind or Needs Re-Priming
+
+The replica has no data of its own worth preserving — if it ever gets into a bad state (disk full, corrupt WAL, too far behind to catch up), the safe fix is to delete and let it re-prime from scratch, exactly like a fresh first start:
+
+```bash
+kubectl delete pod postgresql-replica-0 -n infra          # StatefulSet recreates it
+# If PGDATA itself needs wiping (rare — only if PG_VERSION is present but corrupt):
+kubectl delete pvc data-postgresql-replica-0 -n infra     # then delete + let StatefulSet recreate the pod
+```
+This never touches the primary — safe to run any time.
+
+---
+
 ## Migration Status Audit
 
 ### Check Applied Migrations (atlas_schema_revisions)
