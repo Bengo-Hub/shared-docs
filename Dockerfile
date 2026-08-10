@@ -11,6 +11,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /docs
 
+# git-revision-date-localized-plugin imports GitPython, which needs the `git`
+# executable importable even though fallback_to_build_date handles the
+# "no .git present" case gracefully — only the missing-binary case is fatal.
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
