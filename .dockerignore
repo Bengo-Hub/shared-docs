@@ -1,0 +1,12 @@
+.git
+internal/
+hospital-quotation/
+library-service/
+mpesa apis/
+processa-integration/
+tools/
+*.mhtml
+site/
+.github/
+CHANGELOG.md
+check-vps-hosting-resources.txt

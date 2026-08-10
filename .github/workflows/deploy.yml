@@ -1,0 +1,273 @@
+name: Build and Deploy Docs
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Deployment secrets are stored in devops-k8s repo and synced here on demand.
+# The sync-secrets job checks which secrets are missing and only requests those.
+# GH_PAT must exist in THIS repo to authenticate cross-repo workflow triggers.
+
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate and build docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build
+        run: mkdocs build
+
+  sync-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.sync.outputs.result }}
+    steps:
+      - name: Check and sync missing secrets
+        id: sync
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          _REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          _REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          _REGISTRY_EMAIL: ${{ secrets.REGISTRY_EMAIL }}
+          _KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          REQUIRED_SECRETS="REGISTRY_USERNAME REGISTRY_PASSWORD REGISTRY_EMAIL KUBE_CONFIG"
+
+          echo "Checking for empty-valued secrets..."
+          EXISTING=$(gh secret list --repo "${{ github.repository }}" --json name -q '.[].name' 2>/dev/null || echo "")
+          for secret in $REQUIRED_SECRETS; do
+            env_var="_${secret}"
+            value="${!env_var}"
+            if echo "$EXISTING" | grep -qx "$secret" && [ -z "$value" ]; then
+              echo "  Deleting $secret (exists but empty)"
+              gh secret delete "$secret" --repo "${{ github.repository }}" 2>/dev/null || true
+            fi
+          done
+
+          echo ""
+          echo "Checking which deployment secrets exist..."
+          EXISTING=$(gh secret list --repo "${{ github.repository }}" --json name -q '.[].name' 2>/dev/null || echo "")
+
+          MISSING=()
+          for secret in $REQUIRED_SECRETS; do
+            if echo "$EXISTING" | grep -qx "$secret"; then
+              echo "  $secret"
+            else
+              echo "  $secret -- missing"
+              MISSING+=("$secret")
+            fi
+          done
+
+          echo ""
+          if [ ${#MISSING[@]} -eq 0 ]; then
+            echo "All secrets already exist -- skipping sync"
+            echo "result=skipped" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          MISSING_LIST="${MISSING[*]}"
+          echo "${#MISSING[@]} secret(s) need syncing: $MISSING_LIST"
+          echo ""
+
+          echo "Triggering devops-k8s/sync-secrets.yml..."
+          gh workflow run sync-secrets.yml \
+            --repo Bengo-Hub/devops-k8s \
+            --ref main \
+            -f target_repo="${{ github.repository }}" \
+            -f secrets="$MISSING_LIST"
+
+          echo "Waiting for secrets to be synced..."
+          for i in $(seq 1 18); do
+            sleep 10
+            CURRENT=$(gh secret list --repo "${{ github.repository }}" --json name -q '.[].name' 2>/dev/null || echo "")
+            STILL_MISSING=0
+            for secret in "${MISSING[@]}"; do
+              echo "$CURRENT" | grep -qx "$secret" || STILL_MISSING=$((STILL_MISSING + 1))
+            done
+            if [ $STILL_MISSING -eq 0 ]; then
+              echo "All ${#MISSING[@]} secrets synced after $((i * 10))s"
+              echo "result=synced" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "  ${STILL_MISSING} still missing ($((i * 10))s)..."
+          done
+
+          echo "Timeout -- some secrets may not have synced"
+          echo "result=partial" >> $GITHUB_OUTPUT
+
+  build-image:
+    name: Build and push docs image
+    needs: [validate, sync-secrets]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    outputs:
+      image_tag: ${{ steps.vars.outputs.sha_short }}
+    steps:
+      - name: Re-trigger if secrets were just synced
+        if: needs.sync-secrets.outputs.result == 'synced'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          echo "Secrets were just synced in this workflow run — re-triggering so the"
+          echo "deploy job picks up the new values (they aren't available mid-run)."
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref "${{ github.ref }}"
+          exit 0
+
+      - name: Abort if sync was partial
+        if: needs.sync-secrets.outputs.result == 'partial'
+        run: |
+          echo "Secret sync timed out — some secrets may not have been created."
+          echo "Check: https://github.com/Bengo-Hub/devops-k8s/actions"
+          exit 1
+
+      - name: Checkout
+        if: needs.sync-secrets.outputs.result != 'synced'
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        if: needs.sync-secrets.outputs.result != 'synced'
+        id: vars
+        run: echo "sha_short=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify secrets
+        if: needs.sync-secrets.outputs.result != 'synced'
+        run: |
+          FAIL=0
+          check_secret() {
+            local name="$1" min_len="$2" value="$3"
+            if [[ -z "$value" ]]; then
+              echo "❌ $name — empty"; FAIL=1
+            elif [[ ${#value} -lt $min_len ]]; then
+              echo "⚠️  $name — ${#value} chars (need >=$min_len)"; FAIL=1
+            else
+              echo "✅ $name (${#value} chars)"
+            fi
+          }
+          check_secret "REGISTRY_USERNAME" 5    "$REGISTRY_USERNAME"
+          check_secret "REGISTRY_PASSWORD" 12   "$REGISTRY_PASSWORD"
+          check_secret "KUBE_CONFIG"       1000 "$KUBE_CONFIG"
+          if [[ $FAIL -eq 1 ]]; then
+            echo "❌ Secret verification failed — re-run workflow if secrets were just synced"
+            exit 1
+          fi
+          echo "✅ All secrets verified"
+        env:
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Set up Docker Buildx
+        if: needs.sync-secrets.outputs.result != 'synced'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        if: needs.sync-secrets.outputs.result != 'synced'
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push
+        if: needs.sync-secrets.outputs.result != 'synced'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            docker.io/codevertex/shared-docs:${{ steps.vars.outputs.sha_short }}
+            docker.io/codevertex/shared-docs:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  bump-gitops:
+    name: Bump image tag in devops-k8s
+    needs: build-image
+    if: needs.build-image.outputs.image_tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout devops-k8s
+        uses: actions/checkout@v4
+        with:
+          repository: Bengo-Hub/devops-k8s
+          token: ${{ secrets.GH_PAT }}
+          path: devops-k8s
+
+      - name: Bump values.yaml image tag
+        run: |
+          set -e
+          cd devops-k8s
+          FILE=apps/shared-docs/values.yaml
+          python - <<PY
+          import re
+          tag = "${{ needs.build-image.outputs.image_tag }}"
+          with open("$FILE") as f:
+              src = f.read()
+          new = re.sub(r"(\n\s*tag:\s*)\S+", rf"\g<1>{tag}", src, count=1)
+          with open("$FILE", "w") as f:
+              f.write(new)
+          PY
+          git config user.name  "${{ secrets.GIT_USER  || 'Docs Bot' }}"
+          git config user.email "${{ secrets.GIT_EMAIL || 'dev@bengobox.com' }}"
+          git add $FILE
+          git commit -m "chore(shared-docs): bump image tag to ${{ needs.build-image.outputs.image_tag }}"
+          git push origin main
+
+  check-argocd:
+    name: Check ArgoCD Application status
+    needs: bump-gitops
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check ArgoCD Application status and health
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG }}
+          NS: docs
+          APP_NAME: shared-docs
+        run: |
+          if [ -z "${KUBE_CONFIG_B64}" ]; then
+            echo "⏭️ Skipping ArgoCD check - no KUBE_CONFIG available"
+            exit 0
+          fi
+
+          mkdir -p ~/.kube
+          echo "$KUBE_CONFIG_B64" | base64 -d > ~/.kube/config
+
+          if kubectl get application ${APP_NAME} -n argocd >/dev/null 2>&1; then
+            kubectl patch application ${APP_NAME} -n argocd --type merge -p '{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}' || true
+            SYNC_STATUS=$(kubectl get application ${APP_NAME} -n argocd -o jsonpath='{.status.sync.status}' 2>/dev/null || echo "Unknown")
+            HEALTH_STATUS=$(kubectl get application ${APP_NAME} -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null || echo "Unknown")
+            echo "Current Status - Sync: ${SYNC_STATUS}, Health: ${HEALTH_STATUS}"
+          else
+            echo "⚠️ ArgoCD Application '${APP_NAME}' not found — apply apps/shared-docs/app.yaml first"
+          fi
+
+          if kubectl get deployment ${APP_NAME} -n ${NS} >/dev/null 2>&1; then
+            kubectl rollout status deployment/${APP_NAME} -n ${NS} --timeout=300s
+            HOSTS=$(kubectl get ingress -n ${NS} -o jsonpath='{.items[*].spec.rules[*].host}' | tr ' ' '\n' | grep -E 'docs' || true)
+            for H in $HOSTS; do
+              echo "Checking https://$H/ ..."
+              curl -sk --max-time 10 "https://$H/" | grep -qi "<!DOCTYPE html>" && echo "✅ Health OK for $H"
+            done
+          else
+            echo "⚠️ Deployment not found yet - ArgoCD may still be syncing"
+          fi
