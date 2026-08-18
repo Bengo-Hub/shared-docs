@@ -134,6 +134,55 @@ Loading the issued cert into Stalwart itself is **not** a mounted-file config �
 ```
 Stalwart parses the PEM and auto-populates `subjectAlternativeNames` (server-set, read-only) — confirmed it correctly extracted `mx1.codevertexafrica.com`. **However, creating the object alone did not take effect live** — a real SMTP TLS handshake immediately after creation still presented the old ephemeral self-signed cert. **A full pod restart was required** before the new certificate was actually served (confirmed via `openssl`-equivalent `curl` TLS handshake showing `issuer: C=US; O=Let's Encrypt; CN=YR1` post-restart). Whatever selects the active TLS certificate for the mail-protocol listeners appears to be loaded once at process start, not hot-reloaded like most other JMAP settings — plan for a restart after adding/changing a certificate this way. Renewal (cert-manager auto-renews ~30 days before expiry) will need the same re-create-object-then-restart cycle repeated, or a small periodic job — not yet automated.
 
+## Fixing "address not found" bounces to a Stalwart-hosted mailbox (e.g. `info@`)
+
+**Symptom**: an external sender (e.g. Gmail) gets a bounce like `550 5.1.1 The email account that you tried to reach does not exist` when sending to a Stalwart-hosted platform mailbox (`info@`, `no-reply@`, etc.), even though that mailbox is real and working inside Stalwart.
+
+**Root cause**: `codevertexafrica.com`'s MX record points at Google Workspace (`smtp.google.com`), not at Stalwart — confirm with `nslookup -type=MX codevertexafrica.com`. Google Workspace is the domain's real, authoritative inbound mail receiver (it hosts the real staff mailboxes); Stalwart's IP is only authorized to *send* as this domain (it's in the SPF record), not to *receive* for it. A mailbox that exists only inside Stalwart (`info@`, `no-reply@`, etc.) is invisible to Google Workspace, which rejects mail for it before Stalwart ever sees it.
+
+**Fix — requires Google Workspace Admin Console access (admin.google.com), not fixable via kubectl/Stalwart/DNS**:
+
+1. Sign in to `https://admin.google.com` with a Google Workspace super-admin account for this domain.
+2. Go to **Apps → Google Workspace → Gmail → Hosts** (sometimes listed as "Routing" → "Configure Gmail routing"). Add a new host entry pointing at Stalwart's public mail hostname (`mx1.codevertexafrica.com`), port 25, with TLS as required/opportunistic.
+3. Go to **Apps → Google Workspace → Gmail → Routing** (sometimes "Compliance" in older Admin Console layouts) and add a new **routing rule** ("dual delivery" / "split delivery" is Google's own name for this pattern):
+   - **Messages to affect**: Inbound
+   - **Envelope filter**: recipient matches the specific Stalwart-hosted addresses — `info@codevertexafrica.com`, `no-reply@codevertexafrica.com`, `postmaster@codevertexafrica.com`, `abuse@codevertexafrica.com`, `dmarc@codevertexafrica.com`, `tlsrpt@codevertexafrica.com`, `fbl@codevertexafrica.com` (the 7 platform role mailboxes — see "Creating mailboxes" above for the full list)
+   - **Modify message → Route → Change route**: select the host added in step 2
+   - Leave real staff-user addresses unaffected — this rule must only ever match the Stalwart-hosted role mailboxes, never a real Google Workspace staff mailbox
+4. Save, then re-test from a real external mail account (e.g. Gmail) — a message to `info@codevertexafrica.com` should now be routed to Stalwart instead of bouncing. Verify actual delivery by checking that mailbox in the webmail app (`https://webmail.codevertexafrica.com/admin`), not just the absence of a bounce.
+
+**Not yet done as of this writing** — flagged live 2026-08-18 after a real user-reported bounce, not yet actioned (needs a human with Google Workspace super-admin access to actually click through the above).
+
+## Port-scan self-ban — a real, recurring false-positive (2026-08-11, 2026-08-18)
+
+Stalwart has a built-in auto-ban feature (distinct from a separate fail2ban install) that watches for port-scan-shaped behavior — connections to ports it isn't listening on, or HTTP requests for exploit-style paths — and auto-bans the source IP. **In this cluster, that source IP is often the node's own public IP** (`77.237.232.66`), because `ingress-nginx` runs `hostNetwork: true` and kubelet's own health-check probes also originate from the host — so a burst of legitimate traffic patterns can look like a scan from Stalwart's point of view, and it bans the node's own IP. When this happens, **every** external path into Stalwart (webmail, mail-admin, IMAP/SMTP) 502s or resets, looking like a broad outage rather than a targeted block.
+
+**How to check** (do this FIRST in any "everything suddenly stopped working" investigation on this service, before chasing network/MTU/conntrack theories):
+```bash
+kubectl exec -n email stalwart-mail-0 -- sh -c '
+ADMIN_PASS=$(printenv STALWART_ADMIN_PASSWORD)
+AUTH=$(printf "admin@codevertexafrica.com:%s" "$ADMIN_PASS" | base64 -w0)
+curl -s -X POST http://localhost:8080/jmap/ -H "Authorization: Basic $AUTH" -H "Content-Type: application/json" \
+  -d "{\"using\":[\"urn:ietf:params:jmap:core\",\"urn:stalwart:jmap\"],\"methodCalls\":[[\"x:BlockedIp/query\",{},\"b1\"],[\"x:BlockedIp/get\",{\"#ids\":{\"resultOf\":\"b1\",\"name\":\"x:BlockedIp/query\",\"path\":\"/ids\"}},\"b2\"]]}"
+'
+```
+A non-empty `list` with `"reason":"portScanning"` and the node's own public IP confirms this. Also viewable/manageable in the WebUI: `mail-admin.codevertexafrica.com` → Settings → Security → Blocked IPs.
+
+**How to fix (temporary — clears the current ban)**:
+```bash
+# destroy=["<id-from-the-query-above>"]
+kubectl exec -n email stalwart-mail-0 -- sh -c '
+ADMIN_PASS=$(printenv STALWART_ADMIN_PASSWORD)
+AUTH=$(printf "admin@codevertexafrica.com:%s" "$ADMIN_PASS" | base64 -w0)
+curl -s -X POST http://localhost:8080/jmap/ -H "Authorization: Basic $AUTH" -H "Content-Type: application/json" \
+  -d "{\"using\":[\"urn:ietf:params:jmap:core\",\"urn:stalwart:jmap\"],\"methodCalls\":[[\"x:BlockedIp/set\",{\"destroy\":[\"<id>\"]},\"s1\"]]}"
+'
+# Deleting the record alone does NOT take effect live on this version — a restart is required:
+kubectl rollout restart statefulset/stalwart-mail -n email
+```
+
+**No permanent fix has been found yet.** Confirmed via Stalwart's own published docs (`stalw.art/docs/server/auto-ban/`) that **there is no allowlist/exemption mechanism** for this feature at all — it applies its rate thresholds uniformly to every source IP, with no way to mark the node's own IP as trusted. The real config keys are `scanBanRate` (default: 30 attempts/day), `scanBanPeriod` (ban duration), `scanBanPaths` (glob patterns for instant-ban HTTP paths) — raising `scanBanRate` is the only real lever (widens the margin, doesn't eliminate the risk). These keys were **not found reachable via the JMAP API** (every `x:` vendor object name tried — `x:Settings`, `x:AntiAbuse`, `x:SecuritySettings`, `x:FailBan`, `x:Config` — returned `unknownMethod`, and plain REST guesses like `/api/settings` 404'd). They're most likely only reachable via the WebUI's own session-cookie-authenticated settings page (`mail-admin.codevertexafrica.com` → Settings → Security, after a real interactive login — the WebUI login is NOT the same auth mechanism as the JMAP Basic-Auth calls used everywhere else in this doc, see "Login" above) — **not yet pursued**. Whoever picks this up next: log into the WebUI directly, find the Security settings page, and raise `scanBanRate` there.
+
 ## Open items (as of this writing)
 
 - ~~TLS for the mail-protocol ports (25/465/587/993/995)~~ — **Resolved 2026-08-11**, see the section above. **New open item it left behind: cert renewal isn't automated.** cert-manager auto-renews the underlying Secret ~30 days before expiry, but Stalwart doesn't watch that Secret — the `x:Certificate/set` + restart cycle above needs repeating manually (or via a small CronJob) each renewal, or the mail-protocol ports will silently fall back to serving an expired cert.
