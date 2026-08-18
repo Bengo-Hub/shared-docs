@@ -11,3 +11,4 @@ Payment gateways and third-party/cross-service integration contracts.
 | [Notifications REST API](notifications-rest-api-integration.md) | How non-Go services (TruLoad/.NET, ERP/Python) send notifications without NATS. |
 | [Finance Integration Map](finance-integration-map.md) | How each service's events post into treasury's general ledger. |
 | [eTIMS API — External Integrator Quickstart](etims-api.md) | For companies integrating KRA eTIMS fiscalization directly against our API, outside the full Codevertex SaaS suite. |
+| [Developer Portal — Current State & Roadmap](developer-portal.md) | What's ecosystem-wide vs. eTIMS-specific in the credential/environment/certification/rate-limit pattern, and what's still roadmapped. |
