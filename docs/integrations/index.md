@@ -10,3 +10,4 @@ Payment gateways and third-party/cross-service integration contracts.
 | [Paystack Callback Page](paystack-callback-page.md) | The frontend contract for the public Paystack redirect-callback page. |
 | [Notifications REST API](notifications-rest-api-integration.md) | How non-Go services (TruLoad/.NET, ERP/Python) send notifications without NATS. |
 | [Finance Integration Map](finance-integration-map.md) | How each service's events post into treasury's general ledger. |
+| [eTIMS API — External Integrator Quickstart](etims-api.md) | For companies integrating KRA eTIMS fiscalization directly against our API, outside the full Codevertex SaaS suite. |

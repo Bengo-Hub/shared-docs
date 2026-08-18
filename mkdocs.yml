@@ -103,3 +103,4 @@ nav:
           - Paystack Callback Page: integrations/paystack-callback-page.md
           - Notifications REST API: integrations/notifications-rest-api-integration.md
           - Finance Integration Map: integrations/finance-integration-map.md
+          - eTIMS API Quickstart: integrations/etims-api.md
