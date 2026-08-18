@@ -1394,6 +1394,8 @@
       
         
       
+        
+      
     
     
     
@@ -1732,6 +1734,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1874,7 +1904,7 @@
 </ul>
 <h2 id="building-the-callback-url-when-creating-the-intent">Building the callback URL when creating the intent<a class="headerlink" href="#building-the-callback-url-when-creating-the-intent" title="Permanent link">&para;</a></h2>
 <p>When your frontend (or backend) creates a Paystack payment intent, set the redirect (callback) URL to your <strong>own</strong> frontend callback page and pass the desired post-payment destination and button text:</p>
-<div class="highlight"><pre><span></span><code>{origin}/payment/callback?redirect_url={encodeURIComponent(&#39;/orders&#39;)}&amp;button_text={encodeURIComponent(&#39;View my orders&#39;)}
+<div class="highlight"><pre><span></span><code>{origin}/payment/callback?redirect_url={encodeURIComponent('/orders')}&amp;button_text={encodeURIComponent('View my orders')}
 </code></pre></div>
 <p>Example by service:</p>
 <ul>

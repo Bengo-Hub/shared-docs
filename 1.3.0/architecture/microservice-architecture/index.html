@@ -2999,6 +2999,8 @@
       
         
       
+        
+      
     
     
     
@@ -3211,6 +3213,34 @@
     
   
     Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
   
 
     
@@ -5236,11 +5266,11 @@
 - Configurable timeouts (default 10s)</p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><span class="nx">client</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">serviceclient</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">serviceclient</span><span class="p">.</span><span class="nx">DefaultConfig</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;http://auth-api.auth.svc.cluster.local:4101&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;auth-service&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"http://auth-api.auth.svc.cluster.local:4101"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"auth-service"</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">logger</span><span class="p">,</span>
 <span class="p">))</span>
-<span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/api/v1/users/&quot;</span><span class="o">+</span><span class="nx">userID</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span>
+<span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">"/api/v1/users/"</span><span class="o">+</span><span class="nx">userID</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="gaps_1">Gaps<a class="headerlink" href="#gaps_1" title="Permanent link">&para;</a></h3>
 <p>None outstanding — all services have migrated to the shared HTTP client, and Kubernetes DNS-based service discovery is fully in place.</p>
@@ -5451,7 +5481,7 @@ Ordering Service → Logistics Service (NATS)
 
 Ordering Service → Notifications Service (NATS)
   Event: ordering.order.created
-  Payload: {customer_id, order_id, template: &quot;order_confirmation&quot;}
+  Payload: {customer_id, order_id, template: "order_confirmation"}
 </code></pre></div>
 <p><strong>Why This Pattern?</strong>
 - REST for payment requires immediate confirmation
@@ -5484,7 +5514,7 @@ Services consume event and create local user references
 
 Logistics Service → Redis Pub/Sub
   Publish: task:{task_id}:updates
-  Payload: {status: &quot;en_route&quot;, location: {...}}
+  Payload: {status: "en_route", location: {...}}
 
 Frontend receives real-time updates via WebSocket
 </code></pre></div>
@@ -5520,7 +5550,7 @@ If cart/hold expires without checkout:
 <p><strong>Repository</strong>: <code>github.com/Bengo-Hub/shared-auth-client</code></p>
 <p><strong>Features</strong>: JWKS fetching and caching, RS256 signature validation, issuer/audience validation, HTTP middleware for Chi and Gin routers, API key fallback support, Redis session caching.</p>
 <p><strong>Usage</strong>:
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nx">authclient</span><span class="w"> </span><span class="s">&quot;github.com/Bengo-Hub/shared-auth-client&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nx">authclient</span><span class="w"> </span><span class="s">"github.com/Bengo-Hub/shared-auth-client"</span>
 
 <span class="nx">validator</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">NewValidator</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
 <span class="nx">authMiddleware</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">NewAuthMiddleware</span><span class="p">(</span><span class="nx">validator</span><span class="p">)</span>
@@ -5538,7 +5568,7 @@ If cart/hold expires without checkout:
 - <code>TrackingIframeModal</code> — embeds <code>logistics.codevertexafrica.com</code>; postMessage events: <code>tracking:resize</code>, <code>logistics:resize</code></p>
 <p><strong>Services using v0.1.5</strong>: ordering-frontend, pos-ui, subscriptions-ui, notifications-ui, cafe-website, inventory-ui, truload-frontend</p>
 <p><strong>Reference pattern</strong> (GitHub URL, pnpm):
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;@bengo-hub/shared-ui-lib&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;github:Bengo-Hub/shared-ui-lib#v0.1.5&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"@bengo-hub/shared-ui-lib"</span><span class="p">:</span><span class="w"> </span><span class="s2">"github:Bengo-Hub/shared-ui-lib#v0.1.5"</span>
 </code></pre></div></p>
 <h4 id="bengo-hubmaps-v026">@bengo-hub/maps v0.2.6<a class="headerlink" href="#bengo-hubmaps-v026" title="Permanent link">&para;</a></h4>
 <p><strong>Package</strong>: <code>@bengo-hub/maps</code><br />
@@ -5591,7 +5621,7 @@ If cart/hold expires without checkout:
 <p>WebSocket is the priority here — real-time delivery tracking is core to the product, and polling can't match it for latency or UX (rider → service → customer needs to be bidirectional). PostGIS handles geo-spatial queries (nearest rider, route optimization) natively inside PostgreSQL.</p>
 <div class="highlight"><pre><span></span><code>Frontend → logistics-service (WebSocket)
   Connect: ws://logistics-service/ws/task/{task_id}
-  Receive: {location: {lat, lng}, status: &quot;en_route&quot;, eta: &quot;5min&quot;}
+  Receive: {location: {lat, lng}, status: "en_route", eta: "5min"}
 </code></pre></div>
 <h4 id="ordering-service">ordering-service<a class="headerlink" href="#ordering-service" title="Permanent link">&para;</a></h4>
 <p>Planned: WebSocket for live order status and ETA updates (better UX than polling), and GraphQL for menu queries with filters (category, dietary, availability) to avoid over-fetching on the frontend.</p>
@@ -5906,23 +5936,23 @@ If cart/hold expires without checkout:
 <p>All authentication methods produce unified <code>Claims</code> with:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">type</span><span class="w"> </span><span class="nx">Claims</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Core identity</span>
-<span class="w">    </span><span class="nx">SessionID</span><span class="w"> </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:&quot;sid&quot;`</span>
-<span class="w">    </span><span class="nx">TenantID</span><span class="w">  </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:&quot;tenant_id&quot;`</span>
-<span class="w">    </span><span class="nx">Email</span><span class="w">     </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:&quot;email&quot;`</span>
-<span class="w">    </span><span class="nx">Scope</span><span class="w">     </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;scope&quot;`</span>
+<span class="w">    </span><span class="nx">SessionID</span><span class="w"> </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:"sid"`</span>
+<span class="w">    </span><span class="nx">TenantID</span><span class="w">  </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:"tenant_id"`</span>
+<span class="w">    </span><span class="nx">Email</span><span class="w">     </span><span class="kt">string</span><span class="w">   </span><span class="s">`json:"email"`</span>
+<span class="w">    </span><span class="nx">Scope</span><span class="w">     </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"scope"`</span>
 
 <span class="w">    </span><span class="c1">// RBAC roles from auth-service</span>
-<span class="w">    </span><span class="nx">Roles</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;roles&quot;`</span>
+<span class="w">    </span><span class="nx">Roles</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"roles"`</span>
 
 <span class="w">    </span><span class="c1">// Subscription data (embedded at login)</span>
-<span class="w">    </span><span class="nx">SubscriptionPlan</span><span class="w">     </span><span class="kt">string</span><span class="w">         </span><span class="s">`json:&quot;subscription_plan&quot;`</span>
-<span class="w">    </span><span class="nx">SubscriptionFeatures</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w">       </span><span class="s">`json:&quot;subscription_features&quot;`</span>
-<span class="w">    </span><span class="nx">SubscriptionLimits</span><span class="w">   </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="w"> </span><span class="s">`json:&quot;subscription_limits&quot;`</span>
-<span class="w">    </span><span class="nx">SubscriptionStatus</span><span class="w">   </span><span class="kt">string</span><span class="w">         </span><span class="s">`json:&quot;subscription_status&quot;`</span>
+<span class="w">    </span><span class="nx">SubscriptionPlan</span><span class="w">     </span><span class="kt">string</span><span class="w">         </span><span class="s">`json:"subscription_plan"`</span>
+<span class="w">    </span><span class="nx">SubscriptionFeatures</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="w">       </span><span class="s">`json:"subscription_features"`</span>
+<span class="w">    </span><span class="nx">SubscriptionLimits</span><span class="w">   </span><span class="kt">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="w"> </span><span class="s">`json:"subscription_limits"`</span>
+<span class="w">    </span><span class="nx">SubscriptionStatus</span><span class="w">   </span><span class="kt">string</span><span class="w">         </span><span class="s">`json:"subscription_status"`</span>
 
 <span class="w">    </span><span class="c1">// Service account identification</span>
-<span class="w">    </span><span class="nx">ServiceName</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;service_name&quot;`</span>
-<span class="w">    </span><span class="nx">IsService</span><span class="w">   </span><span class="kt">bool</span><span class="w">   </span><span class="s">`json:&quot;is_service&quot;`</span>
+<span class="w">    </span><span class="nx">ServiceName</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:"service_name"`</span>
+<span class="w">    </span><span class="nx">IsService</span><span class="w">   </span><span class="kt">bool</span><span class="w">   </span><span class="s">`json:"is_service"`</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="token-api-key-security-parameters">Token &amp; API Key Security Parameters<a class="headerlink" href="#token-api-key-security-parameters" title="Permanent link">&para;</a></h3>
@@ -6011,50 +6041,50 @@ If cart/hold expires without checkout:
 <div class="highlight"><pre><span></span><code><span class="c1">// Service obtaining JWT for inter-service calls</span>
 <span class="nx">client</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">NewClient</span><span class="p">(</span><span class="nx">authServiceURL</span><span class="p">,</span><span class="w"> </span><span class="nx">logger</span><span class="p">)</span>
 <span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">ServiceLogin</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ServiceLoginRequest</span><span class="p">{</span>
-<span class="w">    </span><span class="nx">APIKey</span><span class="p">:</span><span class="w">     </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;SERVICE_API_KEY&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="nx">ServiceName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ordering-service&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">APIKey</span><span class="p">:</span><span class="w">     </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">"SERVICE_API_KEY"</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">ServiceName</span><span class="p">:</span><span class="w"> </span><span class="s">"ordering-service"</span><span class="p">,</span>
 <span class="p">})</span>
 <span class="c1">// Use resp.AccessToken for inter-service calls</span>
 </code></pre></div>
 <p><strong>Alternative</strong>: Direct API Key usage (simpler but requires auth-service availability)</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Direct API key in service-to-service calls</span>
-<span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;X-API-Key&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">&quot;INVENTORY_SERVICE_API_KEY&quot;</span><span class="p">))</span>
+<span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="s">"X-API-Key"</span><span class="p">,</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Getenv</span><span class="p">(</span><span class="s">"INVENTORY_SERVICE_API_KEY"</span><span class="p">))</span>
 </code></pre></div>
 <h3 id="authorization-middleware-v020">Authorization Middleware (v0.2.0+)<a class="headerlink" href="#authorization-middleware-v020" title="Permanent link">&para;</a></h3>
 <p>The <code>shared-auth-client</code> library provides built-in middleware for common authorization patterns:</p>
 <p><strong>Role-Based Access Control</strong>:
 <div class="highlight"><pre><span></span><code><span class="c1">// Require specific roles (superuser always bypasses)</span>
-<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireRole</span><span class="p">(</span><span class="s">&quot;admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;manager&quot;</span><span class="p">)).</span><span class="nx">Post</span><span class="p">(</span><span class="s">&quot;/settings&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">UpdateSettings</span><span class="p">)</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireRole</span><span class="p">(</span><span class="s">"admin"</span><span class="p">,</span><span class="w"> </span><span class="s">"manager"</span><span class="p">)).</span><span class="nx">Post</span><span class="p">(</span><span class="s">"/settings"</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">UpdateSettings</span><span class="p">)</span>
 
 <span class="c1">// Require admin role</span>
-<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireAdmin</span><span class="p">()).</span><span class="nx">Delete</span><span class="p">(</span><span class="s">&quot;/users/{id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">DeleteUser</span><span class="p">)</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireAdmin</span><span class="p">()).</span><span class="nx">Delete</span><span class="p">(</span><span class="s">"/users/{id}"</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">DeleteUser</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Subscription Feature Gating</strong>:
 <div class="highlight"><pre><span></span><code><span class="c1">// Require specific subscription feature</span>
-<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireFeature</span><span class="p">(</span><span class="s">&quot;group_ordering&quot;</span><span class="p">)).</span><span class="nx">Post</span><span class="p">(</span><span class="s">&quot;/group-orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">CreateGroupOrder</span><span class="p">)</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireFeature</span><span class="p">(</span><span class="s">"group_ordering"</span><span class="p">)).</span><span class="nx">Post</span><span class="p">(</span><span class="s">"/group-orders"</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">CreateGroupOrder</span><span class="p">)</span>
 
 <span class="c1">// Require minimum plan tier</span>
-<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequirePlan</span><span class="p">(</span><span class="s">&quot;PROFESSIONAL&quot;</span><span class="p">)).</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;/analytics&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">GetAnalytics</span><span class="p">)</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequirePlan</span><span class="p">(</span><span class="s">"PROFESSIONAL"</span><span class="p">)).</span><span class="nx">Get</span><span class="p">(</span><span class="s">"/analytics"</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">GetAnalytics</span><span class="p">)</span>
 
 <span class="c1">// Require active subscription</span>
-<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireActiveSubscription</span><span class="p">()).</span><span class="nx">Post</span><span class="p">(</span><span class="s">&quot;/orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">CreateOrder</span><span class="p">)</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">With</span><span class="p">(</span><span class="nx">authclient</span><span class="p">.</span><span class="nx">RequireActiveSubscription</span><span class="p">()).</span><span class="nx">Post</span><span class="p">(</span><span class="s">"/orders"</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="p">.</span><span class="nx">CreateOrder</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Handler-Level Checks</strong>:
 <div class="highlight"><pre><span></span><code><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">h</span><span class="w"> </span><span class="o">*</span><span class="nx">Handler</span><span class="p">)</span><span class="w"> </span><span class="nx">CreateOrder</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ClaimsFromContext</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">())</span>
 
 <span class="w">    </span><span class="c1">// Check RBAC</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasAnyRole</span><span class="p">(</span><span class="s">&quot;customer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;staff&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasAnyRole</span><span class="p">(</span><span class="s">"customer"</span><span class="p">,</span><span class="w"> </span><span class="s">"staff"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Return 403</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// Check subscription feature</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasFeature</span><span class="p">(</span><span class="s">&quot;express_delivery&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasFeature</span><span class="p">(</span><span class="s">"express_delivery"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Express delivery not available in this plan</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// Check usage limits</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">orderCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">GetLimit</span><span class="p">(</span><span class="s">&quot;monthly_orders&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">orderCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">GetLimit</span><span class="p">(</span><span class="s">"monthly_orders"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Return 403 with upgrade prompt</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -6065,12 +6095,12 @@ If cart/hold expires without checkout:
 <span class="w">    </span><span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ClaimsFromContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
 
 <span class="w">    </span><span class="c1">// Layer 1: RBAC - does the user have the required role/scope?</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasScope</span><span class="p">(</span><span class="s">&quot;read:orders&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsAdmin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasScope</span><span class="p">(</span><span class="s">"read:orders"</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsAdmin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrForbidden</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// Layer 2: Licensing - is the feature enabled for this tenant&#39;s plan?</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasFeature</span><span class="p">(</span><span class="s">&quot;ordering_module&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Layer 2: Licensing - is the feature enabled for this tenant's plan?</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasFeature</span><span class="p">(</span><span class="s">"ordering_module"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrFeatureNotEnabled</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -6082,7 +6112,7 @@ If cart/hold expires without checkout:
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">TenantID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">TenantID</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrForbidden</span><span class="w"> </span><span class="c1">// tenant isolation</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">UserID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">Subject</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasRole</span><span class="p">(</span><span class="s">&quot;manager&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">order</span><span class="p">.</span><span class="nx">UserID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">Subject</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">claims</span><span class="p">.</span><span class="nx">HasRole</span><span class="p">(</span><span class="s">"manager"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrForbidden</span><span class="w"> </span><span class="c1">// resource ownership</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -6569,14 +6599,14 @@ If cart/hold expires without checkout:
 </table>
 <p><strong>Event envelope format:</strong>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;tenant_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;aggregate_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user|tenant|subscription&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;aggregate_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;event_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user.created|subscription.activated&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RFC3339&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tenant_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"aggregate_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user|tenant|subscription"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"aggregate_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user.created|subscription.activated"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC3339"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <p><strong>NATS subject naming convention:</strong> <code>{service}.events</code> (e.g., <code>auth.events</code>, <code>subscriptions.events</code>)</p>

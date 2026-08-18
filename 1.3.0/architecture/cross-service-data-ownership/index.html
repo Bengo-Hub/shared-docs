@@ -1928,6 +1928,8 @@
       
         
       
+        
+      
     
     
     
@@ -2140,6 +2142,34 @@
     
   
     Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
   
 
     
@@ -3608,8 +3638,8 @@ same outlet.</p>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">contains</span><span class="p">(</span><span class="nx">tenant</span><span class="p">.</span><span class="nx">EnabledServices</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;logistics&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrServiceNotAvailable</span><span class="p">(</span><span class="s">&quot;Logistics service not enabled for this tenant&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">contains</span><span class="p">(</span><span class="nx">tenant</span><span class="p">.</span><span class="nx">EnabledServices</span><span class="p">,</span><span class="w"> </span><span class="s">"logistics"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrServiceNotAvailable</span><span class="p">(</span><span class="s">"Logistics service not enabled for this tenant"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// 2. Verify tenant exists in logistics-service</span>
@@ -3617,8 +3647,8 @@ same outlet.</p>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">exists</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrTenantNotFound</span><span class="p">(</span><span class="s">&quot;Tenant not found in logistics-service&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">exists</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">ErrTenantNotFound</span><span class="p">(</span><span class="s">"Tenant not found in logistics-service"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// 3. Create rider in logistics-service (only owner stores rider data)</span>
@@ -3636,9 +3666,9 @@ same outlet.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// ❌ WRONG: Storing rider data locally</span>
 <span class="kd">type</span><span class="w"> </span><span class="nx">OrderAssignment</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">RiderID</span><span class="w">      </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">UUID</span>
-<span class="w">    </span><span class="nx">RiderName</span><span class="w">    </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don&#39;t store</span>
-<span class="w">    </span><span class="nx">RiderPhone</span><span class="w">   </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don&#39;t store</span>
-<span class="w">    </span><span class="nx">VehicleType</span><span class="w">  </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don&#39;t store</span>
+<span class="w">    </span><span class="nx">RiderName</span><span class="w">    </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don't store</span>
+<span class="w">    </span><span class="nx">RiderPhone</span><span class="w">   </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don't store</span>
+<span class="w">    </span><span class="nx">VehicleType</span><span class="w">  </span><span class="kt">string</span><span class="w">  </span><span class="c1">// ❌ Don't store</span>
 <span class="p">}</span>
 
 <span class="c1">// ✅ CORRECT: Store only reference, query when needed</span>

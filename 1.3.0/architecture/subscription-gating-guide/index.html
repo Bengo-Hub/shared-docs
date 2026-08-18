@@ -1668,6 +1668,8 @@
       
         
       
+        
+      
     
     
     
@@ -1880,6 +1882,34 @@
     
   
     Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
   
 
     
@@ -2203,7 +2233,7 @@
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ClaimsFromContext</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">())</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
@@ -2211,18 +2241,18 @@
 <span class="w">            </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="s">"application/json"</span><span class="p">)</span>
 <span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">WriteHeader</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusForbidden</span><span class="p">)</span>
-<span class="w">        </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">`{&quot;error&quot;:&quot;Your subscription is not active. Please renew to continue.&quot;,&quot;code&quot;:&quot;subscription_inactive&quot;,&quot;upgrade&quot;:true}`</span><span class="p">))</span>
+<span class="w">        </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">`{"error":"Your subscription is not active. Please renew to continue.","code":"subscription_inactive","upgrade":true}`</span><span class="p">))</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="p">})</span>
 </code></pre></div>
 <h3 id="error-response-format">Error Response Format<a class="headerlink" href="#error-response-format" title="Permanent link">&para;</a></h3>
 <p>All subscription enforcement returns:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Your subscription is not active. Please renew to continue.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;subscription_inactive&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;upgrade&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your subscription is not active. Please renew to continue."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscription_inactive"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"upgrade"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <p>The <code>upgrade: true</code> field is the key discriminator frontends use to distinguish subscription 403s from auth/permission 403s.</p>
@@ -2334,9 +2364,9 @@
 <p>Each frontend must implement a central error handler (<code>src/lib/api/error-handler.ts</code>) and wire callbacks in the API client:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// src/lib/api/error-handler.ts</span>
 <span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">SubscriptionErrorCode</span><span class="w"> </span><span class="o">=</span>
-<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;subscription_inactive&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;subscription_expired&#39;</span>
-<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;feature_not_available&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;usage_limit_exceeded&#39;</span>
-<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;device_limit_reached&#39;</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;plan_upgrade_required&#39;</span><span class="p">;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'subscription_inactive'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'subscription_expired'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'feature_not_available'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'usage_limit_exceeded'</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'device_limit_reached'</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s1">'plan_upgrade_required'</span><span class="p">;</span>
 
 <span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">isSubscriptionError</span><span class="p">(</span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> </span><span class="c1">// legacy shape</span>
@@ -2365,7 +2395,7 @@
 <span class="w">    </span><span class="c1">// 5xx — server error toast</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">500</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">onServerErrorCallback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
-<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">message</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">&#39;A server error occurred. Please try again.&#39;</span><span class="p">;</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">message</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">'A server error occurred. Please try again.'</span><span class="p">;</span>
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">onServerErrorCallback</span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
@@ -2375,10 +2405,10 @@
 <div class="highlight"><pre><span></span><code><span class="c1">// src/providers/auth-provider.tsx</span>
 <span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">setOnSubscription403</span><span class="p">((</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">toast</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Subscription limit reached&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">toast</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Subscription limit reached'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">subscriptionErrorMessage</span><span class="p">(</span><span class="nx">data</span><span class="p">),</span>
 <span class="w">      </span><span class="nx">duration</span><span class="o">:</span><span class="w"> </span><span class="kt">8000</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Upgrade plan&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">onClick</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`/</span><span class="si">${</span><span class="nx">orgSlug</span><span class="si">}</span><span class="sb">/settings/billing`</span><span class="p">)</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="s1">'Upgrade plan'</span><span class="p">,</span><span class="w"> </span><span class="nx">onClick</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`/</span><span class="si">${</span><span class="nx">orgSlug</span><span class="si">}</span><span class="sb">/settings/billing`</span><span class="p">)</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="w">  </span><span class="p">});</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">setOnSubscription403</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
@@ -2386,7 +2416,7 @@
 
 <span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">setOnServerError</span><span class="p">((</span><span class="nx">_status</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">toast</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Server error&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">message</span><span class="p">,</span><span class="w"> </span><span class="nx">duration</span><span class="o">:</span><span class="w"> </span><span class="kt">6000</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="nx">toast</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Server error'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">message</span><span class="p">,</span><span class="w"> </span><span class="nx">duration</span><span class="o">:</span><span class="w"> </span><span class="kt">6000</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">});</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">setOnServerError</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
 <span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
@@ -2395,14 +2425,14 @@
 <p>Auth providers that handle 403 from <code>/me</code> must check the error body before redirecting:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// WRONG: redirects to unauthorized on ANY 403</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">statusCode</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;/unauthorized&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">'/unauthorized'</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="c1">// CORRECT: skip redirect for subscription 403</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">statusCode</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">any</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isSubscriptionError</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w">  </span><span class="c1">// show toast instead</span>
-<span class="w">  </span><span class="nx">router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;/unauthorized&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">'/unauthorized'</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="sensitive-action-confirmation">Sensitive Action Confirmation<a class="headerlink" href="#sensitive-action-confirmation" title="Permanent link">&para;</a></h3>
@@ -2410,16 +2440,16 @@
 <div class="highlight"><pre><span></span><code><span class="c1">// Each frontend must have (or copy from pos-ui):</span>
 <span class="c1">// src/components/ui/confirm-dialog.tsx</span>
 
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ConfirmDialog</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@/components/ui/confirm-dialog&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ConfirmDialog</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@/components/ui/confirm-dialog'</span><span class="p">;</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">open</span><span class="p">,</span><span class="w"> </span><span class="nx">setOpen</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
 <span class="o">&lt;</span><span class="nx">ConfirmDialog</span>
 <span class="w">  </span><span class="nx">open</span><span class="o">=</span><span class="p">{</span><span class="nx">open</span><span class="p">}</span>
 <span class="w">  </span><span class="nx">onOpenChange</span><span class="o">=</span><span class="p">{</span><span class="nx">setOpen</span><span class="p">}</span>
-<span class="w">  </span><span class="nx">title</span><span class="o">=</span><span class="s2">&quot;Delete item?&quot;</span>
-<span class="w">  </span><span class="nx">description</span><span class="o">=</span><span class="s2">&quot;This cannot be undone.&quot;</span>
-<span class="w">  </span><span class="nx">confirmLabel</span><span class="o">=</span><span class="s2">&quot;Delete&quot;</span>
-<span class="w">  </span><span class="nx">variant</span><span class="o">=</span><span class="s2">&quot;danger&quot;</span><span class="w">    </span><span class="c1">// &#39;danger&#39; | &#39;warning&#39; | &#39;info&#39;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">=</span><span class="s2">"Delete item?"</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">=</span><span class="s2">"This cannot be undone."</span>
+<span class="w">  </span><span class="nx">confirmLabel</span><span class="o">=</span><span class="s2">"Delete"</span>
+<span class="w">  </span><span class="nx">variant</span><span class="o">=</span><span class="s2">"danger"</span><span class="w">    </span><span class="c1">// 'danger' | 'warning' | 'info'</span>
 <span class="w">  </span><span class="nx">onConfirm</span><span class="o">=</span><span class="p">{</span><span class="nx">handleDelete</span><span class="p">}</span>
 <span class="err">/&gt;</span>
 </code></pre></div>

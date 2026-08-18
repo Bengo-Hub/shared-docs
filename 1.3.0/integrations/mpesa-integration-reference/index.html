@@ -1394,6 +1394,8 @@
       
         
       
+        
+      
     
     
     
@@ -1892,6 +1894,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2230,47 +2260,47 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Endpoint</strong>: <code>POST /mpesa/stkpush/v1/processrequest</code></p>
 <h3 id="request">Request<a class="headerlink" href="#request" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;BusinessShortCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;174379&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;base64(shortcode + passkey + timestamp)&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;20250925124519&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TransactionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CustomerPayBillOnline&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;100&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyA&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;254708374149&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyB&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;174379&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PhoneNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;254708374149&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CallBackURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/callback&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AccountReference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OrderRef123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TransactionDesc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Payment for Order #123&quot;</span>
+<span class="w">  </span><span class="nt">"BusinessShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base64(shortcode + passkey + timestamp)&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20250925124519"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CustomerPayBillOnline"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyB"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PhoneNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CallBackURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/callback"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AccountReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OrderRef123"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionDesc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Payment for Order #123"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Password generation</strong>:
-<div class="highlight"><pre><span></span><code><span class="nx">timestamp</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Format</span><span class="p">(</span><span class="s">&quot;20060102150405&quot;</span><span class="p">)</span>
-<span class="nx">password</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">base64</span><span class="p">.</span><span class="nx">StdEncoding</span><span class="p">.</span><span class="nx">EncodeToString</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">shortcode</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">passkey</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">timestamp</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><span class="nx">timestamp</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Format</span><span class="p">(</span><span class="s">"20060102150405"</span><span class="p">)</span>
+<span class="nx">password</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">base64</span><span class="p">.</span><span class="nx">StdEncoding</span><span class="p">.</span><span class="nx">EncodeToString</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="nx">shortcode</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">passkey</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">timestamp</span><span class="p">))</span>
 </code></pre></div></p>
 <p><strong>TransactionType</strong>: <code>CustomerPayBillOnline</code> (Paybill) | <code>CustomerBuyGoodsOnline</code> (Till)</p>
 <h3 id="response">Response<a class="headerlink" href="#response" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;MerchantRequestID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;29115-34620561-1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CheckoutRequestID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ws_CO_191220191020363925&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResponseCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResponseDescription&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Success. Request accepted for processing&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CustomerMessage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Success. Request accepted for processing&quot;</span>
+<span class="w">  </span><span class="nt">"MerchantRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"29115-34620561-1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CheckoutRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ws_CO_191220191020363925"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResponseCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResponseDescription"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success. Request accepted for processing"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CustomerMessage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success. Request accepted for processing"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Callback</strong> (async, received at <code>CallBackURL</code>):
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Body&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;stkCallback&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;MerchantRequestID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;29115-34620561-1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;CheckoutRequestID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ws_CO_191220191020363925&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ResultCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;ResultDesc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The service request is processed successfully.&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;CallbackMetadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;Item&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">          </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Amount&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.00</span><span class="p">},</span>
-<span class="w">          </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MpesaReceiptNumber&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NLJ7RT61SV&quot;</span><span class="p">},</span>
-<span class="w">          </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransactionDate&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20191219102115</span><span class="p">},</span>
-<span class="w">          </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PhoneNumber&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">254708374149</span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"Body"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"stkCallback"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"MerchantRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"29115-34620561-1"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"CheckoutRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ws_CO_191220191020363925"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ResultCode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ResultDesc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The service request is processed successfully."</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"CallbackMetadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Item"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amount"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.00</span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MpesaReceiptNumber"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NLJ7RT61SV"</span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionDate"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mi">20191219102115</span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PhoneNumber"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mi">254708374149</span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -2283,10 +2313,10 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Poll the status of an STK Push transaction (use when callback wasn't received).<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/stkpushquery/v1/query</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;BusinessShortCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;174379&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;same as STK push&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;20250925124519&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CheckoutRequestID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ws_CO_191220191020363925&quot;</span>
+<span class="w">  </span><span class="nt">"BusinessShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;same as STK push&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20250925124519"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CheckoutRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ws_CO_191220191020363925"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Response</strong>: <code>ResultCode: 0</code> = paid; <code>1032</code> = user cancelled; <code>1037</code> = timeout.</p>
@@ -2295,10 +2325,10 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Register confirmation/validation URLs for over-the-counter C2B payments (paybill, till).<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/c2b/v1/registerurl</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;ShortCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResponseType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Completed&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ConfirmationURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/confirmation&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ValidationURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/validation&quot;</span>
+<span class="w">  </span><span class="nt">"ShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResponseType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Completed"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ConfirmationURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/confirmation"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ValidationURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/validation"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Must be registered once per production shortcode. Sandbox uses simulate.</p>
@@ -2306,11 +2336,11 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <h2 id="4-c2b-simulate-sandbox-only">4. C2B — Simulate (Sandbox Only)<a class="headerlink" href="#4-c2b-simulate-sandbox-only" title="Permanent link">&para;</a></h2>
 <p><strong>Endpoint</strong>: <code>POST /mpesa/c2b/v1/simulate</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;ShortCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CommandID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CustomerPayBillOnline&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Msisdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;254708374149&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;BillRefNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;account123&quot;</span>
+<span class="w">  </span><span class="nt">"ShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CustomerPayBillOnline"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Msisdn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"BillRefNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"account123"</span>
 <span class="p">}</span>
 </code></pre></div>
 <hr />
@@ -2319,16 +2349,16 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <strong>Use cases</strong>: Rider earnings payouts, refunds, cashback, loyalty redemption.<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/b2c/v1/paymentrequest</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;InitiatorName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bengobox_initiator&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;SecurityCredential&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;RSA encrypted initiator password&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CommandID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BusinessPayment&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyA&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyB&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;254708374149&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Rider payout week 2026-W10&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;QueueTimeOutURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-timeout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResultURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-result&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Occasion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WeeklyPayout&quot;</span>
+<span class="w">  </span><span class="nt">"InitiatorName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bengobox_initiator"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted initiator password&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BusinessPayment"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyB"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rider payout week 2026-W10"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WeeklyPayout"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>CommandID options</strong>: 
@@ -2338,14 +2368,14 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>SecurityCredential</strong>: RSA-encrypt initiator password using M-Pesa public key certificate.</p>
 <p><strong>Result callback</strong>:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Result&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;ResultCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;TransactionID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LGR019G3J2&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;ResultParameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;ResultParameter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;Key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransactionAmount&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;Key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransactionReceipt&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LGR019G3J2&quot;</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;Key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ReceiverPartyPublicName&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;254708374149 - John Doe&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"Result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"ResultCode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LGR019G3J2"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"ResultParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"ResultParameter"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"Key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionAmount"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"Key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionReceipt"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LGR019G3J2"</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"Key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ReceiverPartyPublicName"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149 - John Doe"</span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -2356,18 +2386,18 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Shortcode-to-shortcode payments (e.g., pay supplier's paybill).<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/b2b/v1/paymentrequest</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Initiator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bengobox_initiator&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;SecurityCredential&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;RSA encrypted&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CommandID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BusinessPayBill&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;SenderIdentifierType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;RecieverIdentifierType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyA&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyB&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AccountReference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invoice001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Supplier payment&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;QueueTimeOutURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-timeout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResultURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-result&quot;</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bengobox_initiator"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BusinessPayBill"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SenderIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"RecieverIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyB"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AccountReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Invoice001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Supplier payment"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-result"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>CommandID</strong>: <code>BusinessPayBill</code> | <code>MerchantToMerchantTransfer</code> | <code>MerchantTransferFromMerchantToWorking</code></p>
@@ -2380,16 +2410,16 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Query the status of any M-Pesa transaction.<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/transactionstatus/v1/query</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Initiator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bengobox_initiator&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;SecurityCredential&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;RSA encrypted&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CommandID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransactionStatusQuery&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TransactionID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LHG31AA5TX&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyA&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;IdentifierType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResultURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-status-result&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;QueueTimeOutURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-timeout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Status check&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Occasion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bengobox_initiator"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionStatusQuery"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LHG31AA5TX"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-status-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status check"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="p">}</span>
 </code></pre></div>
 <hr />
@@ -2397,17 +2427,17 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Reverse a completed M-Pesa transaction (within 24 hours).<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/reversal/v1/request</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Initiator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bengobox_initiator&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;SecurityCredential&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;RSA encrypted&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CommandID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TransactionReversal&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TransactionID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OEI2AK4Q16&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;100&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ReceiverParty&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;RecieverIdentifierType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResultURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/reversal-result&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;QueueTimeOutURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Duplicate payment reversal&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Occasion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bengobox_initiator"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionReversal"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OEI2AK4Q16"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ReceiverParty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"RecieverIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/reversal-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Duplicate payment reversal"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="p">}</span>
 </code></pre></div>
 <hr />
@@ -2415,14 +2445,14 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Query current M-Pesa shortcode balance.<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/accountbalance/v1/query</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;Initiator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bengobox_initiator&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;SecurityCredential&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;RSA encrypted&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CommandID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AccountBalance&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyA&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;600000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;IdentifierType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Balance check&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;QueueTimeOutURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ResultURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/balance-result&quot;</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bengobox_initiator"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AccountBalance"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Balance check"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/balance-result"</span>
 <span class="p">}</span>
 </code></pre></div>
 <hr />
@@ -2430,18 +2460,18 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Schedule recurring customer-to-business payments.<br />
 <strong>Endpoint</strong>: <code>POST /standingorder/v1/createStandingOrderExternal</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;StandingOrderName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Monthly Subscription&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;BusinessShortCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;174379&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TransactionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Standing Order Customer Pay Bill&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;PartyA&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;254708374149&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ReceiverPartyIdentifierType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CallBackURL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://booksapi.codevertexafrica.com/webhooks/mpesa/ratiba&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;AccountReference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SubRef123&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TransactionDesc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Monthly subscription&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Frequency&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;StartDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;20260310&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;EndDate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;20271231&quot;</span>
+<span class="w">  </span><span class="nt">"StandingOrderName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Monthly Subscription"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"BusinessShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Standing Order Customer Pay Bill"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ReceiverPartyIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CallBackURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/ratiba"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AccountReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SubRef123"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionDesc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Monthly subscription"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Frequency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"StartDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20260310"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"EndDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20271231"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Frequency</strong>: <code>1</code>=daily, <code>2</code>=weekly, <code>3</code>=monthly, <code>4</code>=quarterly, <code>5</code>=half-yearly, <code>6</code>=yearly.<br />
@@ -2452,12 +2482,12 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <p><strong>Purpose</strong>: Generate a static QR code for the tenant's shortcode (customers scan with M-Pesa app).<br />
 <strong>Endpoint</strong>: <code>POST /mpesa/qrcode/v1/generate</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;MerchantName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Acme Retail&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;RefNo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cafe-checkout-01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;TrxCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PB&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;CPI&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;174379&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;Size&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;300&quot;</span>
+<span class="w">  </span><span class="nt">"MerchantName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acme Retail"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"RefNo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cafe-checkout-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TrxCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PB"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CPI"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Size"</span><span class="p">:</span><span class="w"> </span><span class="s2">"300"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>TrxCode</strong>: <code>PB</code> = Paybill | <code>BG</code> = Buy Goods | <code>WA</code> = Wallet-to-Account | <code>SB</code> = Subscriber-to-Bank.</p>
@@ -2523,7 +2553,7 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <span class="w">    </span><span class="nx">block</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">pem</span><span class="p">.</span><span class="nx">Decode</span><span class="p">(</span><span class="nx">certPEM</span><span class="p">)</span>
 <span class="w">    </span><span class="nx">cert</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">x509</span><span class="p">.</span><span class="nx">ParseCertificate</span><span class="p">(</span><span class="nx">block</span><span class="p">.</span><span class="nx">Bytes</span><span class="p">)</span>
 <span class="w">    </span><span class="nx">rsaKey</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cert</span><span class="p">.</span><span class="nx">PublicKey</span><span class="p">.(</span><span class="o">*</span><span class="nx">rsa</span><span class="p">.</span><span class="nx">PublicKey</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">encrypted</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rsa</span><span class="p">.</span><span class="nx">EncryptPKCS1v15</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nx">Reader</span><span class="p">,</span><span class="w"> </span><span class="nx">rsaKey</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">initiatorPassword</span><span class="p">))</span>
+<span class="w">    </span><span class="nx">encrypted</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rsa</span><span class="p">.</span><span class="nx">EncryptPKCS1v15</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nx">Reader</span><span class="p">,</span><span class="w"> </span><span class="nx">rsaKey</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">(</span><span class="nx">initiatorPassword</span><span class="p">))</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">base64</span><span class="p">.</span><span class="nx">StdEncoding</span><span class="p">.</span><span class="nx">EncodeToString</span><span class="p">(</span><span class="nx">encrypted</span><span class="p">),</span><span class="w"> </span><span class="kc">nil</span>
 <span class="p">}</span>
 </code></pre></div></p>

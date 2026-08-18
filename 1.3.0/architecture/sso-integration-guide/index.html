@@ -2205,6 +2205,8 @@
       
         
       
+        
+      
     
     
     
@@ -2417,6 +2419,34 @@
     
   
     Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
   
 
     
@@ -3290,7 +3320,7 @@
 <hr />
 <h2 id="oidc-authorization-code-pkce-flow">OIDC Authorization Code + PKCE Flow<a class="headerlink" href="#oidc-authorization-code-pkce-flow" title="Permanent link">&para;</a></h2>
 <p>Every frontend uses the same flow:</p>
-<div class="highlight"><pre><span></span><code>1. User clicks &quot;Login&quot; or &quot;Sign Up&quot; on any frontend
+<div class="highlight"><pre><span></span><code>1. User clicks "Login" or "Sign Up" on any frontend
          ↓
 2. Frontend generates PKCE: code_verifier + code_challenge (SHA-256)
          ↓
@@ -3324,8 +3354,8 @@
    c. Receive: access_token (JWT), id_token, refresh_token
          ↓
 9. Bridge/sync screen:
-   Poll service&#39;s own /me endpoint until user data is available
-   (NATS events sync user from auth-service to each service&#39;s DB)
+   Poll service's own /me endpoint until user data is available
+   (NATS events sync user from auth-service to each service's DB)
          ↓
 10. SSO outlet selection (multi-outlet tenants only):
    If token response includes `requiresOutletSelection: true` (SSO-level flow):
@@ -3629,7 +3659,7 @@ GET  https://sso.codevertexafrica.com/.well-known/openid-configuration
 <h2 id="tenant-context">Tenant Context<a class="headerlink" href="#tenant-context" title="Permanent link">&para;</a></h2>
 <p>All SSO requests should include tenant context so auth-api can mint the token for the correct organisation and downstream services can JIT-sync the tenant:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// In buildAuthorizeUrl():</span>
-<span class="nx">url</span><span class="p">.</span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">&quot;tenant&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">orgSlug</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">&quot;acme-retail&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// default tenant: acme-retail</span>
+<span class="nx">url</span><span class="p">.</span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">"tenant"</span><span class="p">,</span><span class="w"> </span><span class="nx">orgSlug</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">"acme-retail"</span><span class="p">);</span><span class="w">  </span><span class="c1">// default tenant: acme-retail</span>
 </code></pre></div>
 <ul>
 <li><strong>Authorize URL:</strong> <code>tenant=&lt;slug&gt;</code> is optional; when present, auth-api stores it on the authorization code and prefers that tenant when minting the access token (if the user is a member).</li>
@@ -3743,7 +3773,7 @@ outlet_id in JWT &amp;&amp; !is_hq_user?
 <span class="w">  </span><span class="k">private</span><span class="w"> </span><span class="nx">handleRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">config</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// ... existing tenant headers ...</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">outletId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">config</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">&#39;X-Outlet-ID&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">outletId</span><span class="p">;</span>
+<span class="w">      </span><span class="nx">config</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Outlet-ID'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">outletId</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">config</span><span class="p">;</span>
 <span class="w">  </span><span class="p">};</span>
@@ -3772,23 +3802,23 @@ outlet_id in JWT &amp;&amp; !is_hq_user?
 <div class="highlight"><pre><span></span><code><span class="c1">// Lightweight middleware — add to /{tenant} route group after TenantV2</span>
 <span class="kd">func</span><span class="w"> </span><span class="nx">OutletContext</span><span class="p">(</span><span class="nx">next</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">OutletHeader</span><span class="p">(</span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">r</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">httpware</span><span class="p">.</span><span class="nx">WithOutletID</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">(),</span><span class="w"> </span><span class="nx">outletID</span><span class="p">))</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">OutletHeader</span><span class="p">(</span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">httpware</span><span class="p">.</span><span class="nx">WithOutletID</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">(),</span><span class="w"> </span><span class="nx">outletID</span><span class="p">))</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="w">  </span><span class="c1">// always continues — outlet is optional</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>CORS</strong>: All services must include <code>X-Outlet-ID</code> in <code>AllowedHeaders</code>:
-<div class="highlight"><pre><span></span><code><span class="nx">AllowedHeaders</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;X-Outlet-ID&quot;</span><span class="p">},</span>
+<div class="highlight"><pre><span></span><code><span class="nx">AllowedHeaders</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{...,</span><span class="w"> </span><span class="s">"X-Outlet-ID"</span><span class="p">},</span>
 </code></pre></div></p>
 <h3 id="backend-optional-outlet-filtering">Backend: Optional Outlet Filtering<a class="headerlink" href="#backend-optional-outlet-filtering" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// In any list handler — outlet filter is ALWAYS optional:</span>
 <span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">GetOutletID</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="c1">// empty string if not set</span>
 <span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Order</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Where</span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">TenantID</span><span class="p">(</span><span class="nx">tenantUUID</span><span class="p">))</span>
-<span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">uid</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">outletID</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">q</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">OutletIDEQ</span><span class="p">(</span><span class="nx">uid</span><span class="p">))</span>
+<span class="w">        </span><span class="nx">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">OutletIDEQ</span><span class="p">(</span><span class="nx">uid</span><span class="p">))</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 <span class="c1">// Never return an error if outlet ID is absent — this breaks platform admin calls</span>
@@ -3889,12 +3919,12 @@ Response: [{ id, code, name, use_case, is_hq, status, settings }]
 <div class="highlight"><pre><span></span><code><span class="c1">// 1. Get code + state from URL params</span>
 <span class="c1">// 2. Call handleSSOCallback(code, callbackUrl)</span>
 <span class="c1">// 3. On authenticated: check user.status</span>
-<span class="c1">//    - &quot;pending&quot; or &quot;pending_review&quot; → /auth/pending</span>
-<span class="c1">//    - otherwise → sessionStorage.getItem(&quot;sso_return_to&quot;) or &quot;/&quot;</span>
+<span class="c1">//    - "pending" or "pending_review" → /auth/pending</span>
+<span class="c1">//    - otherwise → sessionStorage.getItem("sso_return_to") or "/"</span>
 </code></pre></div>
 <h3 id="4-pending-page-srcappauthpendingpagetsx">4. Pending page (<code>src/app/auth/pending/page.tsx</code>)<a class="headerlink" href="#4-pending-page-srcappauthpendingpagetsx" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Poll fetchMe() every 15s</span>
-<span class="c1">// When status is no longer &quot;pending&quot;: redirect to /{orgSlug}/profile</span>
+<span class="c1">// When status is no longer "pending": redirect to /{orgSlug}/profile</span>
 </code></pre></div>
 <hr />
 <h2 id="service-specific-notes">Service-Specific Notes<a class="headerlink" href="#service-specific-notes" title="Permanent link">&para;</a></h2>
@@ -4086,14 +4116,14 @@ notifications-api subscribes → creates notification preferences
 <span class="w">            </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ClaimsFromContext</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">())</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">}</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsSuperuser</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsPlatformOwner</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsSubscriptionActive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="k">return</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="c1">// Returns {&quot;error&quot;:&quot;...&quot;,&quot;code&quot;:&quot;subscription_inactive&quot;,&quot;upgrade&quot;:true}</span>
-<span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="c1">// Returns {"error":"...","code":"subscription_inactive","upgrade":true}</span>
+<span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="s">"application/json"</span><span class="p">)</span>
 <span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">WriteHeader</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusForbidden</span><span class="p">)</span>
-<span class="w">        </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">`{&quot;error&quot;:&quot;Your subscription is not active.&quot;,&quot;code&quot;:&quot;subscription_inactive&quot;,&quot;upgrade&quot;:true}`</span><span class="p">))</span>
+<span class="w">        </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">`{"error":"Your subscription is not active.","code":"subscription_inactive","upgrade":true}`</span><span class="p">))</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="p">})</span>
 </code></pre></div>
@@ -4102,7 +4132,7 @@ notifications-api subscribes → creates notification preferences
 <div class="highlight"><pre><span></span><code><span class="c1">// In API client error interceptor:</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;subscription_inactive&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'subscription_inactive'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Subscription issue — show upgrade toast/banner, do NOT redirect to login</span>
 <span class="w">    </span><span class="nx">onSubscription403Callback</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
@@ -4111,7 +4141,7 @@ notifications-api subscribes → creates notification preferences
 <span class="c1">// In auth-provider 403 handling:</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">statusCode</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">any</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">&#39;subscription_inactive&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Skip redirect</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'subscription_inactive'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Skip redirect</span>
 <span class="w">  </span><span class="nx">router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sb">`/</span><span class="si">${</span><span class="nx">orgSlug</span><span class="si">}</span><span class="sb">/unauthorized`</span><span class="p">);</span><span class="w"> </span><span class="c1">// Only redirect for permission 403</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4125,13 +4155,13 @@ notifications-api subscribes → creates notification preferences
 <p><strong>Critical rule:</strong> The <code>useMe</code> hook in ALL frontends MUST call SSO auth-api <code>GET /api/v1/auth/me</code> directly — NOT the service backend's <code>/auth/me</code>. The backend requires JIT sync via NATS which has a delay; calling it during login causes 401 loops.</p>
 <h3 id="correct-pattern-all-services">Correct Pattern (all services):<a class="headerlink" href="#correct-pattern-all-services" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// In lib/auth/api.ts:</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">SSO_BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_SSO_URL</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;https://sso.codevertexafrica.com&#39;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">SSO_BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_SSO_URL</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">'https://sso.codevertexafrica.com'</span><span class="p">;</span>
 
 <span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchProfile</span><span class="p">(</span><span class="nx">accessToken</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">UserProfile</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">SSO_BASE_URL</span><span class="si">}</span><span class="sb">/api/v1/auth/me`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Authorization</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">accessToken</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">},</span>
 <span class="w">  </span><span class="p">});</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">401</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;Unauthorized&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;SSO /me failed&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">401</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'Unauthorized'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'SSO /me failed'</span><span class="p">);</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
 <span class="p">}</span>
 
@@ -4139,7 +4169,7 @@ notifications-api subscribes → creates notification preferences
 <span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">useMe</span><span class="p">(</span><span class="nx">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">accessToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useAuthStore</span><span class="p">((</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">session</span><span class="o">?</span><span class="p">.</span><span class="nx">accessToken</span><span class="p">);</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">useQuery</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;auth&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;me&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'auth'</span><span class="p">,</span><span class="w"> </span><span class="s1">'me'</span><span class="p">],</span>
 <span class="w">    </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetchProfile</span><span class="p">(</span><span class="nx">accessToken</span><span class="o">!</span><span class="p">),</span>
 <span class="w">    </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kt">enabled</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!!</span><span class="nx">accessToken</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">staleTime</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span>
@@ -4306,8 +4336,8 @@ notifications-api subscribes → creates notification preferences
 <h3 id="detection">Detection<a class="headerlink" href="#detection" title="Permanent link">&para;</a></h3>
 <p><code>GET /api/v1/auth/me</code> returns <code>is_platform_owner: true</code> when <code>primary_tenant.slug == "codevertex"</code> and the user has the <code>superuser</code> role.</p>
 <h3 id="service-enforcement">Service Enforcement<a class="headerlink" href="#service-enforcement" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="c1">// In any service&#39;s auth middleware:</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">is_platform_owner</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">roles</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;superuser&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// In any service's auth middleware:</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">is_platform_owner</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">roles</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'superuser'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// Skip tenant isolation — allow access to ALL tenant data</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">next</span><span class="p">();</span>
 <span class="p">}</span>
@@ -4316,10 +4346,10 @@ notifications-api subscribes → creates notification preferences
 <h3 id="backend-platform-owner-tenant-override-tenantid">Backend: Platform Owner Tenant Override (<code>?tenantId=</code>)<a class="headerlink" href="#backend-platform-owner-tenant-override-tenantid" title="Permanent link">&para;</a></h3>
 <p>All Go backend services support a <code>?tenantId=&lt;uuid&gt;</code> query parameter on tenant-scoped endpoints for platform owners. This allows cross-tenant drill-down without requiring tenant headers.</p>
 <p><strong>Pattern (implemented in all services — March 2026):</strong>
-<div class="highlight"><pre><span></span><code><span class="c1">// In each handler&#39;s tenant resolution function:</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// In each handler's tenant resolution function:</span>
 <span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">()</span>
 <span class="k">if</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">IsPlatformOwner</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;tenantId&quot;</span><span class="p">);</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Get</span><span class="p">(</span><span class="s">"tenantId"</span><span class="p">);</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span><span class="w"> </span><span class="c1">// override to target tenant</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -4378,22 +4408,22 @@ notifications-api subscribes → creates notification preferences
 <p>For new services added post-MVP without redeployment:
 <div class="highlight"><pre><span></span><code><span class="c1"># Requires valid superuser JWT</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://sso.codevertexafrica.com/api/v1/admin/clients<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer &lt;superuser-token&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;client_id&quot;: &quot;my-new-service&quot;,</span>
-<span class="s1">    &quot;name&quot;: &quot;My New Service&quot;,</span>
-<span class="s1">    &quot;redirect_uris&quot;: [&quot;https://my-new-service.example.com/callback&quot;],</span>
-<span class="s1">    &quot;scopes&quot;: [&quot;openid&quot;, &quot;profile&quot;, &quot;email&quot;],</span>
-<span class="s1">    &quot;public&quot;: true</span>
-<span class="s1">  }&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer &lt;superuser-token&gt;"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "client_id": "my-new-service",</span>
+<span class="s1">    "name": "My New Service",</span>
+<span class="s1">    "redirect_uris": ["https://my-new-service.example.com/callback"],</span>
+<span class="s1">    "scopes": ["openid", "profile", "email"],</span>
+<span class="s1">    "public": true</span>
+<span class="s1">  }'</span>
 </code></pre></div></p>
 <p><strong>Rule:</strong> seed = source of truth for MVP clients. Admin API = runtime additions. Both are valid.</p>
 <hr />
 <h2 id="public-tenant-endpoint">Public Tenant Endpoint<a class="headerlink" href="#public-tenant-endpoint" title="Permanent link">&para;</a></h2>
 <p>Services that need to resolve tenant UUIDs (e.g. subscription-api seed) use the public endpoint — <strong>no authentication required:</strong></p>
 <div class="highlight"><pre><span></span><code>GET /api/v1/tenants/by-slug/{slug}
-Response: { &quot;id&quot;: &quot;&lt;uuid&gt;&quot;, &quot;name&quot;: &quot;...&quot;, &quot;slug&quot;: &quot;...&quot;, &quot;status&quot;: &quot;active&quot; }
+Response: { "id": "&lt;uuid&gt;", "name": "...", "slug": "...", "status": "active" }
 </code></pre></div>
 <p>This ensures cross-service UUID consistency without hardcoding values.</p>
 

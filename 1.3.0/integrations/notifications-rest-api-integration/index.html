@@ -1394,6 +1394,8 @@
       
         
       
+        
+      
     
     
     
@@ -1882,6 +1884,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2176,16 +2206,16 @@
 - <code>X-API-Key: &lt;key&gt;</code> — service API key</p>
 <h3 id="request-body">Request Body<a class="headerlink" href="#request-body" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;truload/weight_ticket&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;recipient@example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;ticket_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WT-2026-001&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;vehicle_reg&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;KDA 123A&quot;</span>
+<span class="w">  </span><span class="nt">"channel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"template"</span><span class="p">:</span><span class="w"> </span><span class="s2">"truload/weight_ticket"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"recipient@example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John Doe"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"ticket_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WT-2026-001"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"vehicle_reg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"KDA 123A"</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;subject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Your Weight Ticket is Ready&quot;</span>
+<span class="w">  </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"subject"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Your Weight Ticket is Ready"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -2233,8 +2263,8 @@
 </table>
 <h3 id="response">Response<a class="headerlink" href="#response" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;accepted&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;requestId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid-string&quot;</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"accepted"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"requestId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid-string"</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Status code:</strong> <code>202 Accepted</code></p>
@@ -2401,17 +2431,17 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">send_notification</span><span class="p">(</span><span class="n">tenant_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;https://notificationsapi.codevertexafrica.com/</span><span class="si">{</span><span class="n">tenant_id</span><span class="si">}</span><span class="s2">/notifications/messages&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"https://notificationsapi.codevertexafrica.com/</span><span class="si">{</span><span class="n">tenant_id</span><span class="si">}</span><span class="s2">/notifications/messages"</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;template&quot;</span><span class="p">:</span> <span class="n">template</span><span class="p">,</span>
-            <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">to</span><span class="p">,</span>
-            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
-            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">},</span>
+            <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"email"</span><span class="p">,</span>
+            <span class="s2">"template"</span><span class="p">:</span> <span class="n">template</span><span class="p">,</span>
+            <span class="s2">"to"</span><span class="p">:</span> <span class="n">to</span><span class="p">,</span>
+            <span class="s2">"data"</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+            <span class="s2">"metadata"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"subject"</span><span class="p">:</span> <span class="n">subject</span><span class="p">},</span>
         <span class="p">},</span>
         <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;X-API-Key&quot;</span><span class="p">:</span> <span class="n">api_key</span><span class="p">,</span>
-            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="s2">"X-API-Key"</span><span class="p">:</span> <span class="n">api_key</span><span class="p">,</span>
+            <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="p">)</span>
@@ -2420,20 +2450,20 @@
 
 <span class="c1"># Example: send weight ticket notification</span>
 <span class="n">send_notification</span><span class="p">(</span>
-    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">&quot;uuid-here&quot;</span><span class="p">,</span>
-    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;truload/weight_ticket&quot;</span><span class="p">,</span>
-    <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;driver@example.com&quot;</span><span class="p">],</span>
+    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"uuid-here"</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="s2">"truload/weight_ticket"</span><span class="p">,</span>
+    <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s2">"driver@example.com"</span><span class="p">],</span>
     <span class="n">data</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ticket_number&quot;</span><span class="p">:</span> <span class="s2">&quot;WT-2026-001&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;vehicle_reg&quot;</span><span class="p">:</span> <span class="s2">&quot;KDA 123A&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;gross_weight&quot;</span><span class="p">:</span> <span class="s2">&quot;45,000 kg&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;net_weight&quot;</span><span class="p">:</span> <span class="s2">&quot;30,000 kg&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;compliance_status&quot;</span><span class="p">:</span> <span class="s2">&quot;Compliant&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;download_link&quot;</span><span class="p">:</span> <span class="s2">&quot;https://app.example.com/tickets/WT-2026-001&quot;</span><span class="p">,</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"John Doe"</span><span class="p">,</span>
+        <span class="s2">"ticket_number"</span><span class="p">:</span> <span class="s2">"WT-2026-001"</span><span class="p">,</span>
+        <span class="s2">"vehicle_reg"</span><span class="p">:</span> <span class="s2">"KDA 123A"</span><span class="p">,</span>
+        <span class="s2">"gross_weight"</span><span class="p">:</span> <span class="s2">"45,000 kg"</span><span class="p">,</span>
+        <span class="s2">"net_weight"</span><span class="p">:</span> <span class="s2">"30,000 kg"</span><span class="p">,</span>
+        <span class="s2">"compliance_status"</span><span class="p">:</span> <span class="s2">"Compliant"</span><span class="p">,</span>
+        <span class="s2">"download_link"</span><span class="p">:</span> <span class="s2">"https://app.example.com/tickets/WT-2026-001"</span><span class="p">,</span>
     <span class="p">},</span>
-    <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;Your Weight Ticket is Ready&quot;</span><span class="p">,</span>
-    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span><span class="p">,</span>
+    <span class="n">subject</span><span class="o">=</span><span class="s2">"Your Weight Ticket is Ready"</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">"your-api-key"</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
 <h3 id="c-nethangfire">C# (.NET/Hangfire)<a class="headerlink" href="#c-nethangfire" title="Permanent link">&para;</a></h3>
@@ -2448,7 +2478,7 @@
 <span class="w">        </span><span class="n">_baseUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">baseUrl</span><span class="p">;</span>
 <span class="w">        </span><span class="n">_apiKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">apiKey</span><span class="p">;</span>
 <span class="w">        </span><span class="n">_http</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HttpClient</span><span class="p">();</span>
-<span class="w">        </span><span class="n">_http</span><span class="p">.</span><span class="n">DefaultRequestHeaders</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;X-API-Key&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">apiKey</span><span class="p">);</span>
+<span class="w">        </span><span class="n">_http</span><span class="p">.</span><span class="n">DefaultRequestHeaders</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">"X-API-Key"</span><span class="p">,</span><span class="w"> </span><span class="n">apiKey</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SendAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">template</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="n">to</span><span class="p">,</span>
@@ -2456,7 +2486,7 @@
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;email&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"email"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">template</span><span class="p">,</span>
 <span class="w">            </span><span class="n">to</span><span class="p">,</span>
 <span class="w">            </span><span class="n">data</span><span class="p">,</span>
@@ -2464,7 +2494,7 @@
 <span class="w">        </span><span class="p">};</span>
 
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">resp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_http</span><span class="p">.</span><span class="n">PostAsJsonAsync</span><span class="p">(</span>
-<span class="w">            </span><span class="s">$&quot;{_baseUrl}/{tenantId}/notifications/messages&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">);</span>
+<span class="w">            </span><span class="s">$"{_baseUrl}/{tenantId}/notifications/messages"</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">);</span>
 <span class="w">        </span><span class="n">resp</span><span class="p">.</span><span class="n">EnsureSuccessStatusCode</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -2474,21 +2504,21 @@
 <span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">SendWeightTicketNotification</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">WeightTicket</span><span class="w"> </span><span class="n">ticket</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NotificationClient</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;https://notificationsapi.codevertexafrica.com&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="n">Environment</span><span class="p">.</span><span class="n">GetEnvironmentVariable</span><span class="p">(</span><span class="s">&quot;NOTIFICATIONS_API_KEY&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="s">"https://notificationsapi.codevertexafrica.com"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Environment</span><span class="p">.</span><span class="n">GetEnvironmentVariable</span><span class="p">(</span><span class="s">"NOTIFICATIONS_API_KEY"</span><span class="p">));</span>
 
-<span class="w">    </span><span class="n">client</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;truload/weight_ticket&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">client</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">tenantId</span><span class="p">,</span><span class="w"> </span><span class="s">"truload/weight_ticket"</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="na">[&quot;name&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">DriverName</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;ticket_number&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">TicketNumber</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;vehicle_reg&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">VehicleReg</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;gross_weight&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">GrossWeight</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;net_weight&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">NetWeight</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;compliance_status&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">ComplianceStatus</span><span class="p">,</span>
-<span class="w">            </span><span class="na">[&quot;download_link&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;https://app.example.com/tickets/{ticket.TicketNumber}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["name"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">DriverName</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["ticket_number"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">TicketNumber</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["vehicle_reg"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">VehicleReg</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["gross_weight"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">GrossWeight</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["net_weight"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">NetWeight</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["compliance_status"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ticket</span><span class="p">.</span><span class="n">ComplianceStatus</span><span class="p">,</span>
+<span class="w">            </span><span class="na">["download_link"]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$"https://app.example.com/tickets/{ticket.TicketNumber}"</span><span class="p">,</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="s">&quot;Your Weight Ticket is Ready&quot;</span>
+<span class="w">        </span><span class="s">"Your Weight Ticket is Ready"</span>
 <span class="w">    </span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
