@@ -1496,6 +1496,8 @@
       
         
       
+        
+      
     
     
     
@@ -1721,6 +1723,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1865,12 +1895,12 @@
 <li><strong>Run migrations at startup</strong><br />
    Use <strong>versioned</strong> migrations in the app so that the same SQL files are applied in every environment. In app bootstrap (e.g. <code>internal/app/app.go</code> or <code>internal/infrastructure/database/postgres.go</code>):
    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;entgo.io/ent/dialect/sql/schema&quot;</span>
-<span class="w">    </span><span class="s">&quot;yourmodule/internal/ent/migrate&quot;</span>
+<span class="w">    </span><span class="s">"entgo.io/ent/dialect/sql/schema"</span>
+<span class="w">    </span><span class="s">"yourmodule/internal/ent/migrate"</span>
 <span class="p">)</span>
 <span class="c1">// ...</span>
 <span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entClient</span><span class="p">.</span><span class="nx">Schema</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">schema</span><span class="p">.</span><span class="nx">WithDir</span><span class="p">(</span><span class="nx">migrate</span><span class="p">.</span><span class="nx">Dir</span><span class="p">));</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;migrations: %w&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"migrations: %w"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
    <strong>Do not</strong> use only <code>Schema.Create(ctx)</code> with no <code>WithDir</code>; that is auto-migrate (no versioned history). Prefer <code>Schema.Create(ctx, schema.WithDir(migrate.Dir))</code> so the app applies the same versioned migrations as in CI/local.</li>

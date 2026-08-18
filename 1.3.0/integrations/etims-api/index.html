@@ -12,13 +12,11 @@
         <meta name="author" content="Codevertex Africa">
       
       
-        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.3.0/user-guide/subscriptions-and-billing/">
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.3.0/integrations/etims-api/">
       
       
-        <link rel="prev" href="../getting-started/">
+        <link rel="prev" href="../finance-integration-map/">
       
-      
-        <link rel="next" href="../../architecture/">
       
       
         
@@ -29,7 +27,7 @@
     
     
       
-        <title>Subscriptions & Billing - Codevertex Africa — Platform Documentation</title>
+        <title>eTIMS API Quickstart - Codevertex Africa — Platform Documentation</title>
       
     
     
@@ -70,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#subscriptions-billing" class="md-skip">
+        <a href="#etims-api-external-integrator-quickstart" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Subscriptions & Billing
+              eTIMS API Quickstart
             
           </span>
         </div>
@@ -229,13 +227,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
           
   
   
@@ -253,6 +249,8 @@
   
   
   
+    
+  
   
     
     
@@ -260,10 +258,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../../architecture/" class="md-tabs__link">
           
   
@@ -384,8 +384,6 @@
       
   
   
-    
-  
   
   
     
@@ -405,23 +403,20 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../user-guide/" class="md-nav__link ">
               
   
   
@@ -439,13 +434,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -465,7 +460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../platform-overview/" class="md-nav__link">
+      <a href="../../user-guide/platform-overview/" class="md-nav__link">
         
   
   
@@ -493,7 +488,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
         
   
   
@@ -518,37 +513,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Subscriptions & Billing
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
         
   
   
@@ -564,81 +532,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-plans-work" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How plans work
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-happens-if-a-subscription-lapses" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What happens if a subscription lapses
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#changing-plans" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Changing plans
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#billing-period-and-payment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Billing period and payment
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#one-subscription-multiple-products" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        One subscription, multiple products
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -655,8 +548,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -670,19 +565,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -700,7 +598,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -748,10 +646,13 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -777,7 +678,7 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -1097,10 +998,13 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -1126,7 +1030,7 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -1465,6 +1369,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1494,18 +1400,21 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../integrations/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -1523,13 +1432,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1549,7 +1458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integrations/payment-workflow/" class="md-nav__link">
+      <a href="../payment-workflow/" class="md-nav__link">
         
   
   
@@ -1577,7 +1486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integrations/mpesa-integration-reference/" class="md-nav__link">
+      <a href="../mpesa-integration-reference/" class="md-nav__link">
         
   
   
@@ -1605,7 +1514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integrations/paystack-integration-reference/" class="md-nav__link">
+      <a href="../paystack-integration-reference/" class="md-nav__link">
         
   
   
@@ -1633,7 +1542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integrations/paystack-callback-page/" class="md-nav__link">
+      <a href="../paystack-callback-page/" class="md-nav__link">
         
   
   
@@ -1661,7 +1570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integrations/notifications-rest-api-integration/" class="md-nav__link">
+      <a href="../notifications-rest-api-integration/" class="md-nav__link">
         
   
   
@@ -1689,7 +1598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integrations/finance-integration-map/" class="md-nav__link">
+      <a href="../finance-integration-map/" class="md-nav__link">
         
   
   
@@ -1714,10 +1623,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../integrations/etims-api/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1733,6 +1669,92 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#who-this-is-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who this is for
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pricing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pricing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full API reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1780,10 +1802,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-plans-work" class="md-nav__link">
+  <a href="#who-this-is-for" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How plans work
+        Who this is for
       
     </span>
   </a>
@@ -1791,10 +1813,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-happens-if-a-subscription-lapses" class="md-nav__link">
+  <a href="#request-access" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What happens if a subscription lapses
+        Request access
       
     </span>
   </a>
@@ -1802,10 +1824,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#changing-plans" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changing plans
+        How it works
       
     </span>
   </a>
@@ -1813,10 +1835,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#billing-period-and-payment" class="md-nav__link">
+  <a href="#pricing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Billing period and payment
+        Pricing
       
     </span>
   </a>
@@ -1824,10 +1846,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#one-subscription-multiple-products" class="md-nav__link">
+  <a href="#full-api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        One subscription, multiple products
+        Full API reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
       
     </span>
   </a>
@@ -1854,17 +1887,81 @@
   
 
 
-<h1 id="subscriptions-billing">Subscriptions &amp; Billing<a class="headerlink" href="#subscriptions-billing" title="Permanent link">&para;</a></h1>
-<h2 id="how-plans-work">How plans work<a class="headerlink" href="#how-plans-work" title="Permanent link">&para;</a></h2>
-<p>Each product you use is covered by a subscription plan, and every plan starts with a <strong>14-day free trial</strong> — enough time to set up your business, add your team, and see how the product fits before you pay for it. Plans differ in which features are unlocked and how much usage is included (for example, how many staff accounts, outlets, or transactions a plan allows).</p>
-<h2 id="what-happens-if-a-subscription-lapses">What happens if a subscription lapses<a class="headerlink" href="#what-happens-if-a-subscription-lapses" title="Permanent link">&para;</a></h2>
-<p>If a subscription isn't renewed, you won't be locked out of your account or lose access to your data — you can always view your existing records. What changes is that you won't be able to create new records (new sales, new invoices, and so on) until the subscription is active again. This is deliberate: a lapsed payment shouldn't put your historical data at risk or block you from seeing what you already have.</p>
-<h2 id="changing-plans">Changing plans<a class="headerlink" href="#changing-plans" title="Permanent link">&para;</a></h2>
-<p>You can move to a different plan as your needs change. Upgrading unlocks new features and higher usage limits right away. Downgrading takes effect at the point your current billing period ends, and if your current usage would exceed the new plan's limits, you'll see a warning before the change goes through — so you're not caught out by a downgrade that suddenly disables something you rely on.</p>
-<h2 id="billing-period-and-payment">Billing period and payment<a class="headerlink" href="#billing-period-and-payment" title="Permanent link">&para;</a></h2>
-<p>You can choose how often you're billed (for example, monthly or for a longer period at once). Payment is handled through the platform's payment providers — you'll see the available options at checkout for your region.</p>
-<h2 id="one-subscription-multiple-products">One subscription, multiple products<a class="headerlink" href="#one-subscription-multiple-products" title="Permanent link">&para;</a></h2>
-<p>If your organisation uses more than one product, each one is billed according to its own plan — you're not forced into a single bundled price if you only need part of the platform. As your business grows into needing more products, you add their plans as you go.</p>
+<h1 id="etims-api-external-integrator-quickstart">eTIMS API — External Integrator Quickstart<a class="headerlink" href="#etims-api-external-integrator-quickstart" title="Permanent link">&para;</a></h1>
+<p>Codevertex's treasury platform is a certified KRA eTIMS OSCU integrator. If you run your own
+software and want to fiscalize sales with KRA directly — rather than adopting the full Codevertex
+POS/treasury suite — this is the API for you.</p>
+<h2 id="who-this-is-for">Who this is for<a class="headerlink" href="#who-this-is-for" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Self-serve</strong> — you have your own developers. No integration fee. You sandbox-test, pass a
+  go-live certification checklist, then move to production and pay only for API usage.</li>
+<li><strong>Assisted</strong> — you'd rather our team handle the setup. A one-time fee applies (scoped to your
+  device/branch count and support needs); ongoing usage billing is identical either way.</li>
+</ul>
+<h2 id="request-access">Request access<a class="headerlink" href="#request-access" title="Permanent link">&para;</a></h2>
+<p>Fill out the integration-request form at
+<a href="https://codevertexafrica.com/integrations">codevertexafrica.com/integrations</a> — you can also
+just describe what you want to Vera, the assistant embedded on that page, and it will collect the
+details and route your request to our team. Either way, our support team is notified immediately
+and follows up by email.</p>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Get your API key.</strong> Once your request is approved, you receive an <code>X-API-Key</code> credential
+   scoped to <code>etims:read</code>/<code>etims:write</code>.</li>
+<li><strong>Sandbox first.</strong> Register a virtual device, register a couple of items, record a stock
+   movement, and transmit a few test sales — all against KRA's own sandbox, at no risk.</li>
+<li><strong>Check your certification status.</strong> A single endpoint tells you exactly what's left before
+   you can request production access.</li>
+<li><strong>Request go-live.</strong> Once your checklist is green, one call notifies our platform team for a
+   final review — the same two-layer gate (automated check + human reviewer) KRA itself uses for
+   certifying integrators.</li>
+<li><strong>Go live.</strong> Pay a monthly plan (with a fair included-transaction quota and metered overage
+   beyond it) for as long as you use the API.</li>
+</ol>
+<h2 id="pricing">Pricing<a class="headerlink" href="#pricing" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Plan</th>
+<th>Monthly</th>
+<th>Included transactions</th>
+<th>Overage (per 100)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Basic</td>
+<td>KES 4,999</td>
+<td>500</td>
+<td>KES 800</td>
+</tr>
+<tr>
+<td>API Growth</td>
+<td>KES 12,999</td>
+<td>2,000</td>
+<td>KES 600</td>
+</tr>
+<tr>
+<td>API Scale</td>
+<td>KES 29,999</td>
+<td>10,000</td>
+<td>KES 400</td>
+</tr>
+</tbody>
+</table>
+<p>A one-time assisted-integration fee applies only if you choose to have our team do the setup for
+you instead of your own developers.</p>
+<h2 id="full-api-reference">Full API reference<a class="headerlink" href="#full-api-reference" title="Permanent link">&para;</a></h2>
+<p>The complete endpoint reference (authentication, request/response shapes, error codes, rate
+limits) lives with the treasury service itself:
+<a href="https://github.com/Bengo-Hub/treasury-api/blob/main/docs/integrations/external-etims-api.md">treasury-api's external eTIMS API reference</a>.</p>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../payment-workflow/">Payment Workflow</a> — if you're also integrating payment collection, not
+  just fiscalization.</li>
+<li><a href="../finance-integration-map/">Finance Integration Map</a> — how treasury's ledger fits together, for
+  context on where eTIMS sits in the bigger picture.</li>
+</ul>
 
 
 
@@ -1887,7 +1984,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 11:12:54 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 18, 2026 18:53:44 UTC">August 18, 2026</span>
   </span>
 
     
@@ -1897,7 +1994,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 11:12:54 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 18, 2026 18:53:44 UTC">August 18, 2026</span>
   </span>
 
     

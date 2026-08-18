@@ -1745,6 +1745,8 @@
       
         
       
+        
+      
     
     
     
@@ -1957,6 +1959,34 @@
     
   
     Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
   
 
     
@@ -2344,25 +2374,25 @@
 <h2 id="event-envelope-format">Event Envelope Format<a class="headerlink" href="#event-envelope-format" title="Permanent link">&para;</a></h2>
 <h3 id="outbox-events-shared-events-library">Outbox Events (shared-events library)<a class="headerlink" href="#outbox-events-shared-events-library" title="Permanent link">&para;</a></h3>
 <p><div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;tenant_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;aggregate_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;treasury&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;aggregate_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;event_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment.succeeded&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RFC3339&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tenant_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"aggregate_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"treasury"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"aggregate_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"payment.succeeded"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RFC3339"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span>
 <span class="p">}</span>
 </code></pre></div>
 Subject derivation: <code>{aggregate_type}.{event_type}</code> (e.g., <code>treasury.payment.succeeded</code>)</p>
 <h3 id="cloudevents-ordering-backend-logistics-api">CloudEvents (ordering-backend, logistics-api)<a class="headerlink" href="#cloudevents-ordering-backend-logistics-api" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ordering-service&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;specversion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ordering.order.created&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;tenantId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ordering-service"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"specversion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ordering.order.created"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tenantId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uuid"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <hr />
