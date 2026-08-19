@@ -15,6 +15,14 @@ developer portal rather than a per-integration pattern repeated by hand each tim
   always start in sandbox; a platform admin promotes to production as a manual review action
   (`POST /admin/apps/{id}/promote`). No per-service certification automation yet outside eTIMS —
   see Roadmap below.
+  **Not yet unified with the eTIMS API's own environment concept**: `EtimsDevice.environment`
+  (sandbox/production, per registered device) is deliberately decoupled from the credential — the
+  same `App` key works against both, per the eTIMS API's own design (see
+  [eTIMS API Quickstart](etims-api.md)). Promoting an eTIMS partner's `App` to production today
+  changes nothing about which KRA environment their devices actually transmit to; that's still
+  governed entirely by the certification checklist and which `EtimsDevice.environment` they
+  registered. Treat `App.environment` as the generic, credential-level flag for future
+  integrations built on this pattern, not (yet) as a control eTIMS itself reads.
 - **Developer role**: `developer` is a seedable tenant role (alongside `admin`/`manager`/`member`/etc.)
   a tenant admin can grant via the existing team-invite flow, scoped to reaching the Developer
   Portal UI without full tenant-admin access. It doesn't currently carry any extra backend
