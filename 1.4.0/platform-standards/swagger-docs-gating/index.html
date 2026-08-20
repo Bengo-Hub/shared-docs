@@ -12,28 +12,28 @@
         <meta name="author" content="Codevertex Africa">
       
       
-        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.4.0/platform-standards/">
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.4.0/platform-standards/swagger-docs-gating/">
       
       
-        <link rel="prev" href="../architecture/devops-k8s-ingress-cors/">
+        <link rel="prev" href="../s2s-conventions/">
       
       
-        <link rel="next" href="webhooks-vs-polling/">
+        <link rel="next" href="../secrets-management/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Platform Engineering Standards - Codevertex Africa — Platform Documentation</title>
+        <title>Swagger/OpenAPI Docs Gating - Codevertex Africa — Platform Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
       
 
@@ -52,7 +52,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#platform-engineering-standards" class="md-skip">
+        <a href="#swaggeropenapi-docs-gating" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Platform Engineering Standards
+              Swagger/OpenAPI Docs Gating
             
           </span>
         </div>
@@ -193,7 +193,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -212,7 +212,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../changelog/" class="md-tabs__link">
+      <a href="../../changelog/" class="md-tabs__link">
         
   
   
@@ -233,7 +233,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../user-guide/" class="md-tabs__link">
+        <a href="../../user-guide/" class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../architecture/" class="md-tabs__link">
+        <a href="../../architecture/" class="md-tabs__link">
           
   
   
@@ -305,7 +305,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -335,7 +335,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -362,7 +362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../changelog/" class="md-nav__link">
+      <a href="../../changelog/" class="md-nav__link">
         
   
   
@@ -418,7 +418,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../user-guide/" class="md-nav__link ">
+            <a href="../../user-guide/" class="md-nav__link ">
               
   
   
@@ -462,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../user-guide/platform-overview/" class="md-nav__link">
+      <a href="../../user-guide/platform-overview/" class="md-nav__link">
         
   
   
@@ -490,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../user-guide/getting-started/" class="md-nav__link">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
         
   
   
@@ -518,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../user-guide/subscriptions-and-billing/" class="md-nav__link">
+      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
         
   
   
@@ -662,7 +662,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../architecture/" class="md-nav__link ">
+            <a href="../../architecture/" class="md-nav__link ">
               
   
   
@@ -706,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/microservice-architecture/" class="md-nav__link">
+      <a href="../../architecture/microservice-architecture/" class="md-nav__link">
         
   
   
@@ -734,7 +734,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/trinity-authorization-pattern/" class="md-nav__link">
+      <a href="../../architecture/trinity-authorization-pattern/" class="md-nav__link">
         
   
   
@@ -762,7 +762,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/event-architecture/" class="md-nav__link">
+      <a href="../../architecture/event-architecture/" class="md-nav__link">
         
   
   
@@ -790,7 +790,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/sso-integration-guide/" class="md-nav__link">
+      <a href="../../architecture/sso-integration-guide/" class="md-nav__link">
         
   
   
@@ -818,7 +818,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/login-flow-contract/" class="md-nav__link">
+      <a href="../../architecture/login-flow-contract/" class="md-nav__link">
         
   
   
@@ -846,7 +846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/subscription-gating-guide/" class="md-nav__link">
+      <a href="../../architecture/subscription-gating-guide/" class="md-nav__link">
         
   
   
@@ -874,7 +874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/cross-service-data-ownership/" class="md-nav__link">
+      <a href="../../architecture/cross-service-data-ownership/" class="md-nav__link">
         
   
   
@@ -902,7 +902,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/go-backend-ent-atlas-migrations/" class="md-nav__link">
+      <a href="../../architecture/go-backend-ent-atlas-migrations/" class="md-nav__link">
         
   
   
@@ -930,7 +930,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/devops-k8s-ingress-cors/" class="md-nav__link">
+      <a href="../../architecture/devops-k8s-ingress-cors/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -1036,7 +1036,7 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -1062,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="webhooks-vs-polling/" class="md-nav__link">
+      <a href="../webhooks-vs-polling/" class="md-nav__link">
         
   
   
@@ -1090,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="connection-pooling-pgbouncer/" class="md-nav__link">
+      <a href="../connection-pooling-pgbouncer/" class="md-nav__link">
         
   
   
@@ -1118,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="caching/" class="md-nav__link">
+      <a href="../caching/" class="md-nav__link">
         
   
   
@@ -1146,7 +1146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="idempotency-and-outbox/" class="md-nav__link">
+      <a href="../idempotency-and-outbox/" class="md-nav__link">
         
   
   
@@ -1174,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="resilience-and-retries/" class="md-nav__link">
+      <a href="../resilience-and-retries/" class="md-nav__link">
         
   
   
@@ -1202,7 +1202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="rate-limiting/" class="md-nav__link">
+      <a href="../rate-limiting/" class="md-nav__link">
         
   
   
@@ -1230,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="s2s-conventions/" class="md-nav__link">
+      <a href="../s2s-conventions/" class="md-nav__link">
         
   
   
@@ -1255,10 +1255,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="swagger-docs-gating/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Swagger/OpenAPI Docs Gating
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1274,6 +1301,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-pattern-filter-by-tag-unlock-by-app-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pattern: filter by tag, unlock by app secret
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-an-app-secret-not-a-jwt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why an app secret, not a JWT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-two-independent-unlocks-and-what-actually-decides-each" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two independent unlocks, and what actually decides each
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-this-to-a-new-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding this to a new service
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1286,7 +1377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="secrets-management/" class="md-nav__link">
+      <a href="../secrets-management/" class="md-nav__link">
         
   
   
@@ -1314,7 +1405,7 @@
   
   
     <li class="md-nav__item">
-      <a href="observability/" class="md-nav__link">
+      <a href="../observability/" class="md-nav__link">
         
   
   
@@ -1342,7 +1433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="ai-and-pgvector/" class="md-nav__link">
+      <a href="../ai-and-pgvector/" class="md-nav__link">
         
   
   
@@ -1370,7 +1461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="n-plus-one-queries/" class="md-nav__link">
+      <a href="../n-plus-one-queries/" class="md-nav__link">
         
   
   
@@ -1450,7 +1541,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../integrations/" class="md-nav__link ">
+            <a href="../../integrations/" class="md-nav__link ">
               
   
   
@@ -1494,7 +1585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/payment-workflow/" class="md-nav__link">
+      <a href="../../integrations/payment-workflow/" class="md-nav__link">
         
   
   
@@ -1522,7 +1613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/mpesa-integration-reference/" class="md-nav__link">
+      <a href="../../integrations/mpesa-integration-reference/" class="md-nav__link">
         
   
   
@@ -1550,7 +1641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/paystack-integration-reference/" class="md-nav__link">
+      <a href="../../integrations/paystack-integration-reference/" class="md-nav__link">
         
   
   
@@ -1578,7 +1669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/paystack-callback-page/" class="md-nav__link">
+      <a href="../../integrations/paystack-callback-page/" class="md-nav__link">
         
   
   
@@ -1606,7 +1697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/notifications-rest-api-integration/" class="md-nav__link">
+      <a href="../../integrations/notifications-rest-api-integration/" class="md-nav__link">
         
   
   
@@ -1634,7 +1725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/finance-integration-map/" class="md-nav__link">
+      <a href="../../integrations/finance-integration-map/" class="md-nav__link">
         
   
   
@@ -1662,7 +1753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/etims-api/" class="md-nav__link">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
         
   
   
@@ -1690,7 +1781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/email-hosting/" class="md-nav__link">
+      <a href="../../integrations/email-hosting/" class="md-nav__link">
         
   
   
@@ -1718,7 +1809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/developer-portal/" class="md-nav__link">
+      <a href="../../integrations/developer-portal/" class="md-nav__link">
         
   
   
@@ -1774,6 +1865,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-pattern-filter-by-tag-unlock-by-app-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pattern: filter by tag, unlock by app secret
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-an-app-secret-not-a-jwt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why an app secret, not a JWT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-two-independent-unlocks-and-what-actually-decides-each" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two independent unlocks, and what actually decides each
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-this-to-a-new-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding this to a new service
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1792,67 +1935,32 @@
   
 
 
-<h1 id="platform-engineering-standards">Platform Engineering Standards<a class="headerlink" href="#platform-engineering-standards" title="Permanent link">&para;</a></h1>
-<p>The conventions every Codevertex service is expected to follow, and the shared Go libraries (<code>github.com/Bengo-Hub/shared-*</code> — <code>shared-events</code>, <code>shared-auth-client</code>, <code>shared-service-client</code>, <code>shared-ratelimit</code>, <code>httpware</code>, <code>cache</code>) that implement them. Each page below documents what's actually implemented and where — not aspirational advice — so you can go straight to the real code.</p>
-<table>
-<thead>
-<tr>
-<th>Standard</th>
-<th>Where it lives</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="webhooks-vs-polling/">Webhooks vs Polling</a></td>
-<td><code>treasury-api/internal/http/router</code> webhook group</td>
-</tr>
-<tr>
-<td><a href="connection-pooling-pgbouncer/">Connection Pooling &amp; PgBouncer</a></td>
-<td><code>devops-k8s/manifests/databases/pgbouncer.yaml</code></td>
-</tr>
-<tr>
-<td><a href="caching/">Caching</a></td>
-<td><code>shared/cache</code></td>
-</tr>
-<tr>
-<td><a href="idempotency-and-outbox/">Idempotency &amp; the Outbox Pattern</a></td>
-<td><code>shared/events</code></td>
-</tr>
-<tr>
-<td><a href="resilience-and-retries/">Resilience — Circuit Breakers &amp; Retries</a></td>
-<td><code>shared/service-client</code></td>
-</tr>
-<tr>
-<td><a href="rate-limiting/">Rate Limiting</a></td>
-<td>ingress annotations + per-service middleware</td>
-</tr>
-<tr>
-<td><a href="s2s-conventions/">Service-to-Service (S2S) Conventions</a></td>
-<td><code>shared/auth-client</code></td>
-</tr>
-<tr>
-<td><a href="swagger-docs-gating/">Swagger/OpenAPI Docs Gating</a></td>
-<td><code>treasury-api</code>/<code>auth-api</code>/<code>notifications-api</code> <code>swagger.go</code></td>
-</tr>
-<tr>
-<td><a href="secrets-management/">Secrets Management</a></td>
-<td><code>devops-k8s/scripts/infrastructure/create-service-secrets.sh</code></td>
-</tr>
-<tr>
-<td><a href="observability/">Observability</a></td>
-<td><code>shared/httpware</code> (logging), <code>shared/service-client</code> (tracing)</td>
-</tr>
-<tr>
-<td><a href="ai-and-pgvector/">AI Integrations &amp; pgvector</a></td>
-<td><code>shared/infrastructure/{pgvector,ollama,onnx}</code></td>
-</tr>
-<tr>
-<td><a href="n-plus-one-queries/">N+1 Queries &amp; Preloading</a></td>
-<td>Ent's generated <code>.IDIn()</code>/eager-load</td>
-</tr>
-</tbody>
-</table>
-<p>Each page below describes the pattern as it exists today, grounded in the actual code and infrastructure rather than aspirational design docs.</p>
+<h1 id="swaggeropenapi-docs-gating">Swagger/OpenAPI Docs Gating<a class="headerlink" href="#swaggeropenapi-docs-gating" title="Permanent link">&para;</a></h1>
+<h2 id="the-pattern-filter-by-tag-unlock-by-app-secret">The pattern: filter by tag, unlock by app secret<a class="headerlink" href="#the-pattern-filter-by-tag-unlock-by-app-secret" title="Permanent link">&para;</a></h2>
+<p>Every public-facing Codevertex service's <code>/v1/docs</code> (Swagger UI) and <code>/api/v1/openapi.json</code> follow the same shape, implemented independently but identically in <code>treasury-api</code>, <code>auth-api</code>, and <code>notifications-api</code> (<code>internal/http{,api}/handlers/swagger.go</code> + <code>swagger_filter.go</code> in each):</p>
+<ol>
+<li><strong>Classify every operation's tag as external or internal</strong> in a small <code>map[string]bool</code> at the top of <code>swagger.go</code>. External tags are the service's real product surface for outside developers (e.g. treasury's <code>External eTIMS API</code>/<code>Public Payments</code>/<code>Health</code>, auth's <code>Auth</code>/<code>OAuth</code>/<code>Discovery</code>/<code>Health</code>, notifications' <code>Notifications</code>/<code>Health</code>). Everything else — tenant-operational endpoints, platform-admin endpoints — is internal by default.</li>
+<li><strong><code>filterSpecToTags(spec, allowed)</code></strong> (pure, unit-tested, identical in all three services) returns a shallow copy of the spec with <code>paths</code> filtered to only operations carrying an allowed tag. Both the full and external-only specs are computed once at startup and cached — every request is a map lookup, never a re-parse.</li>
+<li><strong>The docs page's own token bar</strong> — not Swagger UI's built-in Authorize dialog — is what actually unlocks anything. Paste an app secret (<code>bng_app_...</code>, or a plain <code>bng_...</code> developer key), and the page's own JS <code>fetch()</code>s <code>/api/v1/openapi.json</code> with it as <code>X-API-Key</code>, both for the initial spec load and via <code>requestInterceptor</code> on every subsequent "Try it out" call. Swagger UI's own Authorize dialog only ever affects <code>Try it out</code>, never the initial (unauthenticated) spec fetch — using a plain <code>url:</code> loader there would never unlock anything.</li>
+<li><strong><code>OpenAPIJSON</code> resolves the secret server-side and is the sole source of truth.</strong> It reports its decision back via two response headers the docs page reads to drive its badges: <code>X-Docs-View: internal|external</code> and <code>X-Docs-Environment: sandbox|production|none</code>. The client never decides trust on its own.</li>
+</ol>
+<h2 id="why-an-app-secret-not-a-jwt">Why an app secret, not a JWT<a class="headerlink" href="#why-an-app-secret-not-a-jwt" title="Permanent link">&para;</a></h2>
+<p>Earlier versions of this pattern (treasury-api's first cut) let staff paste their session JWT to unlock the internal view. Replaced fleet-wide after user feedback: a JWT is too long to comfortably copy-paste into a docs page. An app secret is short, and — because <code>App.app_type</code> already distinguishes <code>platform</code> (cross-tenant S2S/staff) from <code>tenant</code> — it doubles as the credential for the sandbox/production badge too, so one paste box drives both unlocks instead of needing two different mechanisms.</p>
+<h2 id="the-two-independent-unlocks-and-what-actually-decides-each">The two independent unlocks, and what actually decides each<a class="headerlink" href="#the-two-independent-unlocks-and-what-actually-decides-each" title="Permanent link">&para;</a></h2>
+<p>Both come from one call to <code>shared-auth-client</code>'s <code>APIKeyValidator.ValidateAPIKeyFull</code> (already published, no per-service reimplementation needed) — or, for auth-api specifically, an in-process equivalent (<code>APIKeyHandler.ResolveAnyToken</code>), since auth-api validating a secret against itself over HTTP would be a pointless round-trip:</p>
+<ul>
+<li><strong>Internal/full spec visibility</strong> — <code>result.Roles</code> contains <code>"superuser"</code>, which <code>ValidateAppToken</code>/<code>resolveAPIKeyToken</code> in auth-api only ever sets for a <strong>platform-type</strong> App (or a plain developer key created with a non-empty <code>service</code> field). A tenant-scoped App's secret, however privileged within its own tenant, never unlocks this — its whole relationship to the API is the external surface.</li>
+<li><strong>Sandbox/production badge</strong> — <code>result.Environment</code>, the App's own <code>environment</code> field. This was silently dropped by <code>shared-auth-client</code>'s <code>APIKeyValidationResult</code> until <code>v0.12.0</code> (2026-08-20) — if you're consuming this library and <code>Environment</code> always reads empty, check you're on <code>v0.12.0</code>+.</li>
+</ul>
+<p>No literal second "sandbox server" URL is invented anywhere in <code>servers[]</code>. There's only ever been one real host per service; sandbox-vs-production has always been a credential-level distinction enforced by the handlers themselves (see treasury-api's <code>internal/platform/sandbox</code> package), not a routing one — the badge reflects that truthfully instead of adding a fake base URL a developer could point real tooling at by mistake.</p>
+<h2 id="adding-this-to-a-new-service">Adding this to a new service<a class="headerlink" href="#adding-this-to-a-new-service" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Classify your spec's tags into <code>externalDocTags</code>.</li>
+<li>Copy <code>swagger_filter.go</code> verbatim (it's pure and has no service-specific logic).</li>
+<li>Copy <code>swagger.go</code>'s <code>renderDocsHTML</code> verbatim — it only takes a <code>title</code> string.</li>
+<li>Wire <code>resolveAppSecretOptional</code> to either a <code>shared-auth-client</code> <code>APIKeyValidator</code> pointed at <code>AUTH_SERVICE_URL</code> (the normal case) or, if you <em>are</em> auth-api, the in-process resolver.</li>
+<li>Add unit tests mirroring <code>swagger_filter_test.go</code>/<code>swagger_privilege_test.go</code> in any of the three existing services — anonymous → external tags only; invalid secret → external tags only; valid platform secret → full spec; valid tenant secret → external tags + production badge only if <code>environment=production</code>.</li>
+</ol>
 
 
 
@@ -1885,7 +1993,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 16:11:27 UTC">August 20, 2026</span>
   </span>
 
     
@@ -1940,10 +2048,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
