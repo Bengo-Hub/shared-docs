@@ -141,7 +141,7 @@ After Paystack (or other redirect-based gateways) complete, the user lands on a 
 
 ## 7. Webhooks & Auto-Generated URLs
 
-- **Webhook and callback URLs** for Paystack and M-Pesa are **auto-generated** in treasury-api from `HTTP_PUBLIC_BASE_URL` and fixed paths (see treasury-api docs and [paystack-and-platform-admin.md](../finance-service/treasury-api/docs/paystack-and-platform-admin.md)).
+- **Webhook and callback URLs** for Paystack and M-Pesa are **auto-generated** in treasury-api from `HTTP_PUBLIC_BASE_URL` and fixed paths. Gateway credentials themselves are platform-level configuration, not something a tenant or external integrator ever sets directly.
 - Production base URL is set in `devops-k8s/apps/treasury-api/values.yaml` as `TREASURY_HTTP_PUBLIC_BASE_URL`.
 
 ---
@@ -178,8 +178,7 @@ import { TreasuryPaymentModal } from "@bengo-hub/shared-ui-lib/payments";
 ## References
 
 - [Paystack callback page](paystack-callback-page.md)
-- [Treasury API Paystack & platform admin](../finance-service/treasury-api/docs/paystack-and-platform-admin.md)
-- [Treasury API integrations](../finance-service/treasury-api/docs/integrations.md)
+- [Treasury Service API Docs](https://booksapi.codevertexafrica.com/v1/docs) — live Swagger reference (treasury-api's own repo is private; this is the public, always-current source)
 - Treasury-ui pay page: `finance-service/treasury-ui/src/app/(public)/pay/page.tsx`
 - Payment modals: `finance-service/treasury-ui/src/components/payments/`
 - TreasuryPaymentModal: `shared/shared-ui-lib/src/components/payments/treasury-payment-modal.tsx`

@@ -49,8 +49,11 @@ you instead of your own developers.
 ## Full API reference
 
 The complete endpoint reference (authentication, request/response shapes, error codes, rate
-limits) lives with the treasury service itself:
-[treasury-api's external eTIMS API reference](https://github.com/Bengo-Hub/treasury-api/blob/main/docs/integrations/external-etims-api.md).
+limits) is published as a live Swagger/OpenAPI doc on the treasury service itself:
+[Treasury Service API Docs](https://booksapi.codevertexafrica.com/v1/docs) — filtered to the
+external eTIMS/Payments/Health surface for anonymous visitors, exactly like this reference. If
+you've been given a Codevertex-staff app secret, pasting it into the bar at the top of that page
+unlocks the full internal spec instead.
 
 ## Related
 
