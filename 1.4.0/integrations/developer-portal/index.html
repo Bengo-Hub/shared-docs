@@ -1757,6 +1757,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#whats-real-today-vs-whats-scaffolded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's real today vs. what's scaffolded
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#roadmap-documented-not-yet-built" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1840,6 +1851,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#whats-real-today-vs-whats-scaffolded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's real today vs. what's scaffolded
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#roadmap-documented-not-yet-built" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1889,21 +1911,34 @@ future integration, not just eTIMS) today, and what's roadmapped to make it a re
 developer portal rather than a per-integration pattern repeated by hand each time.</p>
 <h2 id="what-exists-today">What exists today<a class="headerlink" href="#what-exists-today" title="Permanent link">&para;</a></h2>
 <ul>
+<li><strong>Apply for access</strong>: <a href="https://accounts.codevertexafrica.com/developer/apply">accounts.codevertexafrica.com/developer/apply</a>
+  is a public, no-login form where a prospective developer picks exactly ONE service (Treasury/eTIMS,
+  Notifications, or SSO/OAuth) and submits contact details + self-serve/assisted mode. This creates
+  an <code>IntegrationRequest</code> (<code>service_access_&lt;service&gt;</code>) reviewed by a platform admin; approving a
+  request with no existing tenant auto-provisions a sandbox <code>App</code> scoped to that one service, a
+  <code>developer</code>-role login, and the matching docs-access grant in one pass — a prospective developer
+  doesn't separately re-request docs visibility after getting a credential. Email hosting is
+  deliberately not part of this flow — it's a per-mailbox tenant subscription product with its own
+  purchase flow (see <a href="../email-hosting/">Email Hosting</a>), not an external-developer API surface.</li>
 <li><strong>Credentials</strong>: <code>App</code> (auth-api) is the credential every integration issues today — GitHub-App-style
   <code>bng_app_*</code> tokens with scopes, an IP allowlist, and suspend/resume/rotate/revoke lifecycle
-  actions. <code>APIKey</code> (older, hard admin-gated) still exists but new integrations should use <code>App</code>.</li>
+  actions. <code>APIKey</code> (older, hard admin-gated) still exists but new integrations should use <code>App</code>.
+  A tenant-type <code>App</code> is enforced server-side to carry scopes for exactly one service — a hand-crafted
+  request spanning two service prefixes is rejected, not just discouraged by the picker UI.</li>
 <li><strong>Environments</strong>: <code>App.environment</code> (<code>sandbox</code>/<code>production</code>, default <code>sandbox</code>) — new credentials
   always start in sandbox; a platform admin promotes to production as a manual review action
-  (<code>POST /admin/apps/{id}/promote</code>). No per-service certification automation yet outside eTIMS —
-  see Roadmap below.
-  <strong>Not yet unified with the eTIMS API's own environment concept</strong>: <code>EtimsDevice.environment</code>
-  (sandbox/production, per registered device) is deliberately decoupled from the credential — the
-  same <code>App</code> key works against both, per the eTIMS API's own design (see
-  <a href="../etims-api/">eTIMS API Quickstart</a>). Promoting an eTIMS partner's <code>App</code> to production today
-  changes nothing about which KRA environment their devices actually transmit to; that's still
-  governed entirely by the certification checklist and which <code>EtimsDevice.environment</code> they
-  registered. Treat <code>App.environment</code> as the generic, credential-level flag for future
-  integrations built on this pattern, not (yet) as a control eTIMS itself reads.</li>
+  (<code>POST /admin/apps/{id}/promote</code>). For the eTIMS API specifically, a sandbox credential is now
+  actively enforced downstream, not just a label: treasury-api rejects any sandbox-credential call
+  that would trigger a real KRA transmission against a tenant that already has a production-configured
+  device. <code>EtimsDevice.environment</code> (sandbox/production, per registered device) remains a separate,
+  deliberately decoupled axis — promoting an eTIMS partner's <code>App</code> to production still changes
+  nothing about which KRA environment their devices transmit to; that's governed by the
+  certification checklist and which <code>EtimsDevice.environment</code> they registered.</li>
+<li><strong>Sandbox simulation (eTIMS)</strong>: a brand-new developer with a sandbox credential but no real KRA
+  sandbox TIN yet can use <code>/external/etims/sandbox/{devices,items,stock-io,sales}</code> to fake a full
+  certification pass — Redis-backed, expires after 72 hours, never written to the real
+  device/item/invoice tables, and only reachable until a real device is registered for that tenant.
+  See <a href="../etims-api/">eTIMS API Quickstart</a> for the exact flow.</li>
 <li><strong>Developer role</strong>: <code>developer</code> is a seedable tenant role (alongside <code>admin</code>/<code>manager</code>/<code>member</code>/etc.)
   a tenant admin can grant via the existing team-invite flow, scoped to reaching the Developer
   Portal UI without full tenant-admin access. It doesn't currently carry any extra backend
@@ -1919,6 +1954,13 @@ developer portal rather than a per-integration pattern repeated by hand each tim
   the only one that exists. It's implemented entirely inside treasury-api, not as a shared
   mechanism another service could plug into.</li>
 </ul>
+<h2 id="whats-real-today-vs-whats-scaffolded">What's real today vs. what's scaffolded<a class="headerlink" href="#whats-real-today-vs-whats-scaffolded" title="Permanent link">&para;</a></h2>
+<p>Only the eTIMS API has a working scope-checking consumer (<code>etims:read</code>/<code>etims:write</code> on
+treasury-api's <code>/external/etims/*</code>) — a service-access request for Notifications or SSO is
+reviewed, auto-provisions a credential and docs access the same way, but that credential currently
+has no live external endpoint to call yet. That's an honest platform-maturity gap, not something
+this request flow hides: applying still gets a prospective developer a real reviewer conversation
+and (once one exists) a head start on the credential.</p>
 <h2 id="roadmap-documented-not-yet-built">Roadmap (documented, not yet built)<a class="headerlink" href="#roadmap-documented-not-yet-built" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong><code>client_credentials</code> OAuth grant</strong> — pure S2S, no user in the loop, for integrations that
@@ -1926,10 +1968,15 @@ developer portal rather than a per-integration pattern repeated by hand each tim
 <li><strong>Generalized certification framework</strong> — extract the eTIMS go-live checklist pattern
   (automated check + human reviewer, same two-layer gate KRA itself uses) into something any
   service can register its own checklist against, instead of copy-pasting treasury-api's
-  approach per integration.</li>
-<li><strong>Dedicated lightweight developer signup</strong> — today, getting a credential still means an
-  existing tenant admin (or platform admin) creating one for you inside a full business
-  <code>Tenant</code>. A solo API developer with no interest in the wider SaaS suite has no lighter path in.</li>
+  approach per integration. The new sandbox-simulation mechanism is eTIMS-specific for the same
+  reason — it isn't yet a shared pattern another service could plug into either.</li>
+<li><strong>Live external endpoints for Notifications and SSO</strong> — the request/credential/docs-access
+  pipeline is ready for these today; what's missing is a real scope-checking consumer on those
+  services' own APIs (see "What's real today" above).</li>
+<li><strong>Dedicated lightweight developer signup</strong> — partially addressed by the public apply form above,
+  but approval still provisions a full business <code>Tenant</code> behind the scenes. A solo API developer
+  with no interest in the wider SaaS suite still ends up with a <code>Tenant</code> record, just one they
+  never interact with directly.</li>
 <li><strong>Usage-based plan picker wired to entitlements</strong> — subscriptions-service already has a working
   self-serve plan/subscribe/upgrade UI; wiring an API-only tenant's chosen plan directly into
   their <code>App</code>'s entitlements (rather than the current manual admin-driven plan assignment) closes
@@ -1961,7 +2008,7 @@ developer portal rather than a per-integration pattern repeated by hand each tim
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 19, 2026 11:06:23 UTC">August 19, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 12:12:27 UTC">August 20, 2026</span>
   </span>
 
     
