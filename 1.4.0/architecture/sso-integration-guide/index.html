@@ -3373,6 +3373,12 @@
 </tr>
 </tbody>
 </table>
+<p>This page documents how <em>internal</em> Codevertex frontends integrate with the SSO. If you're an
+external developer wanting to add "Sign in with Codevertex" to your own app or otherwise integrate
+against the SSO/Auth API, apply at
+<a href="https://accounts.codevertexafrica.com/developer/apply">accounts.codevertexafrica.com/developer/apply</a>
+(pick <strong>SSO / Auth API</strong>) — see the <a href="../../integrations/developer-portal/">Developer Portal</a> page
+for how credentialing works.</p>
 <h2 id="how-it-works-today">How it works today<a class="headerlink" href="#how-it-works-today" title="Permanent link">&para;</a></h2>
 <p>Auth-api issues a JWT carrying <code>roles</code> and <code>permissions</code> (canonical codes, e.g. <code>catalog:view</code>, <code>catalog:manage</code>) at the top level of the token — not duplicated under <code>user</code>. The authorize URL supports <code>tenant=&lt;slug&gt;</code>, and token exchange prefers that tenant when the user is a member of it. <code>GET /api/v1/auth/me</code> is cached in Redis by user ID (TTL matches token expiry, or 24h) to keep repeated profile lookups cheap; frontends should cache it client-side with a similar TTL (TanStack Query, 5 min–24h).</p>
 <p>Every Go backend uses JIT (just-in-time) tenant sync and user provisioning: on first login, global JWT roles (superuser, admin, staff) map automatically to that service's own local role (e.g. superuser → <code>finance_admin</code> in treasury, <code>inventory_admin</code> in inventory, <code>pos_admin</code> in POS), and service-level <code>/auth/me</code> merges the JWT claims with service-level RBAC roles/permissions from the local database.</p>
@@ -4508,7 +4514,7 @@ Response: { "id": "&lt;uuid&gt;", "name": "...", "slug": "...", "status": "activ
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 07:37:37 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 12:12:27 UTC">August 20, 2026</span>
   </span>
 
     
