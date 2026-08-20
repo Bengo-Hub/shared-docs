@@ -91,6 +91,7 @@ nav:
           - Resilience — Circuit Breakers & Retries: platform-standards/resilience-and-retries.md
           - Rate Limiting: platform-standards/rate-limiting.md
           - Service-to-Service (S2S) Conventions: platform-standards/s2s-conventions.md
+          - Swagger/OpenAPI Docs Gating: platform-standards/swagger-docs-gating.md
           - Secrets Management: platform-standards/secrets-management.md
           - Observability: platform-standards/observability.md
           - AI Integrations & pgvector: platform-standards/ai-and-pgvector.md
