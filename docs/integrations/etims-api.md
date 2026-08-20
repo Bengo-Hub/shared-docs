@@ -13,11 +13,13 @@ POS/treasury suite — this is the API for you.
 
 ## Request access
 
-Fill out the integration-request form at
-[codevertexafrica.com/integrations](https://codevertexafrica.com/integrations) — you can also
-just describe what you want to Vera, the assistant embedded on that page, and it will collect the
-details and route your request to our team. Either way, our support team is notified immediately
-and follows up by email.
+Apply at [accounts.codevertexafrica.com/developer/apply](https://accounts.codevertexafrica.com/developer/apply) —
+pick **Treasury API** as the service. You can also fill out the form at
+[codevertexafrica.com/integrations](https://codevertexafrica.com/integrations), or just describe
+what you want to Vera, the assistant embedded on that page, and it will collect the details and
+route your request to our team. Either way, our support team is notified immediately and follows
+up by email, and a self-serve request typically gets a sandbox credential provisioned
+automatically once approved.
 
 ## How it works
 

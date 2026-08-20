@@ -8,6 +8,13 @@ Codevertex uses a single centralised SSO (Single Sign-On) service for all authen
 | **auth-ui** (login/register UI) | `accounts.codevertexafrica.com` | User-facing login/register forms |
 | All other frontends | `*.codevertexafrica.com` | Consume SSO tokens |
 
+This page documents how *internal* Codevertex frontends integrate with the SSO. If you're an
+external developer wanting to add "Sign in with Codevertex" to your own app or otherwise integrate
+against the SSO/Auth API, apply at
+[accounts.codevertexafrica.com/developer/apply](https://accounts.codevertexafrica.com/developer/apply)
+(pick **SSO / Auth API**) — see the [Developer Portal](../integrations/developer-portal.md) page
+for how credentialing works.
+
 ## How it works today
 
 Auth-api issues a JWT carrying `roles` and `permissions` (canonical codes, e.g. `catalog:view`, `catalog:manage`) at the top level of the token — not duplicated under `user`. The authorize URL supports `tenant=<slug>`, and token exchange prefers that tenant when the user is a member of it. `GET /api/v1/auth/me` is cached in Redis by user ID (TTL matches token expiry, or 24h) to keep repeated profile lookups cheap; frontends should cache it client-side with a similar TTL (TanStack Query, 5 min–24h).
