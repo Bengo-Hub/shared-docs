@@ -593,8 +593,8 @@ These are the metrics and alerts this authorization model is designed to be inst
 
 ## References
 
-- [Subscription Service Integration](../../subscription-service/docs/integrations.md)
-- [Auth Service Integration](../../auth-service/auth-api/docs/integrations.md)
+- [Subscription Service Integration](https://github.com/Bengo-Hub/subscriptions-api/blob/master/docs/integrations.md)
+- [Auth Service Integration](https://github.com/Bengo-Hub/auth-api/blob/main/docs/integrations.md)
 - [Cross-Service Data Ownership](./cross-service-data-ownership.md)
 
 ---

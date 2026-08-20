@@ -1,6 +1,6 @@
 # Subscription Gating Guide
 
-**Last Updated:** 2026-05-25 — this is the implementation guide (backend middleware code, frontend wiring, service checklist). For the authoritative policy statement and how this fits into the full three-layer authorization model, see [trinity-authorization-pattern.md](./trinity-authorization-pattern.md#layer-2-licensing-feature-entitlements---subscription-service), which is the more actively maintained of the two.
+**Last Updated:** 2026-05-25 — this is the implementation guide (backend middleware code, frontend wiring, service checklist). For the authoritative policy statement and how this fits into the full three-layer authorization model, see [trinity-authorization-pattern.md](./trinity-authorization-pattern.md#layer-2-licensing-feature-entitlements-subscription-service), which is the more actively maintained of the two.
 
 ## Principles
 

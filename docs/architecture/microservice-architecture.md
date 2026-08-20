@@ -16,11 +16,11 @@
 4. [Communication Patterns](#communication-patterns)
 5. [Service Discovery](#service-discovery)
 6. [Service-to-Service Technology Stack](#service-to-service-technology-stack)
-7. [Data Sharing & Ownership](#data-sharing--ownership)
-8. [Security & Authentication](#security--authentication)
-9. [Reliability & Resilience](#reliability--resilience)
+7. [Data Sharing & Ownership](#data-sharing-ownership)
+8. [Security & Authentication](#security-authentication)
+9. [Reliability & Resilience](#reliability-resilience)
 10. [Observability](#observability)
-11. [Shared Libraries & Abstractions](#shared-libraries--abstractions)
+11. [Shared Libraries & Abstractions](#shared-libraries-abstractions)
 12. [Architecture Diagram](#architecture-diagram)
 13. [Implementation Status](#implementation-status)
 
@@ -1460,6 +1460,6 @@ Communication patterns not yet in use â€” gRPC/ConnectRPC, WebSockets, GraphQL â
 ## References
 
 - [Cross-Service Data Ownership](./cross-service-data-ownership.md)
-- [Subscription Service Integrations](../subscription-service/docs/integrations.md)
-- [Logistics Service Integrations](../logistics-service/logistics-api/docs/integrations.md)
-- [Ordering Service Integrations](../ordering-service/ordering-backend/docs/integrations.md)
+- [Subscription Service Integrations](https://github.com/Bengo-Hub/subscriptions-api/blob/master/docs/integrations.md)
+- [Logistics Service Integrations](https://github.com/Bengo-Hub/logistics-api/blob/main/docs/integrations.md)
+- [Ordering Service Integrations](https://github.com/Bengo-Hub/ordering-backend/blob/main/docs/integrations.md)
