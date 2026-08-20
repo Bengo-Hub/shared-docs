@@ -1,0 +1,4583 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.">
+      
+      
+        <meta name="author" content="Codevertex Africa">
+      
+      
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.4.0/architecture/sso-integration-guide/">
+      
+      
+        <link rel="prev" href="../event-architecture/">
+      
+      
+        <link rel="next" href="../login-flow-contract/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>SSO Integration Guide - Codevertex Africa — Platform Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#codevertex-sso-integration-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Codevertex Africa — Platform Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SSO Integration Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Technical Guide
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Codevertex Africa — Platform Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user-guide/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/platform-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscriptions & Billing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microservice-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservice Architecture (master doc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trinity-authorization-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trinity Authorization Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Architecture (NATS/JetStream)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oidc-authorization-code-pkce-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OIDC Authorization Code + PKCE Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-correct-oidc-endpoint-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical: Correct OIDC Endpoint Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uniform-sso-integration-standard-all-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uniform SSO integration standard (all services)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uniform SSO integration standard (all services)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frontend-all-uis-ordering-frontend-treasury-ui-pos-ui-subscriptions-ui-cafe-website-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend (all UIs: ordering-frontend, treasury-ui, pos-ui, subscriptions-ui, cafe-website, etc.)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-refresh-pattern-all-frontends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Refresh Pattern (all frontends)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-all-go-services-ordering-backend-treasury-api-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend (all Go services: ordering-backend, treasury-api, etc.)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auth-ui-loginregister-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auth-ui (login/register only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2e-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2E tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oauth-client-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAuth Client Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tenant-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tenant Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tenant Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#login-without-tenant_slug-tenant-resolved-from-users-primary-tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Login without tenant_slug: tenant resolved from user's primary tenant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tenant-uuid-single-source-of-truth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tenant UUID: single source of truth
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outletbranch-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outlet/Branch Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outlet/Branch Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jwt-outlet-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Outlet Claims
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-outlet-selector-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: Outlet Selector Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-nav-bar-filter-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: Nav Bar Filter Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-api-client-setup-all-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: API Client Setup (all services)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-localstorage-key-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: localStorage Key Convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-outlet-context-middleware-all-go-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Outlet Context Middleware (all Go services)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-optional-outlet-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Optional Outlet Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-outlet-list-endpoint-auth-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Outlet List Endpoint (auth-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services-with-outlet-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Services with Outlet Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-implementation-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend Implementation Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frontend Implementation Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-pkce-helpers-srclibauthpkcets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. PKCE helpers (src/lib/auth/pkce.ts)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-auth-store-srcstoreauth-storets-or-equivalent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Auth store (src/store/auth-store.ts or equivalent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-callback-page-srcappauthcallbackpagetsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Callback page (src/app/auth/callback/page.tsx)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-pending-page-srcappauthpendingpagetsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pending page (src/app/auth/pending/page.tsx)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-specific-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service-Specific Notes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Service-Specific Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auth-ui-loginregister-only-direct-vs-service-originated-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auth-ui (login/register only): direct vs service-originated entry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ordering-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ordering-frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rider-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rider-app
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifications-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        notifications-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#treasury-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        treasury-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pos-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pos-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        inventory-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cafe-website" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cafe-website
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jwt-access-token-claims-single-source-of-truth-for-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Access Token Claims (Single Source of Truth for Authorization)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#just-in-time-jit-provisioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Just-in-Time (JIT) Provisioning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-specific-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service-Specific Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-vs-protected-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public vs Protected Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authme-and-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth/me and Caching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nats-user-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NATS User Sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-gating-post-login-never-blocks-auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Gating (Post-Login, Never Blocks Auth)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscription Gating (Post-Login, Never Blocks Auth)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-enforcement-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Enforcement Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-403-discrimination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend 403 Discrimination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-ui-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend UI Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useme-hook-pattern-march-29-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        useMe Hook Pattern (March 29, 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="useMe Hook Pattern (March 29, 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#correct-pattern-all-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correct Pattern (all services):
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anti-patterns-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-patterns to avoid:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debugging-common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-owner-access-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform Owner Access Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platform Owner Access Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-platform-owner-tenant-override-tenantid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Platform Owner Tenant Override (?tenantId=)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-step-account-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Step Account Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Multi-Step Account Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registration-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#org-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Org Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscription-enforcement-post-login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Enforcement Post-Login
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-service-oauth-client-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Service OAuth Client Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New Service OAuth Client Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-seed-mvp-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A — Seed (MVP Services)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-admin-api-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B — Admin API (Runtime)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-tenant-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Tenant Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../login-flow-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Login Flow Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../subscription-gating-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscription Gating Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cross-service-data-ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Service Data Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../go-backend-ent-atlas-migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Backend — Ent + Atlas Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../devops-k8s-ingress-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps-K8s Ingress & CORS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../platform-standards/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Engineering Standards
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform Engineering Standards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/webhooks-vs-polling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhooks vs Polling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/connection-pooling-pgbouncer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection Pooling & PgBouncer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/idempotency-and-outbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotency & the Outbox Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/resilience-and-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resilience — Circuit Breakers & Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/rate-limiting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/s2s-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service-to-Service (S2S) Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/secrets-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secrets Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/ai-and-pgvector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Integrations & pgvector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/n-plus-one-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N+1 Queries & Preloading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../integrations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/payment-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Workflow (hub)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/mpesa-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M-Pesa (Daraja) Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/paystack-callback-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Callback Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/notifications-rest-api-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications REST API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/finance-integration-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/email-hosting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Email Hosting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/developer-portal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Portal — State & Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oidc-authorization-code-pkce-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OIDC Authorization Code + PKCE Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-correct-oidc-endpoint-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical: Correct OIDC Endpoint Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uniform-sso-integration-standard-all-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Uniform SSO integration standard (all services)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uniform SSO integration standard (all services)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frontend-all-uis-ordering-frontend-treasury-ui-pos-ui-subscriptions-ui-cafe-website-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend (all UIs: ordering-frontend, treasury-ui, pos-ui, subscriptions-ui, cafe-website, etc.)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-refresh-pattern-all-frontends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Refresh Pattern (all frontends)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-all-go-services-ordering-backend-treasury-api-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend (all Go services: ordering-backend, treasury-api, etc.)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auth-ui-loginregister-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auth-ui (login/register only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e2e-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E2E tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oauth-client-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAuth Client Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tenant-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tenant Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tenant Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#login-without-tenant_slug-tenant-resolved-from-users-primary-tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Login without tenant_slug: tenant resolved from user's primary tenant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tenant-uuid-single-source-of-truth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tenant UUID: single source of truth
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outletbranch-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outlet/Branch Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outlet/Branch Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jwt-outlet-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Outlet Claims
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-outlet-selector-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: Outlet Selector Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-nav-bar-filter-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: Nav Bar Filter Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-api-client-setup-all-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: API Client Setup (all services)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-localstorage-key-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend: localStorage Key Convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-outlet-context-middleware-all-go-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Outlet Context Middleware (all Go services)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-optional-outlet-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Optional Outlet Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-outlet-list-endpoint-auth-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Outlet List Endpoint (auth-api)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#services-with-outlet-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Services with Outlet Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-implementation-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend Implementation Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frontend Implementation Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-pkce-helpers-srclibauthpkcets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. PKCE helpers (src/lib/auth/pkce.ts)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-auth-store-srcstoreauth-storets-or-equivalent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Auth store (src/store/auth-store.ts or equivalent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-callback-page-srcappauthcallbackpagetsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Callback page (src/app/auth/callback/page.tsx)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-pending-page-srcappauthpendingpagetsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pending page (src/app/auth/pending/page.tsx)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-specific-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service-Specific Notes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Service-Specific Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#auth-ui-loginregister-only-direct-vs-service-originated-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        auth-ui (login/register only): direct vs service-originated entry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ordering-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ordering-frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rider-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rider-app
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifications-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        notifications-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#treasury-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        treasury-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pos-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pos-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        inventory-ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cafe-website" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cafe-website
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jwt-access-token-claims-single-source-of-truth-for-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Access Token Claims (Single Source of Truth for Authorization)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#just-in-time-jit-provisioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Just-in-Time (JIT) Provisioning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-specific-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service-Specific Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-vs-protected-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public vs Protected Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authme-and-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth/me and Caching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nats-user-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NATS User Sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-gating-post-login-never-blocks-auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Gating (Post-Login, Never Blocks Auth)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subscription Gating (Post-Login, Never Blocks Auth)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-enforcement-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Enforcement Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-403-discrimination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend 403 Discrimination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-ui-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend UI Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useme-hook-pattern-march-29-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        useMe Hook Pattern (March 29, 2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="useMe Hook Pattern (March 29, 2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#correct-pattern-all-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correct Pattern (all services):
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anti-patterns-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anti-patterns to avoid:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debugging-common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-owner-access-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform Owner Access Pattern
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platform Owner Access Pattern">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-platform-owner-tenant-override-tenantid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend: Platform Owner Tenant Override (?tenantId=)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-step-account-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Step Account Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Multi-Step Account Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registration-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#org-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Org Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscription-enforcement-post-login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription Enforcement Post-Login
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-service-oauth-client-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Service OAuth Client Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New Service OAuth Client Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-seed-mvp-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A — Seed (MVP Services)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-admin-api-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B — Admin API (Runtime)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-tenant-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Tenant Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="codevertex-sso-integration-guide">Codevertex SSO Integration Guide<a class="headerlink" href="#codevertex-sso-integration-guide" title="Permanent link">&para;</a></h1>
+<p>Codevertex uses a single centralised SSO (Single Sign-On) service for all authentication. Every frontend delegates login/register entirely to the SSO — no service handles passwords or sessions independently.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Domain</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>auth-api</strong> (SSO server)</td>
+<td><code>sso.codevertexafrica.com</code></td>
+<td>Issues JWT tokens, manages sessions</td>
+</tr>
+<tr>
+<td><strong>auth-ui</strong> (login/register UI)</td>
+<td><code>accounts.codevertexafrica.com</code></td>
+<td>User-facing login/register forms</td>
+</tr>
+<tr>
+<td>All other frontends</td>
+<td><code>*.codevertexafrica.com</code></td>
+<td>Consume SSO tokens</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-it-works-today">How it works today<a class="headerlink" href="#how-it-works-today" title="Permanent link">&para;</a></h2>
+<p>Auth-api issues a JWT carrying <code>roles</code> and <code>permissions</code> (canonical codes, e.g. <code>catalog:view</code>, <code>catalog:manage</code>) at the top level of the token — not duplicated under <code>user</code>. The authorize URL supports <code>tenant=&lt;slug&gt;</code>, and token exchange prefers that tenant when the user is a member of it. <code>GET /api/v1/auth/me</code> is cached in Redis by user ID (TTL matches token expiry, or 24h) to keep repeated profile lookups cheap; frontends should cache it client-side with a similar TTL (TanStack Query, 5 min–24h).</p>
+<p>Every Go backend uses JIT (just-in-time) tenant sync and user provisioning: on first login, global JWT roles (superuser, admin, staff) map automatically to that service's own local role (e.g. superuser → <code>finance_admin</code> in treasury, <code>inventory_admin</code> in inventory, <code>pos_admin</code> in POS), and service-level <code>/auth/me</code> merges the JWT claims with service-level RBAC roles/permissions from the local database.</p>
+<p>Subscription enforcement is mutations-only, live across ordering-backend, logistics-api, treasury-api, inventory-api, pos-api, and projects-api — reads always pass through; only mutating requests require an active subscription. Core services (auth-api, subscriptions-api, notifications-api) don't enforce it directly; notifications instead rate-limits email by plan. A subscription 403 (<code>code: subscription_inactive</code>, <code>upgrade: true</code>) is distinguished from an auth 403 on the frontend, so an expired subscription shows an upgrade banner rather than bouncing the user back to the login screen — every frontend implements <code>SubscriptionBanner</code>, <code>SubscriptionGate</code>, and <code>useSubscription()</code> for this.</p>
+<hr />
+<h2 id="oidc-authorization-code-pkce-flow">OIDC Authorization Code + PKCE Flow<a class="headerlink" href="#oidc-authorization-code-pkce-flow" title="Permanent link">&para;</a></h2>
+<p>Every frontend uses the same flow:</p>
+<div class="highlight"><pre><span></span><code>1. User clicks "Login" or "Sign Up" on any frontend
+         ↓
+2. Frontend generates PKCE: code_verifier + code_challenge (SHA-256)
+         ↓
+3. Frontend redirects to:
+   https://sso.codevertexafrica.com/api/v1/authorize
+     ?response_type=code
+     &amp;client_id=&lt;service-client-id&gt;
+     &amp;redirect_uri=&lt;callback-url&gt;
+     &amp;scope=openid profile email offline_access
+     &amp;state=&lt;csrf-token&gt;
+     &amp;code_challenge=&lt;pkce-challenge&gt;
+     &amp;code_challenge_method=S256
+     &amp;tenant=&lt;slug&gt;            ← optional, pre-selects tenant
+         ↓
+4. auth-api detects user is not authenticated, redirects to:
+   https://accounts.codevertexafrica.com/login
+     ?return_to=&lt;full-authorize-url&gt;
+     &amp;tenant=&lt;slug&gt;
+   (auth-api does **not** pass client_id/redirect_uri as separate params; they are only inside return_to.)
+         ↓
+5. auth-ui handles login/register (email+password, Google, GitHub, Microsoft)
+         ↓
+6. auth-ui redirects back to return_to (the full authorize URL). This **must** be a **full page redirect** (window.location.href), not a client-side router.push, so the browser sends the session cookie to sso and the redirect loop is avoided. auth-ui validates return_to with isValidReturnUrl (allows same-origin relative paths and absolute URLs starting with NEXT_PUBLIC_API_URL / SSO issuer).
+         ↓
+7. auth-api now has authenticated user → generates auth code
+   Redirects to: &lt;redirect_uri&gt;?code=&lt;auth-code&gt;&amp;state=&lt;csrf-token&gt;
+         ↓
+8. Frontend callback page:
+   a. Verify state matches stored value (CSRF check)
+   b. POST /api/v1/token with code + code_verifier + client_id + redirect_uri
+   c. Receive: access_token (JWT), id_token, refresh_token
+         ↓
+9. Bridge/sync screen:
+   Poll service's own /me endpoint until user data is available
+   (NATS events sync user from auth-service to each service's DB)
+         ↓
+10. SSO outlet selection (multi-outlet tenants only):
+   If token response includes `requiresOutletSelection: true` (SSO-level flow):
+   a. Store `ssoExchangeToken` in sessionStorage
+   b. Navigate to `/{orgSlug}/auth/select-outlet`
+   c. POST /api/v1/auth/select-outlet with { ssoExchangeToken, outletId }
+   d. Receive final JWT with outlet claims (outlet_id, outlet_code, outlet_use_case, is_hq_user)
+   Single-outlet tenants skip this step — outlet claims are embedded immediately.
+         ↓
+11. Service-level outlet preselection (ALL service frontends — pos-ui, inventory-ui, ordering-frontend, logistics-ui, treasury-ui, etc.):
+   After receiving the final JWT with outlet claims:
+   a. If `outlet_id` is non-empty AND `is_hq_user = false` (single-outlet staff):
+      → Auto-preselect outlet from JWT without showing UI selector
+      → Store outlet as `{service}-selected-outlet-id` in localStorage
+      → Call `apiClient.setOutletID(outlet_id)` so X-Outlet-ID header is sent on every request
+   b. If user IS HQ (`is_hq_user = true`) OR `outlet_id` is empty:
+      → Check localStorage for a previously selected outlet
+      → If stored outlet found: restore it via `apiClient.setOutletID(storedId)`, proceed
+      → If no stored outlet: redirect to `/{orgSlug}/auth/select-outlet` (service-level selector page)
+        The selector fetches from auth-api `GET /api/v1/tenants/{slug}/outlets` (no auth required)
+        Last-used outlet is moved to the top of the list (TruLoad pattern)
+        Single outlet → auto-selects, no UI shown
+   c. On page reload: rehydrate outlet from localStorage → `apiClient.setOutletID(storedId)`
+         ↓
+12. Redirect to destination based on user role/scenario
+   UI reads `outlet_use_case` from JWT to adapt sidebar and feature visibility.
+</code></pre></div>
+<hr />
+<h2 id="critical-correct-oidc-endpoint-paths">Critical: Correct OIDC Endpoint Paths<a class="headerlink" href="#critical-correct-oidc-endpoint-paths" title="Permanent link">&para;</a></h2>
+<p><strong>CORRECT:</strong>
+<div class="highlight"><pre><span></span><code>POST https://sso.codevertexafrica.com/api/v1/token
+GET  https://sso.codevertexafrica.com/api/v1/authorize
+GET  https://sso.codevertexafrica.com/api/v1/auth/logout?post_logout_redirect_uri=&lt;url&gt;  (clears session cookie, redirects to allowlisted URL or accounts)
+POST https://sso.codevertexafrica.com/api/v1/auth/logout  (requires Bearer token; revokes session, returns JSON)
+GET  https://sso.codevertexafrica.com/.well-known/openid-configuration
+</code></pre></div></p>
+<p><strong>WRONG (will return 404):</strong>
+<div class="highlight"><pre><span></span><code>/api/v1/auth/oidc/authorize   ← used by old frontends — DO NOT USE
+/api/v1/auth/login            ← not an OIDC path
+/api/v1/auth/oidc/token       ← wrong path
+</code></pre></div></p>
+<blockquote>
+<p>The correct paths are defined in <code>auth-api/internal/httpapi/router.go</code>.</p>
+</blockquote>
+<hr />
+<h2 id="uniform-sso-integration-standard-all-services">Uniform SSO integration standard (all services)<a class="headerlink" href="#uniform-sso-integration-standard-all-services" title="Permanent link">&para;</a></h2>
+<p>To keep the ecosystem maintainable, <strong>every frontend and backend that integrates with SSO must follow the same pattern</strong>. Divergent flows (e.g. ordering vs treasury) cause 401s, broken UX, and hard-to-debug issues.</p>
+<h3 id="frontend-all-uis-ordering-frontend-treasury-ui-pos-ui-subscriptions-ui-cafe-website-etc">Frontend (all UIs: ordering-frontend, treasury-ui, pos-ui, subscriptions-ui, cafe-website, etc.)<a class="headerlink" href="#frontend-all-uis-ordering-frontend-treasury-ui-pos-ui-subscriptions-ui-cafe-website-etc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Login entry</strong></td>
+<td>Redirect to SSO authorize URL with PKCE (<code>code_challenge</code>, <code>code_verifier</code>, <code>state</code>). Pass <code>tenant</code> only when the user is already in a tenant context (e.g. path <code>/{orgSlug}/menu</code> → pass <code>orgSlug</code>). When the user lands on auth-ui directly (no <code>?tenant=</code>), auth-ui sends <strong>no tenant</strong>; auth-api resolves tenant from the user's primary org.</td>
+</tr>
+<tr>
+<td><strong>2. Callback</strong></td>
+<td>Exchange <code>code</code> + <code>code_verifier</code> at <code>POST /api/v1/token</code>. Store <code>access_token</code>, <code>refresh_token</code>, <code>expires_at</code>. Attach token getter to the API client so <strong>every</strong> request sends <code>Authorization: Bearer &lt;token&gt;</code>.</td>
+</tr>
+<tr>
+<td><strong>3. Tenant context</strong></td>
+<td>After first successful profile response, store <code>tenant_id</code> and <code>tenant_slug</code> (from SSO or service <code>/me</code>) in localStorage. Send <code>X-Tenant-ID</code> (must be the <strong>tenant UUID</strong> from auth-api, not a slug or custom string like <code>tenant-acme-retail</code>) and <code>X-Tenant-Slug</code> on <strong>every</strong> request to tenant-scoped backends. Backends expect <code>X-Tenant-ID</code> to be a valid UUID.</td>
+</tr>
+<tr>
+<td><strong>3b. Outlet context</strong></td>
+<td>After the service-level outlet preselection step (11 above), send <code>X-Outlet-ID</code> (outlet UUID) on every API request via <code>apiClient.setOutletID(outletId)</code>. Platform owners omit <code>X-Tenant-ID</code>/<code>X-Tenant-Slug</code> but still send <code>X-Outlet-ID</code> when an outlet is selected. Backends treat <code>X-Outlet-ID</code> as <strong>optional</strong> — requests without it pass through and return all data for the tenant. See <strong>Outlet/Branch Context</strong> section below.</td>
+</tr>
+<tr>
+<td><strong>4. Profile</strong></td>
+<td>Two-step enrichment: (a) Call SSO <code>GET /api/v1/auth/me</code> → get user identity + global roles + auth-service permissions. (b) Call the service's own <code>/auth/me</code> (e.g. <code>GET /api/v1/{tenant}/pos/auth/me</code> for pos-ui) → get service-level role + service permissions (pos.<em>.</em> for pos-ui). Auth-api issues only auth-service permissions in the JWT; service permissions come exclusively from the service's local RBAC. Merge: use SSO identity (id, email, name, tenant) + service permissions for RBAC. If the service /auth/me returns 404 (user not yet JIT-provisioned), fall back to role inference from global JWT roles.</td>
+</tr>
+<tr>
+<td><strong>5. 401 handling</strong></td>
+<td>Register a global 401 handler (e.g. axios interceptor) that (a) <strong>attempts token refresh first</strong> via <code>refreshAccessToken()</code> mutex (calls <code>POST /api/v1/auth/refresh</code> with <code>refresh_token</code> + <code>client_id</code>), (b) retries the original request with the new token, (c) only fires the logout callback if refresh fails or the retry still returns 401. The 401 callback must check <code>status !== 'syncing' &amp;&amp; status !== 'loading'</code> and skip if within 15 seconds of successful auth (<code>lastAuthenticatedAt</code> grace period). When firing: clear TanStack query cache (<code>queryClient.clear()</code>), reset auth store, redirect to SSO logout. <strong>Skip 401 for <code>/auth/me</code></strong> (JIT sync delay). Reference implementation: cafe-website <code>src/lib/api/client.ts</code> + <code>src/lib/auth/token-refresh.ts</code> + <code>src/components/providers/Providers.tsx</code>.</td>
+</tr>
+<tr>
+<td><strong>6. Tenant branding</strong></td>
+<td>Fetch from auth-api <code>GET /api/v1/tenants/by-slug/{slug}</code> and cache with TanStack Query <code>staleTime: 6 * 60 * 60 * 1000</code> (6 hours, matching JWT TTL). Apply CSS variables (<code>--tenant-primary</code>, <code>--tenant-secondary</code>, <code>--tenant-logo-url</code>) from cached data. <strong>Do NOT store branding locally or provide a branding editor</strong> — redirect to auth-ui <code>/dashboard/settings?tab=branding</code>.</td>
+</tr>
+<tr>
+<td><strong>7. Profile management</strong></td>
+<td>Common profile fields (name, email, avatar) → redirect to auth-ui <code>/dashboard/profile</code>. Keep only role-specific fields in the service's own profile page (e.g. rider KYC in rider-app, customer preferences in ordering-frontend).</td>
+</tr>
+<tr>
+<td><strong>8. Logout flow</strong></td>
+<td>On user-initiated logout: (a) reset auth store (set <code>lastAuthenticatedAt: null</code>), (b) clear all localStorage keys (auth storage, tenantId, tenantSlug), (c) clear <code>sessionStorage</code>, (d) redirect to SSO logout <code>GET /api/v1/auth/logout?post_logout_redirect_uri={origin}</code> which clears the session cookie and redirects back. Reference: cafe-website's <code>src/lib/store/auth-store.ts</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="token-refresh-pattern-all-frontends">Token Refresh Pattern (all frontends)<a class="headerlink" href="#token-refresh-pattern-all-frontends" title="Permanent link">&para;</a></h3>
+<p>Every frontend must implement token refresh to avoid unnecessary logouts when access tokens expire:</p>
+<ol>
+<li><strong><code>refreshTokens()</code> in SSO API file</strong> — calls <code>POST /api/v1/auth/refresh</code> with <code>{ refresh_token, client_id }</code>, returns <code>{ access_token, refresh_token?, expires_in? }</code>.</li>
+<li><strong><code>token-refresh.ts</code> mutex module</strong> — exports <code>refreshAccessToken()</code> which reads <code>refreshToken</code> from the auth store, calls <code>refreshTokens()</code>, updates the store with new tokens. Uses a mutex (shared promise) so concurrent callers piggyback on the same refresh request.</li>
+<li><strong>Axios/fetch 401 interceptor</strong> — on 401 (excluding <code>/auth/me</code>): dynamically imports <code>refreshAccessToken</code>, attempts refresh, retries the original request with the new token. Marks retried requests with <code>_retried</code> flag to prevent infinite loops. Only fires <code>on401Callback</code> after refresh fails.</li>
+<li><strong><code>lastAuthenticatedAt</code> in auth store</strong> — set to <code>Date.now()</code> on successful auth; cleared to <code>null</code> on logout. The 401 callback checks this to skip logout within 15 seconds of successful auth (token propagation grace period).</li>
+</ol>
+<p>Reference implementation: <code>cafe-website/src/lib/auth/token-refresh.ts</code>, <code>cafe-website/src/lib/api/client.ts</code>, <code>cafe-website/src/components/providers/Providers.tsx</code>.</p>
+<h3 id="backend-all-go-services-ordering-backend-treasury-api-etc">Backend (all Go services: ordering-backend, treasury-api, etc.)<a class="headerlink" href="#backend-all-go-services-ordering-backend-treasury-api-etc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. JWT validation</strong></td>
+<td>Use the shared auth-client validator (e.g. <code>shared-auth-client</code>) with the same JWKS/issuer as auth-api. Validate <code>Authorization: Bearer &lt;token&gt;</code> on protected routes.</td>
+</tr>
+<tr>
+<td><strong>2. Tenant in path or header</strong></td>
+<td>For tenant-scoped routes, require tenant in path (e.g. <code>/api/v1/{tenant}/auth/me</code>) or accept <code>X-Tenant-ID</code> (UUID). Resolve tenant from path first, then header.</td>
+</tr>
+<tr>
+<td><strong>3. JIT user</strong></td>
+<td>If the JWT is valid but the user is not in the local DB, JIT-provision from token claims (and optional NATS sync). Use tenant from path/header for the provisioned membership.</td>
+</tr>
+<tr>
+<td><strong>4. Response shape</strong></td>
+<td>Return <code>session</code> (accessToken, refreshToken, expiresAt, sessionId), <code>user</code> (id, email, fullName, roles, permissions, …), and <code>tenant_id</code> / <code>tenant_slug</code> so the frontend can persist them. Use camelCase JSON keys to match frontend types.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="auth-ui-loginregister-only">auth-ui (login/register only)<a class="headerlink" href="#auth-ui-loginregister-only" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Email/password form:</strong> Only email and password fields. Do <strong>not</strong> ask for or default tenant. Send <code>tenant_slug: ''</code> when the URL has no <code>?tenant=</code>. auth-api resolves the user's org from <code>primary_tenant_id</code>.</li>
+<li><strong>OAuth buttons:</strong> Same rule: send <code>tenant_slug</code> only when <code>?tenant=</code> is present in the URL (e.g. when redirected from an app with tenant in the link). Otherwise send empty.</li>
+</ul>
+<h3 id="e2e-tests">E2E tests<a class="headerlink" href="#e2e-tests" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tests must mirror <strong>real user experience</strong>: no forged query params (e.g. no <code>?tenant=acme-retail</code> for tenant admin). User opens <code>/login</code>, enters email and password only, submits; backend resolves tenant from email.</li>
+<li>After login, assert that <strong>authenticated requests succeed</strong> (e.g. no 401 when calling <code>/auth/me</code> or a protected endpoint with the token in headers).</li>
+</ul>
+<hr />
+<h2 id="oauth-client-registration">OAuth Client Registration<a class="headerlink" href="#oauth-client-registration" title="Permanent link">&para;</a></h2>
+<p>Each frontend must be registered as an OAuth client in auth-api. The seed runs on every pod startup (<code>auth-api/cmd/seed/main.go</code>) and upserts these clients:</p>
+<table>
+<thead>
+<tr>
+<th>client_id</th>
+<th>Frontend</th>
+<th>Redirect URI pattern (production domain from devops-k8s values.yaml)</th>
+<th>Public</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ordering-ui</code></td>
+<td>ordering-frontend</td>
+<td><code>https://ordering.codevertexafrica.com/{tenant}/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>rider-app</code></td>
+<td>rider-app</td>
+<td><code>https://riderapp.codevertexafrica.com/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>notifications-ui</code></td>
+<td>notifications-ui</td>
+<td><code>https://notifications.codevertexafrica.com/auth/callback</code> and <code>/{tenant}/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>pos-ui</code></td>
+<td>pos-ui</td>
+<td><code>https://pos.codevertexafrica.com/{tenant}/auth/callback</code> and <code>/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>inventory-ui</code></td>
+<td>inventory-ui</td>
+<td><code>https://inventory.codevertexafrica.com/{tenant}/auth/callback</code> and <code>/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>subscriptions-ui</code></td>
+<td>subscriptions-ui</td>
+<td><code>https://pricing.codevertexafrica.com/{tenant}/auth/callback</code> and <code>/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>treasury-ui</code></td>
+<td>treasury-ui</td>
+<td><code>https://books.codevertexafrica.com/{tenant}/auth/callback</code> and <code>/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>logistics-ui</code></td>
+<td>logistics-ui</td>
+<td><code>https://logistics.codevertexafrica.com/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>auth-ui</code></td>
+<td>auth-ui</td>
+<td><code>https://accounts.codevertexafrica.com/auth/callback</code>, <code>https://sso.codevertexafrica.com/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>cafe-website</code></td>
+<td>cafe-website</td>
+<td><code>https://example-tenant.com/auth/callback</code></td>
+<td>Yes (PKCE)</td>
+</tr>
+<tr>
+<td><code>marketflow-ui</code></td>
+<td>marketflow-ui</td>
+<td><code>https://marketflow.codevertexafrica.com/auth/callback</code> and <code>/{tenant}/auth/callback</code></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The seed uses upsert</strong> — re-running it fixes misconfigured redirect URIs automatically. For tenant-aware apps, seed includes both <code>/{tenant}/auth/callback</code> and <code>/auth/callback</code> so either pattern works.</p>
+<p><strong>CORS and X-Tenant-ID:</strong> auth-api (and any backend that accepts <code>X-Tenant-ID</code>) must include <code>X-Tenant-ID</code> in <code>Access-Control-Allow-Headers</code> (app CORS and ingress annotations). Otherwise frontends that send the tenant UUID header (e.g. after loading profile from <code>/me</code>) will get a CORS preflight failure. See <a href="../devops-k8s-ingress-cors/">devops-k8s-ingress-cors.md</a>.</p>
+<p><strong>Production domains (from devops-k8s/apps/*/values.yaml ingress host):</strong> Only these domains are configured; CORS and OAuth use this list only (no alternate domains).</p>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>Production host</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>auth-api (SSO)</td>
+<td><code>sso.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>auth-ui</td>
+<td><code>accounts.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>ordering-frontend</td>
+<td><code>ordering.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>cafe-website</td>
+<td><code>example-tenant.com</code></td>
+</tr>
+<tr>
+<td>notifications-ui</td>
+<td><code>notifications.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>rider-app</td>
+<td><code>riderapp.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>subscriptions-ui</td>
+<td><code>pricing.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>treasury-ui</td>
+<td><code>books.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>pos-ui</td>
+<td><code>pos.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>logistics-ui</td>
+<td><code>logistics.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>inventory-ui</td>
+<td><code>inventory.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>marketflow-ui</td>
+<td><code>marketflow.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>marketflow-api</td>
+<td><code>marketflowapi.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>marketflow-ai</td>
+<td><code>marketflowai.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>ticketing-ui</td>
+<td><code>ticketing.codevertexafrica.com</code></td>
+</tr>
+<tr>
+<td>projects-ui</td>
+<td><code>projects.codevertexafrica.com</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Do not use:</strong> <code>treasury.codevertexafrica.com</code> or <code>subscriptions.codevertexafrica.com</code> for the UIs — use <code>books.codevertexafrica.com</code> (treasury-ui) and <code>pricing.codevertexafrica.com</code> (subscriptions-ui). Rider app host is <code>riderapp.codevertexafrica.com</code> (not <code>rider.</code>).</p>
+<hr />
+<h2 id="tenant-context">Tenant Context<a class="headerlink" href="#tenant-context" title="Permanent link">&para;</a></h2>
+<p>All SSO requests should include tenant context so auth-api can mint the token for the correct organisation and downstream services can JIT-sync the tenant:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// In buildAuthorizeUrl():</span>
+<span class="nx">url</span><span class="p">.</span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">"tenant"</span><span class="p">,</span><span class="w"> </span><span class="nx">orgSlug</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">"acme-retail"</span><span class="p">);</span><span class="w">  </span><span class="c1">// default tenant: acme-retail</span>
+</code></pre></div>
+<ul>
+<li><strong>Authorize URL:</strong> <code>tenant=&lt;slug&gt;</code> is optional; when present, auth-api stores it on the authorization code and prefers that tenant when minting the access token (if the user is a member).</li>
+<li><strong>Default tenant:</strong> <code>acme-retail</code> is the default app tenant; frontends should pass it (or the current org slug from the path) so the token carries the correct tenant.</li>
+<li><strong>Platform vs tenant orgs:</strong> <strong>Platform organisation</strong> = <code>codevertex</code> (operates the platform; users may have cross-tenant access and do not consume tenant subscriptions). <strong>Tenant organisations</strong> = customer orgs (e.g. <code>acme-retail</code>, <code>acme-wholesale</code>) that have subscriptions and use the product. Organisation slug <code>codevertex</code> is the platform owner; users with that primary tenant have elevated access.</li>
+</ul>
+<h3 id="login-without-tenant_slug-tenant-resolved-from-users-primary-tenant">Login without tenant_slug: tenant resolved from user's primary tenant<a class="headerlink" href="#login-without-tenant_slug-tenant-resolved-from-users-primary-tenant" title="Permanent link">&para;</a></h3>
+<p><strong>Direct login from auth-ui (e.g. <code>/login</code> with no <code>?tenant=</code> in the URL):</strong> auth-ui sends <code>tenant_slug</code> as empty when the URL has no tenant. auth-api <strong>does not</strong> require a tenant slug for login. When <code>tenant_slug</code> is missing or empty:</p>
+<ol>
+<li>auth-api looks up the user by email.</li>
+<li>It then resolves the tenant from the user's <strong>primary_tenant_id</strong> in the database (each user has a linked primary organisation).</li>
+<li>It verifies the user is a member of that tenant and continues the login flow.</li>
+</ol>
+<p>So <strong>tenant users can log in directly from auth-ui</strong> at <code>https://accounts.codevertexafrica.com/login</code> without any <code>?tenant=...</code> in the URL. The correct tenant is determined by the user's primary organisation in auth-api. Frontends (auth-ui) must send an empty or omitted <code>tenant_slug</code> when the user did not arrive via a tenant-specific link; do not default to a fixed slug (e.g. <code>codevertex</code>) or tenant users who belong only to another org would get "invalid credentials".</p>
+<p>After login, the JWT claims include <code>tenant_id</code> and <code>tenant_slug</code>. All service APIs read these via:
+- <code>X-Tenant-ID</code> header (UUID)
+- <code>X-Tenant-Slug</code> header (string)</p>
+<h3 id="tenant-uuid-single-source-of-truth">Tenant UUID: single source of truth<a class="headerlink" href="#tenant-uuid-single-source-of-truth" title="Permanent link">&para;</a></h3>
+<p><strong>Tenant UUID is issued by auth-api only.</strong> All microservices that store or reference tenants MUST use this same UUID for a given tenant (no per-service UUIDs). Auth-api seeds tenants with DB-generated UUIDs (no fixed IDs). When a user logs in:</p>
+<ol>
+<li>JWT contains <code>tenant_id</code> (UUID) and <code>tenant_slug</code> from auth-api.</li>
+<li><strong>Profile source:</strong> Frontends must load user/roles/permissions from <strong>auth-api (SSO)</strong> <code>GET /api/v1/auth/me</code> (Bearer token). Do not call the service’s own API for profile unless that service exposes a dedicated /auth/me (e.g. ordering-backend <code>GET /api/v1/{tenant}/auth/me</code> for its synced user). Treasury-ui, notifications-ui, subscriptions-ui, etc. call <strong>SSO</strong> for <code>/api/v1/auth/me</code>; treasury-api also exposes <code>GET /api/v1/auth/me</code> (JWT claims) as an optional fallback.</li>
+<li>Frontends should store <code>tenant_id</code> (e.g. in localStorage) after the first successful profile load and send it as <code>X-Tenant-ID</code> on subsequent requests; use <code>tenant_slug</code> in the URL path (e.g. <code>/api/v1/acme-retail/...</code>).</li>
+<li>When syncing users or tenants from events (e.g. NATS <code>auth.user.created</code>), downstream services must use the tenant UUID from the event (auth-api-issued), not generate a new one.</li>
+</ol>
+<hr />
+<h2 id="outletbranch-context">Outlet/Branch Context<a class="headerlink" href="#outletbranch-context" title="Permanent link">&para;</a></h2>
+<p>Every SSO-integrated service frontend and backend supports outlet/branch-level scoping via the <code>X-Outlet-ID</code> header. This is optional on the backend — requests without the header return all tenant-scoped data.</p>
+<h3 id="jwt-outlet-claims">JWT Outlet Claims<a class="headerlink" href="#jwt-outlet-claims" title="Permanent link">&para;</a></h3>
+<p>Auth-api embeds outlet data in the access token after the select-outlet step:</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>outlet_id</code></td>
+<td>string UUID</td>
+<td>Selected outlet. Empty for HQ/admin users.</td>
+</tr>
+<tr>
+<td><code>outlet_code</code></td>
+<td>string</td>
+<td>Short outlet code (e.g. <code>BUSIA</code>, <code>HOSP</code>).</td>
+</tr>
+<tr>
+<td><code>outlet_use_case</code></td>
+<td>string</td>
+<td><code>hospitality</code> | <code>retail</code> | <code>quick_service</code> | <code>pharmacy</code> | <code>services</code> | <code>logistics</code>. Controls sidebar modules.</td>
+</tr>
+<tr>
+<td><code>is_hq_user</code></td>
+<td>bool</td>
+<td>True for HQ users who can access all outlets. HQ users use <code>X-Outlet-ID</code> header for per-request drill-down.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontend-outlet-selector-flow">Frontend: Outlet Selector Flow<a class="headerlink" href="#frontend-outlet-selector-flow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>After SSO callback (JWT received)
+  ↓
+outlet_id in JWT &amp;&amp; !is_hq_user?
+  → YES: auto-preselect outlet, skip selector, set apiClient.setOutletID(outlet_id)
+  → NO (HQ user or empty outlet_id):
+      stored outlet in localStorage?
+        → YES: restore + apiClient.setOutletID(storedId)
+        → NO:  redirect to /{orgSlug}/auth/select-outlet
+              (fetches GET /api/v1/tenants/{slug}/outlets from auth-api)
+              (auto-selects if single outlet, shows list if multiple)
+              (moves last-used outlet to top of list)
+</code></pre></div>
+<h3 id="frontend-nav-bar-filter-rules">Frontend: Nav Bar Filter Rules<a class="headerlink" href="#frontend-nav-bar-filter-rules" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>User Type</th>
+<th>Tenant Filter</th>
+<th>Outlet Filter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Platform owner</strong> (<code>is_platform_owner = true</code>)</td>
+<td>Dropdown (all tenants)</td>
+<td>Dropdown (outlets of selected tenant)</td>
+</tr>
+<tr>
+<td><strong>Tenant HQ/admin</strong> (<code>is_hq_user = true</code> or role = admin/manager)</td>
+<td>Not shown</td>
+<td>Dropdown ("All Outlets" default)</td>
+</tr>
+<tr>
+<td><strong>Regular staff</strong> (<code>outlet_id</code> in JWT, <code>is_hq_user = false</code>)</td>
+<td>Not shown</td>
+<td>Read-only badge (their assigned outlet, no dropdown)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key files:</strong>
+- Outlet filter component template: <code>inventory-service/inventory-ui/src/components/outlet-filter.tsx</code>
+- Outlet filter store template: <code>inventory-service/inventory-ui/src/store/outlet-filter.ts</code>
+- API client with X-Outlet-ID: <code>inventory-service/inventory-ui/src/lib/api/client.ts</code>
+- Select-outlet page template: <code>pos-service/pos-ui/src/app/[orgSlug]/auth/select-outlet/page.tsx</code></p>
+<h3 id="frontend-api-client-setup-all-services">Frontend: API Client Setup (all services)<a class="headerlink" href="#frontend-api-client-setup-all-services" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nx">ApiClient</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">private</span><span class="w"> </span><span class="nx">outletId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">private</span><span class="w"> </span><span class="nx">handleRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">config</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ... existing tenant headers ...</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">outletId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">config</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Outlet-ID'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">outletId</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">config</span><span class="p">;</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">setOutletID</span><span class="p">(</span><span class="nx">outletId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">outletId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">outletId</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>On page reload (rehydration):</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">stored</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="sb">`{service}-selected-outlet-id`</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">stored</span><span class="p">)</span><span class="w"> </span><span class="nx">apiClient</span><span class="p">.</span><span class="nx">setOutletID</span><span class="p">(</span><span class="nx">stored</span><span class="p">);</span>
+<span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+</code></pre></div></p>
+<h3 id="frontend-localstorage-key-convention">Frontend: localStorage Key Convention<a class="headerlink" href="#frontend-localstorage-key-convention" title="Permanent link">&para;</a></h3>
+<p>Each service uses its own localStorage key to avoid conflicts:
+- <code>pos-selected-outlet-id</code> (pos-ui)
+- <code>inventory-selected-outlet-id</code> (inventory-ui)
+- <code>ordering-selected-outlet-id</code> (ordering-frontend)
+- <code>logistics-selected-outlet-id</code> (logistics-ui)
+- <code>treasury-selected-outlet-id</code> (treasury-ui)
+- <code>marketflow-selected-outlet-id</code> (marketflow-ui)
+- <code>projects-selected-outlet-id</code> (projects-ui)</p>
+<h3 id="backend-outlet-context-middleware-all-go-services">Backend: Outlet Context Middleware (all Go services)<a class="headerlink" href="#backend-outlet-context-middleware-all-go-services" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Lightweight middleware — add to /{tenant} route group after TenantV2</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">OutletContext</span><span class="p">(</span><span class="nx">next</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">OutletHeader</span><span class="p">(</span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">WithContext</span><span class="p">(</span><span class="nx">httpware</span><span class="p">.</span><span class="nx">WithOutletID</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">(),</span><span class="w"> </span><span class="nx">outletID</span><span class="p">))</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="w">  </span><span class="c1">// always continues — outlet is optional</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>CORS</strong>: All services must include <code>X-Outlet-ID</code> in <code>AllowedHeaders</code>:
+<div class="highlight"><pre><span></span><code><span class="nx">AllowedHeaders</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{...,</span><span class="w"> </span><span class="s">"X-Outlet-ID"</span><span class="p">},</span>
+</code></pre></div></p>
+<h3 id="backend-optional-outlet-filtering">Backend: Optional Outlet Filtering<a class="headerlink" href="#backend-optional-outlet-filtering" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// In any list handler — outlet filter is ALWAYS optional:</span>
+<span class="nx">outletID</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">GetOutletID</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="c1">// empty string if not set</span>
+<span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Order</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Where</span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">TenantID</span><span class="p">(</span><span class="nx">tenantUUID</span><span class="p">))</span>
+<span class="k">if</span><span class="w"> </span><span class="nx">outletID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">uid</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">outletID</span><span class="p">);</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">q</span><span class="p">.</span><span class="nx">Where</span><span class="p">(</span><span class="nx">order</span><span class="p">.</span><span class="nx">OutletIDEQ</span><span class="p">(</span><span class="nx">uid</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Never return an error if outlet ID is absent — this breaks platform admin calls</span>
+</code></pre></div>
+<h3 id="backend-outlet-list-endpoint-auth-api">Backend: Outlet List Endpoint (auth-api)<a class="headerlink" href="#backend-outlet-list-endpoint-auth-api" title="Permanent link">&para;</a></h3>
+<p>Services and frontends fetch the tenant's outlet list from auth-api (no auth required):
+<div class="highlight"><pre><span></span><code>GET /api/v1/tenants/{slug}/outlets
+Response: [{ id, code, name, use_case, is_hq, status, settings }]
+</code></pre></div></p>
+<p>Filter out <code>status = "archived"</code> outlets before showing in UI.</p>
+<h3 id="services-with-outlet-support">Services with Outlet Support<a class="headerlink" href="#services-with-outlet-support" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Frontend</th>
+<th>Backend</th>
+<th>Outlet FK</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POS</td>
+<td>Full (select-outlet + header filter)</td>
+<td>OutletContext middleware + outlet_id FK</td>
+<td>orders, staff</td>
+<td>Reference implementation</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td>Full</td>
+<td>OutletContext middleware + warehouse outlet_id</td>
+<td>warehouses</td>
+<td></td>
+</tr>
+<tr>
+<td>Ordering</td>
+<td>Full</td>
+<td>OutletContext middleware + outlet_id FK</td>
+<td>orders</td>
+<td></td>
+</tr>
+<tr>
+<td>Logistics</td>
+<td>Full</td>
+<td>OutletContext middleware + outlet_id FK</td>
+<td>tasks</td>
+<td></td>
+</tr>
+<tr>
+<td>Treasury</td>
+<td>Full (TenantFilter + OutletFilter)</td>
+<td>CORS + middleware</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>MarketFlow</td>
+<td>OutletFilter in header</td>
+<td>CORS + middleware</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Projects</td>
+<td>OutletFilter in header</td>
+<td>CORS + middleware</td>
+<td>Optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="frontend-implementation-pattern">Frontend Implementation Pattern<a class="headerlink" href="#frontend-implementation-pattern" title="Permanent link">&para;</a></h2>
+<h3 id="1-pkce-helpers-srclibauthpkcets">1. PKCE helpers (<code>src/lib/auth/pkce.ts</code>)<a class="headerlink" href="#1-pkce-helpers-srclibauthpkcets" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">generateCodeVerifier</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w">          </span><span class="c1">// 32 random bytes → base64url</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">generateCodeChallenge</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w">  </span><span class="c1">// SHA-256 → base64url</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">generateState</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w">                 </span><span class="c1">// 16 random bytes → hex</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">storeVerifier</span><span class="p">(</span><span class="nx">v</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="w">          </span><span class="c1">// sessionStorage</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">consumeVerifier</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w">        </span><span class="c1">// get + delete</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">storeState</span><span class="p">(</span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">consumeState</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span>
+</code></pre></div>
+<h3 id="2-auth-store-srcstoreauth-storets-or-equivalent">2. Auth store (<code>src/store/auth-store.ts</code> or equivalent)<a class="headerlink" href="#2-auth-store-srcstoreauth-storets-or-equivalent" title="Permanent link">&para;</a></h3>
+<p>See <strong><a href="../login-flow-contract/">login-flow-contract.md</a></strong> for the full contract, service table, and platform vs tenant scope.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Start login flow (tenant optional; pass when in tenant context e.g. from path)</span>
+<span class="nx">redirectToSSO</span><span class="p">(</span><span class="nx">returnTo?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">tenant?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span>
+
+<span class="c1">// Handle /auth/callback</span>
+<span class="nx">handleSSOCallback</span><span class="p">(</span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">callbackUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">tenantSlug?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span>
+<span class="c1">// ↑ Exchanges code → tokens → polls /me until user synced</span>
+
+<span class="c1">// Logout</span>
+<span class="nx">logout</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="w">  </span><span class="c1">// Clears state + redirects to SSO logout</span>
+</code></pre></div>
+<h3 id="3-callback-page-srcappauthcallbackpagetsx">3. Callback page (<code>src/app/auth/callback/page.tsx</code>)<a class="headerlink" href="#3-callback-page-srcappauthcallbackpagetsx" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 1. Get code + state from URL params</span>
+<span class="c1">// 2. Call handleSSOCallback(code, callbackUrl)</span>
+<span class="c1">// 3. On authenticated: check user.status</span>
+<span class="c1">//    - "pending" or "pending_review" → /auth/pending</span>
+<span class="c1">//    - otherwise → sessionStorage.getItem("sso_return_to") or "/"</span>
+</code></pre></div>
+<h3 id="4-pending-page-srcappauthpendingpagetsx">4. Pending page (<code>src/app/auth/pending/page.tsx</code>)<a class="headerlink" href="#4-pending-page-srcappauthpendingpagetsx" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Poll fetchMe() every 15s</span>
+<span class="c1">// When status is no longer "pending": redirect to /{orgSlug}/profile</span>
+</code></pre></div>
+<hr />
+<h2 id="service-specific-notes">Service-Specific Notes<a class="headerlink" href="#service-specific-notes" title="Permanent link">&para;</a></h2>
+<h3 id="auth-ui-loginregister-only-direct-vs-service-originated-entry">auth-ui (login/register only): direct vs service-originated entry<a class="headerlink" href="#auth-ui-loginregister-only-direct-vs-service-originated-entry" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entry</th>
+<th>URL</th>
+<th>After login</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Direct</strong></td>
+<td>User opens <code>/login</code> (no <code>return_to</code>).</td>
+<td>Redirect to <code>/dashboard</code> or valid relative <code>return_to</code> via <code>router.push</code>.</td>
+</tr>
+<tr>
+<td><strong>Service-originated</strong></td>
+<td>auth-api redirects to <code>/login?return_to=&lt;full_sso_authorize_url&gt;&amp;tenant=...</code>. auth-api does <strong>not</strong> pass <code>client_id</code>/<code>redirect_uri</code> as separate params.</td>
+<td>auth-ui must do a <strong>full page redirect</strong> (<code>window.location.href = return_to</code>) so the browser sends the session cookie to sso. Then auth-api sees the cookie, issues the auth code, and redirects to the service callback.</td>
+</tr>
+</tbody>
+</table>
+<p>auth-ui validates <code>return_to</code> with <code>isValidReturnUrl</code> (allows relative paths and absolute URLs starting with <code>NEXT_PUBLIC_API_URL</code> or fallback <code>https://sso.codevertexafrica.com</code>). Set <code>NEXT_PUBLIC_API_URL</code> to the SSO base so the sso authorize URL is accepted. See auth-ui README Environment section.</p>
+<h3 id="ordering-frontend">ordering-frontend<a class="headerlink" href="#ordering-frontend" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client ID: <code>ordering-ui</code></li>
+<li>Callback: <code>/{orgSlug}/auth/callback</code> (tenant-aware)</li>
+<li>Authorize URL: pass <code>tenant</code> from path (<code>orgSlug</code>) or default <code>acme-retail</code> so token is minted for the correct org</li>
+<li>After sync: redirect to returnTo URL (e.g. <code>/{orgSlug}/menu</code>)</li>
+<li>Source: <code>src/lib/auth/api.ts</code>, <code>src/store/auth.ts</code></li>
+</ul>
+<h3 id="rider-app">rider-app<a class="headerlink" href="#rider-app" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client ID: <code>rider-app</code></li>
+<li>Callback: <code>/auth/callback</code> (NOT tenant-aware — uses fixed path)</li>
+<li>Profile: Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> (Bearer token) — not logistics-api. Implemented in <code>lib/auth-api.ts</code> (<code>fetchMe(accessToken)</code>); response is normalized to User (id, email, roles, tenants). Fixes "Syncing your account..." stuck screen when logistics-api <code>/riders/me</code> returns 404.</li>
+<li>After sync: check status → pending page or dashboard</li>
+<li>After admin approval: redirect to <code>/{orgSlug}/profile</code> for profile completion</li>
+<li>Invitation flow: <code>/join?invite_code=ABC&amp;org=acme-retail</code> → SSO → pending → profile</li>
+<li>Source: <code>src/lib/auth-api.ts</code>, <code>src/store/auth-store.ts</code>, <code>src/hooks/useAuth.ts</code></li>
+</ul>
+<h3 id="notifications-ui">notifications-ui<a class="headerlink" href="#notifications-ui" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client ID: <code>notifications-ui</code></li>
+<li>Callback: <code>/{orgSlug}/auth/callback</code></li>
+<li>Profile: Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> (Bearer token).</li>
+<li>Source: <code>src/lib/auth/api.ts</code></li>
+</ul>
+<h3 id="treasury-ui">treasury-ui<a class="headerlink" href="#treasury-ui" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client ID: <code>treasury-ui</code></li>
+<li>Callback: <code>/[orgSlug]/auth/callback</code></li>
+<li>Profile: Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> (Bearer token) — not treasury-api. Implemented in <code>lib/auth/api.ts</code> (<code>fetchProfile(accessToken)</code>) and <code>hooks/useMe.ts</code>. Treasury-api also exposes <code>GET /api/v1/auth/me</code> (JWT claims) as an optional fallback.</li>
+<li>Source: <code>src/lib/auth/api.ts</code>, <code>src/store/auth.ts</code>, <code>src/hooks/useMe.ts</code></li>
+</ul>
+<h3 id="pos-ui">pos-ui<a class="headerlink" href="#pos-ui" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client ID: <code>pos-ui</code></li>
+<li>Callback: <code>/{orgSlug}/auth/callback</code></li>
+<li>Profile: <strong>Two-step</strong> — (1) Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> for identity + global roles. (2) Call <strong>pos-api</strong> <code>GET /api/v1/{tenant}/pos/auth/me</code> for POS-specific role + pos.<em>.</em> permissions. Merge: SSO identity + pos-api permissions. On SSO login, <code>fetchPosServiceProfile()</code> enriches the user profile stored in Zustand auth store.</li>
+<li>PIN login: pos-api <code>GET /{tenant}/pos/auth/pin/profile</code> lists staff; <code>POST /auth/pin</code> validates PIN and issues a terminal JWT that already contains POS role + permissions (same RBAC as SSO flow).</li>
+<li>Source: <code>src/lib/auth/api.ts</code>, <code>src/store/auth.ts</code>, <code>src/hooks/usePermissions.ts</code>, <code>src/lib/rbac/permissions.ts</code></li>
+</ul>
+<h3 id="inventory-ui">inventory-ui<a class="headerlink" href="#inventory-ui" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client ID: <code>inventory-ui</code></li>
+<li>Callback: <code>/{orgSlug}/auth/callback</code></li>
+<li>Profile: Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> (Bearer token).</li>
+<li>Source: <code>src/lib/auth/api.ts</code>, <code>src/store/auth.ts</code>, <code>src/app/[orgSlug]/auth/callback/page.tsx</code></li>
+</ul>
+<h3 id="cafe-website">cafe-website<a class="headerlink" href="#cafe-website" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Direct SSO (PKCE); no NextAuth</li>
+<li>Callback: <code>/auth/callback</code> (see seed redirect_uris)</li>
+<li>Public menu: uses <code>lib/api/public-menu.ts</code> (GET <code>/menu/categories</code>, <code>/menu/items</code> — no Authorization). Dashboard catalog uses <code>lib/api/catalog.ts</code> (auth required).</li>
+<li>Source: <code>src/lib/store/auth-store.ts</code>, <code>src/app/auth/callback/page.tsx</code></li>
+</ul>
+<hr />
+<h2 id="jwt-access-token-claims-single-source-of-truth-for-authorization">JWT Access Token Claims (Single Source of Truth for Authorization)<a class="headerlink" href="#jwt-access-token-claims-single-source-of-truth-for-authorization" title="Permanent link">&para;</a></h2>
+<p>Auth-api must issue access tokens that contain everything microservices need to authorize requests, so that 401s are not caused by missing or inconsistent role/permission data.</p>
+<p><strong>Required claims in the access token:</strong></p>
+<ul>
+<li><code>sub</code> — User ID (UUID).</li>
+<li><code>tenant_id</code>, <code>tenant_slug</code> — Tenant context.</li>
+<li><code>roles</code> — Array of tenant-scoped roles (e.g. <code>superuser</code>, <code>admin</code>, <code>staff</code>, <code>member</code>, <code>rider</code>).</li>
+<li><code>permissions</code> — Array of <strong>canonical permission codes</strong> derived from the SSO role–permission table (e.g. <code>catalog:view</code>, <code>catalog:manage</code>, <code>orders:read</code>, <code>orders:change</code>, <code>riders:read</code>).</li>
+<li><code>outlet_id</code> — UUID of the selected outlet (empty until outlet selection is completed).</li>
+<li><code>outlet_code</code> — Short code for the outlet (e.g. <code>BUSIA</code>, <code>HOSP</code>).</li>
+<li><code>outlet_use_case</code> — Use case of the outlet: <code>hospitality</code> | <code>retail</code> | <code>quick_service</code> | <code>pharmacy</code> | <code>services</code> | <code>logistics</code>.</li>
+<li><code>is_hq_user</code> — Boolean; HQ outlet users bypass outlet-scoped data filtering in downstream services.</li>
+</ul>
+<p><strong>Outlet claims</strong> (added in shared-auth-client v0.6.0) are embedded after outlet selection. Services use <code>outlet_use_case</code> to gate access to use-case-specific routes via <code>RequireUseCase()</code> middleware. Platform owners (<code>IsPlatformOwner</code>) and users with <code>CanAccessAllOutlets()</code> bypass all outlet-scoped gating.</p>
+<p><strong>Canonical permission codes</strong> are defined once in auth-api (seed) and used by all services. No service should define its own permission strings for cross-cutting authz; use the same codes (e.g. ordering-backend checks <code>catalog:view</code> / <code>catalog:manage</code>, and auth-api issues those same strings in the token and in GET /me).</p>
+<p>Services validate the JWT (signature, issuer, audience, expiry) and read <code>roles</code> and <code>permissions</code> from the token to authorize. GET /me should return the same roles and permissions for UI and for services that prefer to call /me.</p>
+<p><strong>Service-level permissions (Layer 3):</strong> In addition to global JWT permissions, each domain service maintains its own fine-grained permission system in its database (see TRINITY-AUTHORIZATION-PATTERN.md). Service-level permission codes use the format <code>{service}.{module}.{action}</code> (e.g. <code>treasury.payments.add</code>, <code>ordering.orders.view</code>). The shared-auth-client library provides <code>RequirePermission()</code> middleware that checks <code>claims.Permissions</code> from the JWT, while each service's RBAC module provides local DB-backed permission checks via <code>rbacService.HasPermission()</code>. Both layers are enforced; superuser role bypasses all checks.</p>
+<hr />
+<h2 id="just-in-time-jit-provisioning">Just-in-Time (JIT) Provisioning<a class="headerlink" href="#just-in-time-jit-provisioning" title="Permanent link">&para;</a></h2>
+<p>When a microservice receives a <strong>valid</strong> JWT (valid signature, issuer, audience, expiry) but has <strong>no local user record</strong> for <code>sub</code>, it must not return 401. Instead it should <strong>provision the user just-in-time</strong>:</p>
+<ol>
+<li>Create a minimal local user from token claims: <code>sub</code>, email, name, <code>tenant_id</code>, <code>tenant_slug</code>, and optionally roles/permissions from the token (or one call to auth-api GET /me).</li>
+<li>Persist the user and then <strong>retry the requested operation</strong> (or continue the request).</li>
+<li>Return 200 (or the appropriate success response), not 401.</li>
+</ol>
+<p>This eliminates "user not found" 401s when NATS events are delayed or missing. NATS (<code>auth.user.created</code>, <code>auth.user.login</code>) remains the primary sync mechanism; JIT is the fallback so the first API call after login succeeds.</p>
+<hr />
+<h2 id="service-specific-registration">Service-Specific Registration<a class="headerlink" href="#service-specific-registration" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Central auth:</strong> Login and basic registration (email, password, profile) happen only at SSO (auth-ui). No service stores passwords or implements its own login.</li>
+<li><strong>Service-specific data:</strong> When a service needs extra data (e.g. rider: KYC docs, vehicle; cafe: preferences), the flow is:</li>
+<li>User is already authenticated (has valid SSO token).</li>
+<li>User lands on the service; service detects "no local profile" or "incomplete profile".</li>
+<li>Service redirects to <strong>service-specific onboarding</strong> (auth-ui or service-owned page) with identity <strong>prefilled</strong> from the token (e.g. <code>?email=...&amp;name=...</code> from token or GET /me).</li>
+<li>User completes service-specific fields (e.g. rider KYC, uploads); form submits to the service backend.</li>
+<li>Service creates or updates local profile linked to <code>sub</code>, then redirects back to the service or auth-ui landing.</li>
+</ul>
+<p>No duplicate "registration" for credentials—only for service-specific attributes.</p>
+<hr />
+<h2 id="public-vs-protected-endpoints">Public vs Protected Endpoints<a class="headerlink" href="#public-vs-protected-endpoints" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path pattern</th>
+<th>Auth required</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/api/v1/{tenant}/menu/*</code></td>
+<td>No</td>
+<td>Public menu, categories, item detail</td>
+</tr>
+<tr>
+<td><code>/api/v1/{tenant}/cafes/*</code></td>
+<td>No</td>
+<td>Public cafe/outlet list</td>
+</tr>
+<tr>
+<td><code>/api/v1/{tenant}/config</code></td>
+<td>No</td>
+<td>Tenant brand/config</td>
+</tr>
+<tr>
+<td><code>/api/v1/{tenant}/catalog/*</code></td>
+<td>Yes</td>
+<td>Staff catalog CRUD</td>
+</tr>
+<tr>
+<td><code>/api/v1/{tenant}/orders/*</code> (mutations)</td>
+<td>Yes</td>
+<td>Create/update orders, etc.</td>
+</tr>
+</tbody>
+</table>
+<p>Frontends must use <strong>public</strong> paths for unauthenticated or public reads (e.g. site menu). Do <strong>not</strong> send <code>Authorization</code> for public menu/catalog reads. Use <code>/menu/items</code> and <code>/menu/categories</code>, not <code>/catalog/items</code> and <code>/catalog/categories</code>, for public menu display.</p>
+<hr />
+<h2 id="authme-and-caching">Auth/me and Caching<a class="headerlink" href="#authme-and-caching" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Backend (auth-api):</strong> GET <code>/api/v1/auth/me</code> is cached in Redis by user ID. TTL = token expiry (from JWT <code>exp</code>) or 24h. Reduces DB load for high traffic; cache is per user and expires with the token.</li>
+<li><strong>Frontend:</strong> Use TanStack Query (or equivalent) to call <code>GET /auth/me</code> (or the service’s <code>/me</code>) with a <code>staleTime</code>/TTL aligned to token lifetime (e.g. 5 min–24h). Check cache before refetching so the first read after login is fast; refetch on window focus or after TTL as needed.</li>
+</ul>
+<h2 id="nats-user-sync">NATS User Sync<a class="headerlink" href="#nats-user-sync" title="Permanent link">&para;</a></h2>
+<p>After SSO login, each service needs to know about the user. This happens via NATS events:</p>
+<div class="highlight"><pre><span></span><code>auth-api publishes: auth.user.created  (on new user)
+auth-api publishes: auth.user.login    (on each login)
+
+ordering-backend subscribes → creates/updates customer profile
+logistics-api subscribes    → links FleetMember to UserID (for riders)
+notifications-api subscribes → creates notification preferences
+</code></pre></div>
+<p><strong>Bridge screen polling</strong> (all frontends):
+- Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> (Bearer token) — not the service API (e.g. do not call booksapi for treasury-ui profile). Poll up to 10 times with 1.5s intervals if needed.
+- Stop when user data is returned (200 OK)
+- Show "Syncing your account..." spinner during wait
+- If sync times out (15s): show error with retry</p>
+<hr />
+<h2 id="subscription-gating-post-login-never-blocks-auth">Subscription Gating (Post-Login, Never Blocks Auth)<a class="headerlink" href="#subscription-gating-post-login-never-blocks-auth" title="Permanent link">&para;</a></h2>
+<p><strong>Principle:</strong> Subscription NEVER blocks login. Users must always be able to authenticate. Subscription is enforced AFTER login on mutations, UI elements, and action buttons.</p>
+<h3 id="backend-enforcement-pattern">Backend Enforcement Pattern<a class="headerlink" href="#backend-enforcement-pattern" title="Permanent link">&para;</a></h3>
+<p>All Go services use mutations-only enforcement via inline middleware (same pattern as ordering-backend):</p>
+<div class="highlight"><pre><span></span><code><span class="nx">api</span><span class="p">.</span><span class="nx">Use</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">next</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// GET/HEAD/OPTIONS always pass through</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Method</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">MethodGet</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Method</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">MethodHead</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Method</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">MethodOptions</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">claims</span><span class="p">,</span><span class="w"> </span><span class="nx">ok</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">authclient</span><span class="p">.</span><span class="nx">ClaimsFromContext</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">())</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="nx">ok</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsSuperuser</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsPlatformOwner</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">claims</span><span class="p">.</span><span class="nx">IsSubscriptionActive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">);</span><span class="w"> </span><span class="k">return</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// Returns {"error":"...","code":"subscription_inactive","upgrade":true}</span>
+<span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">Header</span><span class="p">().</span><span class="nx">Set</span><span class="p">(</span><span class="s">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="s">"application/json"</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">w</span><span class="p">.</span><span class="nx">WriteHeader</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">StatusForbidden</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">`{"error":"Your subscription is not active.","code":"subscription_inactive","upgrade":true}`</span><span class="p">))</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="frontend-403-discrimination">Frontend 403 Discrimination<a class="headerlink" href="#frontend-403-discrimination" title="Permanent link">&para;</a></h3>
+<p>Frontends MUST distinguish subscription 403s from auth 403s using the <code>code</code> and <code>upgrade</code> fields:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// In API client error interceptor:</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'subscription_inactive'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Subscription issue — show upgrade toast/banner, do NOT redirect to login</span>
+<span class="w">    </span><span class="nx">onSubscription403Callback</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// In auth-provider 403 handling:</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">statusCode</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">any</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'subscription_inactive'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">upgrade</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Skip redirect</span>
+<span class="w">  </span><span class="nx">router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sb">`/</span><span class="si">${</span><span class="nx">orgSlug</span><span class="si">}</span><span class="sb">/unauthorized`</span><span class="p">);</span><span class="w"> </span><span class="c1">// Only redirect for permission 403</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="frontend-ui-components">Frontend UI Components<a class="headerlink" href="#frontend-ui-components" title="Permanent link">&para;</a></h3>
+<p>Each frontend implements these subscription components:
+- <strong><code>useSubscription()</code></strong> hook — lazy-loads subscription info after auth, returns <code>isActive</code>, <code>hasFeature()</code>, <code>isPastDue</code>, <code>isExpired</code>, etc.
+- <strong><code>&lt;SubscriptionBanner /&gt;</code></strong> — persistent top banner for trial expiry, past due, expired states. Never blocks access.
+- <strong><code>&lt;SubscriptionGate feature="..." /&gt;</code></strong> — wraps content requiring specific features; shows upgrade prompt when gated.</p>
+<hr />
+<h2 id="useme-hook-pattern-march-29-2026">useMe Hook Pattern (March 29, 2026)<a class="headerlink" href="#useme-hook-pattern-march-29-2026" title="Permanent link">&para;</a></h2>
+<p><strong>Critical rule:</strong> The <code>useMe</code> hook in ALL frontends MUST call SSO auth-api <code>GET /api/v1/auth/me</code> directly — NOT the service backend's <code>/auth/me</code>. The backend requires JIT sync via NATS which has a delay; calling it during login causes 401 loops.</p>
+<h3 id="correct-pattern-all-services">Correct Pattern (all services):<a class="headerlink" href="#correct-pattern-all-services" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// In lib/auth/api.ts:</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">SSO_BASE_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NEXT_PUBLIC_SSO_URL</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">'https://sso.codevertexafrica.com'</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchProfile</span><span class="p">(</span><span class="nx">accessToken</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">UserProfile</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">SSO_BASE_URL</span><span class="si">}</span><span class="sb">/api/v1/auth/me`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Authorization</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">accessToken</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">401</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'Unauthorized'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'SSO /me failed'</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">// In hooks/useMe.ts:</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">useMe</span><span class="p">(</span><span class="nx">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">accessToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useAuthStore</span><span class="p">((</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">session</span><span class="o">?</span><span class="p">.</span><span class="nx">accessToken</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">useQuery</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'auth'</span><span class="p">,</span><span class="w"> </span><span class="s1">'me'</span><span class="p">],</span>
+<span class="w">    </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetchProfile</span><span class="p">(</span><span class="nx">accessToken</span><span class="o">!</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kt">enabled</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!!</span><span class="nx">accessToken</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">staleTime</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1000</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">retry</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">failureCount</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="o">?</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">401</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">error</span><span class="o">?</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">failureCount</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span><span class="w"> </span><span class="c1">// NEVER use `true` — causes infinite loops</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="anti-patterns-to-avoid">Anti-patterns to avoid:<a class="headerlink" href="#anti-patterns-to-avoid" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>fetchProfile()</code> calling backend <code>/api/v1/auth/me</code> or <code>auth/me</code> (JIT delay → 401 → loop)</li>
+<li><code>retry: true</code> or <code>retry: () =&gt; true</code> on non-401 errors (infinite request loops)</li>
+<li><code>useMe</code> returning <code>isError</code> that triggers SSO redirect without checking subscription 403</li>
+</ul>
+<hr />
+<h2 id="debugging-common-issues">Debugging Common Issues<a class="headerlink" href="#debugging-common-issues" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>404 on authorize redirect</td>
+<td>Wrong path <code>/api/v1/auth/oidc/authorize</code></td>
+<td>Change to <code>/api/v1/authorize</code></td>
+</tr>
+<tr>
+<td>Invalid redirect_uri error</td>
+<td>URI not registered in auth-api</td>
+<td>Re-run auth-api seed (upsert fixes it)</td>
+</tr>
+<tr>
+<td>User synced but 403 on APIs</td>
+<td>Missing <code>X-Tenant-ID</code> header</td>
+<td>Ensure headers injected in API client</td>
+</tr>
+<tr>
+<td>401 on /me even with token</td>
+<td>Token may be expired or user not found</td>
+<td>Check token expiry; re-login</td>
+</tr>
+<tr>
+<td>Infinite loading on landing page buttons</td>
+<td>useAuth stuck in isLoading=true on 401</td>
+<td>Fixed in useAuth.ts: 401 resolves immediately as unauthenticated</td>
+</tr>
+<tr>
+<td>Infinite polling on callback</td>
+<td>NATS event not delivered</td>
+<td>Check NATS connection in service logs</td>
+</tr>
+<tr>
+<td>Blank/error after SSO login</td>
+<td>PKCE verifier missing from sessionStorage</td>
+<td>Check <code>consumeVerifier()</code> returns non-null</td>
+</tr>
+<tr>
+<td>Pod not running after deploy</td>
+<td>K8s probe returning non-200</td>
+<td>Use <code>/healthz</code> route (not <code>/</code> which redirects)</td>
+</tr>
+<tr>
+<td>401 "user not found" with valid token</td>
+<td>User not yet in service DB</td>
+<td>Enable JIT provisioning in service; or check NATS delivery</td>
+</tr>
+<tr>
+<td>403 on catalog/menu with valid token</td>
+<td>Permission codes in token don't match backend</td>
+<td>Use canonical permission codes in auth-api (e.g. <code>catalog:view</code>) and in backend checks</td>
+</tr>
+<tr>
+<td>Duplicate <code>roles</code>/<code>permissions</code> in login response</td>
+<td>Legacy response shape</td>
+<td>Fixed: auth-api returns them only at top level, not under <code>user</code></td>
+</tr>
+<tr>
+<td>"client not found" or "invalid_redirect" for pos-ui/subs/treasury/notifications</td>
+<td>Wrong client_id or redirect_uri not in seed</td>
+<td>Ensure auth-api seed includes <code>pos-ui</code> and tenant-aware redirect URIs; re-run seed</td>
+</tr>
+<tr>
+<td>404 on <code>/auth/me</code> or stuck on "Syncing your profile"</td>
+<td>Frontend calling service API (e.g. booksapi) for profile</td>
+<td>Call <strong>SSO</strong> <code>GET /api/v1/auth/me</code> with Bearer token; see treasury-ui <code>lib/auth/api.ts</code> and <code>useMe.ts</code></td>
+</tr>
+<tr>
+<td>"Access denied" on treasury-ui /platform page</td>
+<td>AuthProvider checking wrong role name (<code>super_admin</code> instead of <code>superuser</code>)</td>
+<td>Fixed: AuthProvider now checks <code>isPlatformOwner</code> and <code>superuser</code> role from SSO /me response</td>
+</tr>
+<tr>
+<td>User has no local service roles after first login</td>
+<td>JIT provisioning created user but didn't assign roles</td>
+<td>Fixed: All backends now map JWT roles to service-level roles during JIT (e.g. superuser → finance_admin)</td>
+</tr>
+<tr>
+<td>429 on notifications /messages endpoint</td>
+<td>Email rate limit exceeded for subscription plan</td>
+<td>Check <code>max_emails_per_day</code> in JWT SubscriptionLimits; upgrade plan or wait for daily reset</td>
+</tr>
+<tr>
+<td>Redirect to login after SSO login (subscription)</td>
+<td>Backend returns 403 <code>subscription_inactive</code> on GET; frontend treats as auth error</td>
+<td>Fix: backend must use mutations-only enforcement; frontend must check <code>data.code === 'subscription_inactive'</code> before redirecting</td>
+</tr>
+<tr>
+<td>403 on GET with expired subscription</td>
+<td>Service uses <code>RequireActiveSubscription()</code> on all routes</td>
+<td>Fix: use inline mutations-only middleware (skip GET/HEAD/OPTIONS)</td>
+</tr>
+<tr>
+<td>Toast "subscription inactive" on every page load</td>
+<td>Subscription 403 interceptor fires on read requests</td>
+<td>Fix: backend should only enforce on mutations; if already fixed, clear browser cache</td>
+</tr>
+<tr>
+<td>Outlet selector shown for every login (single-outlet user)</td>
+<td>Frontend not checking JWT <code>outlet_id</code> before redirecting to selector</td>
+<td>Fix: in auth callback, auto-preselect from JWT <code>outlet_id</code> when <code>is_hq_user = false</code></td>
+</tr>
+<tr>
+<td>X-Outlet-ID CORS preflight failure (403/500 from backend)</td>
+<td>Service missing <code>X-Outlet-ID</code> in <code>AllowedHeaders</code> CORS config</td>
+<td>Add <code>"X-Outlet-ID"</code> to CORS <code>AllowedHeaders</code> in the service router</td>
+</tr>
+<tr>
+<td>Backend returns all orders/tasks regardless of selected outlet</td>
+<td>Outlet middleware not wired in router or outlet FK query not applied</td>
+<td>Ensure <code>OutletContext</code> middleware is applied to <code>/{tenant}</code> group and list handlers call <code>httpware.GetOutletID(ctx)</code></td>
+</tr>
+<tr>
+<td>Page reload loses outlet selection</td>
+<td>Outlet not rehydrated from localStorage on mount</td>
+<td>Add <code>useEffect</code> that reads <code>{service}-selected-outlet-id</code> from localStorage and calls <code>apiClient.setOutletID()</code></td>
+</tr>
+<tr>
+<td>OutletFilter dropdown empty for platform owner</td>
+<td>Outlet list fetched with wrong tenant slug (should use TenantFilter selection)</td>
+<td>Pass <code>tenantFilterStore.selectedTenant?.slug</code> to the outlets fetch query in <code>OutletFilter</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="security-checklist">Security Checklist<a class="headerlink" href="#security-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[x] PKCE used on all public clients (no client secret in browser)</li>
+<li>[x] <code>state</code> parameter stored and verified (CSRF protection)</li>
+<li>[x] PKCE verifier consumed after single use</li>
+<li>[x] Refresh tokens stored only in memory (not localStorage for security-sensitive apps)</li>
+<li>[x] CORS restricted to known domains (no wildcards in production)</li>
+<li>[x] All redirect URIs whitelisted explicitly in auth-api</li>
+<li>[x] JWT verified against JWKS endpoint (shared-auth-client library)</li>
+</ul>
+<hr />
+<h2 id="platform-owner-access-pattern">Platform Owner Access Pattern<a class="headerlink" href="#platform-owner-access-pattern" title="Permanent link">&para;</a></h2>
+<p><strong>Codevertex is the platform owner, not a business tenant.</strong> Users linked to the <code>codevertex</code> organisation bypass tenant isolation.</p>
+<h3 id="detection">Detection<a class="headerlink" href="#detection" title="Permanent link">&para;</a></h3>
+<p><code>GET /api/v1/auth/me</code> returns <code>is_platform_owner: true</code> when <code>primary_tenant.slug == "codevertex"</code> and the user has the <code>superuser</code> role.</p>
+<h3 id="service-enforcement">Service Enforcement<a class="headerlink" href="#service-enforcement" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// In any service's auth middleware:</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">is_platform_owner</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">roles</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'superuser'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Skip tenant isolation — allow access to ALL tenant data</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">next</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="c1">// Otherwise enforce tenant_id === request.tenant_id</span>
+</code></pre></div>
+<h3 id="backend-platform-owner-tenant-override-tenantid">Backend: Platform Owner Tenant Override (<code>?tenantId=</code>)<a class="headerlink" href="#backend-platform-owner-tenant-override-tenantid" title="Permanent link">&para;</a></h3>
+<p>All Go backend services support a <code>?tenantId=&lt;uuid&gt;</code> query parameter on tenant-scoped endpoints for platform owners. This allows cross-tenant drill-down without requiring tenant headers.</p>
+<p><strong>Pattern (implemented in all services — March 2026):</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// In each handler's tenant resolution function:</span>
+<span class="nx">ctx</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">Context</span><span class="p">()</span>
+<span class="k">if</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">IsPlatformOwner</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Query</span><span class="p">().</span><span class="nx">Get</span><span class="p">(</span><span class="s">"tenantId"</span><span class="p">);</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">Parse</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span><span class="w"> </span><span class="c1">// override to target tenant</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Fallback: httpware context → JWT claims</span>
+<span class="nx">tenantIDStr</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">httpware</span><span class="p">.</span><span class="nx">GetTenantID</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Frontend behaviour:</strong>
+- Platform owner UIs (orgSlug <code>codevertex</code>) skip <code>X-Tenant-ID</code>/<code>X-Tenant-Slug</code> headers (apiClient <code>setPlatformOwner(true)</code>)
+- A <code>TenantFilter</code> dropdown in the header lets platform owners select a specific tenant
+- Selected tenant is passed as <code>?tenantId=&lt;uuid&gt;</code> on API calls
+- When no tenant is selected ("All Tenants"), the backend returns data across all tenants (for list endpoints) or requires explicit selection (for mutations/config)</p>
+<p><strong>Services implementing this pattern:</strong>
+- treasury-api, inventory-api, logistics-api, pos-api, subscriptions-api, ordering-backend, notifications-api</p>
+<hr />
+<h2 id="multi-step-account-registration">Multi-Step Account Registration<a class="headerlink" href="#multi-step-account-registration" title="Permanent link">&para;</a></h2>
+<p>All account creation is centralised in <strong>auth-ui</strong> (<code>accounts.codevertexafrica.com/signup</code>). All other services redirect unauthenticated users here.</p>
+<h3 id="registration-steps">Registration Steps<a class="headerlink" href="#registration-steps" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Account</strong> — Full name, email, password</li>
+<li><strong>Organisation</strong> — Search &amp; join existing org (by slug) OR create new org (name, slug, size, use case)</li>
+<li><strong>Plan</strong> — Subscription tier recommendation with 14-day trial; fetched from subscription-api</li>
+</ol>
+<h3 id="org-roles">Org Roles<a class="headerlink" href="#org-roles" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Role Assigned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Join existing org</td>
+<td><code>member</code> (admin can promote later)</td>
+</tr>
+<tr>
+<td>Create new org</td>
+<td><code>admin</code> (founding user becomes org admin)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="subscription-enforcement-post-login">Subscription Enforcement Post-Login<a class="headerlink" href="#subscription-enforcement-post-login" title="Permanent link">&para;</a></h3>
+<p>After login, non-platform users without an active subscription are redirected to the subscription selection page:
+<div class="highlight"><pre><span></span><code>login success
+  → check user.is_platform_owner → skip if true
+  → GET /api/v1/tenants/{tenant_id}/subscription
+  → status in [ACTIVE, TRIAL] → allow app access
+  → status EXPIRED or 404 → redirect to /subscribe
+</code></pre></div></p>
+<hr />
+<h2 id="new-service-oauth-client-registration">New Service OAuth Client Registration<a class="headerlink" href="#new-service-oauth-client-registration" title="Permanent link">&para;</a></h2>
+<p>When a new frontend integrates with SSO:</p>
+<h3 id="option-a-seed-mvp-services">Option A — Seed (MVP Services)<a class="headerlink" href="#option-a-seed-mvp-services" title="Permanent link">&para;</a></h3>
+<p>Add to <code>auth-api/cmd/seed/main.go</code> OAuth clients list and redeploy. Use for all services that are part of MVP.</p>
+<h3 id="option-b-admin-api-runtime">Option B — Admin API (Runtime)<a class="headerlink" href="#option-b-admin-api-runtime" title="Permanent link">&para;</a></h3>
+<p>For new services added post-MVP without redeployment:
+<div class="highlight"><pre><span></span><code><span class="c1"># Requires valid superuser JWT</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://sso.codevertexafrica.com/api/v1/admin/clients<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer &lt;superuser-token&gt;"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "client_id": "my-new-service",</span>
+<span class="s1">    "name": "My New Service",</span>
+<span class="s1">    "redirect_uris": ["https://my-new-service.example.com/callback"],</span>
+<span class="s1">    "scopes": ["openid", "profile", "email"],</span>
+<span class="s1">    "public": true</span>
+<span class="s1">  }'</span>
+</code></pre></div></p>
+<p><strong>Rule:</strong> seed = source of truth for MVP clients. Admin API = runtime additions. Both are valid.</p>
+<hr />
+<h2 id="public-tenant-endpoint">Public Tenant Endpoint<a class="headerlink" href="#public-tenant-endpoint" title="Permanent link">&para;</a></h2>
+<p>Services that need to resolve tenant UUIDs (e.g. subscription-api seed) use the public endpoint — <strong>no authentication required:</strong></p>
+<div class="highlight"><pre><span></span><code>GET /api/v1/tenants/by-slug/{slug}
+Response: { "id": "&lt;uuid&gt;", "name": "...", "slug": "...", "status": "active" }
+</code></pre></div>
+<p>This ensures cross-service UUID consistency without hardcoding values.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 07:37:37 UTC">August 20, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
