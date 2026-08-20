@@ -11,6 +11,7 @@ The conventions every Codevertex service is expected to follow, and the shared G
 | [Resilience — Circuit Breakers & Retries](resilience-and-retries.md) | `shared/service-client` |
 | [Rate Limiting](rate-limiting.md) | ingress annotations + per-service middleware |
 | [Service-to-Service (S2S) Conventions](s2s-conventions.md) | `shared/auth-client` |
+| [Swagger/OpenAPI Docs Gating](swagger-docs-gating.md) | `treasury-api`/`auth-api`/`notifications-api` `swagger.go` |
 | [Secrets Management](secrets-management.md) | `devops-k8s/scripts/infrastructure/create-service-secrets.sh` |
 | [Observability](observability.md) | `shared/httpware` (logging), `shared/service-client` (tracing) |
 | [AI Integrations & pgvector](ai-and-pgvector.md) | `shared/infrastructure/{pgvector,ollama,onnx}` |
