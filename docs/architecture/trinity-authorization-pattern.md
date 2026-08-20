@@ -606,7 +606,7 @@ These are the metrics and alerts this authorization model is designed to be inst
 ### Subscription and tenant sync
 - **Subscription-service must NOT create tenant subscriptions for the platform owner.** Only business (customer) organisations have subscriptions. The subscription-api seed excludes the platform owner slug so no `TenantSubscription` is created for Codevertex.
 - **All services that sync tenants** (in seed or at startup) **must sync the codevertex platform org** in addition to other default tenants, so the platform tenant row exists in each service DB (e.g. ordering-backend, inventory-api, subscriptions-api app, notifications-api seed).
-- **Platform org admin user:** Each service that maintains local user/role/permission data must sync or JIT-provision the platform admin user (auth-api super admin, e.g. `admin@codevertexafrica.com`) and assign **all permissions** in that service as the global admin user (e.g. superuser + admin roles in ordering-backend, finance_admin in treasury-api, admin role in logistics-api JIT).
+- **Platform org admin user:** Each service that maintains local user/role/permission data must sync or JIT-provision the platform admin user (auth-api's single seeded super admin account) and assign **all permissions** in that service as the global admin user (e.g. superuser + admin roles in ordering-backend, finance_admin in treasury-api, admin role in logistics-api JIT).
 
 ### Token Claims
 `GET /api/v1/auth/me` returns `is_platform_owner: true` when the user's primary tenant slug is `codevertex`. Services should grant full read/write when this flag is set:
@@ -639,7 +639,7 @@ func getTenantID(r *http.Request) (uuid.UUID, error) {
 **Frontend pattern:** Platform owner UIs do NOT send `X-Tenant-ID`/`X-Tenant-Slug` headers. Instead, a centralized `TenantFilter` component lets the platform owner select a tenant, and the selected ID is passed as `?tenantId=` on API calls. When "All Tenants" is selected, no `tenantId` param is sent and the backend returns cross-tenant data for list endpoints.
 
 ### Auth-API Seed Logic
-The auth-api seed creates the `codevertex` tenant first, then creates Codevertex-owned users (e.g. `admin@codevertex.dev`) with `superuser` membership. All other tenants are then seeded as business clients.
+The auth-api seed creates the `codevertex` tenant first, then creates Codevertex-owned staff users with `superuser` membership. All other tenants are then seeded as business clients.
 
 ---
 

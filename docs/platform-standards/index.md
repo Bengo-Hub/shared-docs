@@ -1,6 +1,6 @@
 # Platform Engineering Standards
 
-The conventions every Codevertex service is expected to follow, and the shared Go libraries (`d:\Projects\Codevertex\shared\`) that implement them. Each page below documents what's actually implemented and where — not aspirational advice — so you can go straight to the real code.
+The conventions every Codevertex service is expected to follow, and the shared Go libraries (`github.com/Bengo-Hub/shared-*` — `shared-events`, `shared-auth-client`, `shared-service-client`, `shared-ratelimit`, `httpware`, `cache`) that implement them. Each page below documents what's actually implemented and where — not aspirational advice — so you can go straight to the real code.
 
 | Standard | Where it lives |
 |---|---|

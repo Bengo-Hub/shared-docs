@@ -2,6 +2,26 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.4.0] — 2026-08-20
+
+A follow-up content-quality pass on top of 1.1.0–1.3.0's cleanup, plus a new Email Hosting reference page.
+
+### Changed — accuracy & remaining leaks
+- Fixed a leftover local filesystem path (`platform-standards/index.md`) that pointed at a developer's own machine instead of the real `github.com/Bengo-Hub/shared-*` package locations.
+- Replaced two real-looking internal admin account emails in `trinity-authorization-pattern.md` with a generic description — the platform's single seeded admin account doesn't need its literal address published.
+- Genericized four incident-shaped passages (`idempotency-and-outbox.md`, `ai-and-pgvector.md`, `s2s-conventions.md` ×2, `webhooks-vs-polling.md`) that named specific past production incidents, their duration, or which services were affected — the underlying engineering lesson is kept, the incident narrative isn't.
+- Trimmed `microservice-architecture.md`'s internal-infrastructure sections (Kubernetes DNS names, ports, namespace lists, PVC sizes) down to architecture-level description — none of it is reachable or useful to an external integrator, and the public hostnames (which are) are unchanged.
+- Redacted a partial internal UUID in `finance-integration-map.md`.
+- Removed a `file:line` reference into a private frontend repo from `sso-integration-guide.md`.
+- Fixed a stale pre-rebrand domain (`app.bengobox.com` → `app.codevertexafrica.com`) in the Paystack reference, and replaced a suspiciously-consistent hardcoded M-Pesa initiator name with an unambiguous placeholder across the M-Pesa reference.
+- Fixed three dead cross-references (`mvp-critical-path.md` ×2, `PLATFORM-AUDIT-AND-STANDARDIZATION.md`) and an unexplained reference to an unrelated project (`mosuon/game-stats`) in the Ent/Atlas migrations page, pointed at real Codevertex services instead.
+- Reconciled `@bengo-hub/shared-ui-lib`'s version being cited as both v0.1.0 and v0.1.5 in different pages — now phrased as a floor ("since v0.1.5") rather than a pinned current version, so it stops silently drifting out of date.
+- Dropped a leftover in-cluster DNS hostname from `notifications-rest-api-integration.md` (unreachable from outside the cluster anyway) and added a clear statement that notifications, like SSO, is included with every subscription and never sold separately.
+- One AI-vibe filler word ("seamless") removed from the Paystack reference.
+
+### Added
+- **`integrations/email-hosting.md`** — a new public reference page for the per-mailbox hosted email product, with current plan pricing (Lite/Standard/Professional), storage/alias/feature comparison, and a pointer to the tenant self-service setup flow.
+
 ## [1.3.0] — 2026-08-04
 
 Removes internal engineering planning content that had leaked into the public Technical Guide — sprint numbers, quarter-by-quarter roadmaps, and per-service migration tracking are internal project-management detail, not something an external integrator needs, and they reveal more about internal team velocity and priorities than we want public.

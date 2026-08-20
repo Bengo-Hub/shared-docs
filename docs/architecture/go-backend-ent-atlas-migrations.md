@@ -1,8 +1,8 @@
 # Go Backends: Ent Schema & Atlas Versioned Migrations
 
-**Reference implementation:** `mosuon/game-stats/game-stats-api` and `logistics-service/logistics-api`.
+**Reference implementation:** `finance-service/treasury-api` and `logistics-service/logistics-api`.
 
-This doc describes how to keep Ent schemas and migrations consistent across Go backends: **always generate Ent and Atlas migrations after schema changes**, never add migration files manually, and follow the same pattern as game-stats-api and logistics-api.
+This doc describes how to keep Ent schemas and migrations consistent across Go backends: **always generate Ent and Atlas migrations after schema changes**, never add migration files manually, and follow the same pattern as treasury-api and logistics-api.
 
 ---
 

@@ -35,7 +35,7 @@ The Paystack account belongs to **Codevertex** (platform owner). All tenant paym
   "email": "customer@example.com",
   "currency": "KES",
   "reference": "ORDER-123-uuid",
-  "callback_url": "https://app.bengobox.com/payments/verify?ref=ORDER-123",
+  "callback_url": "https://app.codevertexafrica.com/payments/verify?ref=ORDER-123",
   "metadata": {
     "order_id": "uuid",
     "tenant_id": "uuid",
@@ -334,7 +334,7 @@ Returns `link` (e.g., `https://paystack.com/pay/bengobox-growth`).
 
 ## 16. Dedicated Virtual Accounts (DVA)
 
-**Purpose**: Generate a dedicated bank account number per customer for seamless bank transfer payments.  
+**Purpose**: Generate a dedicated bank account number per customer for bank transfer payments.  
 **Availability**: Nigeria currently; available in Ghana (June 2025). **Not available in Kenya yet.**
 
 ---

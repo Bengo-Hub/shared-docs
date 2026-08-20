@@ -132,6 +132,6 @@ import { SSOLoginModal } from "@bengo-hub/shared-ui-lib/auth";
 
 The modal auto-closes after a successful login. Tenant context can be passed as a prop to pre-scope the auth-ui login form.
 
-**Current version**: `@bengo-hub/shared-ui-lib` **v0.1.5**
+**Minimum version**: `@bengo-hub/shared-ui-lib` **v0.1.5** (these components have shipped since this version; check the package's own published tags for the current release, since this library moves faster than this doc is updated).
 
 > **Note**: auth-ui and treasury-ui are the **providers** of iframe content — they do not use `SSOLoginModal` or `TreasuryPaymentModal` themselves. These components are for **consumer** services.
