@@ -74,60 +74,44 @@ Codevertex uses a centralized DevOps repository (`devops-k8s`) that provides sha
 
 ### Infrastructure Services
 
-#### 1. **Message Brokers** (Namespace: `messaging`)
+#### 1. **Message Brokers**
 
 **NATS JetStream** (Primary - All Go services):
-- Service: `nats.messaging.svc.cluster.local:4222`
 - **Env var (standard):** `EVENTS_NATS_URL` — all Go backends use this single key for the NATS connection URL.
-- Clustering: 2 replicas with JetStream enabled
-- Storage: 10Gi PVC for persistence
+- Clustered, JetStream-enabled, persistent storage.
 - Usage: Primary async communication for Go services
 - Streams: `{service}.{domain}` (e.g., `subscription.billing`, `logistics.tasks`)
 
 RabbitMQ previously ran alongside NATS as the Celery broker for the original Django-based ERP service. That ERP service has since been fully rebuilt on Go (`erp-api`, part of the same event-driven fleet as every other backend), and RabbitMQ was decommissioned during the 2026-04 infrastructure optimization pass — it no longer runs anywhere in the cluster. NATS JetStream is now the platform's single async messaging layer, used uniformly across all backend services.
 
-#### 2. **Caching & Session Storage** (Namespace: `infra`)
+#### 2. **Caching & Session Storage**
 
 **Redis**:
-- Service: `redis-master.infra.svc.cluster.local:6379`
 - Usage: 
   - Session storage (JWT refresh tokens)
   - Query result caching (5-60 min TTL)
   - Rate limiting counters
   - Idempotency keys
   - Real-time pub/sub (for WebSockets)
-- Storage: 8Gi with persistence
-- Priority: `db-critical` (high priority)
+- Persistent, high-availability priority tier.
 
 #### 3. **Databases** (Per-Service)
 
 **PostgreSQL**:
-- Each service has dedicated PostgreSQL database
-- Connection strings stored in Kubernetes secrets
-- Example: `{service-name}-secrets` → `postgresUrl` key
+- Each service has its own dedicated PostgreSQL database — no service reads or writes another service's tables directly.
+- Connection credentials are provisioned per service via Kubernetes Secrets, never hardcoded.
 
-**Services with Databases**:
-- `auth-service` → PostgreSQL in `auth` namespace
-- `treasury-service` → PostgreSQL in `treasury` namespace
-- `subscription-service` → PostgreSQL (database: `pricing`)
-- `logistics-service` → PostgreSQL (PostGIS for geo-queries)
-- `ordering-service` → PostgreSQL
-- `notifications-service` → PostgreSQL
-- `inventory-service` → PostgreSQL
-- `pos-service` → PostgreSQL
-- `erp-service` → PostgreSQL
+**Services with dedicated databases**: auth, treasury, subscriptions, logistics (PostGIS for geo-queries), ordering, notifications, inventory, POS, ERP.
 
-#### 4. **Object Storage** (Namespace: `storage`)
+#### 4. **Object Storage**
 
 **MinIO** (S3-compatible):
-- Service: `minio.storage.svc.cluster.local:9000`
 - Usage: Treasury service for settlement artifacts, receipts
 - Bucket: `treasury-artifacts`
 
-#### 5. **Observability** (Namespace: `infra`)
+#### 5. **Observability**
 
 **OpenTelemetry Collector**:
-- Service: `otel-collector.infra.svc.cluster.local:4317`
 - Usage: Centralized trace/metric collection
 - Export: All services export traces/metrics to collector
 
@@ -408,19 +392,7 @@ All services communicate via Kubernetes DNS service names following the pattern:
 ```
 
 **Internal Service Communication** (Backend-to-Backend):
-- Auth Service: `auth-api.auth.svc.cluster.local:4101`
-- Treasury Service: `treasury-api.treasury.svc.cluster.local:4000`
-- Notifications Service: `notifications-service.notifications.svc.cluster.local:4000`
-- Subscription Service: `subscription-service.subscription.svc.cluster.local:4005`
-- Logistics Service: `logistics-api.logistics.svc.cluster.local:4000`
-- Ordering Service: `ordering-backend.ordering.svc.cluster.local:4000`
-- POS Service: `pos-api.pos.svc.cluster.local:4000`
-- Inventory Service: `inventory-api.inventory.svc.cluster.local:4000`
-
-**Infrastructure Services** (Shared resources):
-- Redis: `redis-master.infra.svc.cluster.local:6379`
-- NATS: `nats.messaging.svc.cluster.local:4222`
-- MinIO: `minio.storage.svc.cluster.local:9000`
+Every backend service and shared infrastructure component (Redis, NATS, MinIO) is reachable inside the cluster via its Kubernetes Service DNS name, per the pattern above — never a hardcoded IP. Internal hostnames/ports aren't reachable from outside the cluster and aren't listed here; the public hostnames below are what any external integrator actually needs.
 
 **External Service Communication** (Frontend-to-Backend):
 - Auth API: `https://sso.codevertexafrica.com`
@@ -444,21 +416,7 @@ All services communicate via Kubernetes DNS service names following the pattern:
 
 ### Namespace Organization
 
-**Infrastructure Namespaces**:
-- `infra` - Shared infrastructure (Redis, PostgreSQL)
-- `messaging` - NATS JetStream
-- `storage` - Object storage (MinIO)
-
-**Service Namespaces**:
-- `auth` - Auth service
-- `treasury` - Treasury service
-- `notifications` - Notifications service
-- `subscription` - Subscription service (to be created)
-- `logistics` - Logistics service
-- `cafe` / `ordering` - Ordering service
-- `pos` - POS service
-- `inventory` - Inventory service
-- `erp` - ERP service
+Each backend service and shared infrastructure component runs in its own Kubernetes namespace for logical isolation — this only matters for in-cluster DNS resolution and doesn't affect how an external integrator calls the public hostnames above.
 
 ### Service URLs Configuration
 
@@ -467,9 +425,9 @@ All services communicate via Kubernetes DNS service names following the pattern:
 // Configuration in service values.yaml
 env:
   - name: AUTH_SERVICE_URL
-    value: http://auth-api.auth.svc.cluster.local:4101
+    value: http://{service-name}.{namespace}.svc.cluster.local:{port}
   - name: TREASURY_SERVICE_URL
-    value: http://treasury-api.treasury.svc.cluster.local:4000
+    value: http://{service-name}.{namespace}.svc.cluster.local:{port}
 ```
 
 **Frontend Services** (Use HTTPS URLs for external communication):
@@ -647,20 +605,20 @@ router.Use(authclient.GinMiddleware(authMiddleware))
 
 ### Frontend Shared Libraries (NPM)
 
-#### @bengo-hub/shared-ui-lib v0.1.5
+#### @bengo-hub/shared-ui-lib (since v0.1.5)
 
 **Package**: `@bengo-hub/shared-ui-lib`  
 **Repository**: `github.com/Bengo-Hub/shared-ui-lib`  
 **Published to**: GitHub Packages (npm.pkg.github.com)
 
-**Components** (all use iframe + postMessage):
+**Components present since v0.1.5** (all use iframe + postMessage):
 - `TreasuryPaymentModal` — embeds `books.codevertexafrica.com` in an iframe; handles Paystack, M-Pesa, COD; postMessage events: `treasury:payment_initiated`, `treasury:payment_confirmed`, `treasury:payment_failed`
 - `SSOLoginModal` — embeds `accounts.codevertexafrica.com` in an iframe; postMessage events: `auth:login_success`, `auth:login_failed`
 - `TrackingIframeModal` — embeds `logistics.codevertexafrica.com`; postMessage events: `tracking:resize`, `logistics:resize`
 
-**Services using v0.1.5**: ordering-frontend, pos-ui, subscriptions-ui, notifications-ui, cafe-website, inventory-ui, truload-frontend
+The library has shipped many more components since (account panels, app switchers, shared data tables, and more) — check the package's own published tags for the current release rather than pinning to the version above from memory. **Used by**: every `*-ui` frontend in the fleet.
 
-**Reference pattern** (GitHub URL, pnpm):
+**Reference pattern** (GitHub URL, pnpm) — pin to whatever the current tag actually is, not the example below:
 ```json
 "@bengo-hub/shared-ui-lib": "github:Bengo-Hub/shared-ui-lib#v0.1.5"
 ```
@@ -1225,7 +1183,7 @@ See the [Technology Stack Summary](#technology-stack-summary) below for what's i
 | `httpware` | **v0.4.1** | RequestID, Tenant, Logging, Recover, CORS | 100% (all Go services) |
 | `pagination` | v0.2.0 | Cursor/offset pagination helpers | notifications-api |
 | `cache` | v0.2.0 | Redis caching wrapper | 6 services |
-| `@bengo-hub/shared-ui-lib` | **v0.1.5** | TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal (iframe+postMessage) | 7 frontend services |
+| `@bengo-hub/shared-ui-lib` | see package tags | TreasuryPaymentModal, SSOLoginModal, TrackingIframeModal (iframe+postMessage), plus a growing shared component set (data tables, account panel, app switcher) | every `*-ui` frontend in the fleet |
 | `@bengo-hub/maps` | v0.2.6 | MapLibre-based map/tracking components | 3 services (logistics-ui, rider-app, ordering-frontend) |
 | `shared-config` | Planned | Configuration loading | 0% (to be created) |
 | `shared-observability` | Planned | Logging, tracing, metrics | 0% (to be created) |
@@ -1502,7 +1460,6 @@ Communication patterns not yet in use — gRPC/ConnectRPC, WebSockets, GraphQL �
 ## References
 
 - [Cross-Service Data Ownership](./cross-service-data-ownership.md)
-- [Platform Audit & Standardization](./PLATFORM-AUDIT-AND-STANDARDIZATION.md)
 - [Subscription Service Integrations](../subscription-service/docs/integrations.md)
 - [Logistics Service Integrations](../logistics-service/logistics-api/docs/integrations.md)
 - [Ordering Service Integrations](../ordering-service/ordering-backend/docs/integrations.md)

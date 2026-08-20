@@ -660,7 +660,7 @@ All Go services should use these shared libraries from `github.com/Bengo-Hub/`:
 | `service-client` | gRPC/REST inter-service client | v0.2.0 | ordering, notifications, treasury, subscriptions |
 | `pagination` | Cursor/offset pagination helpers | v0.1.0 | notifications (adopt in others as needed) |
 
-Frontend shared package: `@bengo-hub/shared-ui-lib` v0.1.0 — SSOLoginModal, TreasuryPaymentModal, TrackingIframeModal. Used by ordering-frontend, pos-ui, inventory-ui, cafe-website. All must pin to `#v0.1.0`.
+Frontend shared package: `@bengo-hub/shared-ui-lib` (see `login-flow-contract.md` for the current pinned version) — SSOLoginModal, TreasuryPaymentModal, TrackingIframeModal. Used by ordering-frontend, pos-ui, inventory-ui, cafe-website, and every other `*-ui` frontend. All consumers pin to a tagged release, never a local path.
 
 ---
 

@@ -14,7 +14,7 @@ In prod, `marketflow-ai` is deployed as its own service (namespace `marketflow`,
 
 1. Check whether `marketflow-ai` already exposes the capability you need as a callable tool before building a second AI integration point — it's the platform's designated AI service, not a per-service pattern.
 2. If you need vector search, use the `shared/infrastructure/pgvector` extension against your service's own Postgres DB rather than standing up a separate vector database — pgvector as a Postgres extension keeps it inside the existing backup/PgBouncer/connection-pooling story (see [Connection Pooling & PgBouncer](connection-pooling-pgbouncer.md)) instead of adding a new kind of datastore to operate.
-3. Don't synthesize a foreign-key-referenced ID (e.g. a deterministic UUID derived from a tenant slug) instead of resolving the real one — this exact mistake broke `marketflow-ai`'s session-to-tenant linkage for two weeks in production before being caught (every `chat_sessions` insert was failing its FK silently). Resolve real IDs from their owning service, never derive a plausible-looking one.
+3. Don't synthesize a foreign-key-referenced ID (e.g. a deterministic UUID derived from a tenant slug) instead of resolving the real one — a mismatched synthetic ID makes every insert that references it fail its FK constraint silently, with no visible error until a downstream consumer notices the linked data never shows up. Resolve real IDs from their owning service, never derive a plausible-looking one.
 
 ## Scope of this page
 

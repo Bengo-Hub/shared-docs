@@ -62,8 +62,8 @@ posting is **event-driven** (NATS JetStream via the transactional outbox) and **
 ## Platform vs tenant books
 - `is_platform_only` on chart-of-accounts AND cost-centers hides platform-internal options from
   tenant users (COA list + all account/cost-center pickers). The platform owner operates as its own
-  real tenant (`codevertex`); `566afdf5…` is a reserved namespace for shared global tax codes, NOT a
-  books-bearing tenant.
+  real tenant (`codevertex`); a separate reserved tenant ID exists purely as a namespace for shared
+  global tax codes, and is NOT a books-bearing tenant.
 
 ## Conventions for adding a new cross-service posting
 1. Emit from the source via the outbox (`events.Publisher.Publish(ctx, tenant, aggregateID, "x.y", payload)`).

@@ -167,7 +167,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 
 ```json
 {
-  "InitiatorName": "bengobox_initiator",
+  "InitiatorName": "YOUR_INITIATOR_NAME",
   "SecurityCredential": "<RSA encrypted initiator password>",
   "CommandID": "BusinessPayment",
   "Amount": "5000",
@@ -213,7 +213,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 
 ```json
 {
-  "Initiator": "bengobox_initiator",
+  "Initiator": "YOUR_INITIATOR_NAME",
   "SecurityCredential": "<RSA encrypted>",
   "CommandID": "BusinessPayBill",
   "SenderIdentifierType": "4",
@@ -246,7 +246,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 
 ```json
 {
-  "Initiator": "bengobox_initiator",
+  "Initiator": "YOUR_INITIATOR_NAME",
   "SecurityCredential": "<RSA encrypted>",
   "CommandID": "TransactionStatusQuery",
   "TransactionID": "LHG31AA5TX",
@@ -268,7 +268,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 
 ```json
 {
-  "Initiator": "bengobox_initiator",
+  "Initiator": "YOUR_INITIATOR_NAME",
   "SecurityCredential": "<RSA encrypted>",
   "CommandID": "TransactionReversal",
   "TransactionID": "OEI2AK4Q16",
@@ -291,7 +291,7 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 
 ```json
 {
-  "Initiator": "bengobox_initiator",
+  "Initiator": "YOUR_INITIATOR_NAME",
   "SecurityCredential": "<RSA encrypted>",
   "CommandID": "AccountBalance",
   "PartyA": "600000",

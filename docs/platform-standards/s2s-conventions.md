@@ -6,17 +6,17 @@ All Codevertex microservices share a single S2S API key environment variable: `I
 
 ## The recurring footgun: an API key alone does not identify a tenant
 
-**A valid `X-API-Key` tells a service the caller is trusted — it does not tell it which tenant the call is for.** Services that resolve tenant context from auth claims first (rather than from an explicit header) will silently fall back to the *platform* tenant for an API-key-only call, with no error. This has bitten inventory-api (`/api/v1/{slug}/inventory/consumption` — consumption rows landed on the platform tenant instead of the real one), pos-api catalog reads, and others, independently, more than once.
+**A valid `X-API-Key` tells a service the caller is trusted — it does not tell it which tenant the call is for.** Services that resolve tenant context from auth claims first (rather than from an explicit header) will silently fall back to the *platform* tenant for an API-key-only call, with no error. This is a recurring failure mode anywhere tenant resolution checks JWT claims before an explicit tenant header — data written by an API-key-only caller can land on the wrong tenant with no error raised anywhere.
 
 **Always send `X-Tenant-ID` (and ideally `X-Tenant-Slug`) explicitly on every S2S call** — never assume the URL slug or the API key alone is sufficient. This also means testing an S2S endpoint against a specific tenant via raw curl requires either a real tenant JWT or these explicit headers, not just the shared key.
 
 ## Subscription checks: use the tenant-scoped endpoint
 
-`GET /api/v1/tenants/{tenantID}/subscription` — **never** the bare `/api/v1/subscription`, which resolves its tenant from JWT claims and will 404 (→ "subscription inactive" → requests blocked) on a pure API-key call with no JWT. This exact bug has broken order creation in more than one service before being caught.
+`GET /api/v1/tenants/{tenantID}/subscription` — **never** the bare `/api/v1/subscription`, which resolves its tenant from JWT claims and will 404 (→ "subscription inactive" → requests blocked) on a pure API-key call with no JWT. Using the bare form on an S2S path with no JWT is a reliable way to silently block otherwise-valid requests.
 
 ## Internal DNS, not public hostnames
 
-Intra-cluster S2S calls must use internal ClusterIP DNS (`{service}.{namespace}.svc.cluster.local`), not the public `*.codevertexafrica.com` hostname. A public-hostname round-trip adds real latency (Cloudflare edge + origin TLS handshake) and has caused gateway 502s under load on synchronous S2S paths (e.g. real-time eTIMS signing was intermittently timing out at ~20-27s over the public path before being switched to internal DNS). Auth is the one deliberate exception — auth calls stay on the public hostname because the JWT issuer must match what's embedded in tokens.
+Intra-cluster S2S calls must use internal ClusterIP DNS (`{service}.{namespace}.svc.cluster.local`), not the public `*.codevertexafrica.com` hostname. A public-hostname round-trip adds real latency (Cloudflare edge + origin TLS handshake) and can cause elevated latency or intermittent timeouts under load on synchronous S2S paths — if a cross-service call that works most of the time occasionally times out, check whether it's routing over the public hostname instead of internal DNS before assuming it's a capacity problem. Auth is the one deliberate exception — auth calls stay on the public hostname because the JWT issuer must match what's embedded in tokens.
 
 ## Client structs: two silent-failure modes to watch for
 

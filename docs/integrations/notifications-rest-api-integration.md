@@ -6,15 +6,12 @@
 
 Services that don't participate in the NATS event bus can send notifications via this REST endpoint instead — today that's mainly TruLoad (.NET) and ISP Billing (Python/FastAPI). Every Go service, including the ERP and Ordering services (both fully Go, no longer their original Django/Python incarnations), should prefer the NATS event-driven pattern documented in [event-architecture.md](../architecture/event-architecture.md) and only fall back to this REST endpoint for a genuine one-off, non-event-driven send.
 
+**Pricing**: notifications are a core platform capability included with every subscription, never sold or gated separately. Email sending is rate-limited by plan tier (to prevent abuse); SMS is billed against a tenant's purchased SMS credits; push and WhatsApp are unlimited on any plan that has WhatsApp enabled. This endpoint uses the same `X-API-Key`/JWT model as every other Codevertex API — see [Developer Portal](developer-portal.md) for how a credential is issued.
+
 ---
 
 ## Endpoint
 
-```
-POST https://notifications-api.notifications.svc.cluster.local:4000/{tenantId}/notifications/messages
-```
-
-**Production (via ingress):**
 ```
 POST https://notificationsapi.codevertexafrica.com/{tenantId}/notifications/messages
 ```

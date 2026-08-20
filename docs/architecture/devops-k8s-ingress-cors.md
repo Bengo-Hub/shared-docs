@@ -196,7 +196,7 @@ For backends that read CORS from env (e.g. ordering-backend `HTTP_ALLOWED_ORIGIN
 
 Frontend apps (ordering-frontend, cafe-website, notifications-ui, auth-ui, rider-app, logistics-ui, treasury-ui at books, pos-ui, subscriptions-ui at pricing, inventory-ui, ticketing-ui, projects-ui) are **origins** that call backends. Their Ingress resources do **not** need CORS annotations for their own domain; CORS is required on the **backend** ingress (and app) so that these origins are allowed when the browser sends requests to the API.
 
-Ensure each frontend's **build** receives the correct production API/SSO URLs (see `shared-docs/mvp-critical-path.md` §9.2).
+Ensure each frontend's **build** receives the correct production API/SSO URLs via its own environment configuration at build time.
 
 ---
 
@@ -217,4 +217,3 @@ Ensure each frontend's **build** receives the correct production API/SSO URLs (s
 ## 6. Reference
 
 - NGINX Ingress CORS: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#enable-cors
-- Application-level CORS: `mvp-critical-path.md` §9 (CORS and production domains)
