@@ -17,6 +17,7 @@ A Postgres streaming replica (`postgresql-replica`, in `infra`) exists primarily
 |---|---|---|
 | `inventory-api` | `ListItems` catalog search/list (POS terminal, Add Sale, catalog browse) | `inventory_ro` |
 | `pos-api` | All-Sales list/export | `pos_ro` |
+| `treasury-api` | AR/AP aging reports, customer/vendor statement, bank-reconciliation unmatched-lines list (`arpa`/`reconciliation` modules' `SetReadClient`) | `treasury_ro` |
 
 ## Before routing a new endpoint to the read replica
 
