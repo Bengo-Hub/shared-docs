@@ -4,8 +4,10 @@ The conventions every Codevertex service is expected to follow, and the shared G
 
 | Standard | Where it lives |
 |---|---|
+| [Engineering Principles](engineering-principles.md) | Umbrella reference — start here |
 | [Webhooks vs Polling](webhooks-vs-polling.md) | `treasury-api/internal/http/router` webhook group |
 | [Connection Pooling & PgBouncer](connection-pooling-pgbouncer.md) | `devops-k8s/manifests/databases/pgbouncer.yaml` |
+| [Read Replicas](read-replicas.md) | `pos-api`/`inventory-api` `ReadOnlyURL` + PgBouncer `*_ro` aliases |
 | [Caching](caching.md) | `shared/cache` |
 | [Idempotency & the Outbox Pattern](idempotency-and-outbox.md) | `shared/events` |
 | [Resilience — Circuit Breakers & Retries](resilience-and-retries.md) | `shared/service-client` |

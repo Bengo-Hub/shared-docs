@@ -84,8 +84,10 @@ nav:
           - DevOps-K8s Ingress & CORS: architecture/devops-k8s-ingress-cors.md
       - Platform Engineering Standards:
           - platform-standards/index.md
+          - Engineering Principles: platform-standards/engineering-principles.md
           - Webhooks vs Polling: platform-standards/webhooks-vs-polling.md
           - Connection Pooling & PgBouncer: platform-standards/connection-pooling-pgbouncer.md
+          - Read Replicas: platform-standards/read-replicas.md
           - Caching: platform-standards/caching.md
           - Idempotency & the Outbox Pattern: platform-standards/idempotency-and-outbox.md
           - Resilience — Circuit Breakers & Retries: platform-standards/resilience-and-retries.md
