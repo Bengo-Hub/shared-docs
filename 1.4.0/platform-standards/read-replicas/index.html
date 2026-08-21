@@ -12,13 +12,13 @@
         <meta name="author" content="Codevertex Africa">
       
       
-        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.4.0/platform-standards/observability/">
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.4.0/platform-standards/read-replicas/">
       
       
-        <link rel="prev" href="../secrets-management/">
+        <link rel="prev" href="../connection-pooling-pgbouncer/">
       
       
-        <link rel="next" href="../ai-and-pgvector/">
+        <link rel="next" href="../caching/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Observability - Codevertex Africa — Platform Documentation</title>
+        <title>Read Replicas - Codevertex Africa — Platform Documentation</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#observability" class="md-skip">
+        <a href="#read-replicas" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Observability
+              Read Replicas
             
           </span>
         </div>
@@ -1147,10 +1147,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../read-replicas/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Read Replicas
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1166,6 +1193,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status-implemented-opt-in-per-endpoint-narrow-scope-today-reusable-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status: implemented, opt-in per endpoint — narrow scope today, reusable pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-this-is-live-today" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where this is live today
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-routing-a-new-endpoint-to-the-read-replica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before routing a new endpoint to the read replica
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1371,37 +1462,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
         
   
   
@@ -1417,70 +1481,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#structured-logging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structured logging
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#request-correlation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Request correlation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Metrics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging-without-a-dashboard" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Debugging without a dashboard
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1932,10 +1932,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#structured-logging" class="md-nav__link">
+  <a href="#status-implemented-opt-in-per-endpoint-narrow-scope-today-reusable-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Structured logging
+        Status: implemented, opt-in per endpoint — narrow scope today, reusable pattern
       
     </span>
   </a>
@@ -1943,10 +1943,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#request-correlation" class="md-nav__link">
+  <a href="#the-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Request correlation
+        The pattern
       
     </span>
   </a>
@@ -1954,10 +1954,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
+  <a href="#where-this-is-live-today" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Metrics
+        Where this is live today
       
     </span>
   </a>
@@ -1965,10 +1965,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debugging-without-a-dashboard" class="md-nav__link">
+  <a href="#before-routing-a-new-endpoint-to-the-read-replica" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debugging without a dashboard
+        Before routing a new endpoint to the read replica
       
     </span>
   </a>
@@ -1995,15 +1995,45 @@
   
 
 
-<h1 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h1>
-<h2 id="structured-logging">Structured logging<a class="headerlink" href="#structured-logging" title="Permanent link">&para;</a></h2>
-<p>Every service uses <code>zap</code> via <code>shared/httpware</code>, which provides a <code>Logging(log *zap.Logger)</code> middleware (method, path, status, duration, and structured fields for <code>request_id</code>, <code>tenant_id</code>, <code>tenant_slug</code>, <code>outlet_id</code>) and a <code>Recover(log *zap.Logger)</code> panic-recovery middleware that logs a structured stack trace instead of crashing the process. <code>shared/cache</code> and <code>shared/service-client</code> also log through <code>zap</code>. If you're adding logging to a new service, use <code>zap</code> via <code>shared/httpware</code> rather than introducing a different logging library — consistency here is what makes cross-service log correlation possible.</p>
-<h2 id="request-correlation">Request correlation<a class="headerlink" href="#request-correlation" title="Permanent link">&para;</a></h2>
-<p><code>shared/httpware</code> propagates an <code>X-Request-ID</code> header across service calls, and <code>shared/service-client</code> wraps every outbound S2S call in an OpenTelemetry span (method, URL, service name, status/error) — see <a href="../resilience-and-retries/">Resilience — Circuit Breakers &amp; Retries</a>. Together, these let you trace a single request's path across multiple services by grepping the structured log fields for its <code>request_id</code> or <code>tenant_id</code>, even without a full tracing UI to click through.</p>
-<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
-<p>Services that expose <code>/metrics</code> (e.g. treasury-api, via <code>promhttp</code>) do so independently today — there's no shared instrumentation helper yet, so if you're adding metrics to a new service, expect to wire up <code>promhttp</code> yourself following an existing example rather than importing a shared package. The Helm chart (<code>devops-k8s/charts/app/templates/servicemonitor.yaml</code>) includes a <code>ServiceMonitor</code> template so a service's metrics endpoint can be scraped once a metrics-collection stack is pointed at it.</p>
-<h2 id="debugging-without-a-dashboard">Debugging without a dashboard<a class="headerlink" href="#debugging-without-a-dashboard" title="Permanent link">&para;</a></h2>
-<p>Day to day, <code>kubectl logs</code>, <code>kubectl get events</code>, and <code>kubectl top pods</code> remain the fastest way to check what's happening in a specific pod, combined with grepping the structured <code>zap</code> fields (<code>tenant_id</code>, <code>request_id</code>) to correlate a request across services.</p>
+<h1 id="read-replicas">Read Replicas<a class="headerlink" href="#read-replicas" title="Permanent link">&para;</a></h1>
+<h2 id="status-implemented-opt-in-per-endpoint-narrow-scope-today-reusable-pattern">Status: implemented, opt-in per endpoint — narrow scope today, reusable pattern<a class="headerlink" href="#status-implemented-opt-in-per-endpoint-narrow-scope-today-reusable-pattern" title="Permanent link">&para;</a></h2>
+<p>A Postgres streaming replica (<code>postgresql-replica</code>, in <code>infra</code>) exists primarily as an HA standby, but a handful of specific, heavy, staleness-tolerant read endpoints route to it instead of the primary via a dedicated PgBouncer alias. This is an <strong>opt-in, per-endpoint</strong> pattern, not a general read/write split — most traffic still goes through the primary, and that's deliberate: only route an endpoint here once it's actually shown to be a heavy, latency-insensitive read.</p>
+<h2 id="the-pattern">The pattern<a class="headerlink" href="#the-pattern" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>PgBouncer alias.</strong> <code>devops-k8s/manifests/databases/pgbouncer.yaml</code> defines a <code>&lt;service&gt;_ro</code> database alias pointed at <code>postgresql-replica.infra.svc.cluster.local</code> instead of the primary <code>postgresql.infra.svc.cluster.local</code> — same dbname, different upstream host, its own (smaller) <code>pool_size</code>.</li>
+<li><strong>Config field.</strong> The service's <code>PostgresConfig</code> gets a <code>ReadOnlyURL string</code> field (<code>envconfig:"POSTGRES_READONLY_URL"</code>), left empty by default. Empty is the default in every environment that hasn't explicitly set it, including local dev.</li>
+<li><strong>Wiring in <code>app.go</code>.</strong> A second Ent client (<code>readOrmClient</code>) is opened against <code>ReadOnlyURL</code> only if it's set; if the replica connection fails at startup, the failure is logged and swallowed, not fatal — the service falls back to using the primary client for that traffic, identical to before the read client existed. This fallback-by-default design means wiring the field into a service's <code>values.yaml</code> (via an <code>optional: true</code> <code>secretKeyRef</code>) is safe to deploy before the corresponding secret key is ever populated.</li>
+<li><strong>Wiring in the handler/service.</strong> Only the specific heavy read path calls <code>SetReadClient(readOrmClient)</code> (or is passed the read client directly) — everything else on that service, including any single-row detail lookup that happens to share the same function, stays on the primary. See <code>inventory-api/internal/modules/items/service.go</code>'s <code>ListItems</code> (routes its multi-row catalog-search branch to the read client, but a <code>?id=</code> single-item lookup deliberately stays on the primary — same function, different Ent client, chosen deliberately in code, not automatically) and its companion test, <code>read_replica_routing_test.go</code>, for the reference implementation and the reasoning for that split.</li>
+</ol>
+<h2 id="where-this-is-live-today">Where this is live today<a class="headerlink" href="#where-this-is-live-today" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Endpoint</th>
+<th>Alias</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inventory-api</code></td>
+<td><code>ListItems</code> catalog search/list (POS terminal, Add Sale, catalog browse)</td>
+<td><code>inventory_ro</code></td>
+</tr>
+<tr>
+<td><code>pos-api</code></td>
+<td>All-Sales list/export</td>
+<td><code>pos_ro</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="before-routing-a-new-endpoint-to-the-read-replica">Before routing a new endpoint to the read replica<a class="headerlink" href="#before-routing-a-new-endpoint-to-the-read-replica" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Confirm the endpoint is read-only, high-volume or high-latency-cost, and tolerant of the replica's (normally sub-second) streaming lag — never route anything that reads-after-write in the same request, or anything financial/authoritative that must reflect the primary at the instant of the read.</li>
+<li>Add the <code>&lt;service&gt;_ro</code> alias to <code>pgbouncer.yaml</code> if one doesn't already exist for your service, sized well below the alias's own connection budget (see the <code>inventory_ro</code>/<code>pos_ro</code> pool-size comments in that file for the reasoning and a real incident where an undersized pool queued behind another service's S2S timeout).</li>
+<li>Follow the same three-step wiring above — config field → optional secret-backed env var → explicit opt-in at the one call site — rather than making the read client the service's default Ent client.</li>
+<li>The replica is a <strong>PostgreSQL streaming replica with no automatic failover</strong> — a manual-promotion runbook exists for the primary-down case, but the replica itself is not a load-scaling cluster and shouldn't be treated as one for capacity planning.</li>
+</ul>
 
 
 
@@ -2026,7 +2056,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 12:08:08 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 21, 2026 08:57:30 UTC">August 21, 2026</span>
   </span>
 
     
@@ -2036,7 +2066,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 21, 2026 08:57:30 UTC">August 21, 2026</span>
   </span>
 
     
