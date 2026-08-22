@@ -1,7 +1,7 @@
 # M-Pesa Daraja API Integration Reference
 
-> **Sources**: Safaricom APIs Postman collection (`shared-docs/mpesa apis/Safaricom APIs.postman_collection.json`), Safaricom Daraja Developer Portal.
-> **Updated**: March 2026
+> **Sources**: Safaricom APIs Postman collection (`shared-docs/mpesa apis/Safaricom APIs.postman_collection.json` — refreshed 2026-08-22 from a 2026-06 Daraja Developer Portal export; single canonical copy, was previously duplicated 19x under `finance-service/resources/m-pesa-apis/`), Safaricom Daraja Developer Portal.
+> **Updated**: August 2026
 
 ---
 
@@ -134,12 +134,25 @@ password := base64.StdEncoding.EncodeToString([]byte(shortcode + passkey + times
 {
   "ShortCode": "600000",
   "ResponseType": "Completed",
-  "ConfirmationURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/confirmation",
-  "ValidationURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/validation"
+  "ConfirmationURL": "https://booksapi.codevertexafrica.com/api/v1/webhooks/c2b/confirmation",
+  "ValidationURL": "https://booksapi.codevertexafrica.com/api/v1/webhooks/c2b/validation"
 }
 ```
 
 Must be registered once per production shortcode. Sandbox uses simulate.
+
+**Two gotchas confirmed live against the sandbox (2026-08-22), both now fixed in code
+(`urls.MpesaConfirmationURL`/`MpesaValidationURL`) but worth knowing if you're hand-building these
+URLs elsewhere:**
+- The URL must include the API's real path prefix (`/api/v1/webhooks/...` here) — a URL missing it
+  404s on our own server the moment Daraja tries to deliver a confirmation, even though registration
+  itself appears to succeed.
+- Daraja's RegisterURL rejects any Confirmation/ValidationURL containing the substring **"mpesa"**
+  outright, with `400.003.02 "Bad Request - Invalid ValidationURL - URL has the word MPESA"` — hence
+  `/webhooks/c2b/...`, not `/webhooks/mpesa/...`, for these two specific URLs. Every other `mpesa/*`
+  webhook (STK callback, B2C/B2B results, txn-status, reversal, balance) is unaffected — those are
+  passed to different Daraja APIs (as `ResultURL`/`QueueTimeOutURL`) that were not observed to apply
+  the same filter.
 
 ---
 
@@ -185,7 +198,9 @@ Must be registered once per production shortcode. Sandbox uses simulate.
 - `SalaryPayment` — salary disbursement
 - `PromotionPayment` — for cashback/promotions
 
-**SecurityCredential**: RSA-encrypt initiator password using M-Pesa public key certificate.
+**SecurityCredential**: RSA-encrypt initiator password using M-Pesa public key certificate. See
+"Initiator SecurityCredential" below for where this cert actually comes from in this codebase and its
+current admin UI.
 
 **Result callback**:
 ```json
@@ -357,24 +372,40 @@ Returns a base64-encoded PNG of the QR code.
 
 ## Webhook Endpoints in treasury-api
 
-| M-Pesa Event | Internal Route |
-|---|---|
-| STK Push callback | `POST /webhooks/mpesa/callback` |
-| C2B Validation | `POST /webhooks/mpesa/validation` |
-| C2B Confirmation | `POST /webhooks/mpesa/confirmation` |
-| B2C Result | `POST /webhooks/mpesa/b2c-result` |
-| B2C Timeout | `POST /webhooks/mpesa/b2c-timeout` |
-| B2B Result | `POST /webhooks/mpesa/b2b-result` |
-| Transaction Status Result | `POST /webhooks/mpesa/txn-status-result` |
-| Transaction Reversal Result | `POST /webhooks/mpesa/reversal-result` |
-| Account Balance Result | `POST /webhooks/mpesa/balance-result` |
-| M-Pesa Ratiba | `POST /webhooks/mpesa/ratiba` |
+All paths below are relative to `PublicBaseURL` and require the `/api/v1` prefix (e.g.
+`https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/callback`) — every URL builder now goes
+through `internal/pkg/urls`'s `MpesaXxxURL` helpers (single source of truth, confirmed live
+2026-08-22 after finding several of these were previously missing this prefix entirely and being
+submitted to Daraja as bare relative paths).
+
+| M-Pesa Event | Internal Route | Built via |
+|---|---|---|
+| STK Push callback | `POST /api/v1/webhooks/mpesa/callback` | `urls.MpesaCallbackURL` |
+| C2B Validation | `POST /api/v1/webhooks/c2b/validation` | `urls.MpesaValidationURL` |
+| C2B Confirmation | `POST /api/v1/webhooks/c2b/confirmation` | `urls.MpesaConfirmationURL` |
+| B2C Result | `POST /api/v1/webhooks/mpesa/b2c-result` | `urls.MpesaB2CResultURL` |
+| B2C Timeout | `POST /api/v1/webhooks/mpesa/b2c-timeout` | `urls.MpesaB2CTimeoutURL` |
+| B2B Result | `POST /api/v1/webhooks/mpesa/b2b-result` | `urls.MpesaB2BResultURL` |
+| B2B Timeout | `POST /api/v1/webhooks/mpesa/b2b-timeout` | `urls.MpesaB2BTimeoutURL` |
+| Transaction Status Result | `POST /api/v1/webhooks/mpesa/txn-status-result` | `urls.MpesaTxnStatusURL` |
+| Transaction Reversal Result | `POST /api/v1/webhooks/mpesa/reversal-result` | `urls.MpesaReversalURL` |
+| Account Balance Result | `POST /api/v1/webhooks/mpesa/balance-result` | `urls.MpesaBalanceURL` |
+| M-Pesa Ratiba | `POST /api/v1/webhooks/mpesa/ratiba` | `urls.MpesaRatibaURL` |
+| Shared QueueTimeOutURL | `POST /api/v1/webhooks/mpesa/timeout` | `urls.MpesaTimeoutURL` |
+
+**Note on C2B's `/webhooks/c2b/...` paths** (not `/webhooks/mpesa/...` like everything else): Daraja's
+RegisterURL API rejects any Confirmation/ValidationURL containing the substring "mpesa" outright, with
+a hard `400.003.02 "URL has the word MPESA"` — confirmed live 2026-08-22. Every other path above is
+fine to contain "mpesa" since it's passed as `ResultURL`/`QueueTimeOutURL` to a *different* Daraja API
+(B2C/B2B/balance/etc.) that was not observed to apply the same filter.
 
 ---
 
-## RSA Security Credential Generation
+## Initiator SecurityCredential (RSA-encrypted initiator password)
 
-Required for B2C, B2B, Transaction Status, Reversal, Account Balance:
+Required for B2C, B2B, Transaction Status, Reversal, Account Balance — every Daraja command that
+authenticates as an "Initiator" rather than just the OAuth app. `MpesaGateway.generateSecurityCredential`
+(mpesa.go) does this at runtime:
 ```go
 // Encrypt initiator password with M-Pesa public key certificate
 func generateSecurityCredential(initiatorPassword, certPath string) (string, error) {
@@ -387,7 +418,30 @@ func generateSecurityCredential(initiatorPassword, certPath string) (string, err
 }
 ```
 
-Certificates: [sandbox](https://developer.safaricom.co.ke/sites/default/files/cert/cert_sandbox/cert.cer) | [production](https://developer.safaricom.co.ke/sites/default/files/cert/cert_prod/cert.cer).
+**Where the certificate actually comes from** (checked live 2026-08-22): `cert_pem` credential
+(inline PEM, preferred — no file mount needed) → `cert_path` credential (filesystem path) →
+`MPESA_SANDBOX_CERT_PATH`/`MPESA_PROD_CERT_PATH` env vars → **if none of those are set, silently
+falls back to sending the initiator password UNENCRYPTED (base64 only)**. Confirmed none are
+currently configured in the treasury-api deployment (no matching env vars, no volume mounts) — every
+initiator-authenticated call has been running on the unencrypted fallback, which sandbox tolerates
+but production would reject.
+
+**This is environment-scoped (sandbox vs production), not per-tenant or per-app** — it's Safaricom's
+own infrastructure public key, identical for every developer/tenant in that environment, so it's set
+once at the **platform level** (Settings → Platform → Gateways → M-Pesa Paybill/Till → "cert pem"
+field) and every tenant inherits it via the existing `ResolveConfig`/`MergeCredentials` chain — no
+tenant-level field exists or is needed for this specific credential.
+
+**Certificates** (current working URLs, found in a saved 2026-06 Daraja portal capture — the URLs
+previously documented here, `developer.safaricom.co.ke/sites/default/files/cert/cert_{sandbox,prod}/cert.cer`,
+now 404): [sandbox](https://developer.safaricom.co.ke/certificates/SandboxCertificate.cer) |
+[production](https://developer.safaricom.co.ke/certificates/ProductionCertificate.cer). Both are
+saved (verified working 2026-08-22) as `shared-docs/mpesa apis/{Sandbox,Production}Certificate.cer` —
+the same tracked location as the Postman collection, unlike `finance-service/resources/m-pesa-apis/`
+which is NOT a git repo at all (nothing saved there persists past the local machine). Both certs are
+technically X.509-expired (2016 and 2018 respectively) but still valid for this use: Daraja's
+SecurityCredential flow only extracts the RSA public key for encryption, it doesn't check certificate
+expiry, and Safaricom continues to publish and expect these exact certs.
 
 ---
 
