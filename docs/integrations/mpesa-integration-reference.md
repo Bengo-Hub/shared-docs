@@ -1,7 +1,16 @@
 # M-Pesa Daraja API Integration Reference
 
-> **Sources**: Safaricom APIs Postman collection (`shared-docs/mpesa apis/Safaricom APIs.postman_collection.json` — refreshed 2026-08-22 from a 2026-06 Daraja Developer Portal export; single canonical copy, was previously duplicated 19x under `finance-service/resources/m-pesa-apis/`), Safaricom Daraja Developer Portal.
+> **Sources**: Safaricom APIs Postman collection (`shared-docs/mpesa apis/Safaricom APIs.postman_collection.json` — refreshed 2026-08-22 from a live Daraja Developer Portal export, adds "Age On Network"; single canonical copy, was previously duplicated 19x under `finance-service/resources/m-pesa-apis/`), Safaricom Daraja Developer Portal.
 > **Updated**: August 2026
+>
+> **Known defect in Safaricom's own collection** (confirmed persistent across two exports fetched
+> hours apart 2026-08-22, so not staleness on our end): "Query the Transaction Status of an M-Pesa
+> Transaction"'s documented request body is byte-identical to "Query the status of a Lipa na M-Pesa
+> Online Payment" (STK Push Query) — `{BusinessShortCode, Password, Timestamp, CheckoutRequestID}`.
+> That's the *correct* body for STK Push Query; Transaction Status Query's real shape is
+> `{Initiator, SecurityCredential, CommandID, TransactionID, PartyA, IdentifierType, Remarks,
+> QueueTimeOutURL, ResultURL, Occasion}` — see "RSA Security Credential Generation" below, and don't
+> copy this collection's body for that specific request.
 
 ---
 
@@ -122,6 +131,28 @@ password := base64.StdEncoding.EncodeToString([]byte(shortcode + passkey + times
 ```
 
 **Response**: `ResultCode: 0` = paid; `1032` = user cancelled; `1037` = timeout.
+
+**Live-verified 2026-08-22** against a real completed STK transaction (`CheckoutRequestID
+ws_CO_220820261449537743793901`, receipt `UHMEQ4C1FI`): clean synchronous `200`, `ResultCode: "0"`,
+`ResultDesc: "The service request is processed successfully."` — and `MerchantRequestID` in the
+response matched byte-for-byte what's stored in our own `payment_intents.metadata.provider_reference`
+for that intent, cross-confirming data integrity end to end. Implementation: `MpesaGateway.VerifyPayment`
+(mpesa.go), called from the reconciliation background job (`payments/reconciler.go`) and the platform
+admin "test connection" health check — not currently exposed as an on-demand per-intent HTTP trigger
+the way Transaction Status Query is (`POST .../payments/intents/{id}/check-status`); reconciliation
+only re-checks intents still `pending`/`processing`, so an already-`succeeded` intent has no live
+manual re-check path today. Not a gap that's been asked for — noting it here as a fact, not a todo.
+
+**Do not confuse this with Transaction Status Query (below)** — same general purpose ("is this
+payment done?") but a genuinely different Daraja API, different auth (OAuth-only here vs
+Initiator+SecurityCredential there), different body shape, and used for a different scenario: this
+one polls a transaction **we ourselves initiated** via STK Push (keyed by `CheckoutRequestID`,
+something only WE have, generated at STK-push time); Transaction Status Query below can check the
+status of **any** M-Pesa transaction by its public receipt/confirmation code (keyed by
+`TransactionID`, the code a customer reads off their own SMS) — including ones we never initiated at
+all, e.g. a C2B till payment. That's the whole reason the C2B manual-code fallback (pos-ui) verifies
+a cashier-typed code against the C2B inbox rather than this endpoint: the code came from the
+customer's SMS, not from anything we generated.
 
 ---
 
@@ -254,10 +285,47 @@ current admin UI.
 
 ---
 
+## 7b. B2B Hakikisha — recipient org verification (added 2026-08-22)
+
+**Purpose**: Verify a B2B recipient organization's identity BEFORE sending money to it — reduces
+misdirected B2B payments, since §6's B2B payment request itself has no such check.  
+**Endpoint**: `POST /sfcverify/v1/query/info`. OAuth-only (no SecurityCredential needed).
+```json
+{ "IdentifierType": "4", "Identifier": "<recipient shortcode>" }
+```
+No sample response is documented in the collection; `MpesaGateway.VerifyB2BOrgInfo` (mpesa.go)
+returns the raw decoded JSON rather than guessing at named fields. Tenant-scoped:
+`POST /{tenant}/gateways/mpesa/verify-b2b-org`, body `{identifier_type?, identifier}`.
+
+---
+
+## 7c. Mobile Number / ID Validation (KYC, added 2026-08-22)
+
+**Purpose**: Verify an MSISDN is registered against a given National ID/passport number.  
+**Endpoint**: `POST /v1/KYC-validation/validateID`. OAuth-only.
+```json
+{ "requestRefID": "<unique>", "shortCode": "", "msisdn": "", "idType": "", "idNumber": "" }
+```
+Same no-documented-response-shape caveat as Hakikisha above; `MpesaGateway.ValidateMobileNumberID`
+returns the raw decoded JSON. Tenant-scoped: `POST /{tenant}/gateways/mpesa/validate-mobile-id`, body
+`{short_code?, msisdn, id_type, id_number}`. This is a KYC/identity-verification capability rather
+than a payment-confirmation one — no frontend surface built for it yet; it's API-only until a
+concrete product use case (e.g. customer onboarding for credit accounts) defines where it belongs.
+
+---
+
 ## 8. Transaction Status Query
 
-**Purpose**: Query the status of any M-Pesa transaction.  
-**Endpoint**: `POST /mpesa/transactionstatus/v1/query`
+**Purpose**: Query the status of ANY M-Pesa transaction by its public receipt code (e.g. what a
+customer reads off their own SMS) — including ones we never initiated, unlike STK Push Query (§2)
+above, which only polls a `CheckoutRequestID` WE generated. See §2's "Do not confuse this with..."
+note for the full distinction — this is the one important for reconciling a manually-typed M-Pesa
+code, not §2.  
+**Endpoint**: `POST /mpesa/transactionstatus/v1/query`. **Do not copy the request body from this
+collection's own entry for this request** — see the top-of-file note; it's a verified, persistent
+defect (identical to the unrelated STK Push Query body) present in two exports fetched hours apart.
+The shape below is the real one, cross-checked against 4 other correctly-filled requests in the same
+collection (Account Balance, Reversal, both Standing Order variants) and proven via live testing.
 
 ```json
 {
@@ -267,12 +335,31 @@ current admin UI.
   "TransactionID": "LHG31AA5TX",
   "PartyA": "600000",
   "IdentifierType": "4",
-  "ResultURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-status-result",
-  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-timeout",
+  "ResultURL": "https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/txn-status-result",
+  "QueueTimeOutURL": "https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/timeout",
   "Remarks": "Status check",
   "Occasion": ""
 }
 ```
+
+`IdentifierType` is `"4"` for a Paybill shortcode, `"2"` for Till/Buy-Goods — `PartyA` here is OUR
+OWN shortcode, so this follows the same `orgIdentifierType()` (mpesa.go) as Account Balance; see
+that function's fix note (2026-08-22) for the Till-tenant bug this codifies.
+
+**Live-verified 2026-08-22**, three separate real-receipt submissions across this session (all
+`success:true`, clean `200`): once with a full end-to-end proof — Safaricom actually delivered the
+async result back through our (at-the-time newly fixed) webhook URL, logged as a real inbound `POST
+/api/v1/webhooks/mpesa/txn-status-result` → `200`. Daraja's async delivery timing for this specific
+API is inconsistent in sandbox (landed within ~20s once, didn't land within that same window on two
+other otherwise-identical attempts) — a Safaricom-side sandbox characteristic, not a defect here;
+the submission side (the part actually within our control) is solid on every attempt.
+
+Reachable via `POST /{tenant}/payments/intents/{intentID}/check-status` (`CheckIntentStatus`) — but
+only for an intent that has its OWN `mpesa_receipt_number`/`provider_reference` in metadata (i.e. a
+transaction WE initiated via STK and later want to re-verify). A code with no such intent (e.g. one
+that arrived via a channel we never initiated, or was only ever entered manually) has nothing to
+attach the query to via this endpoint — that's a data-availability constraint of being keyed by
+intent, not a code defect.
 
 ---
 

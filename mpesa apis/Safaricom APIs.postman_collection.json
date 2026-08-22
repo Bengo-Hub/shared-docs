@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "9dcc1832-e70c-4912-a92a-dd576e7ab180",
+    "_postman_id": "57cc8afd-ccf2-4a61-afb8-ff9db6c78a7f",
     "name": "Safaricom APIs",
     "description": "# Introduction\nWhat does your API do?\n\n# Overview\nThings that the developers should know about\n\n# Authentication\nWhat is the preferred way of using the API?\n\n# Error Codes\nWhat errors and status codes can a user expect?\n\n# Rate limit\nIs there a limit to the number of requests an user can send?",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -83,7 +83,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"StandingOrderName\": \"\",\n    \"BusinessShortCode\": \"174379\",\n    \"TransactionType\": \"Standing Order Customer Pay Bill\",\n    \"Amount\": \"\",\n    \"PartyA\": \"\",\n    \"ReceiverPartyIdentifierType\": \"4\",\n    \"CallBackURL\": \"\",\n    \"AccountReference\": \"\",\n    \"TransactionDesc\": \"\",\n    \"Frequency\": \"\",\n    \"StartDate\": \"\",\n    \"EndDate\": \"\"\n}",
+              "raw": "{\n    \"StandingOrderName\": \"\",\n    \"BusinessShortCode\": \"174379\",\n    \"CustomStoId\": \"\",\n    \"TransactionType\": \"Standing Order Customer Pay Bill\",\n    \"Amount\": \"\",\n    \"PartyA\": \"\",\n    \"ReceiverPartyIdentifierType\": \"4\",\n    \"CallBackURL\": \"\",\n    \"AccountReference\": \"\",\n    \"TransactionDesc\": \"\",\n    \"Frequency\": \"\",\n    \"StartDate\": \"\",\n    \"EndDate\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -125,7 +125,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"StandingOrderName\": \"\",\n    \"BusinessShortCode\": \"300584\",\n    \"TransactionType\": \"Standing Order Customer Pay Merchant\",\n    \"Amount\": \"\",\n    \"PartyA\": \"\",\n    \"ReceiverPartyIdentifierType\": \"2\",\n    \"CallBackURL\": \"\",\n    \"AccountReference\": \"\",\n    \"TransactionDesc\": \"\",\n    \"Frequency\": \"\",\n    \"StartDate\": \"\",\n    \"EndDate\": \"\"\n}",
+              "raw": "{\n    \"StandingOrderName\": \"\",\n    \"BusinessShortCode\": \"300584\",\n    \"CustomStoId\": \"\",\n    \"TransactionType\": \"Standing Order Customer Pay Merchant\",\n    \"Amount\": \"\",\n    \"PartyA\": \"\",\n    \"ReceiverPartyIdentifierType\": \"2\",\n    \"CallBackURL\": \"\",\n    \"AccountReference\": \"\",\n    \"TransactionDesc\": \"\",\n    \"Frequency\": \"\",\n    \"StartDate\": \"\",\n    \"EndDate\": \"\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -166,7 +166,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "stKT2dj8Bjvd6FtVdNJTVxwceqZ6",
+                      "value": "",
                       "type": "string"
                     }
                   ]
@@ -249,7 +249,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "stKT2dj8Bjvd6FtVdNJTVxwceqZ6",
+                      "value": "",
                       "type": "string"
                     }
                   ]
@@ -1371,6 +1371,49 @@
       ]
     },
     {
+      "name": "Age On Network",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"customerNumber\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://sandbox.safaricom.co.ke/registration/lookup/v1/checkATI",
+          "protocol": "https",
+          "host": [
+            "sandbox",
+            "safaricom",
+            "co",
+            "ke"
+          ],
+          "path": [
+            "registration",
+            "lookup",
+            "v1",
+            "checkATI"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Make a B2B Payment Request",
       "request": {
         "method": "POST",
@@ -1657,7 +1700,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "PBs7e5dVMBEwThopJfv7PbMzDtgo",
+              "value": "",
               "type": "string"
             }
           ]
@@ -1741,7 +1784,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "XxeyxAf03eyHOwjqLyaKX02ASYwe",
+              "value": "",
               "type": "string"
             }
           ]
