@@ -1780,6 +1780,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7b. B2B Hakikisha — recipient org verification (added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7c-mobile-number-id-validation-kyc-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7c. Mobile Number / ID Validation (KYC, added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#8-transaction-status-query" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2252,6 +2274,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7b. B2B Hakikisha — recipient org verification (added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7c-mobile-number-id-validation-kyc-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7c. Mobile Number / ID Validation (KYC, added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#8-transaction-status-query" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2361,8 +2405,16 @@
 
 <h1 id="m-pesa-daraja-api-integration-reference">M-Pesa Daraja API Integration Reference<a class="headerlink" href="#m-pesa-daraja-api-integration-reference" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p><strong>Sources</strong>: Safaricom APIs Postman collection (<code>shared-docs/mpesa apis/Safaricom APIs.postman_collection.json</code> — refreshed 2026-08-22 from a 2026-06 Daraja Developer Portal export; single canonical copy, was previously duplicated 19x under <code>finance-service/resources/m-pesa-apis/</code>), Safaricom Daraja Developer Portal.
+<p><strong>Sources</strong>: Safaricom APIs Postman collection (<code>shared-docs/mpesa apis/Safaricom APIs.postman_collection.json</code> — refreshed 2026-08-22 from a live Daraja Developer Portal export, adds "Age On Network"; single canonical copy, was previously duplicated 19x under <code>finance-service/resources/m-pesa-apis/</code>), Safaricom Daraja Developer Portal.
 <strong>Updated</strong>: August 2026</p>
+<p><strong>Known defect in Safaricom's own collection</strong> (confirmed persistent across two exports fetched
+hours apart 2026-08-22, so not staleness on our end): "Query the Transaction Status of an M-Pesa
+Transaction"'s documented request body is byte-identical to "Query the status of a Lipa na M-Pesa
+Online Payment" (STK Push Query) — <code>{BusinessShortCode, Password, Timestamp, CheckoutRequestID}</code>.
+That's the <em>correct</em> body for STK Push Query; Transaction Status Query's real shape is
+<code>{Initiator, SecurityCredential, CommandID, TransactionID, PartyA, IdentifierType, Remarks,
+QueueTimeOutURL, ResultURL, Occasion}</code> — see "RSA Security Credential Generation" below, and don't
+copy this collection's body for that specific request.</p>
 </blockquote>
 <hr />
 <h2 id="treasury-payment-workflow">Treasury payment workflow<a class="headerlink" href="#treasury-payment-workflow" title="Permanent link">&para;</a></h2>
@@ -2470,6 +2522,26 @@ Authorization: Basic base64(consumer_key:consumer_secret)
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Response</strong>: <code>ResultCode: 0</code> = paid; <code>1032</code> = user cancelled; <code>1037</code> = timeout.</p>
+<p><strong>Live-verified 2026-08-22</strong> against a real completed STK transaction (<code>CheckoutRequestID
+ws_CO_220820261449537743793901</code>, receipt <code>UHMEQ4C1FI</code>): clean synchronous <code>200</code>, <code>ResultCode: "0"</code>,
+<code>ResultDesc: "The service request is processed successfully."</code> — and <code>MerchantRequestID</code> in the
+response matched byte-for-byte what's stored in our own <code>payment_intents.metadata.provider_reference</code>
+for that intent, cross-confirming data integrity end to end. Implementation: <code>MpesaGateway.VerifyPayment</code>
+(mpesa.go), called from the reconciliation background job (<code>payments/reconciler.go</code>) and the platform
+admin "test connection" health check — not currently exposed as an on-demand per-intent HTTP trigger
+the way Transaction Status Query is (<code>POST .../payments/intents/{id}/check-status</code>); reconciliation
+only re-checks intents still <code>pending</code>/<code>processing</code>, so an already-<code>succeeded</code> intent has no live
+manual re-check path today. Not a gap that's been asked for — noting it here as a fact, not a todo.</p>
+<p><strong>Do not confuse this with Transaction Status Query (below)</strong> — same general purpose ("is this
+payment done?") but a genuinely different Daraja API, different auth (OAuth-only here vs
+Initiator+SecurityCredential there), different body shape, and used for a different scenario: this
+one polls a transaction <strong>we ourselves initiated</strong> via STK Push (keyed by <code>CheckoutRequestID</code>,
+something only WE have, generated at STK-push time); Transaction Status Query below can check the
+status of <strong>any</strong> M-Pesa transaction by its public receipt/confirmation code (keyed by
+<code>TransactionID</code>, the code a customer reads off their own SMS) — including ones we never initiated at
+all, e.g. a C2B till payment. That's the whole reason the C2B manual-code fallback (pos-ui) verifies
+a cashier-typed code against the C2B inbox rather than this endpoint: the code came from the
+customer's SMS, not from anything we generated.</p>
 <hr />
 <h2 id="3-c2b-register-urls">3. C2B — Register URLs<a class="headerlink" href="#3-c2b-register-urls" title="Permanent link">&para;</a></h2>
 <p><strong>Purpose</strong>: Register confirmation/validation URLs for over-the-counter C2B payments (paybill, till).<br />
@@ -2570,9 +2642,38 @@ current admin UI.</p>
 <p><strong>Endpoint</strong>: Same as B2C (<code>/mpesa/b2c/v1/paymentrequest</code>)<br />
 <strong>CommandID</strong>: <code>BusinessPayment</code> with PartyB as the Pochi till number.</p>
 <hr />
+<h2 id="7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22">7b. B2B Hakikisha — recipient org verification (added 2026-08-22)<a class="headerlink" href="#7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Verify a B2B recipient organization's identity BEFORE sending money to it — reduces
+misdirected B2B payments, since §6's B2B payment request itself has no such check.<br />
+<strong>Endpoint</strong>: <code>POST /sfcverify/v1/query/info</code>. OAuth-only (no SecurityCredential needed).
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;recipient shortcode&gt;"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+No sample response is documented in the collection; <code>MpesaGateway.VerifyB2BOrgInfo</code> (mpesa.go)
+returns the raw decoded JSON rather than guessing at named fields. Tenant-scoped:
+<code>POST /{tenant}/gateways/mpesa/verify-b2b-org</code>, body <code>{identifier_type?, identifier}</code>.</p>
+<hr />
+<h2 id="7c-mobile-number-id-validation-kyc-added-2026-08-22">7c. Mobile Number / ID Validation (KYC, added 2026-08-22)<a class="headerlink" href="#7c-mobile-number-id-validation-kyc-added-2026-08-22" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Verify an MSISDN is registered against a given National ID/passport number.<br />
+<strong>Endpoint</strong>: <code>POST /v1/KYC-validation/validateID</code>. OAuth-only.
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"requestRefID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;unique&gt;"</span><span class="p">,</span><span class="w"> </span><span class="nt">"shortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"msisdn"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"idType"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"idNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+Same no-documented-response-shape caveat as Hakikisha above; <code>MpesaGateway.ValidateMobileNumberID</code>
+returns the raw decoded JSON. Tenant-scoped: <code>POST /{tenant}/gateways/mpesa/validate-mobile-id</code>, body
+<code>{short_code?, msisdn, id_type, id_number}</code>. This is a KYC/identity-verification capability rather
+than a payment-confirmation one — no frontend surface built for it yet; it's API-only until a
+concrete product use case (e.g. customer onboarding for credit accounts) defines where it belongs.</p>
+<hr />
 <h2 id="8-transaction-status-query">8. Transaction Status Query<a class="headerlink" href="#8-transaction-status-query" title="Permanent link">&para;</a></h2>
-<p><strong>Purpose</strong>: Query the status of any M-Pesa transaction.<br />
-<strong>Endpoint</strong>: <code>POST /mpesa/transactionstatus/v1/query</code></p>
+<p><strong>Purpose</strong>: Query the status of ANY M-Pesa transaction by its public receipt code (e.g. what a
+customer reads off their own SMS) — including ones we never initiated, unlike STK Push Query (§2)
+above, which only polls a <code>CheckoutRequestID</code> WE generated. See §2's "Do not confuse this with..."
+note for the full distinction — this is the one important for reconciling a manually-typed M-Pesa
+code, not §2.<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/transactionstatus/v1/query</code>. <strong>Do not copy the request body from this
+collection's own entry for this request</strong> — see the top-of-file note; it's a verified, persistent
+defect (identical to the unrelated STK Push Query body) present in two exports fetched hours apart.
+The shape below is the real one, cross-checked against 4 other correctly-filled requests in the same
+collection (Account Balance, Reversal, both Standing Order variants) and proven via live testing.</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_INITIATOR_NAME"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
@@ -2580,12 +2681,28 @@ current admin UI.</p>
 <span class="w">  </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LHG31AA5TX"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-status-result"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/txn-timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/txn-status-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/timeout"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status check"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
 <span class="p">}</span>
 </code></pre></div>
+<p><code>IdentifierType</code> is <code>"4"</code> for a Paybill shortcode, <code>"2"</code> for Till/Buy-Goods — <code>PartyA</code> here is OUR
+OWN shortcode, so this follows the same <code>orgIdentifierType()</code> (mpesa.go) as Account Balance; see
+that function's fix note (2026-08-22) for the Till-tenant bug this codifies.</p>
+<p><strong>Live-verified 2026-08-22</strong>, three separate real-receipt submissions across this session (all
+<code>success:true</code>, clean <code>200</code>): once with a full end-to-end proof — Safaricom actually delivered the
+async result back through our (at-the-time newly fixed) webhook URL, logged as a real inbound <code>POST
+/api/v1/webhooks/mpesa/txn-status-result</code> → <code>200</code>. Daraja's async delivery timing for this specific
+API is inconsistent in sandbox (landed within ~20s once, didn't land within that same window on two
+other otherwise-identical attempts) — a Safaricom-side sandbox characteristic, not a defect here;
+the submission side (the part actually within our control) is solid on every attempt.</p>
+<p>Reachable via <code>POST /{tenant}/payments/intents/{intentID}/check-status</code> (<code>CheckIntentStatus</code>) — but
+only for an intent that has its OWN <code>mpesa_receipt_number</code>/<code>provider_reference</code> in metadata (i.e. a
+transaction WE initiated via STK and later want to re-verify). A code with no such intent (e.g. one
+that arrived via a channel we never initiated, or was only ever entered manually) has nothing to
+attach the query to via this endpoint — that's a data-availability constraint of being keyed by
+intent, not a code defect.</p>
 <hr />
 <h2 id="9-transaction-reversal">9. Transaction Reversal<a class="headerlink" href="#9-transaction-reversal" title="Permanent link">&para;</a></h2>
 <p><strong>Purpose</strong>: Reverse a completed M-Pesa transaction (within 24 hours).<br />
@@ -2805,7 +2922,7 @@ expiry, and Safaricom continues to publish and expect these exact certs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 22, 2026 15:14:52 UTC">August 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 22, 2026 15:54:20 UTC">August 22, 2026</span>
   </span>
 
     
