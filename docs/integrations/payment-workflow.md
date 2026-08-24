@@ -143,6 +143,12 @@ After Paystack (or other redirect-based gateways) complete, the user lands on a 
 
 - **Webhook and callback URLs** for Paystack and M-Pesa are **auto-generated** in treasury-api from `HTTP_PUBLIC_BASE_URL` and fixed paths. Gateway credentials themselves are platform-level configuration, not something a tenant or external integrator ever sets directly.
 - Production base URL is set in `devops-k8s/apps/treasury-api/values.yaml` as `TREASURY_HTTP_PUBLIC_BASE_URL`.
+- **Idempotency key for `treasury.payment.succeeded` (and every other treasury event)**: use the event
+  envelope's `id` (`event_id`) — it is always present and DB-unique, and is preserved across outbox
+  retries and NATS redelivery. Do **not** key idempotency on `provider_reference`/`payment_ref`: it is
+  omitted entirely for cash/manual/till/COD settlements, and even when a gateway supplies one it is not
+  enforced unique. See [Idempotency & the Outbox Pattern](../platform-standards/idempotency-and-outbox.md)
+  for the consumer-side `IdempotencyStore` pattern.
 
 ---
 
