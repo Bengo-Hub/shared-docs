@@ -52,6 +52,10 @@ refunded. Not sure which plan fits? `POST /tokens/estimate` (no API key needed) 
 expected call volume into an exact monthly token figure and a plan recommendation — see the [full
 API reference](#full-api-reference) for the endpoint.
 
+Already a Codevertex customer whose main plan bundles eTIMS? You don't pay the standalone fee
+twice — ask support about the `ETIMS_API_BUNDLED` tier (same token economics as API Basic, KES
+0/month base fee).
+
 A one-time assisted-integration fee applies only if you choose to have our team do the setup for
 you instead of your own developers.
 
