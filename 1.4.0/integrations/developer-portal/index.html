@@ -1996,9 +1996,10 @@
 <h1 id="developer-portal-current-state-roadmap">Developer Portal — Current State &amp; Roadmap<a class="headerlink" href="#developer-portal-current-state-roadmap" title="Permanent link">&para;</a></h1>
 <p>The eTIMS external API (see <a href="../etims-api/">eTIMS API Quickstart</a>) is the first fully-fleshed-out
 integration built on this pattern — sandbox/production separation, a certification checklist
-before go-live, usage-based billing. This page tracks what's ecosystem-wide (reusable for any
-future integration, not just eTIMS) today, and what's roadmapped to make it a real multi-service
-developer portal rather than a per-integration pattern repeated by hand each time.</p>
+before go-live, a real-time prepaid token-bucket billing gate. This page tracks what's
+ecosystem-wide (reusable for any future integration, not just eTIMS) today, and what's roadmapped
+to make it a real multi-service developer portal rather than a per-integration pattern repeated by
+hand each time.</p>
 <h2 id="what-exists-today">What exists today<a class="headerlink" href="#what-exists-today" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Apply for access</strong>: <a href="https://accounts.codevertexafrica.com/developer/apply">accounts.codevertexafrica.com/developer/apply</a>
@@ -2023,7 +2024,19 @@ developer portal rather than a per-integration pattern repeated by hand each tim
   device. <code>EtimsDevice.environment</code> (sandbox/production, per registered device) remains a separate,
   deliberately decoupled axis — promoting an eTIMS partner's <code>App</code> to production still changes
   nothing about which KRA environment their devices transmit to; that's governed by the
-  certification checklist and which <code>EtimsDevice.environment</code> they registered.</li>
+  certification checklist and which <code>EtimsDevice.environment</code> they registered. Promotion also
+  publishes <code>auth.app.promoted_to_production</code>, which subscriptions-api consumes to auto-provision
+  a zero-balance token wallet for the promoted tenant+service (see the billing bullet below) — the
+  wallet row exists immediately, though the tenant still has to subscribe to a plan or top up
+  before their balance is non-zero.</li>
+<li><strong>Billing (eTIMS API)</strong>: a real-time, request-blocking prepaid token bucket
+  (<code>ApiTokenWallet</code>/<code>ApiTokenTransaction</code> in subscriptions-api, generalized by <code>service_tag</code> so a
+  future integration can reuse the same primitive) — every external API call spends tokens weighted
+  by what it actually costs to serve, enforced by treasury-api's <code>ExternalAPIKeyAuth</code> middleware
+  <em>before</em> the handler (and therefore before any real KRA call) runs, with automatic refunds for
+  calls that turn out not to have done real work. Full detail in <a href="../etims-api/">eTIMS API
+  Quickstart</a>'s Pricing section. This replaced an
+  earlier post-paid monthly-overage model that never actually gated a request in real time.</li>
 <li><strong>Sandbox simulation (eTIMS)</strong>: a brand-new developer with a sandbox credential but no real KRA
   sandbox TIN yet can use <code>/external/etims/sandbox/{devices,items,stock-io,sales}</code> to fake a full
   certification pass — Redis-backed, expires after 72 hours, never written to the real
@@ -2067,10 +2080,17 @@ and (once one exists) a head start on the credential.</p>
   but approval still provisions a full business <code>Tenant</code> behind the scenes. A solo API developer
   with no interest in the wider SaaS suite still ends up with a <code>Tenant</code> record, just one they
   never interact with directly.</li>
-<li><strong>Usage-based plan picker wired to entitlements</strong> — subscriptions-service already has a working
-  self-serve plan/subscribe/upgrade UI; wiring an API-only tenant's chosen plan directly into
-  their <code>App</code>'s entitlements (rather than the current manual admin-driven plan assignment) closes
-  the loop on true self-serve for API products beyond eTIMS.</li>
+<li><strong>Self-serve plan picker for an existing tenant's second product</strong> — a brand-new, API-only
+  tenant can already self-serve subscribe to <code>ETIMS_API_BASIC/GROWTH/SCALE</code> directly (subscriptions-
+  api's <code>POST /subscription</code> is plan-agnostic). What's still manual: an <em>existing</em> Codevertex
+  customer (already on a PowerSuite/POS/Duka/Dawa plan) who also wants external API access needs a
+  platform admin to attach the second product via the <code>ProductSubscription</code> overlay — no self-serve
+  UI flow for that case yet, and no cross-sell discount applied automatically even though they
+  already pay for bundled <code>etims_integration</code>.</li>
+<li><strong>Tenant-facing token wallet UI</strong> — the balance/transactions/top-up/estimate API is live (see
+  the billing bullet above and <a href="../etims-api/">eTIMS API Quickstart</a>), but subscriptions-ui,
+  treasury-ui, and the auth-ui Apps &amp; Keys console don't yet surface a wallet-balance widget or
+  top-up button — today a developer has to call the API directly to see their balance.</li>
 </ul>
 <h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2098,7 +2118,7 @@ and (once one exists) a head start on the credential.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 12:12:27 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 26, 2026 11:27:20 UTC">August 26, 2026</span>
   </span>
 
     

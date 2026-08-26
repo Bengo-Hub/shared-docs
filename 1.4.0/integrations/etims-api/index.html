@@ -1815,10 +1815,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pricing" class="md-nav__link">
+  <a href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pricing
+        Pricing — prepaid tokens, not a flat monthly quota
       
     </span>
   </a>
@@ -1987,10 +1987,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pricing" class="md-nav__link">
+  <a href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pricing
+        Pricing — prepaid tokens, not a flat monthly quota
       
     </span>
   </a>
@@ -2069,40 +2069,51 @@ automatically once approved.</p>
 <li><strong>Request go-live.</strong> Once your checklist is green, one call notifies our platform team for a
    final review — the same two-layer gate (automated check + human reviewer) KRA itself uses for
    certifying integrators.</li>
-<li><strong>Go live.</strong> Pay a monthly plan (with a fair included-transaction quota and metered overage
-   beyond it) for as long as you use the API.</li>
+<li><strong>Go live.</strong> You're on a prepaid token bucket — call the API as long as you have a balance, top
+   up any time.</li>
 </ol>
-<h2 id="pricing">Pricing<a class="headerlink" href="#pricing" title="Permanent link">&para;</a></h2>
+<h2 id="pricing-prepaid-tokens-not-a-flat-monthly-quota">Pricing — prepaid tokens, not a flat monthly quota<a class="headerlink" href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" title="Permanent link">&para;</a></h2>
+<p>Every call spends a small number of tokens, weighted by what it actually costs to serve (a cached
+lookup costs far less than a call that reaches KRA's live signing infrastructure):</p>
 <table>
 <thead>
 <tr>
 <th>Plan</th>
 <th>Monthly</th>
-<th>Included transactions</th>
-<th>Overage (per 100)</th>
+<th>Included tokens/month</th>
+<th>≈ sales-transmission equivalent</th>
+<th>Top-up price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>API Basic</td>
 <td>KES 4,999</td>
-<td>500</td>
-<td>KES 800</td>
+<td>5,000</td>
+<td>~500</td>
+<td>KES 0.80/token</td>
 </tr>
 <tr>
 <td>API Growth</td>
 <td>KES 12,999</td>
-<td>2,000</td>
-<td>KES 600</td>
+<td>20,000</td>
+<td>~2,000</td>
+<td>KES 0.60/token</td>
 </tr>
 <tr>
 <td>API Scale</td>
 <td>KES 29,999</td>
-<td>10,000</td>
-<td>KES 400</td>
+<td>100,000</td>
+<td>~10,000</td>
+<td>KES 0.40/token</td>
 </tr>
 </tbody>
 </table>
+<p>Included tokens <strong>accumulate</strong> every renewal (never reset or expire), and a call that fails
+before doing real work (a malformed request, or KRA itself rejecting/timing out) is automatically
+refunded. Not sure which plan fits? <code>POST /tokens/estimate</code> (no API key needed) turns your
+expected call volume into an exact monthly token figure and a plan recommendation — see the <a href="#full-api-reference">full
+API reference</a> for the endpoint.</p>
 <p>A one-time assisted-integration fee applies only if you choose to have our team do the setup for
 you instead of your own developers.</p>
 <h2 id="full-api-reference">Full API reference<a class="headerlink" href="#full-api-reference" title="Permanent link">&para;</a></h2>
@@ -2141,7 +2152,7 @@ unlocks the full internal spec instead.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 14:48:28 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 26, 2026 11:27:20 UTC">August 26, 2026</span>
   </span>
 
     
