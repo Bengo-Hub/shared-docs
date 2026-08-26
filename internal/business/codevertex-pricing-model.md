@@ -221,34 +221,36 @@ transaction/fee stream exists.
 > (`cmd/seed/feature_catalog.go`). The earlier flat tiers + `SC_ISP_BILLING` service charge are retired and
 > existing ISP subscriptions migrated to this plan.
 
-> **External eTIMS API pricing (2026-08-26 revision) — a separate product from the "Treasury /
-> Finance" row above.** The `Treasury / Finance` row's bundled `eTIMS` is one feature inside an
-> onboarded tenant's own back-office suite (their own KRA fiscalization, no metering). The
-> **standalone eTIMS fiscalization API** — for a third-party company with no other Codevertex
-> relationship, or an existing tenant wanting external-API access for a downstream integration —
-> is a distinct, separately-priced product on a **prepaid token bucket**, not a flat monthly quota:
+> **External eTIMS API pricing.** This is a separate product from the "Treasury / Finance" row
+> above. That row's bundled eTIMS is one feature inside an onboarded tenant's own back-office
+> suite, their own KRA fiscalization, with no metering. The standalone eTIMS fiscalization API,
+> for a third-party company with no other Codevertex relationship, or an existing tenant wanting
+> external API access for a downstream integration, is a distinct, separately priced product on a
+> prepaid token bucket rather than a flat monthly quota. It's priced below every comparable
+> Starter, Growth, and Enterprise figure in this document, since it comes with only eTIMS and none
+> of the platform's other features.
 >
-> | Plan | Monthly (KES) | Included tokens/mo | ≈ sales-transmission equivalent | Top-up |
+> | Plan | Monthly (KES) | Included tokens/mo | Roughly this many sales transmissions | Top-up |
 > |---|---|---|---|---|
-> | `ETIMS_API_BASIC` | 4,999 | 5,000 | ~500 | KES 0.80/token |
-> | `ETIMS_API_GROWTH` | 12,999 | 20,000 | ~2,000 | KES 0.60/token |
-> | `ETIMS_API_SCALE` | 29,999 | 100,000 | ~10,000 | KES 0.40/token |
-> | `ETIMS_API_BUNDLED` (cross-sell) | **0** | 5,000 | ~500 | KES 0.80/token |
+> | `ETIMS_API_BASIC` | 1,500 | 5,000 | ~500 | KES 0.80/token |
+> | `ETIMS_API_GROWTH` | 4,000 | 20,000 | ~2,000 | KES 0.60/token |
+> | `ETIMS_API_SCALE` | 8,000 | 100,000 | ~10,000 | KES 0.40/token |
+> | `ETIMS_API_BUNDLED` (cross-sell) | 0 | 5,000 | ~500 | KES 0.80/token |
 >
-> Every call is weighted by real cost (cached lookup = 1 token, a device/item write = 3, a
-> sales/credit-note/stock-io transmission that actually reaches KRA's signing infra = 10 — the
-> included-token figures above are the ORIGINAL per-transaction quotas × 10, so sales-transmission
-> capacity is unchanged from the prior flat-tier pricing; cheaper calls, previously unmetered
-> entirely, are now metered but far more cheaply). Enforced in REAL TIME (blocks before the KRA
-> call, not billed after the fact) via `ApiTokenWallet` in subscriptions-api — see
-> `docs/integrations/etims-api.md` for the customer-facing version and
-> `.claude/memory/etims-api-token-bucket-pricing-2026-08-26.md` (Codevertex-internal repo) for the
-> full engineering history. **`ETIMS_API_BUNDLED`** is the cross-sell fix for the "why does the
-> standalone API cost almost double PowerSuite Starter" question this revision resolves: a tenant
-> who already pays for bundled `etims_integration` on their main plan gets external-API access at
-> the SAME token economics as Basic but **zero extra monthly fee** — admin/support-assigned only
-> (gated on the tenant already holding `etims_integration`), not self-serve, to keep it from being
-> claimed by a tenant who doesn't actually qualify.
+> Every call is weighted by real cost: a cached lookup is 1 token, a device or item write is 3,
+> and a sales, credit-note, or stock-io transmission that actually reaches KRA's signing infra is
+> 10. The included-token figures are the original per-transaction quotas multiplied by 10, so a
+> subscriber's sales-transmission capacity is unchanged in KES-per-transmission terms from the
+> prior flat-tier pricing. Cheaper calls, previously unmetered entirely, are now metered but far
+> more cheaply. It's enforced in real time, blocking before the KRA call rather than billing after
+> the fact, via `ApiTokenWallet` in subscriptions-api. See `docs/integrations/etims-api.md` for the
+> customer-facing version.
+>
+> `ETIMS_API_BUNDLED` covers a different case: a tenant who already pays for bundled
+> `etims_integration` on their main plan gets external API access at the same token pricing as
+> Basic but no extra monthly fee. It's admin or support assigned only, gated on the tenant already
+> holding `etims_integration`, not self-serve, so it can't be claimed by a tenant who doesn't
+> qualify.
 
 **Bundles** (`POS_SUITE_*`, `POWERSUITE_*`) remain available and combine product lines at a discount.
 
