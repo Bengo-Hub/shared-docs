@@ -1818,7 +1818,7 @@
   <a href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pricing — prepaid tokens, not a flat monthly quota
+        Pricing: prepaid tokens, not a flat monthly quota
       
     </span>
   </a>
@@ -2001,7 +2001,7 @@
   <a href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pricing — prepaid tokens, not a flat monthly quota
+        Pricing: prepaid tokens, not a flat monthly quota
       
     </span>
   </a>
@@ -2061,110 +2061,110 @@
   
 
 
-<h1 id="etims-api-external-integrator-quickstart">eTIMS API — External Integrator Quickstart<a class="headerlink" href="#etims-api-external-integrator-quickstart" title="Permanent link">&para;</a></h1>
+<h1 id="etims-api-external-integrator-quickstart">eTIMS API: External Integrator Quickstart<a class="headerlink" href="#etims-api-external-integrator-quickstart" title="Permanent link">&para;</a></h1>
 <p>Codevertex's treasury platform is a certified KRA eTIMS OSCU integrator. If you run your own
-software and want to fiscalize sales with KRA directly — rather than adopting the full Codevertex
-POS/treasury suite — this is the API for you.</p>
+software and want to fiscalize sales with KRA directly, without adopting the full Codevertex
+POS/treasury suite, this API is for you.</p>
 <h2 id="who-this-is-for">Who this is for<a class="headerlink" href="#who-this-is-for" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Self-serve</strong> — you have your own developers. No integration fee. You sandbox-test, pass a
-  go-live certification checklist, then move to production and pay only for API usage.</li>
-<li><strong>Assisted</strong> — you'd rather our team handle the setup. A one-time fee applies (scoped to your
-  device/branch count and support needs); ongoing usage billing is identical either way.</li>
+<li><strong>Self-serve.</strong> You have your own developers. No integration fee. Sandbox test, pass the
+  go-live certification checklist, move to production, and pay only for API usage.</li>
+<li><strong>Assisted.</strong> You'd rather our team handle the setup. A one-time fee applies, scoped to your
+  device/branch count and support needs. Ongoing usage billing is the same either way.</li>
 </ul>
 <h2 id="request-access">Request access<a class="headerlink" href="#request-access" title="Permanent link">&para;</a></h2>
-<p>Apply at <a href="https://accounts.codevertexafrica.com/developer/apply">accounts.codevertexafrica.com/developer/apply</a> —
-pick <strong>Treasury API</strong> as the service. You can also fill out the form at
-<a href="https://codevertexafrica.com/integrations">codevertexafrica.com/integrations</a>, or just describe
-what you want to Vera, the assistant embedded on that page, and it will collect the details and
-route your request to our team. Either way, our support team is notified immediately and follows
-up by email, and a self-serve request typically gets a sandbox credential provisioned
-automatically once approved.</p>
+<p>Apply at <a href="https://accounts.codevertexafrica.com/developer/apply">accounts.codevertexafrica.com/developer/apply</a>
+and pick <strong>Treasury API</strong> as the service. You can also fill out the form at
+<a href="https://codevertexafrica.com/integrations">codevertexafrica.com/integrations</a>, or describe what
+you want to Vera, the assistant embedded on that page, and it will collect the details and route
+your request to our team. Our support team is notified immediately and follows up by email. A
+self-serve request typically gets a sandbox credential provisioned automatically once approved.</p>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Get your API key.</strong> Once your request is approved, you receive an <code>X-API-Key</code> credential
    scoped to <code>etims:read</code>/<code>etims:write</code>.</li>
 <li><strong>Sandbox first.</strong> Register a virtual device, register a couple of items, record a stock
-   movement, and transmit a few test sales — all against KRA's own sandbox, at no risk.</li>
+   movement, and transmit a few test sales, all against KRA's own sandbox, at no risk.</li>
 <li><strong>Check your certification status.</strong> A single endpoint tells you exactly what's left before
    you can request production access.</li>
 <li><strong>Request go-live.</strong> Once your checklist is green, one call notifies our platform team for a
-   final review — the same two-layer gate (automated check + human reviewer) KRA itself uses for
-   certifying integrators.</li>
-<li><strong>Go live.</strong> You're on a prepaid token bucket — call the API as long as you have a balance, top
-   up any time.</li>
+   final review. This mirrors the same two-layer gate KRA itself uses for certifying integrators:
+   an automated check followed by a human reviewer.</li>
+<li><strong>Go live.</strong> You're on a prepaid token bucket. Call the API as long as you have a balance, and
+   top up any time.</li>
 </ol>
-<h2 id="pricing-prepaid-tokens-not-a-flat-monthly-quota">Pricing — prepaid tokens, not a flat monthly quota<a class="headerlink" href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" title="Permanent link">&para;</a></h2>
-<p>Every call spends a small number of tokens, weighted by what it actually costs to serve (a cached
-lookup costs far less than a call that reaches KRA's live signing infrastructure):</p>
+<h2 id="pricing-prepaid-tokens-not-a-flat-monthly-quota">Pricing: prepaid tokens, not a flat monthly quota<a class="headerlink" href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" title="Permanent link">&para;</a></h2>
+<p>Every call spends a small number of tokens, weighted by what it actually costs to serve. A cached
+lookup costs far less than a call that reaches KRA's live signing infrastructure.</p>
 <table>
 <thead>
 <tr>
 <th>Plan</th>
 <th>Monthly</th>
 <th>Included tokens/month</th>
-<th>≈ sales-transmission equivalent</th>
+<th>Roughly this many sales transmissions</th>
 <th>Top-up price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>API Basic</td>
-<td>KES 4,999</td>
+<td>KES 1,500</td>
 <td>5,000</td>
 <td>~500</td>
 <td>KES 0.80/token</td>
 </tr>
 <tr>
 <td>API Growth</td>
-<td>KES 12,999</td>
+<td>KES 4,000</td>
 <td>20,000</td>
 <td>~2,000</td>
 <td>KES 0.60/token</td>
 </tr>
 <tr>
 <td>API Scale</td>
-<td>KES 29,999</td>
+<td>KES 8,000</td>
 <td>100,000</td>
 <td>~10,000</td>
 <td>KES 0.40/token</td>
 </tr>
 </tbody>
 </table>
-<p>Included tokens <strong>accumulate</strong> every renewal (never reset or expire), and a call that fails
-before doing real work (a malformed request, or KRA itself rejecting/timing out) is automatically
-refunded. Not sure which plan fits? <code>POST /tokens/estimate</code> (no API key needed) turns your
-expected call volume into an exact monthly token figure and a plan recommendation — see the <a href="#full-api-reference">full
-API reference</a> for the endpoint.</p>
+<p>Included tokens accumulate every renewal and never reset or expire. A call that fails before
+doing real work, such as a malformed request or KRA itself rejecting or timing out, is refunded
+automatically. Not sure which plan fits? <code>POST /tokens/estimate</code> needs no API key and turns your
+expected call volume into an exact monthly token figure and a plan recommendation. See the
+<a href="#full-api-reference">full API reference</a> for the endpoint.</p>
 <p>Already a Codevertex customer whose main plan bundles eTIMS? You don't pay the standalone fee
-twice — ask support about the <code>ETIMS_API_BUNDLED</code> tier (same token economics as API Basic, KES
-0/month base fee).</p>
+twice. Ask support about the <code>ETIMS_API_BUNDLED</code> tier: the same token pricing as API Basic, with
+no monthly base fee.</p>
 <p>A one-time assisted-integration fee applies only if you choose to have our team do the setup for
 you instead of your own developers.</p>
 <h2 id="whats-kras-requirement-vs-our-own-go-live-gate">What's KRA's requirement vs. our own go-live gate<a class="headerlink" href="#whats-kras-requirement-vs-our-own-go-live-gate" title="Permanent link">&para;</a></h2>
-<p>Per KRA's own OSCU specification, device credentials (<code>cmcKey</code>/<code>sdcId</code>/<code>mrcNo</code>/<code>dvcId</code>) are issued
-<strong>per taxpayer PIN + branch + device serial — never poolable at an aggregator level</strong>. When you
-register a device through this API, we register a real device with KRA under <em>your</em> TIN and hold
-the resulting credentials on your behalf — the transmission is legally yours, fiscalized through
-our platform, not "as us." Our sandbox-simulation layer and the certification checklist above are
-our own design (modeled on, but not identical to, KRA's own certification), meant to let you build
-and test before you have real KRA sandbox credentials. One open question we're confirming directly
-with KRA rather than assuming: whether a certified integrator can drive your initial KRA
-taxpayer-portal signup on your behalf, or whether you need to complete that handshake yourself at
-least once — ask support if this affects your onboarding timeline.</p>
+<p>Under KRA's own OSCU specification, device credentials (<code>cmcKey</code>, <code>sdcId</code>, <code>mrcNo</code>, <code>dvcId</code>) are
+issued per taxpayer PIN, branch, and device serial. They can't be pooled at an aggregator level.
+When you register a device through this API, we register a real device with KRA under your TIN
+and hold the resulting credentials on your behalf. The transmission is legally yours, fiscalized
+through our platform, not "as us." Our sandbox simulation layer and the certification checklist
+above are our own design, modeled on but not identical to KRA's own certification, meant to let
+you build and test before you have real KRA sandbox credentials.</p>
+<p>One open question we're confirming directly with KRA rather than assuming: whether a certified
+integrator can drive your initial KRA taxpayer-portal signup on your behalf, or whether you need
+to complete that handshake yourself at least once. Ask support if this affects your onboarding
+timeline.</p>
 <h2 id="full-api-reference">Full API reference<a class="headerlink" href="#full-api-reference" title="Permanent link">&para;</a></h2>
-<p>The complete endpoint reference (authentication, request/response shapes, error codes, rate
-limits) is published as a live Swagger/OpenAPI doc on the treasury service itself:
-<a href="https://booksapi.codevertexafrica.com/v1/docs">Treasury Service API Docs</a> — filtered to the
-external eTIMS/Payments/Health surface for anonymous visitors, exactly like this reference. If
-you've been given a Codevertex-staff app secret, pasting it into the bar at the top of that page
-unlocks the full internal spec instead.</p>
+<p>The complete endpoint reference, covering authentication, request and response shapes, error
+codes, and rate limits, is published as a live Swagger/OpenAPI doc on the treasury service:
+<a href="https://booksapi.codevertexafrica.com/v1/docs">Treasury Service API Docs</a>. It's filtered to the
+external eTIMS/Payments/Health surface for anonymous visitors, same as this reference. If you've
+been given a Codevertex staff app secret, paste it into the bar at the top of that page to unlock
+the full internal spec.</p>
 <h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../payment-workflow/">Payment Workflow</a> — if you're also integrating payment collection, not
+<li><a href="../payment-workflow/">Payment Workflow</a>, if you're also integrating payment collection and not
   just fiscalization.</li>
-<li><a href="../finance-integration-map/">Finance Integration Map</a> — how treasury's ledger fits together, for
-  context on where eTIMS sits in the bigger picture.</li>
+<li><a href="../finance-integration-map/">Finance Integration Map</a>, for how treasury's ledger fits together
+  and where eTIMS sits in the bigger picture.</li>
 </ul>
 
 
@@ -2188,7 +2188,7 @@ unlocks the full internal spec instead.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 26, 2026 11:42:54 UTC">August 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 26, 2026 11:58:10 UTC">August 26, 2026</span>
   </span>
 
     
