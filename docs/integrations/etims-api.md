@@ -59,6 +59,19 @@ twice — ask support about the `ETIMS_API_BUNDLED` tier (same token economics a
 A one-time assisted-integration fee applies only if you choose to have our team do the setup for
 you instead of your own developers.
 
+## What's KRA's requirement vs. our own go-live gate
+
+Per KRA's own OSCU specification, device credentials (`cmcKey`/`sdcId`/`mrcNo`/`dvcId`) are issued
+**per taxpayer PIN + branch + device serial — never poolable at an aggregator level**. When you
+register a device through this API, we register a real device with KRA under *your* TIN and hold
+the resulting credentials on your behalf — the transmission is legally yours, fiscalized through
+our platform, not "as us." Our sandbox-simulation layer and the certification checklist above are
+our own design (modeled on, but not identical to, KRA's own certification), meant to let you build
+and test before you have real KRA sandbox credentials. One open question we're confirming directly
+with KRA rather than assuming: whether a certified integrator can drive your initial KRA
+taxpayer-portal signup on your behalf, or whether you need to complete that handshake yourself at
+least once — ask support if this affects your onboarding timeline.
+
 ## Full API reference
 
 The complete endpoint reference (authentication, request/response shapes, error codes, rate
