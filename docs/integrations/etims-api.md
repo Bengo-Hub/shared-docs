@@ -32,16 +32,25 @@ automatically once approved.
 4. **Request go-live.** Once your checklist is green, one call notifies our platform team for a
    final review — the same two-layer gate (automated check + human reviewer) KRA itself uses for
    certifying integrators.
-5. **Go live.** Pay a monthly plan (with a fair included-transaction quota and metered overage
-   beyond it) for as long as you use the API.
+5. **Go live.** You're on a prepaid token bucket — call the API as long as you have a balance, top
+   up any time.
 
-## Pricing
+## Pricing — prepaid tokens, not a flat monthly quota
 
-| Plan | Monthly | Included transactions | Overage (per 100) |
-|---|---|---|---|
-| API Basic | KES 4,999 | 500 | KES 800 |
-| API Growth | KES 12,999 | 2,000 | KES 600 |
-| API Scale | KES 29,999 | 10,000 | KES 400 |
+Every call spends a small number of tokens, weighted by what it actually costs to serve (a cached
+lookup costs far less than a call that reaches KRA's live signing infrastructure):
+
+| Plan | Monthly | Included tokens/month | ≈ sales-transmission equivalent | Top-up price |
+|---|---|---|---|---|
+| API Basic | KES 4,999 | 5,000 | ~500 | KES 0.80/token |
+| API Growth | KES 12,999 | 20,000 | ~2,000 | KES 0.60/token |
+| API Scale | KES 29,999 | 100,000 | ~10,000 | KES 0.40/token |
+
+Included tokens **accumulate** every renewal (never reset or expire), and a call that fails
+before doing real work (a malformed request, or KRA itself rejecting/timing out) is automatically
+refunded. Not sure which plan fits? `POST /tokens/estimate` (no API key needed) turns your
+expected call volume into an exact monthly token figure and a plan recommendation — see the [full
+API reference](#full-api-reference) for the endpoint.
 
 A one-time assisted-integration fee applies only if you choose to have our team do the setup for
 you instead of your own developers.
