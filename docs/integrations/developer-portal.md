@@ -2,9 +2,10 @@
 
 The eTIMS external API (see [eTIMS API Quickstart](etims-api.md)) is the first fully-fleshed-out
 integration built on this pattern — sandbox/production separation, a certification checklist
-before go-live, usage-based billing. This page tracks what's ecosystem-wide (reusable for any
-future integration, not just eTIMS) today, and what's roadmapped to make it a real multi-service
-developer portal rather than a per-integration pattern repeated by hand each time.
+before go-live, a real-time prepaid token-bucket billing gate. This page tracks what's
+ecosystem-wide (reusable for any future integration, not just eTIMS) today, and what's roadmapped
+to make it a real multi-service developer portal rather than a per-integration pattern repeated by
+hand each time.
 
 ## What exists today
 
@@ -30,7 +31,19 @@ developer portal rather than a per-integration pattern repeated by hand each tim
   device. `EtimsDevice.environment` (sandbox/production, per registered device) remains a separate,
   deliberately decoupled axis — promoting an eTIMS partner's `App` to production still changes
   nothing about which KRA environment their devices transmit to; that's governed by the
-  certification checklist and which `EtimsDevice.environment` they registered.
+  certification checklist and which `EtimsDevice.environment` they registered. Promotion also
+  publishes `auth.app.promoted_to_production`, which subscriptions-api consumes to auto-provision
+  a zero-balance token wallet for the promoted tenant+service (see the billing bullet below) — the
+  wallet row exists immediately, though the tenant still has to subscribe to a plan or top up
+  before their balance is non-zero.
+- **Billing (eTIMS API)**: a real-time, request-blocking prepaid token bucket
+  (`ApiTokenWallet`/`ApiTokenTransaction` in subscriptions-api, generalized by `service_tag` so a
+  future integration can reuse the same primitive) — every external API call spends tokens weighted
+  by what it actually costs to serve, enforced by treasury-api's `ExternalAPIKeyAuth` middleware
+  *before* the handler (and therefore before any real KRA call) runs, with automatic refunds for
+  calls that turn out not to have done real work. Full detail in [eTIMS API
+  Quickstart](etims-api.md)'s Pricing section. This replaced an
+  earlier post-paid monthly-overage model that never actually gated a request in real time.
 - **Sandbox simulation (eTIMS)**: a brand-new developer with a sandbox credential but no real KRA
   sandbox TIN yet can use `/external/etims/sandbox/{devices,items,stock-io,sales}` to fake a full
   certification pass — Redis-backed, expires after 72 hours, never written to the real
@@ -76,10 +89,17 @@ and (once one exists) a head start on the credential.
   but approval still provisions a full business `Tenant` behind the scenes. A solo API developer
   with no interest in the wider SaaS suite still ends up with a `Tenant` record, just one they
   never interact with directly.
-- **Usage-based plan picker wired to entitlements** — subscriptions-service already has a working
-  self-serve plan/subscribe/upgrade UI; wiring an API-only tenant's chosen plan directly into
-  their `App`'s entitlements (rather than the current manual admin-driven plan assignment) closes
-  the loop on true self-serve for API products beyond eTIMS.
+- **Self-serve plan picker for an existing tenant's second product** — a brand-new, API-only
+  tenant can already self-serve subscribe to `ETIMS_API_BASIC/GROWTH/SCALE` directly (subscriptions-
+  api's `POST /subscription` is plan-agnostic). What's still manual: an *existing* Codevertex
+  customer (already on a PowerSuite/POS/Duka/Dawa plan) who also wants external API access needs a
+  platform admin to attach the second product via the `ProductSubscription` overlay — no self-serve
+  UI flow for that case yet, and no cross-sell discount applied automatically even though they
+  already pay for bundled `etims_integration`.
+- **Tenant-facing token wallet UI** — the balance/transactions/top-up/estimate API is live (see
+  the billing bullet above and [eTIMS API Quickstart](etims-api.md)), but subscriptions-ui,
+  treasury-ui, and the auth-ui Apps & Keys console don't yet surface a wallet-balance widget or
+  top-up button — today a developer has to call the API directly to see their balance.
 
 ## Related
 
