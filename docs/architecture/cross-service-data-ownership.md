@@ -1,6 +1,6 @@
 # Cross-Service Data Ownership & User Management
 
-`hospital-api` (Codevertex Afya) is the target owner of all clinical-workflow entities (Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, specialized-care programme records). This data currently lives in `pos-api` and will migrate out once hospital-api reaches feature parity — no migration has happened yet, so the ownership below is the target model, not the current database state. hospital-api references inventory-api (drug/lot/interaction master) and treasury-api (invoices/quotations/insurance claims, KRA eTIMS transmission opt-in per tenant/service) the same way pos-api already does.
+`hospital-api` (Codevertex Afya) is the sole, real owner of all clinical-workflow entities (Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, specialized-care programme records) as of the 2026-08-29 decisive migration out of `pos-api` — this is the current database state, not a target model. hospital-api references inventory-api (drug/lot/interaction master) and treasury-api (invoices/quotations/insurance claims, KRA eTIMS transmission opt-in per tenant/service) the same way pos-api already does.
 
 Downstream services store only a minimal tenant reference (id, slug, name, status, use_case, sync_status, last_sync_at) — branding, contact info, and subscription data are fetched from auth-api's Redis-cached tenant projection rather than duplicated locally. Use case is scoped per-outlet, not per-tenant, so a single tenant can have outlets configured for different use cases (e.g. one retail outlet and one hospitality outlet under the same organisation). No data duplication anywhere: each service stores only what it owns, and reads everything else via REST, events, or gRPC references.
 
@@ -49,7 +49,7 @@ This document is the **canonical** definition of data ownership across Codeverte
 | **Procurement breakdown** | `inventory-api` | **StockBreakdown** (bulk→retail uom-explode; cost carried parent→child) | event `inventory.stock.broken_down` |
 | **Repair / job-card** | `pos-api` (services module) | **RepairJob** (intake→diagnosis→parts→settle); parts from inventory, payment via treasury | REST, `pos.repair.*` events |
 | **Financial documents** | `treasury-api` | **Invoices, Quotations, proforma, Sales Credit-Notes (eTIMS), AP vendor credit-notes** — pos never duplicates these | S2S create from pos context (return→`/s2s/{t}/invoices/{id}/create-credit-note`; cart→quotation) |
-| **Hospital clinical workflow** (Codevertex Afya) | `hospital-api` (target owner) | Patient, PatientVisit, TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom), LabOrder/LabOrderLine, LabTest (tenant-custom), Prescription/PrescriptionLine, ControlledSubstanceLog, Ward/Bed/Admission, Appointment/OPD queue, Referral, specialized-care programme records (ANC/PNC/ART/TB/Immunization/Morgue) | REST/events once implemented; references `inventory_item_id`/`lot_id` (inventory-api) and `invoice_id`/`insurance_claim_id` (treasury-api). Currently owned by `pos-api` pending migration. |
+| **Hospital clinical workflow** (Codevertex Afya) | `hospital-api` | Patient, PatientVisit, TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom), LabOrder/LabOrderLine, LabTest (tenant-custom), Prescription/PrescriptionLine, ControlledSubstanceLog, BillableItemCatalog/PatientAccount/BillableCharge, Ward/Bed/Admission, Appointment/OPD queue, Referral, specialized-care programme records (ANC/PNC/ART/TB/Immunization/VMMC/PMTCT-EID/cancer-screening/Morgue) | REST/events; references `inventory_item_id`/`lot_id` (inventory-api) and `invoice_id`/`insurance_claim_id` (treasury-api). |
 
 Loyalty is a single source of truth in `pos-api` — both online (ordering) and in-store (pos) purchases earn into one balance, keyed on `crm_contact_id`, so ordering-backend calls pos's loyalty endpoints rather than owning its own. Financial documents (invoices, quotations, credit notes) live exclusively in treasury-api; pos-ui never builds a parallel entity for them, only creates them via S2S from a pos context (a return creates a credit note, a saved cart creates a quotation). The same "link, don't rebuild" rule applies across the frontends generally: pos-ui links out to treasury-ui/inventory-ui/marketflow-ui pages (an external redirect, with the target service enforcing its own RBAC) rather than recreating another service's UI — only the actual pos-to-service integration action lives in pos-ui itself.
 
@@ -220,30 +220,36 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 
 ### Hospital-Service (hospital-api)
 
-**Product:** Codevertex Afya. **Status:** platform scaffolding (auth, tenant sync, health checks) is live; clinical domain schemas and business logic are not yet built, so none of the ownership below is implemented in a database today. This section documents the *target* ownership — `pos-api`'s existing clinical/pharmacy tables (see below) are expected to migrate out to hospital-api over time, not stay there permanently.
+**Product:** Codevertex Afya. **Status (2026-08-29): the sole, real owner of all clinical-workflow
+data on the platform.** Sprints 1-5 shipped real ent schemas and business logic (Patient/OPD/
+Triage, Consultation/Examination, the Distributed Billing ledger, Laboratory, Pharmacy/
+Dispensing); the decisive removal from `pos-api` (below) is complete. This is no longer a target
+model — it is the current database state.
 
-**Will own** (once implemented):
+**Owns:**
 - Patient (MRN, demographics), PatientVisit/Encounter, Referral
 - TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom entries; the default catalogue is global reference data)
 - LabOrder/LabOrderLine, LabTest (tenant-custom entries; the default catalogue is global reference data)
 - Prescription/PrescriptionLine, ControlledSubstanceLog
-- Ward/Bed/Admission, discharge summaries
-- Specialized-care programme records: ANC, PNC, ART, TB, Immunization, Morgue
+- BillableItemCatalog/PatientAccount/BillableCharge/PatientNextOfKin (the billing ledger — the
+  actual invoice/payment/claim stays treasury-owned, see below)
+- Ward/Bed/Admission, discharge summaries (planned, Sprint 6+)
+- Specialized-care programme records: ANC, PNC, ART, TB, Immunization, VMMC, HIV-Exposed Infant/
+  PMTCT follow-up, cervical/prostate cancer screening, Morgue (planned, Sprint 10)
 
-**Does not own** (references only, exactly like pos-api's existing pattern): drug/item master,
-lot/expiry, drug-interaction rules, controlled-substance schedule, KRA eTIMS item codes
-(`inventory-api`); invoices, quotations, insurance claims/coverage/remittance, payments, eTIMS
-transmission (`treasury-api`, eTIMS opt-in per tenant/service — not mandatory on every encounter);
+**Does not own** (references only): drug/item master, lot/expiry, drug-interaction rules,
+controlled-substance schedule, KRA eTIMS item codes (`inventory-api`); invoices, quotations,
+insurance claims/coverage/remittance, payments, eTIMS transmission (`treasury-api`, eTIMS opt-in
+per tenant/service — not mandatory on every encounter, attributed under the `hospital_sale` source);
 tenant/user identity (`auth-api`); `service_tag: hospital` subscription plans (`subscriptions-api`).
 
-**Migration note:** `pos-api` currently owns all of the "will own" entities above (built for
-pharmacy dispensing at a retail till, then organically grew a full OPD/clinical workflow). Per
-`feedback_erp_decisive_removal`-style platform convention (decisive removal, no reference-ID
-shims), these move to hospital-api in full once it reaches feature parity — **not yet executed**.
-See `hospital-service/hospital-api/docs/integrations.md` § "Migration ADR" for the exact file/schema
-list. `pos-api` keeps its standalone "Codevertex Dawa" retail-pharmacy/chemist product (OTC till
-sale, no clinical workflow) — a tenant uses either pos-api Dawa or hospital-api, never both for the
-same outlet.
+**Migration complete:** `pos-api` no longer owns any pharmacy/clinical entity — all 12 ent
+schemas, handlers, migrations (a new migration drops the tables), and the standalone-chemist
+`pharmacy` use case were decisively removed 2026-08-29, per `feedback_erp_decisive_removal`
+platform convention (no reference-ID shims left behind). A standalone chemist is now exclusively a
+hospital-api tenant with only the Pharmacy module enabled — `pos-api` never had a separate "Dawa"
+product; see `hospital-service/hospital-api/docs/migration-pos-pharmacy.md` for the full migration
+record.
 
 ---
 
@@ -413,7 +419,7 @@ The following entities belong to a single owner. **No other service may store th
 | Bank accounts, bank statements, bank statement lines, reconciliation rules | **treasury-api** | erp (remove after migration) |
 | Forecasts, forecast data points | **treasury-api** | erp (remove after migration) |
 | Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks | **marketflow-api** | ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only `crm_contact_id` nullable FK) |
-| Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission (clinical workflow) | **hospital-api** (target owner, not yet migrated) | pos-api (remove once hospital-api reaches feature parity) |
+| Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission (clinical workflow) | **hospital-api** (real owner, migrated 2026-08-29) | pos-api (removed — no longer applicable) |
 
 **Ordering-backend cleanup (target state):**
 - **Remove** (schemas + all associated logic): `proof_of_delivery`, `logistics_events`, `notification_templates`, `notification_events`, `notification_subscriptions`, `payment_intents`, `payments`, `payment_methods`, `refunds`, `treasury_events`.
