@@ -2,6 +2,21 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.5.0] — 2026-09-02
+
+Adds the first Service Guide — a screenshot-led, step-by-step guide to using Inventory day to
+day, the start of a section meant to grow to cover every product the same way.
+
+### Added
+- **User Guide → Service Guides → Inventory** — three new guides, all built from a working demo
+  account rather than mockups: **Adding Products & Menu Items** (every field on the New Item form,
+  what each item type is for, and why a brand-new product can end up showing zero stock),
+  **Warehouses & Stock** (setting up warehouses and locations, reading Stock Levels, and the exact
+  fix for a zero-stock item), and **Purchasing & Receiving** (purchase orders, both ways to
+  receive goods, and supplier returns). Each includes annotated screenshots and a process-flow
+  diagram.
+- The **User Guide** landing page now links to the new Service Guides section.
+
 ## [1.4.0] — 2026-08-20
 
 A follow-up content-quality pass on top of 1.1.0–1.3.0's cleanup, plus a new Email Hosting reference page.

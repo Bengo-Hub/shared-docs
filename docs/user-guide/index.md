@@ -6,4 +6,10 @@ This section is for business owners, managers, and staff using Codevertex Africa
 - **[Getting Started](getting-started.md)** — how to sign up and get your organisation set up.
 - **[Subscriptions & Billing](subscriptions-and-billing.md)** — how plans, trials, and billing work.
 
-Each product (POS, Inventory, Treasury, and the rest) has its own in-app help and onboarding — this guide covers the parts that are common across the whole platform.
+## Service Guides
+
+Step-by-step, screenshot-led guides for using each product day to day, starting with
+[Inventory](inventory/index.md) — adding products, managing stock, and purchasing. Guides for POS,
+Treasury, and the rest of the platform will be added here the same way as they're written.
+
+Each product also has its own in-app help and onboarding for anything not yet covered here.

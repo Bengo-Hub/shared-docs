@@ -70,6 +70,12 @@ nav:
       - Platform Overview: user-guide/platform-overview.md
       - Getting Started: user-guide/getting-started.md
       - Subscriptions & Billing: user-guide/subscriptions-and-billing.md
+      - Service Guides:
+          - Inventory:
+              - user-guide/inventory/index.md
+              - Adding Products & Menu Items: user-guide/inventory/adding-products.md
+              - Warehouses & Stock: user-guide/inventory/warehouses-and-stock.md
+              - Purchasing & Receiving: user-guide/inventory/procurement.md
   - Technical Guide:
       - Architecture:
           - architecture/index.md
