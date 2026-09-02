@@ -5,6 +5,9 @@ This section is for business owners, managers, and staff using Codevertex Africa
 - **[Platform Overview](platform-overview.md)** — what Codevertex Africa is, and which product fits your business.
 - **[Getting Started](getting-started.md)** — how to sign up and get your organisation set up.
 - **[Subscriptions & Billing](subscriptions-and-billing.md)** — how plans, trials, and billing work.
+- **[Account & Organisation](organisation/index.md)** — the centralized client portal: signing in
+  and switching between organisations, plus everything a tenant admin manages there — branding,
+  branches, staff and roles, billing, and support.
 
 ## Service Guides
 

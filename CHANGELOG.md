@@ -2,6 +2,37 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.6.0] — 2026-09-02
+
+Role-based reorganization of the User Guide, a new Account & Organisation section, and a major
+deepening of the Inventory guides — administration, recipe/menu-item building, and troubleshooting.
+
+### Added
+- **User Guide → Account & Organisation** — a new top-level, platform-wide section covering the
+  centralized client portal (accounts.codevertexafrica.com): **Signing In** and **Managing Your
+  Organisation** (branding, branches, team/roles/PINs, billing, support). Every other guide that
+  touches login or staff/PIN management links here instead of repeating it.
+- **Inventory → Administration** — a new guide covering Categories & Brands, Units, Suppliers,
+  Team & Roles (Inventory-scoped permissions and PINs), Settings (Stock & Thresholds), Approvals,
+  and Pricing Profiles.
+- **Adding Products & Menu Items** — the Recipe/Menu Item section substantially expanded: building
+  a normal recipe end to end, complex/nested recipes (using one recipe as an ingredient in
+  another — platters and combos), and configuring ingredient quantity-per-unit (e.g. "750 ml per
+  bottle") so a recipe can consume a smaller unit like a tot or a pour.
+- **Dashboard orientation** screenshots (desktop and mobile) added across the Inventory and
+  Account & Organisation guides, labeling how to open the navigation menu and the quick-action
+  shortcuts on each.
+- **Common Issues** sections added to every guide — Adding Products, Warehouses & Stock,
+  Purchasing & Receiving, Inventory Administration, Signing In, and Managing Your Organisation —
+  drawn from the product's own real validation messages and behavior.
+- **Direct link** callouts throughout, giving the URL pattern for every major screen (with a
+  working example against the public demo organisation).
+
+### Changed
+- Inventory's Service Guide nav is now split into **Staff Operations** (Adding Products,
+  Warehouses & Stock, Purchasing & Receiving) and **Administration** (Inventory Administration),
+  reflecting who each guide is actually written for.
+
 ## [1.5.0] — 2026-09-02
 
 Adds the first Service Guide — a screenshot-led, step-by-step guide to using Inventory day to
