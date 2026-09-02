@@ -70,12 +70,19 @@ nav:
       - Platform Overview: user-guide/platform-overview.md
       - Getting Started: user-guide/getting-started.md
       - Subscriptions & Billing: user-guide/subscriptions-and-billing.md
+      - Account & Organisation:
+          - user-guide/organisation/index.md
+          - Signing In: user-guide/organisation/signing-in.md
+          - Managing Your Organisation: user-guide/organisation/managing-your-organisation.md
       - Service Guides:
           - Inventory:
               - user-guide/inventory/index.md
-              - Adding Products & Menu Items: user-guide/inventory/adding-products.md
-              - Warehouses & Stock: user-guide/inventory/warehouses-and-stock.md
-              - Purchasing & Receiving: user-guide/inventory/procurement.md
+              - Staff Operations:
+                  - Adding Products & Menu Items: user-guide/inventory/adding-products.md
+                  - Warehouses & Stock: user-guide/inventory/warehouses-and-stock.md
+                  - Purchasing & Receiving: user-guide/inventory/procurement.md
+              - Administration:
+                  - Inventory Administration: user-guide/inventory/administration.md
   - Technical Guide:
       - Architecture:
           - architecture/index.md

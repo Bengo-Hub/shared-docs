@@ -17,6 +17,9 @@ flowchart LR
 
 Go to **Purchase Orders** in the sidebar, then **New Order**.
 
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/purchase-orders`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/purchase-orders`)
+
 ![Purchase order supplier and warehouse](assets/procurement/01-po-supplier-warehouse.png)
 
 1. **Supplier** — required. Pick an existing supplier or add a new one on the spot.
@@ -54,6 +57,9 @@ For anything more than "it all arrived fine" — a partial delivery, some damage
 need a lot number and expiry date recorded — use **Goods Receipts** instead of the quick Mark
 Received shortcut.
 
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/goods-receipts`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/goods-receipts`)
+
 ![Goods Receipts list](assets/procurement/05-goods-receipts-list.png)
 
 **New Goods Receipt**, then pick the purchase order you're receiving against — only orders that
@@ -82,6 +88,9 @@ anything you're sending back for a credit or refund. (This is different from a c
 something they bought from you, which is recorded as a Stock Adjustment with reason "Customer
 Return" instead — see [Warehouses & Stock](warehouses-and-stock.md#stock-adjustments).)
 
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/returns`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/returns`)
+
 ![Purchase Returns list](assets/procurement/07-returns-list.png)
 
 **New Return**:
@@ -91,3 +100,26 @@ Return" instead — see [Warehouses & Stock](warehouses-and-stock.md#stock-adjus
 Pick the supplier, a reason, and add the item(s) being returned with quantity and unit cost. Once
 created, an admin or manager needs to **Approve** the return before it affects your stock — it's
 only decremented once approved, not at the moment you create it.
+
+## Common Issues
+
+**A purchase order won't let you click Send to Supplier.** Check whether your organisation
+requires approval first (Settings → Stock & Thresholds → "Purchase Order Approval Required," see
+[Inventory Administration](administration.md#settings-stock-thresholds)) — if it does, **Submit
+for Approval** has to clear before the order can be sent.
+
+**New Goods Receipt shows no purchase orders to pick from.** Only orders that are **Sent** or
+**Partially Received** are eligible — a Draft order has nothing to receive yet, and a fully
+Received order has nothing left outstanding. Send the order first if it's still a Draft.
+
+**A Goods Receipt doesn't seem to have updated your stock.** Creating a receipt only saves it as a
+**draft** — open it and click **Post — update stock** as the deliberate second step. This is by
+design, so you get a chance to double-check quantities before they hit your stock levels.
+
+**A Purchase Return doesn't show up in the numbers anywhere.** It won't, until an admin or manager
+**Approves** it — an unapproved return is recorded but doesn't touch stock yet.
+
+**The item you're trying to order isn't in the line-item search.** Purchase Order line items can
+only reference items that already exist in your catalog — unlike a recipe's ingredient picker,
+there's no "type a new name to auto-create it" shortcut here. Add the item to your catalog first
+(see [Adding Products](adding-products.md)), then start the purchase order.

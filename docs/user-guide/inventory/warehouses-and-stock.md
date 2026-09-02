@@ -12,6 +12,9 @@ organisation has at least one, usually created for you when your account was set
 
 Go to **Warehouses** in the sidebar, then **New Warehouse**:
 
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/warehouses`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/warehouses`)
+
 1. **Name** and **Code** — required. The code is a short identifier (e.g. `WH-MAIN`).
 2. **Address** — optional.
 3. **Set as default warehouse** — the warehouse new stock is added to when you don't specify one
@@ -42,6 +45,9 @@ Locations are optional. Plenty of businesses run fine tracking stock at the ware
 **Stock** in the sidebar shows real-time stock across every warehouse — what's low, what's out,
 and what's tracking normally.
 
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/stock`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/stock`)
+
 ![Stock Levels page](assets/warehouses-and-stock/04-stock-levels.png)
 
 Two chips above the table, when relevant, jump straight to items out of stock or below their
@@ -56,6 +62,9 @@ saved without its [Initial Stock](adding-products.md#dont-skip-initial-stock), a
 theft write-off, or a count that came up different after a physical stock take.
 
 Go to **Adjustments** in the sidebar, then **New Adjustment**.
+
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/adjustments`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/adjustments`)
 
 ![Add Stock / Remove Stock toggle](assets/warehouses-and-stock/05-adjustment-add-remove-toggle.png)
 
@@ -117,3 +126,23 @@ flowchart TD
 
 A **Bulk Adjust** option in the toolbar lets you do the same thing for several items at once — useful
 right after receiving a delivery of several new products at the same time.
+
+## Common Issues
+
+**Submit is disabled, or the form asks you to pick a warehouse you didn't expect to need.** If
+you're currently viewing "All Outlets" in the header (an admin-only view across every location),
+an adjustment can't post anywhere in particular — pick one specific outlet/warehouse before
+submitting.
+
+**An adjustment doesn't show up in Stock Levels right away.** Large adjustments can be routed to a
+manager for approval first, depending on your organisation's settings (see
+[Approvals](administration.md#approvals) in Inventory Administration) — it posts once approved, and
+you'll see a message at submit time if that's what happened.
+
+**Choosing "Other" as the reason won't let you submit.** A Notes field becomes required for that
+reason specifically, so there's a record of what actually happened — fill it in and the button
+re-enables.
+
+**A warehouse card doesn't show a "Manage locations" option.** Locations are optional — if a
+warehouse doesn't need zone/aisle/shelf breakdown, that's fine to leave alone, and the option
+still exists for when you're ready to use it.
