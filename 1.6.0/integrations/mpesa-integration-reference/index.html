@@ -1,0 +1,3523 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.">
+      
+      
+        <meta name="author" content="Codevertex Africa">
+      
+      
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.6.0/integrations/mpesa-integration-reference/">
+      
+      
+        <link rel="prev" href="../payment-workflow/">
+      
+      
+        <link rel="next" href="../paystack-integration-reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>M-Pesa (Daraja) Reference - Codevertex Africa — Platform Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#m-pesa-daraja-api-integration-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-header__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Codevertex Africa — Platform Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              M-Pesa (Daraja) Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Technical Guide
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Codevertex Africa — Platform Documentation" class="md-nav__button md-logo" aria-label="Codevertex Africa — Platform Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Codevertex Africa — Platform Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Bengo-Hub/shared-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Bengo-Hub/shared-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user-guide/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/platform-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscriptions & Billing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user-guide/organisation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account & Organisation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Account & Organisation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/organisation/signing-in/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signing In
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/organisation/managing-your-organisation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managing Your Organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Service Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../user-guide/inventory/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_1" id="__nav_3_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Inventory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6_1_2" id="__nav_3_6_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Staff Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_6_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Staff Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/inventory/adding-products/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding Products & Menu Items
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/inventory/warehouses-and-stock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Warehouses & Stock
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/inventory/procurement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Purchasing & Receiving
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6_1_3" id="__nav_3_6_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Administration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_6_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Administration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/inventory/administration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inventory Administration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../architecture/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/microservice-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microservice Architecture (master doc)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/trinity-authorization-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trinity Authorization Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/event-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Architecture (NATS/JetStream)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/sso-integration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSO Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/login-flow-contract/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Login Flow Contract
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/subscription-gating-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Subscription Gating Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/cross-service-data-ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-Service Data Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/go-backend-ent-atlas-migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Go Backend — Ent + Atlas Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/devops-k8s-ingress-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps-K8s Ingress & CORS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../platform-standards/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Engineering Standards
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform Engineering Standards
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/engineering-principles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engineering Principles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/webhooks-vs-polling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhooks vs Polling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/connection-pooling-pgbouncer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connection Pooling & PgBouncer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/read-replicas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Read Replicas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/idempotency-and-outbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotency & the Outbox Pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/resilience-and-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resilience — Circuit Breakers & Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/rate-limiting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/s2s-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service-to-Service (S2S) Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/swagger-docs-gating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Swagger/OpenAPI Docs Gating
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/secrets-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secrets Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/ai-and-pgvector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Integrations & pgvector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../platform-standards/n-plus-one-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N+1 Queries & Preloading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payment-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payment Workflow (hub)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M-Pesa (Daraja) Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    M-Pesa (Daraja) Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#treasury-payment-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Treasury payment workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-tier-configuration-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two-Tier Configuration Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-stk-push-lipa-na-m-pesa-online-express" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. STK Push (Lipa Na M-Pesa Online / Express)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. STK Push (Lipa Na M-Pesa Online / Express)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Response
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-stk-push-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. STK Push Query
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-c2b-register-urls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. C2B — Register URLs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-c2b-simulate-sandbox-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. C2B — Simulate (Sandbox Only)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-b2c-business-to-customer-payouts-to-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. B2C — Business to Customer (Payouts to Users)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-b2b-business-to-business" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. B2B — Business to Business
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-b2pochi-business-to-pochi-individual-till" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. B2Pochi — Business to Pochi (Individual Till)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7b. B2B Hakikisha — recipient org verification (added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7c-mobile-number-id-validation-kyc-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7c. Mobile Number / ID Validation (KYC, added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-transaction-status-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Transaction Status Query
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-transaction-reversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Transaction Reversal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-account-balance-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Account Balance Query
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-m-pesa-ratiba-standing-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. M-Pesa Ratiba / Standing Orders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-qr-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. QR Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webhook-endpoints-in-treasury-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhook Endpoints in treasury-api
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initiator-securitycredential-rsa-encrypted-initiator-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initiator SecurityCredential (RSA-encrypted initiator password)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paystack-integration-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paystack-callback-page/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paystack Callback Page
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notifications-rest-api-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications REST API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../finance-integration-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Finance Integration Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etims-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    eTIMS API Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../email-hosting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Email Hosting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer-portal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Portal — State & Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#treasury-payment-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Treasury payment workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-tier-configuration-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two-Tier Configuration Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-stk-push-lipa-na-m-pesa-online-express" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. STK Push (Lipa Na M-Pesa Online / Express)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. STK Push (Lipa Na M-Pesa Online / Express)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Response
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-stk-push-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. STK Push Query
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-c2b-register-urls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. C2B — Register URLs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-c2b-simulate-sandbox-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. C2B — Simulate (Sandbox Only)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-b2c-business-to-customer-payouts-to-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. B2C — Business to Customer (Payouts to Users)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-b2b-business-to-business" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. B2B — Business to Business
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-b2pochi-business-to-pochi-individual-till" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. B2Pochi — Business to Pochi (Individual Till)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7b. B2B Hakikisha — recipient org verification (added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7c-mobile-number-id-validation-kyc-added-2026-08-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7c. Mobile Number / ID Validation (KYC, added 2026-08-22)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-transaction-status-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Transaction Status Query
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-transaction-reversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Transaction Reversal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-account-balance-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Account Balance Query
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-m-pesa-ratiba-standing-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. M-Pesa Ratiba / Standing Orders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-qr-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. QR Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webhook-endpoints-in-treasury-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhook Endpoints in treasury-api
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initiator-securitycredential-rsa-encrypted-initiator-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initiator SecurityCredential (RSA-encrypted initiator password)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="m-pesa-daraja-api-integration-reference">M-Pesa Daraja API Integration Reference<a class="headerlink" href="#m-pesa-daraja-api-integration-reference" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Sources</strong>: Safaricom APIs Postman collection (<code>shared-docs/mpesa apis/Safaricom APIs.postman_collection.json</code> — refreshed 2026-08-22 from a live Daraja Developer Portal export, adds "Age On Network"; single canonical copy, was previously duplicated 19x under <code>finance-service/resources/m-pesa-apis/</code>), Safaricom Daraja Developer Portal.
+<strong>Updated</strong>: August 2026</p>
+<p><strong>Known defect in Safaricom's own collection</strong> (confirmed persistent across two exports fetched
+hours apart 2026-08-22, so not staleness on our end): "Query the Transaction Status of an M-Pesa
+Transaction"'s documented request body is byte-identical to "Query the status of a Lipa na M-Pesa
+Online Payment" (STK Push Query) — <code>{BusinessShortCode, Password, Timestamp, CheckoutRequestID}</code>.
+That's the <em>correct</em> body for STK Push Query; Transaction Status Query's real shape is
+<code>{Initiator, SecurityCredential, CommandID, TransactionID, PartyA, IdentifierType, Remarks,
+QueueTimeOutURL, ResultURL, Occasion}</code> — see "RSA Security Credential Generation" below, and don't
+copy this collection's body for that specific request.</p>
+</blockquote>
+<hr />
+<h2 id="treasury-payment-workflow">Treasury payment workflow<a class="headerlink" href="#treasury-payment-workflow" title="Permanent link">&para;</a></h2>
+<p>See <a href="../payment-workflow/">payment-workflow.md</a> for the full end-to-end flow (intent creation, shared pay page, <code>initiate_url</code>, gateway redirect). This page covers only the M-Pesa/Daraja API specifics: STK Push triggering, manual "I paid at till/agent" confirmation, and the credential model below.</p>
+<hr />
+<h2 id="two-tier-configuration-model">Two-Tier Configuration Model<a class="headerlink" href="#two-tier-configuration-model" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Owner</th>
+<th>Scope</th>
+<th>Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Platform (Tier 1)</strong></td>
+<td>Codevertex superadmin</td>
+<td>Shared across all tenants</td>
+<td><code>consumer_key</code>, <code>consumer_secret</code>, <code>passkey</code>, <code>environment</code> (sandbox/production)</td>
+</tr>
+<tr>
+<td><strong>Tenant (Tier 2)</strong></td>
+<td>Tenant admin</td>
+<td>Unique per tenant</td>
+<td><code>shortcode</code> (Paybill or Till), <code>initiator_name</code>, <code>initiator_password</code>, <code>account_reference</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Storage</strong>: Tier 1 credentials stored in encrypted <code>credentials</code> JSON blob in <code>GatewayConfig</code> table (encrypted at rest). Tier 2 fields stored as plain columns (<code>mpesa_shortcode</code>, <code>mpesa_initiator_name</code>, <code>mpesa_initiator_password</code> encrypted, <code>mpesa_account_ref</code>) on the tenant-level <code>GatewayConfig</code> row.</p>
+<hr />
+<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
+<p>All M-Pesa Daraja APIs require an OAuth 2.0 Bearer token obtained from:</p>
+<div class="highlight"><pre><span></span><code>GET https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials
+Authorization: Basic base64(consumer_key:consumer_secret)
+</code></pre></div>
+<p><strong>Sandbox</strong>: <code>https://sandbox.safaricom.co.ke</code><br />
+<strong>Production</strong>: <code>https://api.safaricom.co.ke</code></p>
+<p>Token expires in 3600 seconds. Cache and refresh before expiry.</p>
+<hr />
+<h2 id="1-stk-push-lipa-na-m-pesa-online-express">1. STK Push (Lipa Na M-Pesa Online / Express)<a class="headerlink" href="#1-stk-push-lipa-na-m-pesa-online-express" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Initiate customer-to-business (C2B) payment via a push prompt to the customer's phone.<br />
+<strong>Use case</strong>: Online orders, checkout payments.</p>
+<p><strong>Endpoint</strong>: <code>POST /mpesa/stkpush/v1/processrequest</code></p>
+<h3 id="request">Request<a class="headerlink" href="#request" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"BusinessShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base64(shortcode + passkey + timestamp)&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20250925124519"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CustomerPayBillOnline"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyB"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PhoneNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CallBackURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/callback"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AccountReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OrderRef123"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionDesc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Payment for Order #123"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Password generation</strong>:
+<div class="highlight"><pre><span></span><code><span class="nx">timestamp</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Format</span><span class="p">(</span><span class="s">"20060102150405"</span><span class="p">)</span>
+<span class="nx">password</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">base64</span><span class="p">.</span><span class="nx">StdEncoding</span><span class="p">.</span><span class="nx">EncodeToString</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="nx">shortcode</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">passkey</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">timestamp</span><span class="p">))</span>
+</code></pre></div></p>
+<p><strong>TransactionType</strong>: <code>CustomerPayBillOnline</code> (Paybill) | <code>CustomerBuyGoodsOnline</code> (Till)</p>
+<h3 id="response">Response<a class="headerlink" href="#response" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"MerchantRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"29115-34620561-1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CheckoutRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ws_CO_191220191020363925"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResponseCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResponseDescription"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success. Request accepted for processing"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CustomerMessage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success. Request accepted for processing"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Callback</strong> (async, received at <code>CallBackURL</code>):
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Body"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"stkCallback"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"MerchantRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"29115-34620561-1"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"CheckoutRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ws_CO_191220191020363925"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ResultCode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"ResultDesc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The service request is processed successfully."</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"CallbackMetadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"Item"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amount"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.00</span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MpesaReceiptNumber"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NLJ7RT61SV"</span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionDate"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mi">20191219102115</span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span><span class="nt">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PhoneNumber"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mi">254708374149</span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><code>ResultCode: 0</code> = success. Any other code = failure.</p>
+<hr />
+<h2 id="2-stk-push-query">2. STK Push Query<a class="headerlink" href="#2-stk-push-query" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Poll the status of an STK Push transaction (use when callback wasn't received).<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/stkpushquery/v1/query</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"BusinessShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;same as STK push&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20250925124519"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CheckoutRequestID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ws_CO_191220191020363925"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Response</strong>: <code>ResultCode: 0</code> = paid; <code>1032</code> = user cancelled; <code>1037</code> = timeout.</p>
+<p><strong>Live-verified 2026-08-22</strong> against a real completed STK transaction (<code>CheckoutRequestID
+ws_CO_220820261449537743793901</code>, receipt <code>UHMEQ4C1FI</code>): clean synchronous <code>200</code>, <code>ResultCode: "0"</code>,
+<code>ResultDesc: "The service request is processed successfully."</code> — and <code>MerchantRequestID</code> in the
+response matched byte-for-byte what's stored in our own <code>payment_intents.metadata.provider_reference</code>
+for that intent, cross-confirming data integrity end to end. Implementation: <code>MpesaGateway.VerifyPayment</code>
+(mpesa.go), called from the reconciliation background job (<code>payments/reconciler.go</code>) and the platform
+admin "test connection" health check — not currently exposed as an on-demand per-intent HTTP trigger
+the way Transaction Status Query is (<code>POST .../payments/intents/{id}/check-status</code>); reconciliation
+only re-checks intents still <code>pending</code>/<code>processing</code>, so an already-<code>succeeded</code> intent has no live
+manual re-check path today. Not a gap that's been asked for — noting it here as a fact, not a todo.</p>
+<p><strong>Do not confuse this with Transaction Status Query (below)</strong> — same general purpose ("is this
+payment done?") but a genuinely different Daraja API, different auth (OAuth-only here vs
+Initiator+SecurityCredential there), different body shape, and used for a different scenario: this
+one polls a transaction <strong>we ourselves initiated</strong> via STK Push (keyed by <code>CheckoutRequestID</code>,
+something only WE have, generated at STK-push time); Transaction Status Query below can check the
+status of <strong>any</strong> M-Pesa transaction by its public receipt/confirmation code (keyed by
+<code>TransactionID</code>, the code a customer reads off their own SMS) — including ones we never initiated at
+all, e.g. a C2B till payment. That's the whole reason the C2B manual-code fallback (pos-ui) verifies
+a cashier-typed code against the C2B inbox rather than this endpoint: the code came from the
+customer's SMS, not from anything we generated.</p>
+<hr />
+<h2 id="3-c2b-register-urls">3. C2B — Register URLs<a class="headerlink" href="#3-c2b-register-urls" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Register confirmation/validation URLs for over-the-counter C2B payments (paybill, till).<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/c2b/v1/registerurl</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"ShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResponseType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Completed"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ConfirmationURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/c2b/confirmation"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ValidationURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/c2b/validation"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Must be registered once per production shortcode. Sandbox uses simulate.</p>
+<p><strong>Two gotchas confirmed live against the sandbox (2026-08-22), both now fixed in code
+(<code>urls.MpesaConfirmationURL</code>/<code>MpesaValidationURL</code>) but worth knowing if you're hand-building these
+URLs elsewhere:</strong>
+- The URL must include the API's real path prefix (<code>/api/v1/webhooks/...</code> here) — a URL missing it
+  404s on our own server the moment Daraja tries to deliver a confirmation, even though registration
+  itself appears to succeed.
+- Daraja's RegisterURL rejects any Confirmation/ValidationURL containing the substring <strong>"mpesa"</strong>
+  outright, with <code>400.003.02 "Bad Request - Invalid ValidationURL - URL has the word MPESA"</code> — hence
+  <code>/webhooks/c2b/...</code>, not <code>/webhooks/mpesa/...</code>, for these two specific URLs. Every other <code>mpesa/*</code>
+  webhook (STK callback, B2C/B2B results, txn-status, reversal, balance) is unaffected — those are
+  passed to different Daraja APIs (as <code>ResultURL</code>/<code>QueueTimeOutURL</code>) that were not observed to apply
+  the same filter.</p>
+<hr />
+<h2 id="4-c2b-simulate-sandbox-only">4. C2B — Simulate (Sandbox Only)<a class="headerlink" href="#4-c2b-simulate-sandbox-only" title="Permanent link">&para;</a></h2>
+<p><strong>Endpoint</strong>: <code>POST /mpesa/c2b/v1/simulate</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"ShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CustomerPayBillOnline"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Msisdn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"BillRefNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"account123"</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="5-b2c-business-to-customer-payouts-to-users">5. B2C — Business to Customer (Payouts to Users)<a class="headerlink" href="#5-b2c-business-to-customer-payouts-to-users" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Send money from business shortcode to customer M-Pesa account.<br />
+<strong>Use cases</strong>: Rider earnings payouts, refunds, cashback, loyalty redemption.<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/b2c/v1/paymentrequest</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"InitiatorName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_INITIATOR_NAME"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted initiator password&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BusinessPayment"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyB"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rider payout week 2026-W10"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2c-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WeeklyPayout"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>CommandID options</strong>: 
+- <code>BusinessPayment</code> — (no tax) general business payment
+- <code>SalaryPayment</code> — salary disbursement
+- <code>PromotionPayment</code> — for cashback/promotions</p>
+<p><strong>SecurityCredential</strong>: RSA-encrypt initiator password using M-Pesa public key certificate. See
+"Initiator SecurityCredential" below for where this cert actually comes from in this codebase and its
+current admin UI.</p>
+<p><strong>Result callback</strong>:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"ResultCode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LGR019G3J2"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"ResultParameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"ResultParameter"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"Key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionAmount"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"Key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionReceipt"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LGR019G3J2"</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"Key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ReceiverPartyPublicName"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149 - John Doe"</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h2 id="6-b2b-business-to-business">6. B2B — Business to Business<a class="headerlink" href="#6-b2b-business-to-business" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Shortcode-to-shortcode payments (e.g., pay supplier's paybill).<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/b2b/v1/paymentrequest</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_INITIATOR_NAME"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BusinessPayBill"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SenderIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"RecieverIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyB"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AccountReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Invoice001"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Supplier payment"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/b2b-result"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>CommandID</strong>: <code>BusinessPayBill</code> | <code>MerchantToMerchantTransfer</code> | <code>MerchantTransferFromMerchantToWorking</code></p>
+<hr />
+<h2 id="7-b2pochi-business-to-pochi-individual-till">7. B2Pochi — Business to Pochi (Individual Till)<a class="headerlink" href="#7-b2pochi-business-to-pochi-individual-till" title="Permanent link">&para;</a></h2>
+<p><strong>Endpoint</strong>: Same as B2C (<code>/mpesa/b2c/v1/paymentrequest</code>)<br />
+<strong>CommandID</strong>: <code>BusinessPayment</code> with PartyB as the Pochi till number.</p>
+<hr />
+<h2 id="7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22">7b. B2B Hakikisha — recipient org verification (added 2026-08-22)<a class="headerlink" href="#7b-b2b-hakikisha-recipient-org-verification-added-2026-08-22" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Verify a B2B recipient organization's identity BEFORE sending money to it — reduces
+misdirected B2B payments, since §6's B2B payment request itself has no such check.<br />
+<strong>Endpoint</strong>: <code>POST /sfcverify/v1/query/info</code>. OAuth-only (no SecurityCredential needed).
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;recipient shortcode&gt;"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+No sample response is documented in the collection; <code>MpesaGateway.VerifyB2BOrgInfo</code> (mpesa.go)
+returns the raw decoded JSON rather than guessing at named fields. Tenant-scoped:
+<code>POST /{tenant}/gateways/mpesa/verify-b2b-org</code>, body <code>{identifier_type?, identifier}</code>.</p>
+<hr />
+<h2 id="7c-mobile-number-id-validation-kyc-added-2026-08-22">7c. Mobile Number / ID Validation (KYC, added 2026-08-22)<a class="headerlink" href="#7c-mobile-number-id-validation-kyc-added-2026-08-22" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Verify an MSISDN is registered against a given National ID/passport number.<br />
+<strong>Endpoint</strong>: <code>POST /v1/KYC-validation/validateID</code>. OAuth-only.
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"requestRefID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;unique&gt;"</span><span class="p">,</span><span class="w"> </span><span class="nt">"shortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"msisdn"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"idType"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="nt">"idNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+Same no-documented-response-shape caveat as Hakikisha above; <code>MpesaGateway.ValidateMobileNumberID</code>
+returns the raw decoded JSON. Tenant-scoped: <code>POST /{tenant}/gateways/mpesa/validate-mobile-id</code>, body
+<code>{short_code?, msisdn, id_type, id_number}</code>. This is a KYC/identity-verification capability rather
+than a payment-confirmation one — no frontend surface built for it yet; it's API-only until a
+concrete product use case (e.g. customer onboarding for credit accounts) defines where it belongs.</p>
+<hr />
+<h2 id="8-transaction-status-query">8. Transaction Status Query<a class="headerlink" href="#8-transaction-status-query" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Query the status of ANY M-Pesa transaction by its public receipt code (e.g. what a
+customer reads off their own SMS) — including ones we never initiated, unlike STK Push Query (§2)
+above, which only polls a <code>CheckoutRequestID</code> WE generated. See §2's "Do not confuse this with..."
+note for the full distinction — this is the one important for reconciling a manually-typed M-Pesa
+code, not §2.<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/transactionstatus/v1/query</code>. <strong>Do not copy the request body from this
+collection's own entry for this request</strong> — see the top-of-file note; it's a verified, persistent
+defect (identical to the unrelated STK Push Query body) present in two exports fetched hours apart.
+The shape below is the real one, cross-checked against 4 other correctly-filled requests in the same
+collection (Account Balance, Reversal, both Standing Order variants) and proven via live testing.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_INITIATOR_NAME"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionStatusQuery"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LHG31AA5TX"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/txn-status-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Status check"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>IdentifierType</code> is <code>"4"</code> for a Paybill shortcode, <code>"2"</code> for Till/Buy-Goods — <code>PartyA</code> here is OUR
+OWN shortcode, so this follows the same <code>orgIdentifierType()</code> (mpesa.go) as Account Balance; see
+that function's fix note (2026-08-22) for the Till-tenant bug this codifies.</p>
+<p><strong>Live-verified 2026-08-22</strong>, three separate real-receipt submissions across this session (all
+<code>success:true</code>, clean <code>200</code>): once with a full end-to-end proof — Safaricom actually delivered the
+async result back through our (at-the-time newly fixed) webhook URL, logged as a real inbound <code>POST
+/api/v1/webhooks/mpesa/txn-status-result</code> → <code>200</code>. Daraja's async delivery timing for this specific
+API is inconsistent in sandbox (landed within ~20s once, didn't land within that same window on two
+other otherwise-identical attempts) — a Safaricom-side sandbox characteristic, not a defect here;
+the submission side (the part actually within our control) is solid on every attempt.</p>
+<p>Reachable via <code>POST /{tenant}/payments/intents/{intentID}/check-status</code> (<code>CheckIntentStatus</code>) — but
+only for an intent that has its OWN <code>mpesa_receipt_number</code>/<code>provider_reference</code> in metadata (i.e. a
+transaction WE initiated via STK and later want to re-verify). A code with no such intent (e.g. one
+that arrived via a channel we never initiated, or was only ever entered manually) has nothing to
+attach the query to via this endpoint — that's a data-availability constraint of being keyed by
+intent, not a code defect.</p>
+<hr />
+<h2 id="9-transaction-reversal">9. Transaction Reversal<a class="headerlink" href="#9-transaction-reversal" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Reverse a completed M-Pesa transaction (within 24 hours).<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/reversal/v1/request</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_INITIATOR_NAME"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TransactionReversal"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OEI2AK4Q16"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ReceiverParty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"RecieverIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/reversal-result"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Duplicate payment reversal"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Occasion"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="10-account-balance-query">10. Account Balance Query<a class="headerlink" href="#10-account-balance-query" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Query current M-Pesa shortcode balance.<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/accountbalance/v1/query</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"Initiator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR_INITIATOR_NAME"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"SecurityCredential"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;RSA encrypted&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CommandID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AccountBalance"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"600000"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"IdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Remarks"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Balance check"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"QueueTimeOutURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/timeout"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ResultURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/balance-result"</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="11-m-pesa-ratiba-standing-orders">11. M-Pesa Ratiba / Standing Orders<a class="headerlink" href="#11-m-pesa-ratiba-standing-orders" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Schedule recurring customer-to-business payments.<br />
+<strong>Endpoint</strong>: <code>POST /standingorder/v1/createStandingOrderExternal</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"StandingOrderName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Monthly Subscription"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"BusinessShortCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Standing Order Customer Pay Bill"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"PartyA"</span><span class="p">:</span><span class="w"> </span><span class="s2">"254708374149"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ReceiverPartyIdentifierType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CallBackURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://booksapi.codevertexafrica.com/webhooks/mpesa/ratiba"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"AccountReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SubRef123"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TransactionDesc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Monthly subscription"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Frequency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"StartDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20260310"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"EndDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20271231"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Frequency</strong>: <code>1</code>=daily, <code>2</code>=weekly, <code>3</code>=monthly, <code>4</code>=quarterly, <code>5</code>=half-yearly, <code>6</code>=yearly.<br />
+<strong>TransactionType</strong>: <code>"Standing Order Customer Pay Bill"</code> (Paybill) | <code>"Standing Order Customer Pay Merchant"</code> (Till/Buy Goods).</p>
+<p><strong>Use case</strong>: Subscription billing — when a tenant enables M-Pesa, create a standing order to auto-collect monthly subscription fees.</p>
+<hr />
+<h2 id="12-qr-code-generation">12. QR Code Generation<a class="headerlink" href="#12-qr-code-generation" title="Permanent link">&para;</a></h2>
+<p><strong>Purpose</strong>: Generate a static QR code for the tenant's shortcode (customers scan with M-Pesa app).<br />
+<strong>Endpoint</strong>: <code>POST /mpesa/qrcode/v1/generate</code></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"MerchantName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Acme Retail"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"RefNo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cafe-checkout-01"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Amount"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"TrxCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PB"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"CPI"</span><span class="p">:</span><span class="w"> </span><span class="s2">"174379"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"Size"</span><span class="p">:</span><span class="w"> </span><span class="s2">"300"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>TrxCode</strong>: <code>PB</code> = Paybill | <code>BG</code> = Buy Goods | <code>WA</code> = Wallet-to-Account | <code>SB</code> = Subscriber-to-Bank.</p>
+<p>Returns a base64-encoded PNG of the QR code.</p>
+<hr />
+<h2 id="webhook-endpoints-in-treasury-api">Webhook Endpoints in treasury-api<a class="headerlink" href="#webhook-endpoints-in-treasury-api" title="Permanent link">&para;</a></h2>
+<p>All paths below are relative to <code>PublicBaseURL</code> and require the <code>/api/v1</code> prefix (e.g.
+<code>https://booksapi.codevertexafrica.com/api/v1/webhooks/mpesa/callback</code>) — every URL builder now goes
+through <code>internal/pkg/urls</code>'s <code>MpesaXxxURL</code> helpers (single source of truth, confirmed live
+2026-08-22 after finding several of these were previously missing this prefix entirely and being
+submitted to Daraja as bare relative paths).</p>
+<table>
+<thead>
+<tr>
+<th>M-Pesa Event</th>
+<th>Internal Route</th>
+<th>Built via</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STK Push callback</td>
+<td><code>POST /api/v1/webhooks/mpesa/callback</code></td>
+<td><code>urls.MpesaCallbackURL</code></td>
+</tr>
+<tr>
+<td>C2B Validation</td>
+<td><code>POST /api/v1/webhooks/c2b/validation</code></td>
+<td><code>urls.MpesaValidationURL</code></td>
+</tr>
+<tr>
+<td>C2B Confirmation</td>
+<td><code>POST /api/v1/webhooks/c2b/confirmation</code></td>
+<td><code>urls.MpesaConfirmationURL</code></td>
+</tr>
+<tr>
+<td>B2C Result</td>
+<td><code>POST /api/v1/webhooks/mpesa/b2c-result</code></td>
+<td><code>urls.MpesaB2CResultURL</code></td>
+</tr>
+<tr>
+<td>B2C Timeout</td>
+<td><code>POST /api/v1/webhooks/mpesa/b2c-timeout</code></td>
+<td><code>urls.MpesaB2CTimeoutURL</code></td>
+</tr>
+<tr>
+<td>B2B Result</td>
+<td><code>POST /api/v1/webhooks/mpesa/b2b-result</code></td>
+<td><code>urls.MpesaB2BResultURL</code></td>
+</tr>
+<tr>
+<td>B2B Timeout</td>
+<td><code>POST /api/v1/webhooks/mpesa/b2b-timeout</code></td>
+<td><code>urls.MpesaB2BTimeoutURL</code></td>
+</tr>
+<tr>
+<td>Transaction Status Result</td>
+<td><code>POST /api/v1/webhooks/mpesa/txn-status-result</code></td>
+<td><code>urls.MpesaTxnStatusURL</code></td>
+</tr>
+<tr>
+<td>Transaction Reversal Result</td>
+<td><code>POST /api/v1/webhooks/mpesa/reversal-result</code></td>
+<td><code>urls.MpesaReversalURL</code></td>
+</tr>
+<tr>
+<td>Account Balance Result</td>
+<td><code>POST /api/v1/webhooks/mpesa/balance-result</code></td>
+<td><code>urls.MpesaBalanceURL</code></td>
+</tr>
+<tr>
+<td>M-Pesa Ratiba</td>
+<td><code>POST /api/v1/webhooks/mpesa/ratiba</code></td>
+<td><code>urls.MpesaRatibaURL</code></td>
+</tr>
+<tr>
+<td>Shared QueueTimeOutURL</td>
+<td><code>POST /api/v1/webhooks/mpesa/timeout</code></td>
+<td><code>urls.MpesaTimeoutURL</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note on C2B's <code>/webhooks/c2b/...</code> paths</strong> (not <code>/webhooks/mpesa/...</code> like everything else): Daraja's
+RegisterURL API rejects any Confirmation/ValidationURL containing the substring "mpesa" outright, with
+a hard <code>400.003.02 "URL has the word MPESA"</code> — confirmed live 2026-08-22. Every other path above is
+fine to contain "mpesa" since it's passed as <code>ResultURL</code>/<code>QueueTimeOutURL</code> to a <em>different</em> Daraja API
+(B2C/B2B/balance/etc.) that was not observed to apply the same filter.</p>
+<hr />
+<h2 id="initiator-securitycredential-rsa-encrypted-initiator-password">Initiator SecurityCredential (RSA-encrypted initiator password)<a class="headerlink" href="#initiator-securitycredential-rsa-encrypted-initiator-password" title="Permanent link">&para;</a></h2>
+<p>Required for B2C, B2B, Transaction Status, Reversal, Account Balance — every Daraja command that
+authenticates as an "Initiator" rather than just the OAuth app. <code>MpesaGateway.generateSecurityCredential</code>
+(mpesa.go) does this at runtime:
+<div class="highlight"><pre><span></span><code><span class="c1">// Encrypt initiator password with M-Pesa public key certificate</span>
+<span class="kd">func</span><span class="w"> </span><span class="nx">generateSecurityCredential</span><span class="p">(</span><span class="nx">initiatorPassword</span><span class="p">,</span><span class="w"> </span><span class="nx">certPath</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">certPEM</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">ReadFile</span><span class="p">(</span><span class="nx">certPath</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">block</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">pem</span><span class="p">.</span><span class="nx">Decode</span><span class="p">(</span><span class="nx">certPEM</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">cert</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">x509</span><span class="p">.</span><span class="nx">ParseCertificate</span><span class="p">(</span><span class="nx">block</span><span class="p">.</span><span class="nx">Bytes</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">rsaKey</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">cert</span><span class="p">.</span><span class="nx">PublicKey</span><span class="p">.(</span><span class="o">*</span><span class="nx">rsa</span><span class="p">.</span><span class="nx">PublicKey</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">encrypted</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">rsa</span><span class="p">.</span><span class="nx">EncryptPKCS1v15</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nx">Reader</span><span class="p">,</span><span class="w"> </span><span class="nx">rsaKey</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">(</span><span class="nx">initiatorPassword</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">base64</span><span class="p">.</span><span class="nx">StdEncoding</span><span class="p">.</span><span class="nx">EncodeToString</span><span class="p">(</span><span class="nx">encrypted</span><span class="p">),</span><span class="w"> </span><span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Where the certificate actually comes from</strong> (checked live 2026-08-22): <code>cert_pem</code> credential
+(inline PEM, preferred — no file mount needed) → <code>cert_path</code> credential (filesystem path) →
+<code>MPESA_SANDBOX_CERT_PATH</code>/<code>MPESA_PROD_CERT_PATH</code> env vars → <strong>if none of those are set, silently
+falls back to sending the initiator password UNENCRYPTED (base64 only)</strong>. Confirmed none are
+currently configured in the treasury-api deployment (no matching env vars, no volume mounts) — every
+initiator-authenticated call has been running on the unencrypted fallback, which sandbox tolerates
+but production would reject.</p>
+<p><strong>This is environment-scoped (sandbox vs production), not per-tenant or per-app</strong> — it's Safaricom's
+own infrastructure public key, identical for every developer/tenant in that environment, so it's set
+once at the <strong>platform level</strong> (Settings → Platform → Gateways → M-Pesa Paybill/Till → "cert pem"
+field) and every tenant inherits it via the existing <code>ResolveConfig</code>/<code>MergeCredentials</code> chain — no
+tenant-level field exists or is needed for this specific credential.</p>
+<p><strong>Certificates</strong> (current working URLs, found in a saved 2026-06 Daraja portal capture — the URLs
+previously documented here, <code>developer.safaricom.co.ke/sites/default/files/cert/cert_{sandbox,prod}/cert.cer</code>,
+now 404): <a href="https://developer.safaricom.co.ke/certificates/SandboxCertificate.cer">sandbox</a> |
+<a href="https://developer.safaricom.co.ke/certificates/ProductionCertificate.cer">production</a>. Both are
+saved (verified working 2026-08-22) as <code>shared-docs/mpesa apis/{Sandbox,Production}Certificate.cer</code> —
+the same tracked location as the Postman collection, unlike <code>finance-service/resources/m-pesa-apis/</code>
+which is NOT a git repo at all (nothing saved there persists past the local machine). Both certs are
+technically X.509-expired (2016 and 2018 respectively) but still valid for this use: Daraja's
+SecurityCredential flow only extracts the RSA public key for encryption, it doesn't check certificate
+expiry, and Safaricom continues to publish and expect these exact certs.</p>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://developer.safaricom.co.ke">Daraja Portal</a></li>
+<li>Postman Collection: <code>shared-docs/mpesa apis/Safaricom APIs.postman_collection.json</code></li>
+<li>Existing M-Pesa implementation: <code>finance-service/treasury-api/internal/modules/gateways/mpesa.go</code></li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 22, 2026 15:54:20 UTC">August 22, 2026</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
