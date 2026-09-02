@@ -141,7 +141,23 @@ through immediately. Three tabs: **My Inbox** (assigned to you), **All Pending**
 
 **Approval Rules** (linked from the top of this page) is where those gates are actually configured
 — one rule per module + amount band, with an ordered list of approval steps and which role signs
-off at each step.
+off at each step. With no rules defined, the page says it plainly: **"No approval rules. Documents
+are sent without approval until a rule is added."**
+
+![Approval Rules list](assets/administration/12-approval-rules-list.png)
+
+**New Rule**:
+
+![New Approval Rule dialog](assets/administration/13-new-approval-rule.png)
+
+1. **Module** — which workflow this rule gates (Purchase Order send, Stock Adjustment, Asset
+   Disposal, and so on).
+2. **Name** — a label for the rule itself.
+3. **Min Amount** / **Max Amount** — the value band this rule applies to; leave Max blank for "and
+   above."
+4. **Active** — turns the rule on or off without deleting it.
+5. **Approval Steps (in order)** — add one or more steps, each naming who has to sign off (by
+   role) and in what order. A request isn't approved until every step in the chain clears.
 
 ## Pricing Profiles
 
