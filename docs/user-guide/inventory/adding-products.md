@@ -202,6 +202,10 @@ Compliance. No cost, no pricing, no stock.
 
 ### Equipment and Ingredient
 
+![Equipment type selected](assets/adding-products/type-equipment.png)
+
+![Ingredient type selected](assets/adding-products/type-ingredient.png)
+
 Both behave like Goods minus Brand/Model/Manufacturer, and minus the Tax & Compliance section
 (equipment and raw ingredients typically aren't sold directly, so tax fields don't apply). Every
 other stocked-item field — Cost, Pricing, **Initial Stock**, Reorder, the compliance checkboxes —
