@@ -20,6 +20,18 @@ account, not mockups, so what you see here is what you'll see in your own organi
 - **[Inventory Administration](administration.md)** — categories, brands and units, suppliers,
   team permissions and PINs, tenant-wide stock settings, approvals, and pricing profiles.
 
+## Finding your way around
+
+On a computer, the sidebar (①) is always visible on the left, and the dashboard's quick-action
+buttons (②) jump straight to the workflows you use most:
+
+![Desktop dashboard — sidebar and quick actions](assets/dashboard/01-desktop-dashboard.png)
+
+On a phone, the sidebar becomes a menu. Open it either from the hamburger icon (①) in the header,
+or the **More** tab (②) in the bottom navigation bar — both open the same menu:
+
+![Mobile dashboard — open menu and More tab](assets/dashboard/02-mobile-dashboard.png){ width="320" }
+
 ## Before you start
 
 You'll need an account with access to Inventory and a PIN set up by your administrator
