@@ -83,6 +83,10 @@ nav:
                   - Purchasing & Receiving: user-guide/inventory/procurement.md
               - Administration:
                   - Inventory Administration: user-guide/inventory/administration.md
+          - Notifications:
+              - user-guide/notifications/index.md
+              - Channels & Providers: user-guide/notifications/configuring-channels.md
+              - Message Templates: user-guide/notifications/message-templates.md
   - Technical Guide:
       - Architecture:
           - architecture/index.md
