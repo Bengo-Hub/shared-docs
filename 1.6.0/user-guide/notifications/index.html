@@ -12,13 +12,13 @@
         <meta name="author" content="Codevertex Africa">
       
       
-        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.6.0/architecture/go-backend-ent-atlas-migrations/">
+        <link rel="canonical" href="https://bengo-hub.github.io/shared-docs/1.6.0/user-guide/notifications/">
       
       
-        <link rel="prev" href="../cross-service-data-ownership/">
+        <link rel="prev" href="../inventory/administration/">
       
       
-        <link rel="next" href="../devops-k8s-ingress-cors/">
+        <link rel="next" href="configuring-channels/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Go Backend — Ent + Atlas Migrations - Codevertex Africa — Platform Documentation</title>
+        <title>Notifications - Codevertex Africa — Platform Documentation</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#go-backends-ent-schema-atlas-versioned-migrations" class="md-skip">
+        <a href="#notifications" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Go Backend — Ent + Atlas Migrations
+              Notifications
             
           </span>
         </div>
@@ -229,11 +229,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../user-guide/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -251,8 +253,6 @@
   
   
   
-    
-  
   
     
     
@@ -260,13 +260,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
           
   
   
@@ -386,6 +384,8 @@
       
   
   
+    
+  
   
   
     
@@ -409,20 +409,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../user-guide/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -440,13 +443,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -466,7 +469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/platform-overview/" class="md-nav__link">
+      <a href="../platform-overview/" class="md-nav__link">
         
   
   
@@ -494,7 +497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/getting-started/" class="md-nav__link">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   
@@ -522,7 +525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/subscriptions-and-billing/" class="md-nav__link">
+      <a href="../subscriptions-and-billing/" class="md-nav__link">
         
   
   
@@ -566,10 +569,13 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -577,7 +583,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../user-guide/organisation/" class="md-nav__link ">
+            <a href="../organisation/" class="md-nav__link ">
               
   
   
@@ -595,7 +601,7 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -621,7 +627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/organisation/signing-in/" class="md-nav__link">
+      <a href="../organisation/signing-in/" class="md-nav__link">
         
   
   
@@ -649,7 +655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/organisation/managing-your-organisation/" class="md-nav__link">
+      <a href="../organisation/managing-your-organisation/" class="md-nav__link">
         
   
   
@@ -682,8 +688,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -696,18 +704,21 @@
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
         
           
-          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
             
   
   
@@ -725,7 +736,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -770,7 +781,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../user-guide/inventory/" class="md-nav__link ">
+            <a href="../inventory/" class="md-nav__link ">
               
   
   
@@ -874,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/inventory/adding-products/" class="md-nav__link">
+      <a href="../inventory/adding-products/" class="md-nav__link">
         
   
   
@@ -902,7 +913,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/inventory/warehouses-and-stock/" class="md-nav__link">
+      <a href="../inventory/warehouses-and-stock/" class="md-nav__link">
         
   
   
@@ -930,7 +941,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/inventory/procurement/" class="md-nav__link">
+      <a href="../inventory/procurement/" class="md-nav__link">
         
   
   
@@ -1022,7 +1033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/inventory/administration/" class="md-nav__link">
+      <a href="../inventory/administration/" class="md-nav__link">
         
   
   
@@ -1063,6 +1074,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1085,15 +1098,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_2" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../user-guide/notifications/" class="md-nav__link ">
+            <a href="./" class="md-nav__link md-nav__link--active">
               
   
   
@@ -1111,13 +1124,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_6_2" id="__nav_3_6_2_label" tabindex="0">
+              <label class="md-nav__link md-nav__link--active" for="__nav_3_6_2" id="__nav_3_6_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_6_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1137,7 +1150,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/notifications/configuring-channels/" class="md-nav__link">
+      <a href="configuring-channels/" class="md-nav__link">
         
   
   
@@ -1165,7 +1178,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/notifications/message-templates/" class="md-nav__link">
+      <a href="message-templates/" class="md-nav__link">
         
   
   
@@ -1213,10 +1226,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -1230,22 +1241,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -1263,7 +1271,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1278,8 +1286,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1313,21 +1319,18 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../architecture/" class="md-nav__link ">
               
   
   
@@ -1345,13 +1348,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1371,7 +1374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../microservice-architecture/" class="md-nav__link">
+      <a href="../../architecture/microservice-architecture/" class="md-nav__link">
         
   
   
@@ -1399,7 +1402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trinity-authorization-pattern/" class="md-nav__link">
+      <a href="../../architecture/trinity-authorization-pattern/" class="md-nav__link">
         
   
   
@@ -1427,7 +1430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../event-architecture/" class="md-nav__link">
+      <a href="../../architecture/event-architecture/" class="md-nav__link">
         
   
   
@@ -1455,7 +1458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sso-integration-guide/" class="md-nav__link">
+      <a href="../../architecture/sso-integration-guide/" class="md-nav__link">
         
   
   
@@ -1483,7 +1486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../login-flow-contract/" class="md-nav__link">
+      <a href="../../architecture/login-flow-contract/" class="md-nav__link">
         
   
   
@@ -1511,7 +1514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subscription-gating-guide/" class="md-nav__link">
+      <a href="../../architecture/subscription-gating-guide/" class="md-nav__link">
         
   
   
@@ -1539,7 +1542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cross-service-data-ownership/" class="md-nav__link">
+      <a href="../../architecture/cross-service-data-ownership/" class="md-nav__link">
         
   
   
@@ -1564,37 +1567,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Go Backend — Ent + Atlas Migrations
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../architecture/go-backend-ent-atlas-migrations/" class="md-nav__link">
         
   
   
@@ -1610,81 +1586,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-after-updating-schemas" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. After Updating Schemas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-reference-pattern-game-stats-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Reference Pattern (game-stats-api)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-checklist-for-each-go-backend-using-ent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Checklist for Each Go Backend Using Ent
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-codebase-scan-docs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Codebase Scan &amp; Docs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-services-to-align" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Services to Align
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1697,7 +1598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../devops-k8s-ingress-cors/" class="md-nav__link">
+      <a href="../../architecture/devops-k8s-ingress-cors/" class="md-nav__link">
         
   
   
@@ -1773,13 +1674,10 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
@@ -1805,7 +1703,7 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -2261,13 +2159,10 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
@@ -2293,7 +2188,7 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -2606,10 +2501,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-after-updating-schemas" class="md-nav__link">
+  <a href="#in-this-section" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. After Updating Schemas
+        In this section
       
     </span>
   </a>
@@ -2617,10 +2512,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-reference-pattern-game-stats-api" class="md-nav__link">
+  <a href="#the-channels-in-short" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Reference Pattern (game-stats-api)
+        The channels, in short
       
     </span>
   </a>
@@ -2628,10 +2523,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-checklist-for-each-go-backend-using-ent" class="md-nav__link">
+  <a href="#before-you-start" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Checklist for Each Go Backend Using Ent
+        Before you start
       
     </span>
   </a>
@@ -2639,21 +2534,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-codebase-scan-docs" class="md-nav__link">
+  <a href="#more-guides-coming" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Codebase Scan &amp; Docs
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-services-to-align" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Services to Align
+        More guides coming
       
     </span>
   </a>
@@ -2680,136 +2564,67 @@
   
 
 
-<h1 id="go-backends-ent-schema-atlas-versioned-migrations">Go Backends: Ent Schema &amp; Atlas Versioned Migrations<a class="headerlink" href="#go-backends-ent-schema-atlas-versioned-migrations" title="Permanent link">&para;</a></h1>
-<p><strong>Reference implementation:</strong> <code>finance-service/treasury-api</code> and <code>logistics-service/logistics-api</code>.</p>
-<p>This doc describes how to keep Ent schemas and migrations consistent across Go backends: <strong>always generate Ent and Atlas migrations after schema changes</strong>, never add migration files manually, and follow the same pattern as treasury-api and logistics-api.</p>
-<hr />
-<h2 id="1-after-updating-schemas">1. After Updating Schemas<a class="headerlink" href="#1-after-updating-schemas" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
-<p><strong>Regenerate Ent code</strong><br />
-   From the backend root (e.g. <code>ordering-service/ordering-backend</code>, <code>inventory-service/inventory-api</code>):
-   <div class="highlight"><pre><span></span><code>go<span class="w"> </span>generate<span class="w"> </span>./internal/ent
-</code></pre></div>
-   For game-stats-api (ent at repo root):
-   <div class="highlight"><pre><span></span><code>go<span class="w"> </span>generate<span class="w"> </span>./ent
-</code></pre></div>
-   This regenerates all ent-generated code from <code>internal/ent/schema/*.go</code> (or <code>ent/schema/*.go</code>).</p>
-</li>
-<li>
-<p><strong>Generate a new Atlas migration</strong> (versioned SQL)<br />
-   Do <strong>not</strong> add or edit <code>*.sql</code> migration files by hand. Use the migration diff command:</p>
-</li>
-<li><strong>game-stats-api:</strong> <code>go run -mod=mod ent/migrate/main.go &lt;migration_name&gt;</code> (requires DB URL in the script; uses <code>migrate.NamedDiff</code>).</li>
-<li><strong>logistics-api / ordering-backend:</strong> Use <code>cmd/migrate/main.go</code> or a similar <code>ent/migrate/main.go</code> that calls <code>migrate.NamedDiff(ctx, databaseURL, migrationName, opts...)</code> with <code>schema.WithDir(dir)</code> and <code>schema.WithMigrationMode(schema.ModeReplay)</code>.</li>
-</ol>
-<p>This writes new <code>YYYYMMDDHHMMSS_migration_name.sql</code> (and updates <code>atlas.sum</code>) in the migrations directory.</p>
-<ol>
-<li><strong>Run migrations at startup</strong><br />
-   Use <strong>versioned</strong> migrations in the app so that the same SQL files are applied in every environment. In app bootstrap (e.g. <code>internal/app/app.go</code> or <code>internal/infrastructure/database/postgres.go</code>):
-   <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s">"entgo.io/ent/dialect/sql/schema"</span>
-<span class="w">    </span><span class="s">"yourmodule/internal/ent/migrate"</span>
-<span class="p">)</span>
-<span class="c1">// ...</span>
-<span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">entClient</span><span class="p">.</span><span class="nx">Schema</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">schema</span><span class="p">.</span><span class="nx">WithDir</span><span class="p">(</span><span class="nx">migrate</span><span class="p">.</span><span class="nx">Dir</span><span class="p">));</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">"migrations: %w"</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div>
-   <strong>Do not</strong> use only <code>Schema.Create(ctx)</code> with no <code>WithDir</code>; that is auto-migrate (no versioned history). Prefer <code>Schema.Create(ctx, schema.WithDir(migrate.Dir))</code> so the app applies the same versioned migrations as in CI/local.</li>
-</ol>
-<hr />
-<h2 id="2-reference-pattern-game-stats-api">2. Reference Pattern (game-stats-api)<a class="headerlink" href="#2-reference-pattern-game-stats-api" title="Permanent link">&para;</a></h2>
+<h1 id="notifications">Notifications<a class="headerlink" href="#notifications" title="Permanent link">&para;</a></h1>
+<p>How your customers and staff hear from your business — order updates, payment receipts, OTPs,
+overdue reminders, delivery alerts — across Email, SMS, WhatsApp, and push. This guide covers what
+you can configure yourself as a tenant admin: which channels are active, your own WhatsApp number,
+and which notification types go out on which channel.</p>
+<p>If you're building against the notifications API directly, you want the
+<a href="../../integrations/notifications-rest-api-integration/">Notifications REST API</a> reference in the
+Technical Guide instead — this page is for the Settings screens.</p>
+<h3 id="in-this-section">In this section<a class="headerlink" href="#in-this-section" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><a href="configuring-channels/">Channels &amp; Providers</a></strong> — connecting your own Email, SMS, and
+  WhatsApp sender so messages go out under your own brand, WhatsApp's specific requirements, and
+  choosing which channel(s) each notification type uses.</li>
+<li><strong><a href="message-templates/">Message Templates</a></strong> — what a customer actually receives for each kind
+  of notification, with real examples, and where a payment or invoice link gets attached
+  automatically.</li>
+</ul>
+<h2 id="the-channels-in-short">The channels, in short<a class="headerlink" href="#the-channels-in-short" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Piece</th>
-<th>Location</th>
-<th>Purpose</th>
+<th>Channel</th>
+<th>Sender identity</th>
+<th>If you haven't configured your own</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Migration dir</strong></td>
-<td><code>ent/migrate/migrations/</code> (or <code>internal/ent/migrate/migrations/</code>)</td>
-<td>Holds <code>*.sql</code> and <code>atlas.sum</code>. Committed to git.</td>
+<td><strong>Email</strong></td>
+<td>Your own SMTP/Brevo sender, or the platform's</td>
+<td>Falls back to the platform's shared sender — messages still send, just not from your own domain.</td>
 </tr>
 <tr>
-<td><strong>migrations.go</strong></td>
-<td><code>ent/migrate/migrations.go</code></td>
-<td><code>//go:embed migrations/*.sql migrations/atlas.sum</code>; <code>init()</code> sets <code>Dir, _ = atlasmigrate.NewLocalDir("ent/migrate/migrations")</code>.</td>
+<td><strong>SMS</strong></td>
+<td>Your own Africa's Talking account, or the platform's shared shortcode</td>
+<td>Falls back to the platform's shared shortcode automatically.</td>
 </tr>
 <tr>
-<td><strong>migrate/main.go</strong></td>
-<td><code>ent/migrate/main.go</code> (build ignore)</td>
-<td>Runs <code>migrate.NamedDiff(ctx, dbURL, os.Args[1], schema.WithDir(dir), schema.WithMigrationMode(schema.ModeReplay), ...)</code> to generate a new migration file.</td>
+<td><strong>WhatsApp</strong></td>
+<td>Your own WhatsApp Business number only</td>
+<td><strong>Does not fall back.</strong> WhatsApp messages simply won't send until you connect your own number — see <a href="configuring-channels/#why-whatsapp-has-no-shared-fallback">why</a>.</td>
 </tr>
 <tr>
-<td><strong>DB connect</strong></td>
-<td><code>internal/infrastructure/database/postgres.go</code></td>
-<td><code>NewClient</code> calls <code>client.Schema.Create(ctx, schema.WithDir(migrate.Dir))</code> so startup applies versioned migrations.</td>
+<td><strong>Push</strong></td>
+<td>Platform-managed (mobile app notifications)</td>
+<td>Always on where the app supports it — nothing to configure.</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="3-checklist-for-each-go-backend-using-ent">3. Checklist for Each Go Backend Using Ent<a class="headerlink" href="#3-checklist-for-each-go-backend-using-ent" title="Permanent link">&para;</a></h2>
-<ul>
-<li>[ ] After any change to <code>internal/ent/schema/*.go</code>: run <code>go generate ./internal/ent</code>.</li>
-<li>[ ] To add a new migration: run the project’s migrate diff command (e.g. <code>go run ent/migrate/main.go &lt;name&gt;</code> or <code>cmd/migrate</code> with NamedDiff); do <strong>not</strong> create or edit <code>*.sql</code> by hand.</li>
-<li>[ ] At app startup: use <code>Schema.Create(ctx, schema.WithDir(migrate.Dir))</code> (or equivalent) so versioned migrations are applied.</li>
-<li>[ ] Seed data: run idempotent seed (e.g. <code>go run cmd/seed/main.go</code>) after migrations; optionally run seed from the same process after <code>Schema.Create</code> for “migrate + seed on pod startup”.</li>
-</ul>
-<hr />
-<h2 id="4-codebase-scan-docs">4. Codebase Scan &amp; Docs<a class="headerlink" href="#4-codebase-scan-docs" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Before adding logic:</strong> Search the codebase for existing implementations (same or similar). Prefer refactor/reuse; keep architecture uniform. See <code>.cursor/rules/codebase-scan-and-docs.mdc</code>.</li>
-<li><strong>After changes:</strong> Update the relevant docs: <code>plan.md</code>, <code>erd.md</code>, <code>integrations.md</code>, <code>architecture.md</code>, and sprint/plan docs so that design and progress stay accurate.</li>
-</ul>
-<hr />
-<h2 id="5-services-to-align">5. Services to Align<a class="headerlink" href="#5-services-to-align" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Current</th>
-<th>Target</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>game-stats-api</strong></td>
-<td>Versioned migrations + <code>WithDir(migrate.Dir)</code> in DB connect</td>
-<td>Reference (no change)</td>
-</tr>
-<tr>
-<td><strong>logistics-api</strong></td>
-<td>Versioned migrations + <code>WithDir(migrate.Dir)</code> in app startup</td>
-<td>Reference (no change)</td>
-</tr>
-<tr>
-<td><strong>ordering-backend</strong></td>
-<td><code>Schema.Create(ctx)</code> only (auto-migrate)</td>
-<td>Add <code>schema.WithDir(migrate.Dir)</code> at startup; use migrate diff to generate SQL.</td>
-</tr>
-<tr>
-<td><strong>inventory-api</strong></td>
-<td>Check app startup</td>
-<td>Use versioned migrations + WithDir if not already.</td>
-</tr>
-<tr>
-<td><strong>pos-api</strong></td>
-<td>Check app startup</td>
-<td>Use versioned migrations + WithDir if not already.</td>
-</tr>
-<tr>
-<td><strong>auth-api, treasury-api, notifications-api, etc.</strong></td>
-<td>Per-repo</td>
-<td>Prefer versioned migrations + WithDir; run ent generate after schema edits; never add migration SQL by hand.</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<p><strong>Summary:</strong> (1) Always run <code>go generate</code> for Ent after schema changes. (2) Use Atlas versioned migrations (SQL in a dir + <code>atlas.sum</code>); generate new migrations via the project’s diff command; never add migration files manually. (3) At startup, apply migrations with <code>Schema.Create(ctx, schema.WithDir(migrate.Dir))</code>. (4) Scan the codebase before adding logic and update the relevant .md docs after changes.</p>
+<h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
+<p>You'll need <strong>billing:manage</strong> permission on your organisation to change provider settings (your
+account admin has this by default — see <a href="../organisation/managing-your-organisation/">Managing Your Organisation</a>
+if you need it granted). WhatsApp additionally requires an active WhatsApp subscription on your
+account, on top of a connected number — see <a href="configuring-channels/">Channels &amp; Providers</a>.</p>
+<h2 id="more-guides-coming">More guides coming<a class="headerlink" href="#more-guides-coming" title="Permanent link">&para;</a></h2>
+<p>This section currently covers channel setup and templates. A guide to the notification-preferences
+screen itself (turning individual notification types on/off, and — as channel selection is extended
+to actually route between channels rather than only toggle email — picking which channel each type
+uses) will be added once that work ships; see the Technical Guide's
+<a href="../../integrations/notifications-rest-api-integration/">Notifications REST API</a> doc for the
+current state if you need it sooner.</p>
 
 
 
@@ -2832,7 +2647,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 07:37:37 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 7, 2026 13:46:22 UTC">September 7, 2026</span>
   </span>
 
     
@@ -2842,7 +2657,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 09:44:28 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 7, 2026 13:46:22 UTC">September 7, 2026</span>
   </span>
 
     
