@@ -11,7 +11,8 @@ account, not mockups, so what you see here is what you'll see in your own organi
   new product to show zero stock, and building recipes and menu items — including reusable
   components and ingredient quantity-per-unit configuration.
 - **[Warehouses & Stock](warehouses-and-stock.md)** — setting up warehouses and storage locations,
-  reading the Stock Levels page, and the exact steps to fix an item that shows zero stock.
+  reading the Stock Levels page, the exact steps to fix an item that shows zero stock, and running
+  a full or partial physical Stock Take.
 - **[Purchasing & Receiving](procurement.md)** — creating a purchase order, receiving goods from a
   supplier (in full or partially), and recording a return to a supplier.
 
@@ -46,11 +47,11 @@ centralized client portal — see [Account & Organisation](../organisation/index
 
 ## More guides coming
 
-This section covers the modules people ask about most. Guides for the rest of Inventory —
-transfers between warehouses, lots and batch/expiry tracking, physical stock counts, production
-batches, equipment and asset tracking, events and ticketing, and the built-in reports — are on the
-way. If you need help with one of these before its guide is published, reach out to your account
-contact.
+This section covers the modules people ask about most (Stock Take, for physical stock counts, is
+covered under [Warehouses & Stock](warehouses-and-stock.md#stock-take)). Guides for the rest of
+Inventory — transfers between warehouses, lots and batch/expiry tracking, production batches,
+equipment and asset tracking, events and ticketing, and the built-in reports — are on the way. If
+you need help with one of these before its guide is published, reach out to your account contact.
 
 Guides for the other Codevertex Africa products (POS, Treasury, and the rest) will be added here
 the same way as they're written.
