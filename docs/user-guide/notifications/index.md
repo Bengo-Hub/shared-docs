@@ -17,6 +17,12 @@ Technical Guide instead — this page is for the Settings screens.
 - **[Message Templates](message-templates.md)** — what a customer actually receives for each kind
   of notification, with real examples, and where a payment or invoice link gets attached
   automatically.
+- **[WhatsApp Inbox](whatsapp-inbox.md)** — the shared inbox for two-way WhatsApp conversations
+  with customers, separate from one-way automated notifications.
+- **[WhatsApp Subscription & Billing](whatsapp-subscription-billing.md)** — plans, message quotas,
+  and (for platform admins) reconciling a payment made outside the normal checkout.
+- **[Monitoring](monitoring.md)** — a live view of every notification sent, for confirming a
+  specific message went out or spotting a failing channel.
 
 ## The channels, in short
 
@@ -31,14 +37,17 @@ Technical Guide instead — this page is for the Settings screens.
 
 You'll need **billing:manage** permission on your organisation to change provider settings (your
 account admin has this by default — see [Managing Your Organisation](../organisation/managing-your-organisation.md)
-if you need it granted). WhatsApp additionally requires an active WhatsApp subscription on your
-account, on top of a connected number — see [Channels & Providers](configuring-channels.md).
+if you need it granted). WhatsApp additionally requires an active
+[WhatsApp subscription](whatsapp-subscription-billing.md) on your account, on top of a connected
+number — see [Channels & Providers](configuring-channels.md). Replying in the
+[WhatsApp Inbox](whatsapp-inbox.md) needs its own separate permission — see that page.
 
-## More guides coming
+## Notification Preferences
 
-This section currently covers channel setup and templates. A guide to the notification-preferences
-screen itself (turning individual notification types on/off, and — as channel selection is extended
-to actually route between channels rather than only toggle email — picking which channel each type
-uses) will be added once that work ships; see the Technical Guide's
-[Notifications REST API](../../integrations/notifications-rest-api-integration.md) doc for the
-current state if you need it sooner.
+Reachable from **Settings → Notifications**, this is where you turn individual notification types
+on or off, and — for the growing set of types with more than one channel available — choose which
+channel(s) each one actually uses. Every row shows a small sliders icon: click it to open the
+channel picker, which always lists every platform channel (Email, SMS, WhatsApp, Push), showing
+disabled with a "No template yet" note whichever ones this particular notification type doesn't yet
+support. See [Choosing which channel(s) a notification uses](configuring-channels.md#choosing-which-channels-a-notification-uses)
+for which types support more than email today, and how that list grows over time.
