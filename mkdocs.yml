@@ -89,6 +89,7 @@ nav:
               - Message Templates: user-guide/notifications/message-templates.md
               - WhatsApp Inbox: user-guide/notifications/whatsapp-inbox.md
               - WhatsApp Subscription & Billing: user-guide/notifications/whatsapp-subscription-billing.md
+              - Monitoring: user-guide/notifications/monitoring.md
           - Treasury:
               - user-guide/treasury/index.md
               - Invoicing & Payments: user-guide/treasury/invoicing-and-payments.md

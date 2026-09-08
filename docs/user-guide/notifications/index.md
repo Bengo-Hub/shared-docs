@@ -21,6 +21,8 @@ Technical Guide instead. This page is for the Settings screens.
   with customers, separate from one-way automated notifications.
 - **[WhatsApp Subscription & Billing](whatsapp-subscription-billing.md)** — plans, message quotas,
   and subscribing or changing plans.
+- **[Monitoring](monitoring.md)** — a live view of every notification your own organisation has
+  sent, for confirming a specific message went out or spotting a failing channel.
 
 ## The channels, in short
 
@@ -38,7 +40,8 @@ account admin has this by default; see [Managing Your Organisation](../organisat
 if you need it granted). WhatsApp additionally requires an active
 [WhatsApp subscription](whatsapp-subscription-billing.md) on your account, on top of a connected
 number. See [Channels & Providers](configuring-channels.md). Replying in the
-[WhatsApp Inbox](whatsapp-inbox.md) needs its own separate permission; see that page.
+[WhatsApp Inbox](whatsapp-inbox.md) and viewing [Monitoring](monitoring.md) each need their own
+separate permission; see those pages.
 
 ## Notification Preferences
 
