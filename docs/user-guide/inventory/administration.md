@@ -84,6 +84,31 @@ where a manager sets or resets an individual staff member's **PIN** — the same
 into the app on a shared till or warehouse tablet throughout the rest of this guide (see
 [Signing In](../organisation/signing-in.md) for the login flow itself).
 
+Each row also has an **Active / Inactive** toggle, and a lock icon for **Reset password**:
+
+![Team row actions — Active toggle and Reset password](assets/administration/18-team-row-actions.png)
+
+1. **Active / Inactive** — flips whether this person can sign in at all, without losing their
+   account, roles, or history. Use this instead of removing someone outright when they're on
+   leave or between roles.
+2. **Reset password** — opens a dialog with two choices:
+
+![Reset Password dialog — choose a method](assets/administration/19-reset-password-choose.png)
+
+- **Send reset email** — they get a link and choose their own new password.
+- **Set a new password** — type one directly (at least 8 characters, confirmed twice):
+
+![Reset Password dialog — set a new password](assets/administration/20-reset-password-set-new.png)
+
+Below the form, an option to generate a random temporary password instead lets you hand someone a
+working login on the spot without typing a password yourself.
+
+A **platform admin** (not a regular tenant admin — this is Codevertex's own support/operations
+role) additionally sees a **Delete** icon that permanently removes an account everywhere on the
+platform, every tenant and every service — not just from this outlet's team. It asks for
+confirmation first, and always suggests the Active/Inactive toggle above as the reversible
+alternative if you only meant to remove someone's access here.
+
 The **Roles & Permissions** tab is where a role's actual Inventory permissions are defined — pick a
 role on the left, and its permission matrix (Approvals, Assets, Procurement, Stock, and so on, each
 with add/view/change/delete-style toggles) opens on the right.
@@ -126,6 +151,39 @@ every item in the catalog behaves.
 - **Record Theoretical Usage for Non-Depleting Sales** — with the setting above on, this keeps
   logging what a sale *would* have consumed, so food-cost and actual-vs-theoretical variance
   reports still mean something even though stock isn't actually moving.
+
+### Add-ons {: #add-ons }
+
+Two further toggles on this same tab are handled differently from everything else here — they're
+platform add-ons rather than part of any subscription plan, switched on for your account by
+Codevertex directly rather than by upgrading a plan tier:
+
+![Settings — the two add-on toggles](assets/administration/16-settings-addon-toggles.png)
+
+1. **Per-Branch / Outlet Pricing** — see
+   [Per-branch / outlet pricing](#per-branch-outlet-pricing) above.
+2. **Stock-Age / Batch Markdown Pricing** — see [Aging Stock](#aging-stock) above.
+
+If your account doesn't have one of these yet, the row shows a dimmed **Add-on** badge instead of
+a working toggle — clicking it explains that it's a platform add-on, not something a plan upgrade
+unlocks on its own, and points you to your account manager. Once granted, the toggle here works
+like any other setting, and a further **Aging Stock Threshold (days)** field appears under the
+Stock-Age toggle once it's on, controlling how old received stock has to be before it counts as
+"aging."
+
+### Documents — Item SKU numbering
+
+The **Documents** tab controls how every document type numbers itself — pure numeric (e.g.
+`000001`) or prefixed/dated (e.g. `PO-260625-000001`) — including how new items get their SKU when
+you leave the SKU field blank while adding one.
+
+![Settings — Documents, Item SKU numbering](assets/administration/17-settings-item-sku-numbering.png)
+
+**Item SKU** works a little differently from every other document type here: switching it to
+**Prefixed** doesn't add a literal prefix string — it switches new SKUs to the category+type-coded
+format instead (e.g. `GEN-GDS-001`), which varies per item's own category, so there's no single
+"next number" to preview. Leave it on **Numeric** for a plain sequential SKU across your whole
+catalog instead.
 
 ## Approvals
 
@@ -175,6 +233,42 @@ from the base Selling Price using a percentage rule instead of pricing every ite
 
 **Name** is required; **Code** is an optional short reference (e.g. "WHOLESALE").
 
+### Per-branch / outlet pricing {: #per-branch-outlet-pricing }
+
+If your business charges a different price for the same item at different branches — a shop price
+versus an airport-outlet price, for example — this is a separate, opt-in add-on (see
+[Add-ons](#add-ons) below). Once it's switched on, every item's own page gets an outlet picker
+next to its pricing:
+
+![Outlet-scoped pricing — Edit Pricing with an outlet picker](assets/administration/22-outlet-scoped-pricing.png)
+
+Open an item, then **Edit** next to **Pricing**:
+
+1. **Applies to** — **All outlets (default)**, or one specific outlet. A price set for one outlet
+   overrides the all-outlets price there only; every other outlet keeps using the all-outlets
+   price.
+2. Enter the price per tier as usual, then **Save**.
+
+The item's Price Profiles table shows which outlet each price belongs to, and an outlet-specific
+price can be deleted (reverting that outlet back to the all-outlets price) from a small trash icon
+next to it — the all-outlets price itself can't be deleted, since there'd be nothing left to fall
+back to.
+
+## Aging Stock — clearance pricing by stock age {: #aging-stock }
+
+Another opt-in add-on (see [Add-ons](#add-ons) below). Once switched on in Settings, **Aging
+Stock** appears under **Reports** in the sidebar: a list of items whose oldest received stock has
+passed your configured age threshold and isn't already discounted. Each row shows the item, its
+current price, how long the oldest batch has been sitting (with the actual receipt date), and how
+much of it is aged.
+
+**Start Clearance** on a row opens a short form: a **markdown price** (must be lower than the
+current price), an optional **end date** (leave it blank to let the clearance run until the old
+stock actually sells out, whichever comes first), and optional notes. This only marks the item
+down at the till — if you also want it to appear as a timed flash sale on your online store, the
+dialog links to creating a matching discount in **Sell → Discounts** in POS, using the same
+markdown price.
+
 ## Backups and Audit Log
 
 Two lighter-weight admin screens round out this group:
@@ -209,3 +303,14 @@ tenant policy for that one item — open the item and check its Stock Tracking f
 calculates from the item's base Selling Price, not from another profile's price — if you've been
 editing this item's Wholesale price by hand for a while and then run Generate prices on a
 different profile, it recalculates from Selling Price, not from Wholesale.
+
+**I don't see a Delete option on the Team page, only Active/Inactive.** That's expected — hard
+delete is a platform-admin-only action for permanently removing an account everywhere on the
+platform, not a regular tenant-admin capability. Suspending someone with the Active/Inactive
+toggle is the normal, reversible way to remove a team member's access.
+
+**Turned on Per-Branch/Outlet Pricing or Stock-Age/Batch Markdown Pricing, but the feature still
+won't load ("subscription limit reached").** These add-ons need a real grant from Codevertex, not
+just the Settings toggle — the toggle only controls whether it's switched on for your tenant once
+the underlying grant exists. If you've confirmed the add-on should be active on your account and
+still see this, contact your account manager.

@@ -83,7 +83,28 @@ Each row has:
 - **Outlet** — reassign which branch this member is tied to (only shown if you have branches set
   up).
 - **Set PIN** — opens the dialog below.
+- **Reset password** (the lock icon) — opens the dialog described in
+  [Resetting a password](#resetting-a-password) below.
 - A trash icon to remove the member entirely.
+
+### Resetting a password
+
+Use this when someone forgot their password, or you're onboarding a member who needs a way in
+before their first sign-in.
+
+![Reset Password dialog — choose a method](assets/managing-your-organisation/10-reset-password-choose.png)
+
+Click the lock icon on that member's row, then pick one:
+
+1. **Send reset email** — they get a link and choose their own new password. The simplest option
+   when the member can check their own inbox.
+2. **Set a new password** — type one directly (at least 8 characters, confirmed twice), or:
+
+![Reset Password dialog — set a new password](assets/managing-your-organisation/11-reset-password-set-new.png)
+
+Below the form, **"Or generate a random temporary password instead"** creates one for you to hand
+over securely — useful when you're setting someone up in person and don't want to type a password
+yourself.
 
 ### Setting or changing a PIN
 

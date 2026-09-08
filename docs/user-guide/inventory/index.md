@@ -18,7 +18,8 @@ account, not mockups, so what you see here is what you'll see in your own organi
 ### Administration — setup and management
 
 - **[Inventory Administration](administration.md)** — categories, brands and units, suppliers,
-  team permissions and PINs, tenant-wide stock settings, approvals, and pricing profiles.
+  team permissions, PINs and password resets, tenant-wide stock settings, approvals, pricing
+  profiles (including per-branch/outlet pricing), and Aging Stock clearance pricing.
 
 ## Finding your way around
 

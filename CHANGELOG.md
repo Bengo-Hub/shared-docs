@@ -2,6 +2,36 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.7.0] — 2026-09-08
+
+Catches the Inventory guides up with features shipped over the past week: Team page password
+resets and hard delete, Item SKU numbering, per-branch/outlet pricing, and Aging Stock clearance
+pricing.
+
+### Added
+- **Inventory Administration → Team & Roles** — documents the Active/Inactive toggle, the new
+  **Reset password** action (send email, or set a password directly), and platform-admin hard
+  delete.
+- **Inventory Administration → Settings** — new **Add-ons** subsection (per-branch/outlet pricing
+  and Aging Stock, both platform-grant add-ons rather than plan-tier features) and a new
+  **Documents → Item SKU numbering** subsection.
+- **Inventory Administration → Pricing Profiles** — new **Per-branch / outlet pricing** subsection.
+- **New: Aging Stock — clearance pricing by stock age** — a new section covering the age-based
+  markdown workflow.
+- **Managing Your Organisation → Team** — the SSO portal's own Team tab gained the same
+  password-reset capability; documented alongside Set PIN.
+- **Warehouses & Stock** — new Common Issues entry: a negative Stock Levels number is the correct
+  representation of an unsettled oversell, not a bug, and resolves itself as stock comes back in.
+- Dashboard orientation screenshots (desktop + mobile) linked into the Inventory guide's own
+  navigation section — captured in the previous release but never actually referenced from a page.
+
+### Changed
+- Adding Products' duplicate-SKU Common Issues entry corrected: the live inline check that's
+  meant to catch a clashing SKU as you type doesn't currently block reliably on the Create path
+  (a real product issue found while writing this entry, not a documentation choice) — the text now
+  only describes what's reliably true, the database-level uniqueness constraint that always
+  rejects a genuine duplicate at save time.
+
 ## [1.6.0] — 2026-09-02
 
 Role-based reorganization of the User Guide, a new Account & Organisation section, and a major
