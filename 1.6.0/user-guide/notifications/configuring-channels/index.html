@@ -699,6 +699,8 @@
       
         
       
+        
+      
     
     
     
@@ -1089,6 +1091,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1305,6 +1313,225 @@
     
   
     Message Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../whatsapp-inbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WhatsApp Inbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../whatsapp-subscription-billing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WhatsApp Subscription & Billing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../treasury/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Treasury
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_3" id="__nav_3_6_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Treasury
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../treasury/invoicing-and-payments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invoicing & Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../treasury/reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reports
   
 
     
@@ -2763,11 +2990,19 @@ other channel keeps working normally) rather than silently going out under someo
 actual test message and confirm delivery end to end.</p>
 <h2 id="choosing-which-channels-a-notification-uses">Choosing which channel(s) a notification uses<a class="headerlink" href="#choosing-which-channels-a-notification-uses" title="Permanent link">&para;</a></h2>
 <p>Each notification type (order confirmed, invoice sent, OTP, and so on) can be turned on or off per
-channel from your notification preferences. Today, most notification types are wired to send on one
-primary channel (usually email); as WhatsApp and SMS templates roll out for more notification types
-(see <a href="../message-templates/">Message Templates</a>), this becomes a genuine choice — which channel(s) a
-given type actually reaches will expand type by type as its templates go live on each channel, not
-all at once.</p>
+channel from <strong>Settings → Notifications</strong> — click the sliders icon on any row to open the channel
+picker. It always lists every platform channel, so you can see at a glance which ones this type
+supports; a channel with no template yet for that type shows disabled with a "No template yet"
+label rather than being hidden, so "not available yet" and "available but you turned it off" never
+look the same.</p>
+<p>For <strong>order updates</strong> (placed, ready, out for delivery, delivered, cancelled, refunded, scheduled,
+for pickup) and <strong>payment results</strong> (payment successful, payment failed, refund completed), this is
+a real, working choice today: enable WhatsApp and/or SMS alongside email and customers receive it
+on every channel you've turned on for that type, using whichever contact details (email, phone)
+they have on file. Most other notification types are still email-only while their WhatsApp/SMS
+templates roll out (see <a href="../message-templates/">Message Templates</a>) — the channel picker always
+shows you exactly where each type currently stands rather than promising a channel that isn't wired
+yet.</p>
 
 
 
@@ -2790,7 +3025,7 @@ all at once.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 7, 2026 13:46:22 UTC">September 7, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
   </span>
 
     

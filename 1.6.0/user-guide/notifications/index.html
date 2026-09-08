@@ -699,6 +699,8 @@
       
         
       
+        
+      
     
     
     
@@ -1089,6 +1091,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1186,6 +1194,225 @@
     
   
     Message Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="whatsapp-inbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WhatsApp Inbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="whatsapp-subscription-billing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WhatsApp Subscription & Billing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../treasury/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Treasury
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_3" id="__nav_3_6_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Treasury
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../treasury/invoicing-and-payments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Invoicing & Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../treasury/reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reports
   
 
     
@@ -2534,10 +2761,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#more-guides-coming" class="md-nav__link">
+  <a href="#notification-preferences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        More guides coming
+        Notification Preferences
       
     </span>
   </a>
@@ -2580,6 +2807,12 @@ Technical Guide instead — this page is for the Settings screens.</p>
 <li><strong><a href="message-templates/">Message Templates</a></strong> — what a customer actually receives for each kind
   of notification, with real examples, and where a payment or invoice link gets attached
   automatically.</li>
+<li><strong><a href="whatsapp-inbox/">WhatsApp Inbox</a></strong> — the shared inbox for two-way WhatsApp conversations
+  with customers, separate from one-way automated notifications.</li>
+<li><strong><a href="whatsapp-subscription-billing/">WhatsApp Subscription &amp; Billing</a></strong> — plans, message quotas,
+  and (for platform admins) reconciling a payment made outside the normal checkout.</li>
+<li><strong><a href="monitoring/">Monitoring</a></strong> — a live view of every notification sent, for confirming a
+  specific message went out or spotting a failing channel.</li>
 </ul>
 <h2 id="the-channels-in-short">The channels, in short<a class="headerlink" href="#the-channels-in-short" title="Permanent link">&para;</a></h2>
 <table>
@@ -2616,15 +2849,18 @@ Technical Guide instead — this page is for the Settings screens.</p>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <p>You'll need <strong>billing:manage</strong> permission on your organisation to change provider settings (your
 account admin has this by default — see <a href="../organisation/managing-your-organisation/">Managing Your Organisation</a>
-if you need it granted). WhatsApp additionally requires an active WhatsApp subscription on your
-account, on top of a connected number — see <a href="configuring-channels/">Channels &amp; Providers</a>.</p>
-<h2 id="more-guides-coming">More guides coming<a class="headerlink" href="#more-guides-coming" title="Permanent link">&para;</a></h2>
-<p>This section currently covers channel setup and templates. A guide to the notification-preferences
-screen itself (turning individual notification types on/off, and — as channel selection is extended
-to actually route between channels rather than only toggle email — picking which channel each type
-uses) will be added once that work ships; see the Technical Guide's
-<a href="../../integrations/notifications-rest-api-integration/">Notifications REST API</a> doc for the
-current state if you need it sooner.</p>
+if you need it granted). WhatsApp additionally requires an active
+<a href="whatsapp-subscription-billing/">WhatsApp subscription</a> on your account, on top of a connected
+number — see <a href="configuring-channels/">Channels &amp; Providers</a>. Replying in the
+<a href="whatsapp-inbox/">WhatsApp Inbox</a> needs its own separate permission — see that page.</p>
+<h2 id="notification-preferences">Notification Preferences<a class="headerlink" href="#notification-preferences" title="Permanent link">&para;</a></h2>
+<p>Reachable from <strong>Settings → Notifications</strong>, this is where you turn individual notification types
+on or off, and — for the growing set of types with more than one channel available — choose which
+channel(s) each one actually uses. Every row shows a small sliders icon: click it to open the
+channel picker, which always lists every platform channel (Email, SMS, WhatsApp, Push), showing
+disabled with a "No template yet" note whichever ones this particular notification type doesn't yet
+support. See <a href="configuring-channels/#choosing-which-channels-a-notification-uses">Choosing which channel(s) a notification uses</a>
+for which types support more than email today, and how that list grows over time.</p>
 
 
 
@@ -2647,7 +2883,7 @@ current state if you need it sooner.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 7, 2026 13:46:22 UTC">September 7, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
   </span>
 
     
