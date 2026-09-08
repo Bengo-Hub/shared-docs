@@ -1095,8 +1095,6 @@
       
         
       
-        
-      
     
     
     
@@ -1369,34 +1367,6 @@
     
   
     WhatsApp Subscription & Billing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring
   
 
     
@@ -2942,7 +2912,7 @@
 <p>Settings → Providers is where you connect your own Email, SMS, and WhatsApp sender, and where you
 can send a live test message to confirm it works.</p>
 <h2 id="email">Email<a class="headerlink" href="#email" title="Permanent link">&para;</a></h2>
-<p>Connect SMTP (any mailbox — Gmail, Zoho, your own domain) or Brevo. Fields:</p>
+<p>Connect SMTP (any mailbox: Gmail, Zoho, your own domain) or Brevo. Fields:</p>
 <table>
 <thead>
 <tr>
@@ -2965,42 +2935,43 @@ can send a live test message to confirm it works.</p>
 </tr>
 </tbody>
 </table>
-<p>If you don't connect your own, email still sends — from the platform's shared sender.</p>
+<p>If you don't connect your own, email still sends, from the platform's shared sender.</p>
 <h2 id="sms">SMS<a class="headerlink" href="#sms" title="Permanent link">&para;</a></h2>
 <p>Connect your own Africa's Talking account (username, API key, Sender ID). If you don't, SMS still
-sends — through the platform's shared shortcode.</p>
+sends through the platform's shared shortcode.</p>
 <h2 id="whatsapp">WhatsApp<a class="headerlink" href="#whatsapp" title="Permanent link">&para;</a></h2>
-<p>Connect via <strong>Connect WhatsApp Number</strong> (a guided popup through Meta — no copying tokens by hand)
+<p>Connect via <strong>Connect WhatsApp Number</strong> (a guided popup through Meta, no copying tokens by hand)
 where available, or ask your account contact to set your <strong>Phone Number ID</strong> manually as a fallback.</p>
 <h3 id="why-whatsapp-has-no-shared-fallback">Why WhatsApp has no shared fallback<a class="headerlink" href="#why-whatsapp-has-no-shared-fallback" title="Permanent link">&para;</a></h3>
 <p>Unlike Email and SMS, WhatsApp doesn't have a "platform default" you'll silently fall back to.
 Two things are required before any WhatsApp message will send for your account:</p>
 <ol>
-<li><strong>An active WhatsApp subscription</strong> — a small monthly plan sized to your expected message
+<li><strong>An active WhatsApp subscription</strong>, a small monthly plan sized to your expected message
    volume (see <a href="../../subscriptions-and-billing/">Subscriptions &amp; Billing</a>).</li>
 <li><strong>Your own connected WhatsApp Business number.</strong></li>
 </ol>
-<p>This is deliberate, not a gap: a WhatsApp Business number carries your business's own verified
-identity and message history — there's no equivalent to a "shared shortcode" that would make sense
-for it. If either requirement isn't met, WhatsApp sends for your account simply don't go out (every
-other channel keeps working normally) rather than silently going out under someone else's number.</p>
+<p>This is deliberate, not a gap. A WhatsApp Business number carries your business's own verified
+identity and message history, and there's no equivalent to a "shared shortcode" that would make
+sense for it. If either requirement isn't met, WhatsApp sends for your account simply don't go out
+(every other channel keeps working normally) rather than silently going out under someone else's
+number.</p>
 <h3 id="testing-a-connection">Testing a connection<a class="headerlink" href="#testing-a-connection" title="Permanent link">&para;</a></h3>
 <p>Once connected, use <strong>Test Connection</strong>: leave the recipient blank to just verify your credentials
 (checks your number's status with Meta, no message sent), or enter a real phone number to send an
 actual test message and confirm delivery end to end.</p>
 <h2 id="choosing-which-channels-a-notification-uses">Choosing which channel(s) a notification uses<a class="headerlink" href="#choosing-which-channels-a-notification-uses" title="Permanent link">&para;</a></h2>
 <p>Each notification type (order confirmed, invoice sent, OTP, and so on) can be turned on or off per
-channel from <strong>Settings → Notifications</strong> — click the sliders icon on any row to open the channel
+channel from <strong>Settings → Notifications</strong>. Click the sliders icon on any row to open the channel
 picker. It always lists every platform channel, so you can see at a glance which ones this type
-supports; a channel with no template yet for that type shows disabled with a "No template yet"
+supports. A channel with no template yet for that type shows disabled with a "No template yet"
 label rather than being hidden, so "not available yet" and "available but you turned it off" never
 look the same.</p>
 <p>For <strong>order updates</strong> (placed, ready, out for delivery, delivered, cancelled, refunded, scheduled,
 for pickup) and <strong>payment results</strong> (payment successful, payment failed, refund completed), this is
-a real, working choice today: enable WhatsApp and/or SMS alongside email and customers receive it
+a real, working choice today. Enable WhatsApp and/or SMS alongside email and customers receive it
 on every channel you've turned on for that type, using whichever contact details (email, phone)
 they have on file. Most other notification types are still email-only while their WhatsApp/SMS
-templates roll out (see <a href="../message-templates/">Message Templates</a>) — the channel picker always
+templates roll out (see <a href="../message-templates/">Message Templates</a>). The channel picker always
 shows you exactly where each type currently stands rather than promising a channel that isn't wired
 yet.</p>
 
@@ -3025,7 +2996,7 @@ yet.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 07:49:02 UTC">September 8, 2026</span>
   </span>
 
     

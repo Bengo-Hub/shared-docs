@@ -18,7 +18,7 @@
         <link rel="prev" href="../whatsapp-inbox/">
       
       
-        <link rel="next" href="../monitoring/">
+        <link rel="next" href="../../treasury/">
       
       
         
@@ -1095,8 +1095,6 @@
       
         
       
-        
-      
     
     
     
@@ -1335,17 +1333,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#for-platform-admins-reconciling-a-payment-manually" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        For platform admins: reconciling a payment manually
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#common-issues" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1360,34 +1347,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -2863,17 +2822,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#for-platform-admins-reconciling-a-payment-manually" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        For platform admins: reconciling a payment manually
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#common-issues" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2905,8 +2853,8 @@
 
 
 <h1 id="whatsapp-subscription-billing">WhatsApp Subscription &amp; Billing<a class="headerlink" href="#whatsapp-subscription-billing" title="Permanent link">&para;</a></h1>
-<p>WhatsApp messaging is billed differently from the rest of the platform: instead of a top-up wallet
-like SMS credits, it's a <strong>monthly subscription with a bundled message quota</strong> — pick a plan sized
+<p>WhatsApp messaging is billed differently from the rest of the platform. Instead of a top-up wallet
+like SMS credits, it's a <strong>monthly subscription with a bundled message quota</strong>. Pick a plan sized
 to how many WhatsApp messages your business actually sends in a month.</p>
 <blockquote>
 <p><strong>Direct link:</strong> <strong>Billing → WhatsApp</strong> (also reachable via <strong>Manage WhatsApp Subscription</strong> from
@@ -2939,41 +2887,33 @@ the SMS Credits tab).</p>
 </tr>
 </tbody>
 </table>
-<p>A message counts against your quota when it's actually sent — outbound only (a customer messaging
+<p>A message counts against your quota when it's actually sent, outbound only. A customer messaging
 you doesn't count, and neither does an account-info connection check from
-<a href="../configuring-channels/#testing-a-connection">Test Connection</a>). If you're on a metered plan and
-reach your monthly limit, further WhatsApp sends pause until the next billing cycle or an upgrade —
-every other channel keeps working normally.</p>
+<a href="../configuring-channels/#testing-a-connection">Test Connection</a>. If you're on a metered plan and
+reach your monthly limit, further WhatsApp sends pause until the next billing cycle or an upgrade.
+Every other channel keeps working normally.</p>
 <h2 id="subscribing-or-changing-plans">Subscribing or changing plans<a class="headerlink" href="#subscribing-or-changing-plans" title="Permanent link">&para;</a></h2>
 <p>The <strong>Current Subscription</strong> card at the top of the page shows your plan, messages used this
 period, when it started, and when it expires. Below it, every available plan is listed side by
-side with <strong>Subscribe</strong> on whichever one you want — picking a new plan while one is already active
-renews/upgrades it rather than stacking a second subscription. Payment is handled the same way as
-any other platform payment: a checkout window opens for the plan's price, and your subscription
+side with <strong>Subscribe</strong> on whichever one you want. Picking a new plan while one is already active
+renews or upgrades it rather than stacking a second subscription. Payment is handled the same way
+as any other platform payment: a checkout window opens for the plan's price, and your subscription
 activates as soon as that payment is confirmed.</p>
-<p><strong>Cancel Subscription</strong> stops auto-renewal but doesn't cut you off immediately — you keep access
+<p><strong>Cancel Subscription</strong> stops auto-renewal but doesn't cut you off immediately. You keep access
 until the current period's expiry date, shown in the confirmation prompt.</p>
 <h2 id="without-an-active-subscription">Without an active subscription<a class="headerlink" href="#without-an-active-subscription" title="Permanent link">&para;</a></h2>
-<p>WhatsApp sends for your account simply don't go out until you subscribe — see
+<p>WhatsApp sends for your account simply don't go out until you subscribe. See
 <a href="../configuring-channels/#why-whatsapp-has-no-shared-fallback">Why WhatsApp has no shared fallback</a>.
 This applies to every WhatsApp send: automated notifications, <a href="../whatsapp-inbox/">WhatsApp Inbox</a>
 replies, and test connections with a real recipient.</p>
-<h2 id="for-platform-admins-reconciling-a-payment-manually">For platform admins: reconciling a payment manually<a class="headerlink" href="#for-platform-admins-reconciling-a-payment-manually" title="Permanent link">&para;</a></h2>
-<p>Reachable from <strong>Platform → Subscriptions</strong>, this is a platform-admin-only view across every
-tenant's WhatsApp subscription — plan, status, messages used, and next renewal date, with an
-<strong>Overdue</strong> or <strong>Due soon</strong> badge once a subscription is close to lapsing.</p>
-<p>Ordinarily a tenant subscribes and pays through the checkout flow above. <strong>Record &amp; Mark Paid</strong> is
-the exception path: when a tenant pays you outside that flow — a bank transfer, cash, or till
-payment — this reconciles it in one action. Pick the plan they paid for, optionally note a
-reference (the bank transaction ID, a receipt number), and confirm — the subscription activates
-immediately, the same as a normal checkout payment would.</p>
 <h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
-<p><strong>"no_active_subscription" when sending a real test message.</strong> Exactly what it says — subscribe to
-a plan first (or, if you already believe you're subscribed, check <strong>Billing → WhatsApp</strong> for
-whether it's actually active or has lapsed).</p>
-<p><strong>A tenant says they paid but WhatsApp still isn't sending.</strong> If they paid through a channel other
-than the in-app checkout (bank transfer, cash), it won't activate automatically — a platform admin
-needs to reconcile it via <strong>Record &amp; Mark Paid</strong> above.</p>
+<p><strong>"no_active_subscription" when sending a real test message.</strong> Exactly what it says. Subscribe to
+a plan first, or if you already believe you're subscribed, check <strong>Billing → WhatsApp</strong> for
+whether it's actually active or has lapsed.</p>
+<p><strong>I paid outside the in-app checkout and WhatsApp still isn't sending.</strong> A payment made another
+way, a bank transfer, cash, or till payment, doesn't activate the subscription automatically.
+Contact your account team with your payment reference so it can be reconciled, and your
+subscription will activate the same as a normal checkout payment would.</p>
 
 
 
@@ -2996,7 +2936,7 @@ needs to reconcile it via <strong>Record &amp; Mark Paid</strong> above.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 07:49:02 UTC">September 8, 2026</span>
   </span>
 
     
