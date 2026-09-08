@@ -2,6 +2,28 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.8.0] — 2026-09-08
+
+Deepens the platform-wide User Guide pages and adds a new Stock Take guide — the two items left
+open from the previous release.
+
+### Added
+- **Warehouses & Stock → Stock Take** — a new section covering periodic/cycle counts and
+  department shift sheets: starting a count, the Counting → Submit for review → Approve workflow,
+  and the variance pills/filter (short, over, pending) that make a mid-count session easy to scan.
+
+### Changed
+- **Platform Overview** — the product list now covers the full ecosystem (MarketFlow CRM,
+  Projects, Webmail, Ticketing, and the rest, previously missing or buried in a footnote),
+  restructured around the commerce suite vs. purpose-built industry products, and cross-linked to
+  Account & Organisation and the Service Guides.
+- **Getting Started** — no longer stops at "invite your team": now walks through what's actually
+  on the Team form (email, role, PIN, outlet) and cross-links to Signing In, Branches, and Billing
+  instead of describing them from scratch.
+- **Subscriptions & Billing** — added a real screenshot of the Billing tab, a note on
+  service-charge vs. monthly plans, and a new Add-ons section explaining the difference between a
+  plan-tier feature and a platform add-on grant.
+
 ## [1.7.0] — 2026-09-08
 
 Catches the Inventory guides up with features shipped over the past week: Team page password

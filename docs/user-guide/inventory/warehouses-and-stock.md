@@ -127,6 +127,48 @@ flowchart TD
 A **Bulk Adjust** option in the toolbar lets you do the same thing for several items at once — useful
 right after receiving a delivery of several new products at the same time.
 
+## Stock Take {: #stock-take }
+
+> **Direct link:** `https://inventory.codevertexafrica.com/{your-tenant-slug}/stock-take`
+> (demo: `https://inventory.codevertexafrica.com/codevertex-demo/stock-take`)
+
+A Stock Adjustment fixes one item you already know is wrong. **Stock Take** is the other
+direction: a full or partial physical count, comparing what your team actually counts against
+what the system thinks you have, all at once — periodic full counts, cycle counts, or a
+department's daily shift sheet (kitchen, bar, stores).
+
+![Stock Take list — sessions with their variance summary](assets/warehouses-and-stock/09-stock-take-list.png)
+
+Each row is one counting session, with a **Variance** column summarising it at a glance — how many
+lines are short, over, or still pending — so a manager scanning the list can see which sessions
+need attention without opening each one.
+
+**New Stock Take**:
+
+![New Stock Take dialog](assets/warehouses-and-stock/10-new-stock-take-dialog.png)
+
+1. **Count sheet** (optional) — pick a saved department sheet to pre-load only its items (e.g. the
+   kitchen daily sheet), or leave it as **Full count** to include every stocked item.
+2. **Warehouse / Outlet** — required, unless a count sheet already has its own location.
+3. **Reference** (optional) — a name for this session, e.g. "July month-end count."
+4. **Pre-load every item at its current system quantity** — on by default. This fills the sheet
+   with each item and what the system currently thinks you have; your team then types what they
+   physically counted, and the difference becomes the variance. Turn it off to start from a blank
+   sheet and add items as you go instead.
+
+Counting works through three stages: **Counting** (your team enters quantities) → **Submit for
+review** → a manager or accountant **Approves**, which posts every variance as a stock adjustment
+with its classification, all at once.
+
+![Counting a session — variance pills and filter](assets/warehouses-and-stock/11-stock-take-counting.png)
+
+As lines get counted, colored pills appear above the list — ① lines short (negative variance), ②
+lines over (positive variance), ③ lines still pending — click one to filter the list to just those
+lines, click again to clear the filter. The same three states are also available from the filter
+row's dropdown, for narrowing by name/SKU/barcode at the same time. Each line shows **Counted −
+System = Variance**; a reason can be attached to each variance line before it's approved and
+posted.
+
 ## Common Issues
 
 **Stock Levels shows a negative number for an item.** This is correct, not a bug — it means the
