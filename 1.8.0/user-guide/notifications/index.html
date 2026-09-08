@@ -1095,8 +1095,6 @@
       
         
       
-        
-      
     
     
     
@@ -1250,34 +1248,6 @@
     
   
     WhatsApp Subscription & Billing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring
   
 
     
@@ -2792,13 +2762,13 @@
 
 
 <h1 id="notifications">Notifications<a class="headerlink" href="#notifications" title="Permanent link">&para;</a></h1>
-<p>How your customers and staff hear from your business — order updates, payment receipts, OTPs,
-overdue reminders, delivery alerts — across Email, SMS, WhatsApp, and push. This guide covers what
+<p>How your customers and staff hear from your business: order updates, payment receipts, OTPs,
+overdue reminders, delivery alerts, across Email, SMS, WhatsApp, and push. This guide covers what
 you can configure yourself as a tenant admin: which channels are active, your own WhatsApp number,
 and which notification types go out on which channel.</p>
 <p>If you're building against the notifications API directly, you want the
 <a href="../../integrations/notifications-rest-api-integration/">Notifications REST API</a> reference in the
-Technical Guide instead — this page is for the Settings screens.</p>
+Technical Guide instead. This page is for the Settings screens.</p>
 <h3 id="in-this-section">In this section<a class="headerlink" href="#in-this-section" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><a href="configuring-channels/">Channels &amp; Providers</a></strong> — connecting your own Email, SMS, and
@@ -2810,9 +2780,7 @@ Technical Guide instead — this page is for the Settings screens.</p>
 <li><strong><a href="whatsapp-inbox/">WhatsApp Inbox</a></strong> — the shared inbox for two-way WhatsApp conversations
   with customers, separate from one-way automated notifications.</li>
 <li><strong><a href="whatsapp-subscription-billing/">WhatsApp Subscription &amp; Billing</a></strong> — plans, message quotas,
-  and (for platform admins) reconciling a payment made outside the normal checkout.</li>
-<li><strong><a href="monitoring/">Monitoring</a></strong> — a live view of every notification sent, for confirming a
-  specific message went out or spotting a failing channel.</li>
+  and subscribing or changing plans.</li>
 </ul>
 <h2 id="the-channels-in-short">The channels, in short<a class="headerlink" href="#the-channels-in-short" title="Permanent link">&para;</a></h2>
 <table>
@@ -2827,7 +2795,7 @@ Technical Guide instead — this page is for the Settings screens.</p>
 <tr>
 <td><strong>Email</strong></td>
 <td>Your own SMTP/Brevo sender, or the platform's</td>
-<td>Falls back to the platform's shared sender — messages still send, just not from your own domain.</td>
+<td>Falls back to the platform's shared sender; messages still send, just not from your own domain.</td>
 </tr>
 <tr>
 <td><strong>SMS</strong></td>
@@ -2837,25 +2805,25 @@ Technical Guide instead — this page is for the Settings screens.</p>
 <tr>
 <td><strong>WhatsApp</strong></td>
 <td>Your own WhatsApp Business number only</td>
-<td><strong>Does not fall back.</strong> WhatsApp messages simply won't send until you connect your own number — see <a href="configuring-channels/#why-whatsapp-has-no-shared-fallback">why</a>.</td>
+<td><strong>Does not fall back.</strong> WhatsApp messages simply won't send until you connect your own number. See <a href="configuring-channels/#why-whatsapp-has-no-shared-fallback">why</a>.</td>
 </tr>
 <tr>
 <td><strong>Push</strong></td>
 <td>Platform-managed (mobile app notifications)</td>
-<td>Always on where the app supports it — nothing to configure.</td>
+<td>Always on where the app supports it, nothing to configure.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <p>You'll need <strong>billing:manage</strong> permission on your organisation to change provider settings (your
-account admin has this by default — see <a href="../organisation/managing-your-organisation/">Managing Your Organisation</a>
+account admin has this by default; see <a href="../organisation/managing-your-organisation/">Managing Your Organisation</a>
 if you need it granted). WhatsApp additionally requires an active
 <a href="whatsapp-subscription-billing/">WhatsApp subscription</a> on your account, on top of a connected
-number — see <a href="configuring-channels/">Channels &amp; Providers</a>. Replying in the
-<a href="whatsapp-inbox/">WhatsApp Inbox</a> needs its own separate permission — see that page.</p>
+number. See <a href="configuring-channels/">Channels &amp; Providers</a>. Replying in the
+<a href="whatsapp-inbox/">WhatsApp Inbox</a> needs its own separate permission; see that page.</p>
 <h2 id="notification-preferences">Notification Preferences<a class="headerlink" href="#notification-preferences" title="Permanent link">&para;</a></h2>
 <p>Reachable from <strong>Settings → Notifications</strong>, this is where you turn individual notification types
-on or off, and — for the growing set of types with more than one channel available — choose which
+on or off, and, for the growing set of types with more than one channel available, choose which
 channel(s) each one actually uses. Every row shows a small sliders icon: click it to open the
 channel picker, which always lists every platform channel (Email, SMS, WhatsApp, Push), showing
 disabled with a "No template yet" note whichever ones this particular notification type doesn't yet
@@ -2883,7 +2851,7 @@ for which types support more than email today, and how that list grows over time
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 07:49:02 UTC">September 8, 2026</span>
   </span>
 
     

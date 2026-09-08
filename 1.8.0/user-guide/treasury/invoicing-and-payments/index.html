@@ -1093,8 +1093,6 @@
       
         
       
-        
-      
     
     
     
@@ -1248,34 +1246,6 @@
     
   
     WhatsApp Subscription & Billing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notifications/monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring
   
 
     
@@ -2906,52 +2876,52 @@
 
 <h1 id="invoicing-payments">Invoicing &amp; Payments<a class="headerlink" href="#invoicing-payments" title="Permanent link">&para;</a></h1>
 <h2 id="invoices">Invoices<a class="headerlink" href="#invoices" title="Permanent link">&para;</a></h2>
-<p>An invoice records what a customer owes — line items, tax, discounts, and a due date — and tracks
+<p>An invoice records what a customer owes (line items, tax, discounts, and a due date) and tracks
 payment against it as <strong>Draft</strong>, <strong>Sent</strong>, <strong>Partial</strong>, or <strong>Paid</strong>. A partially paid invoice shows
 both the total and how much has actually been paid so far, rather than only a binary paid/unpaid
 state.</p>
-<p>Every invoice has a <strong>public link</strong> the customer can open without logging in — it's the link sent
+<p>Every invoice has a <strong>public link</strong> the customer can open without logging in. It's the link sent
 in the <a href="../../notifications/message-templates/#payments-invoices">invoice notification</a> and every
 <a href="#automatic-overdue-reminders">overdue reminder</a>, and it's where the customer actually pays from.
 It also has a downloadable PDF, referenced the same way in reminders as "view your invoice."</p>
 <h2 id="recording-a-payment">Recording a payment<a class="headerlink" href="#recording-a-payment" title="Permanent link">&para;</a></h2>
 <p>A payment against an invoice (or an order, or a subscription renewal) can be recorded three ways:</p>
 <ol>
-<li><strong>Through the platform's own checkout</strong> — M-Pesa STK push, card (Paystack), or another
+<li><strong>Through the platform's own checkout.</strong> M-Pesa STK push, card (Paystack), or another
    connected gateway. This is the normal path for a customer paying via their invoice's public
    link, and it settles automatically the moment the gateway confirms it.</li>
-<li><strong>Cash on delivery</strong> — for orders fulfilled with payment collected at the point of delivery;
-   confirmed once the delivery is completed.</li>
-<li><strong>Recorded manually</strong> — for a payment that happened outside the platform entirely: a bank
+<li><strong>Cash on delivery</strong>, for orders fulfilled with payment collected at the point of delivery.
+   Confirmed once the delivery is completed.</li>
+<li><strong>Recorded manually</strong>, for a payment that happened outside the platform entirely: a bank
    transfer, cash handed over in person, or a till payment. Use <strong>Confirm Payment</strong> (or your
-   product's equivalent action) and optionally note a reference — the M-Pesa code sighted, a bank
-   transaction ID — for the audit trail. This immediately marks the payment as settled and triggers
-   the same downstream effects a gateway payment would: the invoice updates, the customer's receipt
-   notification sends, and (for a subscription payment) the subscription activates.</li>
+   product's equivalent action) and optionally note a reference, the M-Pesa code sighted or a bank
+   transaction ID, for the audit trail. This immediately marks the payment as settled and triggers
+   the same downstream effects a gateway payment would. The invoice updates, the customer's receipt
+   notification sends, and, for a subscription payment, the subscription activates.</li>
 </ol>
-<p>Every recorded payment — whichever path it came through — shows up the same way in
-<a href="../reports/">Reports</a> and in the customer's own payment history.</p>
+<p>Every recorded payment shows up the same way in <a href="../reports/">Reports</a> and in the customer's own
+payment history, regardless of which path it came through.</p>
 <h2 id="automatic-overdue-reminders">Automatic overdue reminders<a class="headerlink" href="#automatic-overdue-reminders" title="Permanent link">&para;</a></h2>
 <p>An unpaid invoice past its due date gets automatic reminder notifications, escalating in tone over
-up to three stages as it stays unpaid longer — a gentle nudge first, firmer language as it ages
+up to three stages as it stays unpaid longer: a gentle nudge first, firmer language as it ages
 further, and an urgent final notice. Every reminder, at every stage, carries the same real
-<strong>pay-now link and invoice PDF</strong> as the original invoice notification — a customer is never asked
-to pay an overdue invoice without a direct way to do it.</p>
+<strong>pay-now link and invoice PDF</strong> as the original invoice notification. A customer is never asked to
+pay an overdue invoice without a direct way to do it.</p>
 <h2 id="refunds-and-failed-payments">Refunds and failed payments<a class="headerlink" href="#refunds-and-failed-payments" title="Permanent link">&para;</a></h2>
 <p>A refund is processed against the original payment and notifies the customer once it completes,
 with the amount and reason. If a payment attempt fails outright (a declined card, a cancelled STK
 push), the customer is notified with a direct retry link rather than being left to guess that
-anything went wrong — see
+anything went wrong. See
 <a href="../../notifications/message-templates/#payments-invoices">Payments &amp; invoices</a> for what these
 notifications look like.</p>
 <h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
 <p><strong>A customer says they paid but the invoice still shows unpaid.</strong> If they paid through the
-platform's own checkout, this settles automatically within moments — check whether the payment
+platform's own checkout, this settles automatically within moments. Check whether the payment
 actually completed on their end first. If they paid another way (bank transfer, cash), it needs
-<a href="#recording-a-payment">recording manually</a> — it will never show as paid on its own until someone
+<a href="#recording-a-payment">recording manually</a>. It will never show as paid on its own until someone
 confirms it.</p>
 <p><strong>An invoice's public link doesn't work for the customer.</strong> Confirm you're sharing the exact link
-from the invoice notification or reminder, not a shortened/retyped version — the link includes a
+from the invoice notification or reminder, not a shortened or retyped version. The link includes a
 unique token that must match exactly.</p>
 
 
@@ -2975,7 +2945,7 @@ unique token that must match exactly.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 07:49:02 UTC">September 8, 2026</span>
   </span>
 
     

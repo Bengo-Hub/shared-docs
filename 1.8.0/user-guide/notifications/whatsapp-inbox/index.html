@@ -1095,8 +1095,6 @@
       
         
       
-        
-      
     
     
     
@@ -1363,34 +1361,6 @@
     
   
     WhatsApp Subscription & Billing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Monitoring
   
 
     
@@ -2927,21 +2897,21 @@
 
 
 <h1 id="whatsapp-inbox">WhatsApp Inbox<a class="headerlink" href="#whatsapp-inbox" title="Permanent link">&para;</a></h1>
-<p>A shared, tenant-wide inbox for the WhatsApp conversations your business has with customers —
+<p>A shared, tenant-wide inbox for the WhatsApp conversations your business has with customers,
 separate from the automated notifications covered elsewhere in this guide. Automated notifications
-are one-way (order confirmed, invoice sent); the WhatsApp Inbox is where a customer's own message
+are one-way (order confirmed, invoice sent). The WhatsApp Inbox is where a customer's own message
 to your business number shows up, and where your team replies.</p>
 <blockquote>
-<p><strong>Direct link:</strong> the <strong>WhatsApp Inbox</strong> entry in the sidebar (only visible if you have access —
-see <a href="#before-you-start">Before you start</a>).</p>
+<p><strong>Direct link:</strong> the <strong>WhatsApp Inbox</strong> entry in the sidebar. It's only visible if you have
+access; see <a href="#before-you-start">Before you start</a>.</p>
 </blockquote>
 <h2 id="why-this-exists-not-just-whatsapp-web">Why this exists, not just WhatsApp Web<a class="headerlink" href="#why-this-exists-not-just-whatsapp-web" title="Permanent link">&para;</a></h2>
-<p>A phone number registered on WhatsApp's Cloud API — the way your business's WhatsApp number is
-connected (see <a href="../configuring-channels/">Channels &amp; Providers</a>) — can no longer be used through the
+<p>A phone number registered on WhatsApp's Cloud API, the way your business's WhatsApp number is
+connected (see <a href="../configuring-channels/">Channels &amp; Providers</a>), can no longer be used through the
 regular WhatsApp app or WhatsApp Web. Once a number is set up this way, the only way to see and
-reply to messages sent to it is through software built on the same API, which is exactly what this
-inbox is. Nothing changes for your <em>customers</em> — they still message an ordinary-looking WhatsApp
-number from their own phone as normal.</p>
+reply to messages sent to it is through software built on the same API. That's what this inbox is.
+Nothing changes for your <em>customers</em>. They still message an ordinary-looking WhatsApp number from
+their own phone as normal.</p>
 <h2 id="conversations-list">Conversations list<a class="headerlink" href="#conversations-list" title="Permanent link">&para;</a></h2>
 <p>Every customer who has messaged your WhatsApp number appears here, most recent first: contact
 name (or phone number, if unsaved), a preview of the last message, when it arrived, and a status
@@ -2950,19 +2920,19 @@ dot showing whether the 24-hour reply window (below) is still open for that conv
 <h2 id="the-24-hour-reply-window">The 24-hour reply window<a class="headerlink" href="#the-24-hour-reply-window" title="Permanent link">&para;</a></h2>
 <p>WhatsApp only allows a business to send a <strong>free-form reply</strong> (whatever your staff type) within 24
 hours of the customer's <em>last</em> message to you. Outside that window, WhatsApp requires a
-pre-approved template — the same requirement covered in
-<a href="../message-templates/#why-whatsapp-uses-fixed-templates">Why WhatsApp uses fixed templates</a> — and
-this inbox's composer doesn't send those, so it disables the reply box entirely once the window
-closes, with a note explaining why.</p>
-<p>The window resets every time the customer messages you again — there's nothing to do on your end
-to "reopen" it.</p>
+pre-approved template, the same requirement covered in
+<a href="../message-templates/#how-the-channels-differ">How the channels differ</a>. This inbox's composer
+doesn't send those, so it disables the reply box entirely once the window closes, with a note
+explaining why.</p>
+<p>The window resets every time the customer messages you again. There's nothing to do on your end to
+"reopen" it.</p>
 <h2 id="getting-notified-of-a-new-message">Getting notified of a new message<a class="headerlink" href="#getting-notified-of-a-new-message" title="Permanent link">&para;</a></h2>
 <p>If you have push notifications enabled on this device (see below), a new customer message shows a
-real notification — tap it and it opens straight to that conversation, the same way a real
-WhatsApp notification would. Enable it from the banner shown inside the inbox itself the first
-time you visit, or later from your browser's own site-notification settings if you dismissed it.</p>
+real notification. Tap it and it opens straight to that conversation, the same way a real WhatsApp
+notification would. Enable it from the banner shown inside the inbox itself the first time you
+visit, or later from your browser's own site-notification settings if you dismissed it.</p>
 <p>Without push notifications, new messages still show up in the conversations list and the unread
-count — you just won't get an alert outside the tab.</p>
+count. You just won't get an alert outside the tab.</p>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <p>Two separate permissions control access, since reading conversations and sending replies are
 different levels of trust:</p>
@@ -2984,18 +2954,18 @@ different levels of trust:</p>
 </tr>
 </tbody>
 </table>
-<p>Both are granted per role from <strong>My Organization → Team</strong> — see
+<p>Both are granted per role from <strong>My Organization → Team</strong>; see
 <a href="../../organisation/managing-your-organisation/#team">Managing Your Organisation</a>. Your account
 also needs an active <a href="../whatsapp-subscription-billing/">WhatsApp subscription</a> and a connected
-WhatsApp number, same as any other WhatsApp send — see
+WhatsApp number, same as any other WhatsApp send; see
 <a href="../configuring-channels/#why-whatsapp-has-no-shared-fallback">Channels &amp; Providers</a>.</p>
 <h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
 <p><strong>A reply doesn't seem to send.</strong> Check first whether the 24-hour window has closed for that
-conversation (a banner above the composer says so, and the input is disabled) — that's the most
+conversation. A banner above the composer says so, and the input is disabled. That's the most
 common reason. If the window is open and it still doesn't go through, confirm your WhatsApp
 subscription is active.</p>
 <p><strong>No new-message notification arrived even though a customer messaged.</strong> Push notifications are
-per-device and per-browser — confirm you accepted the prompt on <em>this</em> device, and that your
+per-device and per-browser. Confirm you accepted the prompt on <em>this</em> device, and that your
 browser/OS notification settings for the site haven't been turned off separately.</p>
 
 
@@ -3019,7 +2989,7 @@ browser/OS notification settings for the site haven't been turned off separately
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 05:55:40 UTC">September 8, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 8, 2026 07:49:02 UTC">September 8, 2026</span>
   </span>
 
     
