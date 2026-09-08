@@ -129,6 +129,14 @@ right after receiving a delivery of several new products at the same time.
 
 ## Common Issues
 
+**Stock Levels shows a negative number for an item.** This is correct, not a bug — it means the
+item was sold beyond what was actually on hand (an oversell), and the negative number is the
+real, unsettled shortfall. It shows up marked **Out of Stock** the same as a zero-stock item, and
+you'll see it in the "N items out of stock" count and the Out of Stock filter too. It resolves
+itself automatically: the next stock coming in — a Goods Receipt, a transfer, an adjustment — pays
+down the shortfall first, and the item only goes positive again once the debt is actually cleared.
+You don't need to do anything special to fix it; just keep restocking normally.
+
 **Submit is disabled, or the form asks you to pick a warehouse you didn't expect to need.** If
 you're currently viewing "All Outlets" in the header (an admin-only view across every location),
 an adjustment can't post anywhere in particular — pick one specific outlet/warehouse before

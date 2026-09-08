@@ -392,6 +392,12 @@ Adjustment, reason "Initial Stock Count" (see [Warehouses & Stock](warehouses-an
 type, on every item type including recipes — it's a warning, not a hard block, so double-check the
 name isn't actually a near-duplicate before saving anyway.
 
+**"SKU already used by '...' — choose a different one," and Create/Update stays disabled.** SKUs
+must be exactly unique per organisation, and the form tries to catch a clash as you type. If a
+duplicate SKU makes it past that check anyway, saving still fails — SKU uniqueness is enforced as
+a hard rule when the item is actually created, so a genuine duplicate is never saved either way.
+Pick a different SKU, or leave the field blank to let the system generate one for you.
+
 **"Initial stock must be a whole number for [unit] — it's a count-based unit."** Count-type units
 (pieces, bottles, boxes) don't accept fractional opening stock. If you genuinely have a half-used
 container, either switch that item's Unit to something fractional (litres, kilograms) or round to
