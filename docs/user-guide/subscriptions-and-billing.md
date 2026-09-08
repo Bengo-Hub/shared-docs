@@ -19,3 +19,14 @@ You can choose how often you're billed (for example, monthly or for a longer per
 ## One subscription, multiple products
 
 If your organisation uses more than one product, each one is billed according to its own plan — you're not forced into a single bundled price if you only need part of the platform. As your business grows into needing more products, you add their plans as you go.
+
+## How you're notified
+
+A subscription invoice always arrives with a real, working link to view and pay it — never just an
+amount and a due date with nothing to click through to (see
+[Message Templates](notifications/message-templates.md#payments-invoices) for an example). If it
+goes unpaid past its due date, you'll get automatic reminders that escalate in tone the longer it
+stays unpaid, each one still carrying that same direct pay link — see
+[Automatic overdue reminders](treasury/invoicing-and-payments.md#automatic-overdue-reminders) for
+exactly how that escalation works. Once payment is confirmed — through checkout or reconciled
+manually by your account contact — your plan renews and you're notified that it's active again.

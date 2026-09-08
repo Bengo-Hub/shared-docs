@@ -45,11 +45,20 @@ Once connected, use **Test Connection**: leave the recipient blank to just verif
 (checks your number's status with Meta, no message sent), or enter a real phone number to send an
 actual test message and confirm delivery end to end.
 
-## Choosing which channel(s) a notification uses
+## Choosing which channel(s) a notification uses {: #choosing-which-channels-a-notification-uses }
 
 Each notification type (order confirmed, invoice sent, OTP, and so on) can be turned on or off per
-channel from your notification preferences. Today, most notification types are wired to send on one
-primary channel (usually email); as WhatsApp and SMS templates roll out for more notification types
-(see [Message Templates](message-templates.md)), this becomes a genuine choice — which channel(s) a
-given type actually reaches will expand type by type as its templates go live on each channel, not
-all at once.
+channel from **Settings → Notifications** — click the sliders icon on any row to open the channel
+picker. It always lists every platform channel, so you can see at a glance which ones this type
+supports; a channel with no template yet for that type shows disabled with a "No template yet"
+label rather than being hidden, so "not available yet" and "available but you turned it off" never
+look the same.
+
+For **order updates** (placed, ready, out for delivery, delivered, cancelled, refunded, scheduled,
+for pickup) and **payment results** (payment successful, payment failed, refund completed), this is
+a real, working choice today: enable WhatsApp and/or SMS alongside email and customers receive it
+on every channel you've turned on for that type, using whichever contact details (email, phone)
+they have on file. Most other notification types are still email-only while their WhatsApp/SMS
+templates roll out (see [Message Templates](message-templates.md)) — the channel picker always
+shows you exactly where each type currently stands rather than promising a channel that isn't wired
+yet.
