@@ -23,8 +23,10 @@ payment history.
 
 ## Credit sales and customer accounts {: #credit-sales-and-customer-accounts }
 
-Choosing **Credit Sale** (On Account) at checkout doesn't collect cash — it bills the amount to
-the customer's account, the same account balance Treasury tracks for that customer's invoices too.
+A credit sale needs a real customer attached first — see
+[Attaching a customer](selling-and-checkout.md#attaching-a-customer). Choosing **Credit Sale** (On
+Account) at checkout doesn't collect cash — it bills the amount to the customer's account, the
+same account balance Treasury tracks for that customer's invoices too.
 A customer's credit limit (set in Treasury) is enforced at the point of sale, so a credit sale
 that would push them over their limit is rejected rather than silently allowed.
 
