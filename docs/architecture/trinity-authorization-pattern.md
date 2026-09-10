@@ -149,7 +149,7 @@ Each frontend implements lazy subscription loading via `useSubscription()` hook 
 **Relationship to Layer 1 (auth-service) permissions:**
 Layer 1 canonical codes (e.g. `catalog:view`) are global cross-cutting codes issued in JWT by auth-service. Layer 3 service-level codes (e.g. `ordering.catalog.view`) are fine-grained codes managed locally by each service. Both can coexist: the shared-auth-client `RequirePermission` middleware checks `claims.Permissions` (from JWT), while the service RBAC module checks local DB permissions via `rbacService.HasPermission()`.
 
-**Superuser bypass:** All permission checks (both JWT-level and service-level) are bypassed for users with the `superuser` role. Platform owner (`is_platform_owner`) bypasses tenant isolation and platform route restrictions.
+**Superuser bypass:** All Layer 1/3 **permission** checks (both JWT-level and service-level) are bypassed for users with the `superuser` role. Platform owner (`is_platform_owner`) bypasses tenant isolation and platform route restrictions. **This does NOT extend to Layer 2 (subscription/billing) gating** — a tenant superuser is that tenant's own paying admin, not the platform owner, and must not bypass `RequireActiveSubscriptionForMutations*`/`FeatureEnabled`/`IsGatingExempt` (platform SEC-3 policy: otherwise any tenant admin could unlock paid features for free). Only `claims.IsGatingExempt()` (platform owner, demo, service-charge, or an explicitly `sub_exempt` tenant) bypasses Layer 2.
 
 **Just-in-Time (JIT) provisioning:** When a microservice receives a valid JWT but has no local user record for `sub`, it should create a minimal user from token claims and then proceed (not return 401). This avoids "user not found" 401s when NATS sync is delayed. Resource-level (Layer 3) checks still apply after the user exists. **JIT must also assign a default service-level role** based on global JWT roles (e.g. superuser/admin → service admin, staff → manager/operator, others → viewer). This ensures local RBAC queries return correct role data for role-based UI gating and RBAC management endpoints. All services now implement this: treasury-api (finance_admin), inventory-api (inventory_admin), pos-api (admin), logistics-api (admin), notifications-api (super_admin), marketflow-api (marketflow_admin).
 
@@ -261,7 +261,9 @@ if !rbacService.HasPermission(ctx, claims.UserID, "ordering.orders.add") {
 }
 
 // Step 2: Licensing — subscription gate (already applied by mutations-only middleware)
-// claims.IsSubscriptionActive() || claims.IsSuperuser() || claims.IsPlatformOwner
+// claims.IsSubscriptionActive() — internally true for gating-exempt tokens (platform owner,
+// demo, service-charge, explicitly sub_exempt tenant). Deliberately NOT claims.IsSuperuser():
+// a tenant superuser must not bypass billing/subscription gating.
 
 // Step 3: Feature check from JWT claims (no HTTP call needed)
 hasFeature := false
@@ -616,6 +618,8 @@ if claims.roles.includes("superuser") || user.is_platform_owner:
     → bypass tenant isolation checks
     → allow reading/writing any tenant's data
 ```
+
+This `superuser`-role bypass is only safe here because it means "superuser **of the codevertex platform tenant**" (see the note above — `primary_tenant = "codevertex"` is what actually grants cross-tenant access; the role alone, on any other tenant, means nothing more than that tenant's own admin). Do **not** generalize `claims.IsSuperuser()` as a bypass for anything outside tenant-isolation/permission checks — it must never bypass Layer 2 subscription/billing gating for a business tenant's own superuser.
 
 ### Backend Tenant Override for Platform Owners
 
