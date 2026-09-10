@@ -8,9 +8,10 @@ account, not mockups, so what you see here is what you'll see in your own organi
 ### Staff Operations — day-to-day work
 
 - **[Selling & Checkout](selling-and-checkout.md)** — the POS Terminal from top to bottom: search
-  and the cart, every quick-action button (Recent Transactions, Sell Return, Register Details,
-  Suspended Sales, Calculator, Add Expense), discounts, additional charges, multi-cart Sale tabs,
-  drafts, returns, and every checkout tender.
+  and the cart, attaching or adding a customer (so their name shows on the receipt), every
+  quick-action button (Recent Transactions, Sell Return, Register Details, Suspended Sales,
+  Calculator, Add Expense), discounts, additional charges, multi-cart Sale tabs, drafts, returns,
+  and every checkout tender.
 - **[Approvals & Manager Overrides](approvals-and-overrides.md)** — the three ways a manager
   authorizes a sensitive action (scan, PIN, or a one-time code), when approval is required, voiding
   a bill, editing or deleting a completed sale, and the Complimentary (no-charge) payment workflow.

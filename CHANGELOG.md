@@ -2,6 +2,19 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.9.1] — 2026-09-10
+
+Closes a gap in the POS guide found from a real client question the same day it shipped.
+
+### Added
+- **Selling & Checkout → Attaching a customer** — searching for an existing customer by name,
+  phone, or email; adding one who isn't in the system yet (inline form, pre-filled from the
+  search); and exactly what shows on the receipt when a customer is or isn't attached.
+
+### Changed
+- **Payments & Treasury** — cross-links to the new customer-attach section from Credit sales,
+  since a credit sale needs a real customer first.
+
 ## [1.9.0] — 2026-09-10
 
 Adds the first POS Service Guide — screenshot-led, following the same pattern established for

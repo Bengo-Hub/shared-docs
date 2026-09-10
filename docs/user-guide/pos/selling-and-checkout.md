@@ -74,6 +74,48 @@ small note of the real date/time it was actually rung up, so the true activity t
 hidden. This is a proactive, at-entry alternative to correcting a sale's date after the fact
 (an admin-only tool on All Sales, for a sale that was already rung up under the wrong date).
 
+## Attaching a customer {: #attaching-a-customer }
+
+Every sale starts as **Walk-in Customer** — nobody's name is captured unless you attach one. To
+put a real customer's details on the sale (so their name shows on the receipt, and their purchase
+history/loyalty points/account balance are tracked), search for them right from the terminal:
+
+![Walk-in Customer default, and the customer search field](assets/terminal/17-customer-walk-in-default.png)
+
+1. **Walk-in Customer** — the default. Nothing to do here if the sale genuinely has no named
+   customer.
+2. **Search by name, phone or email** — start typing; matches from your customer list appear as
+   you type. Tap one to attach it — its name, phone/email, and (if they have one) their account
+   balance and loyalty points show in place of the search field.
+
+### Adding someone who isn't in the system yet
+
+If nothing matches, a prompt to add them appears automatically — no separate "New Customer" page
+to go find:
+
+![No match — add as a new customer](assets/terminal/18-customer-no-match.png)
+
+Tapping it opens a short inline form, pre-filled with whatever you already typed (a phone number
+you searched by lands straight in the Phone field, for example):
+
+![Add new customer — Name, Phone, Email](assets/terminal/19-customer-add-new-form.png)
+
+1. **Customer name** — required.
+2. **Phone** — required (used to look them up next time, and to key their account/loyalty
+   record).
+3. **Email** — optional.
+4. **Add customer** — saves them and attaches them to the current sale in one step. They're now
+   searchable by name, phone, or email on every future sale, and their purchase history builds up
+   from here.
+
+### What shows on the receipt
+
+A sale with a customer attached prints their **name** on the receipt. If no customer was attached
+but the sale was paid through an online method (M-Pesa STK, card, Paystack), the receipt shows
+who **paid** instead (the payer's name or phone, labelled "Paid by") — otherwise it simply reads
+"Walk-in customer." Attaching a real customer is the only way to guarantee their name (rather
+than just a phone number, or nothing at all) appears on the printed receipt.
+
 ## Building a sale
 
 Click (or scan) any product in the grid to add it to the cart. Adding the same item again
@@ -265,6 +307,11 @@ credit sale, updates the customer's account balance — see
 [Payments & Treasury](payments-and-treasury.md).
 
 ## Common Issues
+
+**How do I add customer details so they show on the receipt?** Search for them (or add them if
+they're new) from the **Customer** field near the top of the terminal — see
+[Attaching a customer](#attaching-a-customer) above. A sale with nobody attached prints as
+"Walk-in customer" (or "Paid by" whoever settled it online), never a blank.
 
 **Adding one more of an item that's already in the cart shows a manager-approval prompt instead
 of just increasing the quantity.** You're trying to sell more than the outlet currently has on
