@@ -7,7 +7,7 @@
 1. **Subscription NEVER blocks login.** Users must always be able to authenticate regardless of subscription status.
 2. **Read operations always pass through.** GET/HEAD/OPTIONS are never gated by subscription — users can view their data even with expired subscriptions.
 3. **Mutations require active subscription.** POST/PUT/PATCH/DELETE are blocked with 403 when subscription is inactive.
-4. **Superuser and platform owner always bypass.** Both `claims.IsSuperuser()` and `claims.IsPlatformOwner` skip all subscription checks.
+4. **Only the platform owner and explicitly-exempt tenants bypass — not a tenant superuser.** `claims.IsGatingExempt()` (platform owner, demo tenant, service-charge billing mode, or a platform-granted `sub_exempt` tenant) skips all subscription checks. A tenant `superuser`/`admin` is a **tenant-level** role and must NOT bypass — otherwise any tenant admin could unlock paid features for free (platform SEC-3 policy). Superuser still bypasses RBAC/**permission** checks (a separate, unrelated layer — see `trinity-authorization-pattern.md`), just not subscription/billing gating.
 5. **Frontend shows upgrade UI, not login redirects.** Subscription 403s trigger banners/toasts/modals — never redirect to SSO or login page.
 
 ---
@@ -31,7 +31,11 @@ api.Use(func(next http.Handler) http.Handler {
             next.ServeHTTP(w, r)
             return
         }
-        if claims.IsSuperuser() || claims.IsPlatformOwner || claims.IsSubscriptionActive() {
+        // IsSubscriptionActive() already returns true for gating-exempt tokens (platform owner,
+        // demo, service-charge, explicitly-exempt tenant). Deliberately does NOT also check
+        // claims.IsSuperuser() — a tenant superuser is a paying tenant's own admin, not the
+        // platform owner, and must not bypass billing/subscription gating.
+        if claims.IsSubscriptionActive() {
             next.ServeHTTP(w, r)
             return
         }
@@ -41,6 +45,8 @@ api.Use(func(next http.Handler) http.Handler {
     })
 })
 ```
+
+Prefer the shared `authclient.RequireActiveSubscriptionForMutationsWithGrace(graceDays)` (or `RequireActiveSubscriptionForMutations()`) over hand-rolling this inline — every service that still has its own local copy of this snippet should migrate to the shared function instead.
 
 ### Error Response Format
 
@@ -254,8 +260,8 @@ The hook:
 
 ### Backend
 
-1. Add the mutations-only middleware to your router (see pattern above)
-2. Ensure `claims.IsSuperuser()` and `claims.IsPlatformOwner` bypass
+1. Add the mutations-only middleware to your router — prefer `authclient.RequireActiveSubscriptionForMutationsWithGrace(graceDays)` directly over the inline pattern above
+2. Ensure bypass goes through `claims.IsGatingExempt()`/`claims.IsSubscriptionActive()` only — do NOT also bypass on `claims.IsSuperuser()`
 3. Response must include `"code":"subscription_inactive"` and `"upgrade":true`
 
 ### Frontend
