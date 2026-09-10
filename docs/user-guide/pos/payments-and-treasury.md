@@ -84,8 +84,11 @@ Treasury is granted to a team member.
 ## Common Issues
 
 **A customer's balance on their receipt doesn't match what Treasury shows.** POS always reflects
-Treasury's own balance — if the two look different, check whether a payment was just recorded
-(there can be a short delay before it's reflected everywhere) before assuming something's wrong.
+Treasury's own balance — if the two look different, check whether a payment was just recorded, or
+a credit sale was just edited to both add and remove items in the same save (there can be a brief
+delay before both changes are fully reflected everywhere), before assuming something's wrong. If
+it's still mismatched after a minute or two, contact your account manager rather than assuming
+either figure is simply correct.
 
 **A credit sale was rejected even though the amount looks small.** Check the customer's available
 credit, not just the sale amount — a customer already carrying a balance close to their limit can
