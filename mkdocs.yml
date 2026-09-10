@@ -94,6 +94,17 @@ nav:
               - user-guide/treasury/index.md
               - Invoicing & Payments: user-guide/treasury/invoicing-and-payments.md
               - Reports: user-guide/treasury/reports.md
+          - POS:
+              - user-guide/pos/index.md
+              - Staff Operations:
+                  - Selling & Checkout: user-guide/pos/selling-and-checkout.md
+                  - Approvals & Manager Overrides: user-guide/pos/approvals-and-overrides.md
+                  - Receipts & Printing: user-guide/pos/receipts-and-printing.md
+              - Administration:
+                  - Settings & Configuration: user-guide/pos/settings-and-configuration.md
+                  - Team, Shifts & Cash Management: user-guide/pos/team-and-administration.md
+                  - Reports & Dashboard: user-guide/pos/reports-and-dashboard.md
+                  - Payments & Treasury: user-guide/pos/payments-and-treasury.md
   - Technical Guide:
       - Architecture:
           - architecture/index.md

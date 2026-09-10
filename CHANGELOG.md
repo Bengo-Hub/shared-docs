@@ -2,6 +2,37 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.9.0] — 2026-09-10
+
+Adds the first POS Service Guide — screenshot-led, following the same pattern established for
+Inventory and Treasury.
+
+### Added
+- **POS** service guide (new `Service Guides → POS` nav group, 7 pages + landing):
+  - **Selling & Checkout** — the POS Terminal end to end: search and the cart, every quick-action
+    toolbar button (Recent Transactions, Sell Return, Register Details, Suspended Sales,
+    Calculator, Add Expense), the category/brand Browse picker, backdating a sale at entry,
+    discounts, additional charges, multi-cart Sale tabs, drafts, returns, and every checkout
+    tender.
+  - **Approvals & Manager Overrides** — the three ways to approve a sensitive action (scan card,
+    PIN, or a one-time code), generating an approval code remotely, voiding a bill, editing or
+    deleting a completed sale, and the Complimentary (no-charge) payment workflow including
+    split-bill comping.
+  - **Receipts & Printing** — receipt content and auto-print behaviour, setting up a printer
+    profile (network, USB, Bluetooth, or QZ Tray), the background Print Agent for a shared till,
+    and the Card Terminal and linked-devices screens.
+  - **Settings & Configuration** — outlet currency and discount limits, cashier price-edit policy,
+    tax, document numbering, payment display, and feature modules.
+  - **Team, Shifts & Cash Management** — team members and PINs, the role permission matrix, shift
+    handovers, the cash drawer, and setting up discounts and promotions.
+  - **Reports & Dashboard** — the role-aware dashboard and every report page.
+  - **Payments & Treasury** — how a sale becomes a payment record, credit sales and customer
+    accounts, complimentary sales, refunds, and where to check what a customer really owes.
+
+### Changed
+- **User Guide landing page** — now lists Treasury and POS alongside Inventory and Notifications
+  instead of describing them as "coming soon."
+
 ## [1.8.0] — 2026-09-08
 
 Deepens the platform-wide User Guide pages and adds a new Stock Take guide — the two items left
