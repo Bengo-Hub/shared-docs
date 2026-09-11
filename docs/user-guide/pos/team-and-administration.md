@@ -41,7 +41,9 @@ patterns worth knowing:
   extend discount rights to a trusted cashier without making them a manager.
 
 New custom roles can be created directly from this screen for a permission combination your
-organisation needs that doesn't match the built-in roles.
+organisation needs that doesn't match the built-in roles. A hospitality outlet's built-in roles
+(Waiter, Kitchen Staff, Bar Staff, Receptionist) are covered from the floor's perspective in
+[Hospitality: Tables, Kitchen & Bills → Roles](hospitality-tables-and-kitchen.md#roles).
 
 ## Shifts
 

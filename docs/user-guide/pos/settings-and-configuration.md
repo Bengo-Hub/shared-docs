@@ -56,7 +56,9 @@ To change a rate, edit the tax code in Treasury, or the item's own tax code in I
 
 Per-outlet policy for how the till behaves for non-manager staff: whose sales a cashier can see
 (their own, or the whole outlet's), whether they're logged out automatically after each sale, and
-whether their terminal shows the full till or a simplified bills-only surface. Sensible defaults
+whether their terminal shows the full till or a simplified bills-only surface (a hospitality
+outlet's Tables/My Bills view — see
+[Hospitality: Tables, Kitchen & Bills](hospitality-tables-and-kitchen.md)). Sensible defaults
 apply automatically based on your outlet's use case (hospitality, retail, quick-service, and so
 on) — only change these if your organisation genuinely works differently.
 
@@ -82,7 +84,9 @@ shown to a customer who wants to pay you directly.
 
 Turns whole feature areas on or off for this outlet — Tables, KDS (kitchen display), Loyalty,
 Delivery Channels, and similar. Toggling one on reveals its own dedicated settings tab under
-**Use-Case Modules** above.
+**Use-Case Modules** above. Once **Tables** is on, its own settings tab covers the floor plan
+editor (sections, tables, seat capacity) and the **Table Aging** threshold — see
+[Hospitality: Tables, Kitchen & Bills](hospitality-tables-and-kitchen.md).
 
 ## Discounts and promotions {: #discounts-and-promotions }
 

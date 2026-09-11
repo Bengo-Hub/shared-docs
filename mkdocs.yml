@@ -98,6 +98,7 @@ nav:
               - user-guide/pos/index.md
               - Staff Operations:
                   - Selling & Checkout: user-guide/pos/selling-and-checkout.md
+                  - "Hospitality: Tables, Kitchen & Bills": user-guide/pos/hospitality-tables-and-kitchen.md
                   - Approvals & Manager Overrides: user-guide/pos/approvals-and-overrides.md
                   - Receipts & Printing: user-guide/pos/receipts-and-printing.md
               - Administration:
