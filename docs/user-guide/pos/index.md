@@ -11,7 +11,12 @@ account, not mockups, so what you see here is what you'll see in your own organi
   and the cart, attaching or adding a customer (so their name shows on the receipt), every
   quick-action button (Recent Transactions, Sell Return, Register Details, Suspended Sales,
   Calculator, Add Expense), discounts, additional charges, multi-cart Sale tabs, drafts, returns,
-  and every checkout tender.
+  and every checkout tender. Covers the shared terminal every outlet type uses.
+- **[Hospitality: Tables, Kitchen & Bills](hospitality-tables-and-kitchen.md)** — everything
+  specific to a restaurant, bar, cafe, or hotel-restaurant outlet: the floor plan, seating guests,
+  Order Type and per-line courses/seats, sending an order to the kitchen or bar (KDS), managing an
+  open table (merge, transfer, add another round), settling and splitting a bill, and
+  reservations.
 - **[Approvals & Manager Overrides](approvals-and-overrides.md)** — the three ways a manager
   authorizes a sensitive action (scan, PIN, or a one-time code), when approval is required, voiding
   a bill, editing or deleting a completed sale, and the Complimentary (no-charge) payment workflow.

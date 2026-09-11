@@ -2,6 +2,26 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.10.0] — 2026-09-11
+
+The POS guide covered a retail till only; hospitality (restaurant/bar/hotel-restaurant) had no
+page of its own despite being a fully separate terminal workflow.
+
+### Added
+- **POS → Hospitality: Tables, Kitchen & Bills** (new page, `Staff Operations` nav group) — the
+  floor plan and table statuses/aging, seating guests and starting a dine-in order, the Order Type
+  selector and attached table, per-line courses and seat assignment, firing courses to the
+  kitchen, sending an order to the kitchen/bar (Place Order), managing an open table (add a round,
+  merge, transfer, release), My Bills (settling and splitting), the Kitchen & Bar Display (KDS),
+  Reservations, and the hospitality-specific roles (Waiter, Kitchen Staff, Bar Staff,
+  Receptionist).
+
+### Changed
+- **Selling & Checkout** — intro now cross-links to the new hospitality page instead of a one-line
+  mention.
+- **Settings & Configuration** and **Team, Shifts & Cash Management** — cross-link to the new page
+  from the Tables/Cashier-policy and Roles sections respectively.
+
 ## [1.9.1] — 2026-09-10
 
 Closes a gap in the POS guide found from a real client question the same day it shipped.

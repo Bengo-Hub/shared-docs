@@ -2,9 +2,11 @@
 
 This guide walks through the POS Terminal — the screen a cashier spends most of the day in — for
 a retail till. Hospitality, pharmacy, quick-service, and services outlets share the same
-underlying terminal and cart, with a few workflow differences (tables and course firing for
-hospitality, a prescription step for pharmacy); this page focuses on what every outlet type has
-in common.
+underlying terminal and cart described here (search, discounts, additional charges, drafts, every
+checkout tender), with their own workflow layered on top — tables and course firing for a
+restaurant, bar, or hotel-restaurant outlet (see
+[Hospitality: Tables, Kitchen & Bills](hospitality-tables-and-kitchen.md)), a prescription step for
+pharmacy. This page focuses on what every outlet type has in common.
 
 ## Opening the terminal
 
