@@ -184,7 +184,7 @@ import { TreasuryPaymentModal } from "@bengo-hub/shared-ui-lib/payments";
 ## References
 
 - [Paystack callback page](paystack-callback-page.md)
-- [Treasury Service API Docs](https://booksapi.codevertexafrica.com/v1/docs) — live Swagger reference (treasury-api's own repo is private; this is the public, always-current source)
+- [Treasury Service API Docs](https://booksapi.codevertexafrica.com/v1/docs/) — live Swagger reference (treasury-api's own repo is private; this is the public, always-current source)
 - Treasury-ui pay page: `finance-service/treasury-ui/src/app/(public)/pay/page.tsx`
 - Payment modals: `finance-service/treasury-ui/src/components/payments/`
 - TreasuryPaymentModal: `shared/shared-ui-lib/src/components/payments/treasury-payment-modal.tsx`

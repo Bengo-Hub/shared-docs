@@ -77,7 +77,7 @@ timeline.
 
 The complete endpoint reference, covering authentication, request and response shapes, error
 codes, and rate limits, is published as a live Swagger/OpenAPI doc on the treasury service:
-[Treasury Service API Docs](https://booksapi.codevertexafrica.com/v1/docs). It's filtered to the
+[Treasury Service API Docs](https://booksapi.codevertexafrica.com/v1/docs/). It's filtered to the
 external eTIMS/Payments/Health surface for anonymous visitors, same as this reference. If you've
 been given a Codevertex staff app secret, paste it into the bar at the top of that page to unlock
 the full internal spec.
