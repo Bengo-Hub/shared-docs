@@ -227,13 +227,18 @@ Dispensing); the decisive removal from `pos-api` (below) is complete. This is no
 model — it is the current database state.
 
 **Owns:**
-- Patient (MRN, demographics), PatientVisit/Encounter, Referral
+- Patient (MRN, demographics), PatientVisit/Encounter, Referral (including, planned 2026-09-02, the
+  inter-facility referral fields: receiving-facility identity, referral-letter content,
+  pre-referral-contact confirmation, counter-referral feedback — additive to the shipped shape)
 - TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom entries; the default catalogue is global reference data)
 - LabOrder/LabOrderLine, LabTest (tenant-custom entries; the default catalogue is global reference data)
 - Prescription/PrescriptionLine, ControlledSubstanceLog
 - BillableItemCatalog/PatientAccount/BillableCharge/PatientNextOfKin (the billing ledger — the
   actual invoice/payment/claim stays treasury-owned, see below)
-- Ward/Bed/Admission, discharge summaries (planned, Sprint 6+)
+- Ward/Bed/Admission, discharge summaries (planned, Sprint 6+); PatientTransfer (planned, Sprint 6 —
+  ward/bed moves during an admission, and inter-facility transfer-out of an active inpatient; a new
+  entity, not fields reused from Admission, see `hospital-service/hospital-api/docs/architecture.md`'s
+  "Referral, Transfer & Ambulance Billing" section for why)
 - Specialized-care programme records: ANC, PNC, ART, TB, Immunization, VMMC, HIV-Exposed Infant/
   PMTCT follow-up, cervical/prostate cancer screening, Morgue (planned, Sprint 10)
 
@@ -242,6 +247,19 @@ controlled-substance schedule, KRA eTIMS item codes (`inventory-api`); invoices,
 insurance claims/coverage/remittance, payments, eTIMS transmission (`treasury-api`, eTIMS opt-in
 per tenant/service — not mandatory on every encounter, attributed under the `hospital_sale` source);
 tenant/user identity (`auth-api`); `service_tag: hospital` subscription plans (`subscriptions-api`).
+
+**Referral / transfer / ambulance-dispatch ownership boundary (clarified 2026-09-02, no ownership
+change, only made explicit at a client-facing engineer's request):** hospital-api owns the clinical
+referral record (`Referral`), the clinical transfer record (`PatientTransfer`), and the
+billing-ledger view of an ambulance booking's fare (the `BillableCharge`/`PatientAccount` linkage on
+its own `AmbulanceBooking` reference row). logistics-api owns the ambulance fleet, drivers, the
+dispatch task lifecycle, and distance-based pricing, unchanged from the reuse note under
+Logistics-Service below — hospital-api never models a vehicle, driver, or dispatch state machine.
+treasury-api owns the actual invoice/payment/GL posting for any charge that reaches it, whether the
+charge originated from a lab test, a drug dispense, or an ambulance fare — hospital-api's
+`BillableCharge` is a ledger entry saying a charge exists and whether it is settled, never the
+financial document itself. Full design: `hospital-service/hospital-api/docs/architecture.md`'s
+"Referral, Transfer & Ambulance Billing" section and `docs/integrations.md` §2A.1/§2D.1.
 
 **Migration complete:** `pos-api` no longer owns any pharmacy/clinical entity — all 12 ent
 schemas, handlers, migrations (a new migration drops the tables), and the standalone-chemist
@@ -419,7 +437,7 @@ The following entities belong to a single owner. **No other service may store th
 | Bank accounts, bank statements, bank statement lines, reconciliation rules | **treasury-api** | erp (remove after migration) |
 | Forecasts, forecast data points | **treasury-api** | erp (remove after migration) |
 | Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks | **marketflow-api** | ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only `crm_contact_id` nullable FK) |
-| Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission (clinical workflow) | **hospital-api** (real owner, migrated 2026-08-29) | pos-api (removed — no longer applicable) |
+| Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, Referral, PatientTransfer (planned, 2026-09-02) (clinical workflow) | **hospital-api** (real owner, migrated 2026-08-29) | pos-api (removed — no longer applicable) |
 
 **Ordering-backend cleanup (target state):**
 - **Remove** (schemas + all associated logic): `proof_of_delivery`, `logistics_events`, `notification_templates`, `notification_events`, `notification_subscriptions`, `payment_intents`, `payments`, `payment_methods`, `refunds`, `treasury_events`.
