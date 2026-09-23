@@ -4495,13 +4495,18 @@ Triage, Consultation/Examination, the Distributed Billing ledger, Laboratory, Ph
 Dispensing); the decisive removal from <code>pos-api</code> (below) is complete. This is no longer a target
 model — it is the current database state.</p>
 <p><strong>Owns:</strong>
-- Patient (MRN, demographics), PatientVisit/Encounter, Referral
+- Patient (MRN, demographics), PatientVisit/Encounter, Referral (including, planned 2026-09-02, the
+  inter-facility referral fields: receiving-facility identity, referral-letter content,
+  pre-referral-contact confirmation, counter-referral feedback — additive to the shipped shape)
 - TriageRecord, ExaminationRecord, DiagnosisCatalog (tenant-custom entries; the default catalogue is global reference data)
 - LabOrder/LabOrderLine, LabTest (tenant-custom entries; the default catalogue is global reference data)
 - Prescription/PrescriptionLine, ControlledSubstanceLog
 - BillableItemCatalog/PatientAccount/BillableCharge/PatientNextOfKin (the billing ledger — the
   actual invoice/payment/claim stays treasury-owned, see below)
-- Ward/Bed/Admission, discharge summaries (planned, Sprint 6+)
+- Ward/Bed/Admission, discharge summaries (planned, Sprint 6+); PatientTransfer (planned, Sprint 6 —
+  ward/bed moves during an admission, and inter-facility transfer-out of an active inpatient; a new
+  entity, not fields reused from Admission, see <code>hospital-service/hospital-api/docs/architecture.md</code>'s
+  "Referral, Transfer &amp; Ambulance Billing" section for why)
 - Specialized-care programme records: ANC, PNC, ART, TB, Immunization, VMMC, HIV-Exposed Infant/
   PMTCT follow-up, cervical/prostate cancer screening, Morgue (planned, Sprint 10)</p>
 <p><strong>Does not own</strong> (references only): drug/item master, lot/expiry, drug-interaction rules,
@@ -4509,6 +4514,18 @@ controlled-substance schedule, KRA eTIMS item codes (<code>inventory-api</code>)
 insurance claims/coverage/remittance, payments, eTIMS transmission (<code>treasury-api</code>, eTIMS opt-in
 per tenant/service — not mandatory on every encounter, attributed under the <code>hospital_sale</code> source);
 tenant/user identity (<code>auth-api</code>); <code>service_tag: hospital</code> subscription plans (<code>subscriptions-api</code>).</p>
+<p><strong>Referral / transfer / ambulance-dispatch ownership boundary (clarified 2026-09-02, no ownership
+change, only made explicit at a client-facing engineer's request):</strong> hospital-api owns the clinical
+referral record (<code>Referral</code>), the clinical transfer record (<code>PatientTransfer</code>), and the
+billing-ledger view of an ambulance booking's fare (the <code>BillableCharge</code>/<code>PatientAccount</code> linkage on
+its own <code>AmbulanceBooking</code> reference row). logistics-api owns the ambulance fleet, drivers, the
+dispatch task lifecycle, and distance-based pricing, unchanged from the reuse note under
+Logistics-Service below — hospital-api never models a vehicle, driver, or dispatch state machine.
+treasury-api owns the actual invoice/payment/GL posting for any charge that reaches it, whether the
+charge originated from a lab test, a drug dispense, or an ambulance fare — hospital-api's
+<code>BillableCharge</code> is a ledger entry saying a charge exists and whether it is settled, never the
+financial document itself. Full design: <code>hospital-service/hospital-api/docs/architecture.md</code>'s
+"Referral, Transfer &amp; Ambulance Billing" section and <code>docs/integrations.md</code> §2A.1/§2D.1.</p>
 <p><strong>Migration complete:</strong> <code>pos-api</code> no longer owns any pharmacy/clinical entity — all 12 ent
 schemas, handlers, migrations (a new migration drops the tables), and the standalone-chemist
 <code>pharmacy</code> use case were decisively removed 2026-08-29, per <code>feedback_erp_decisive_removal</code>
@@ -4779,7 +4796,7 @@ record.</p>
 <td>ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only <code>crm_contact_id</code> nullable FK)</td>
 </tr>
 <tr>
-<td>Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission (clinical workflow)</td>
+<td>Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, Referral, PatientTransfer (planned, 2026-09-02) (clinical workflow)</td>
 <td><strong>hospital-api</strong> (real owner, migrated 2026-08-29)</td>
 <td>pos-api (removed — no longer applicable)</td>
 </tr>
@@ -5309,7 +5326,7 @@ record.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 29, 2026 17:56:54 UTC">August 29, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 23, 2026 17:25:49 UTC">September 23, 2026</span>
   </span>
 
     
