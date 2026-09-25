@@ -108,6 +108,10 @@ received and any shortfall.
 | `ordering.order.out_for_delivery` | on its way, rider name, delivery code | | |
 | `logistics.task.assigned` | none for ordering orders | | push to the rider's devices, email |
 
+**WhatsApp link policy:** a WhatsApp message never shows a raw URL; links are tappable buttons
+(`_btn` templates with a fixed-domain URL button, or an interactive button inside the 24h reply
+window). Full rules: notifications-api `docs/whatsapp-template-policy.md`.
+
 WhatsApp business-initiated messages use approved Meta templates only
 (`internal/whatsapp/templatesync/templates.json` in notifications-api); local phone numbers are
 sent with the tenant's dial code. Customer-facing logistics emails are sent only when the task
