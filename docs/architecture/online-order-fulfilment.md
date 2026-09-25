@@ -113,10 +113,30 @@ WhatsApp business-initiated messages use approved Meta templates only
 sent with the tenant's dial code. Customer-facing logistics emails are sent only when the task
 event carries a customer email and the task is not an ordering order.
 
-Rider push uses FCM web push: the rider app registers its token (`POST /api/v1/push/tokens`) and
-notifications-api pushes `logistics/rider_job_assigned`. It needs the Firebase web config baked
-into the rider app build (`NEXT_PUBLIC_FIREBASE_*`) and the FCM service account on
-notifications-api; without them push is off and riders rely on the Open jobs list.
+Rider push uses FCM web push, configured once in notifications-service (see below): the rider app
+reads the browser config from `GET /api/v1/push/web-config?tenant=<slug>`, registers its token
+(`POST /api/v1/push/tokens`) and notifications-api pushes `logistics/rider_job_assigned`. Until
+push is configured, riders rely on the Open jobs list.
+
+## Notification provider scoping
+
+Shared accounts are configured once at platform level (notifications-ui Platform > Providers,
+stored under tenant `platform`) and used by every tenant that has not brought its own. A tenant's
+own account (notifications-ui Settings > Providers) is used as a whole. Credentials are never
+mixed across tiers.
+
+| Channel | Tenant's own account when | Otherwise | Tenant may still set on the platform account |
+|---|---|---|---|
+| Email SMTP | it saved a host (not overridden by a platform-managed value) | platform DB settings, then env | sender address |
+| Email Brevo | it saved an API key | platform key | sender address and name |
+| SMS Africa's Talking | it saved an API key (with its own username) | platform account | sender ID |
+| WhatsApp | it saved a phone number id | the platform's number | (tenant number is sent with the platform system-user token, the Tech Provider model) |
+| Push FCM | it saved a complete Firebase project (service account + web values) | platform project, then env `PROVIDERS_FCM_*` | nothing |
+
+Push has two halves from the same Firebase project: the service account (secret, encrypted at
+rest, only used server side) and the web values (API key, sender id, app id, VAPID key), served
+publicly by `/push/web-config` so no app carries Firebase build settings. Device tokens FCM
+reports as unregistered are deactivated automatically.
 
 ## Per-tenant app names and icons
 
