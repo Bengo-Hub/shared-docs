@@ -11,7 +11,8 @@ All notable changes to the Codevertex Africa platform documentation are recorded
   taking open jobs), rider cash hand-in, service bookings, and per-tenant app names.
 - **Technical Guide: Online Order Fulfilment**: service ownership, order lifecycle and events,
   acceptance policy, payment options, rider cash ledger, who does what, messages per event, rider
-  push, and tenant `service_branding` app naming.
+  push, notification provider scoping (platform vs tenant accounts, central FCM push), and tenant
+  `service_branding` app naming.
 
 ## [1.10.0] — 2026-09-11
 
