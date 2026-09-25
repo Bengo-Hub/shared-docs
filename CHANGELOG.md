@@ -2,6 +2,17 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.11.0] - 2026-09-25
+
+### Added
+- **POS: Online Orders: Accept, Hand Over, Dispatch** (new page, `Staff Operations`): accepting
+  or rejecting online orders, payment labels and confirming manual M-Pesa, preparing, pickup
+  hand-over with the customer's collection code, delivery dispatch (automatic, dispatcher, riders
+  taking open jobs), rider cash hand-in, service bookings, and per-tenant app names.
+- **Technical Guide: Online Order Fulfilment**: service ownership, order lifecycle and events,
+  acceptance policy, payment options, rider cash ledger, who does what, messages per event, rider
+  push, and tenant `service_branding` app naming.
+
 ## [1.10.0] — 2026-09-11
 
 The POS guide covered a retail till only; hospitality (restaurant/bar/hotel-restaurant) had no
