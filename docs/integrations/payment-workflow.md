@@ -141,7 +141,8 @@ After Paystack (or other redirect-based gateways) complete, the user lands on a 
 
 ## 7. Webhooks & Auto-Generated URLs
 
-- **Webhook and callback URLs** for Paystack and M-Pesa are **auto-generated** in treasury-api from `HTTP_PUBLIC_BASE_URL` and fixed paths. Gateway credentials themselves are platform-level configuration, not something a tenant or external integrator ever sets directly.
+- **Webhook and callback URLs** for Paystack and M-Pesa are **auto-generated** in treasury-api from `HTTP_PUBLIC_BASE_URL` and fixed paths. Gateway credentials are platform-level configuration by default; the one tenant-level exception is a tenant connecting its own Paystack account (section 7a). External integrators never set gateway credentials.
+- **Paystack webhooks must be signed** (`x-paystack-signature`). The signature is checked with the platform key, or with the tenant's own key when the payment belongs to a tenant-owned Paystack account. Unsigned or wrongly signed events get `401`.
 - Production base URL is set in `devops-k8s/apps/treasury-api/values.yaml` as `TREASURY_HTTP_PUBLIC_BASE_URL`.
 - **Idempotency key for `treasury.payment.succeeded` (and every other treasury event)**: use the event
   envelope's `id` (`event_id`) — it is always present and DB-unique, and is preserved across outbox
@@ -149,6 +150,24 @@ After Paystack (or other redirect-based gateways) complete, the user lands on a 
   omitted entirely for cash/manual/till/COD settlements, and even when a gateway supplies one it is not
   enforced unique. See [Idempotency & the Outbox Pattern](../platform-standards/idempotency-and-outbox.md)
   for the consumer-side `IdempotencyStore` pattern.
+
+---
+
+## 7a. Tenant-Owned Paystack Accounts
+
+By default the platform's Paystack account charges customers and the platform then pays each tenant out on its payout schedule. A tenant can instead connect **its own Paystack account**; Paystack then settles that tenant's payments to it directly and the platform never holds or pays out that money.
+
+| | Platform account (default) | Tenant's own account |
+|---|---|---|
+| Charges the customer | Platform keys | Tenant keys |
+| Money lands in | Platform balance (or tenant subaccount split) | Tenant's Paystack balance |
+| Platform payouts to the tenant | Yes | No |
+| Webhook signature key | Platform secret | Tenant secret |
+
+- **Where**: treasury-ui Settings > Payments > Paystack, "Paystack account" card. API: `GET/PUT/DELETE /api/v1/{tenant}/gateways/paystack/config` (`PUT` body `{secret_key, public_key}`; writes need `treasury.gateways.manage`).
+- **On save** the keys must share a mode (both test or both live) and are checked against Paystack before anything is stored. The secret key is stored encrypted and is never returned or logged (only its last 4 characters).
+- **Webhook**: the tenant pastes the webhook URL shown on the card into its Paystack dashboard.
+- **Payouts stay correct across a switch**: each payment records who collected it (`metadata.collected_by`: `platform` or `tenant`) when it is started, and the payout engine pays out only what the platform collected. Disconnecting sends new payments back to the platform account.
 
 ---
 

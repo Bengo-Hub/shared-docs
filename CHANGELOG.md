@@ -2,6 +2,17 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.11.1] - 2026-09-26
+
+### Added
+- **Payment Workflow: Tenant-Owned Paystack Accounts** (section 7a): a tenant can connect its own
+  Paystack account so payments settle to it directly; how payouts, webhooks and switching back to
+  the platform account work.
+
+### Changed
+- **Payment Workflow**: Paystack webhooks must now be signed, and are checked with the key of the
+  account that collected the payment.
+
 ## [1.11.0] - 2026-09-25
 
 ### Added
