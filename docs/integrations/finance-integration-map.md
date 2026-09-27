@@ -32,14 +32,29 @@ posting is **event-driven** (NATS JetStream via the transactional outbox) and **
 | `erp.payroll.processed` | payroll subscriber | DR Salaries 6000 / CR Net Pay 2400 / CR Statutory 2500 |
 | `erp.payroll.reversed` | payroll subscriber | inverse of the above (batch reversal) |
 | `erp.expense_claim.approved` | claim subscriber | NON-taxable: DR expense (6100, or 6200 per-diem/mileage) / CR Employee Payable 2600. Taxable → skipped (taxed via payslip) |
-| `erp.casual_labor.approved` | claim subscriber | DR Casual Labour 6300 / CR Employee Payable 2600 |
+| `erp.casual_payment.approved` | claim subscriber | DR Casual Labour 6300 / CR Employee Payable 2600 |
+| `erp.consultant_voucher.approved` | consultant subscriber | consultant cost with cost center on the GL lines |
+
+> Verified against code 2026-09-27. The casual labour subject is `erp.casual_payment.approved` (ERP schema `CasualPayment`); an earlier version of this table said `erp.casual_labor.approved`, which nothing publishes. Known gaps, in progress under `.claude/plans/budgets-planning-projects-bi-2026-09-27.md`: the claim and casual payment subscribers drop `cost_center_id`, and `erp.payroll.processed` sends an empty cost center with no per-project split.
 
 ## Projects ↔ finance
-- **projects-api owns no expense/budget module** (only project/task/milestone/member/tender). Project
-  costs flow through **project-tagged ERP expense claims** + **project-tagged inventory requisitions/
-  POs** (both carry `project_id`). Treasury budgets gain `project_id`/`cost_center_id`/`parent_budget_id`
-  so a project budget rolls up into the company fiscal-year budget; `BudgetLine.actual_amount` is
-  computed from posted ledger transactions (live on read + `POST /budgets/{id}/recompute-actuals`).
+
+Verified against code 2026-09-27.
+
+- **Treasury owns all budgets, including project budgets** (decision 2026-09-27). projects-api still
+  has `Budget`, `Expense` and `TimeLog` Ent schemas, but they have no service, handler or route and are
+  being dropped. projects-api will read budgets and financials from treasury over S2S
+  (`/s2s/{tenant}/projects/{id}/financials`) and proxy budget edits to treasury budgets of
+  `budget_type=project`. Neither side has a client for the other yet.
+- Treasury `budgets` and `budget_lines` already carry `project_id`, `cost_center_id` and
+  `parent_budget_id`. `BudgetLine.actual_amount` is written by `POST /budgets/{id}/recompute-actuals`,
+  but today it counts draft journal entries, skips KES conversion and returns 0 for a line with no
+  account, so project actuals are not reliable yet.
+- Project cost reaches the GL through **project-tagged inventory POs** (`project_id` on the PO bill
+  subscriber) and **project-tagged ERP claims and casual payments** (the claim subscriber reads
+  `project_id`, but drops `cost_center_id`). Payroll has no project split. Invoices, bills and
+  expenses carry no project.
+- All of the above is In progress under `.claude/plans/budgets-planning-projects-bi-2026-09-27.md`.
 
 ## Assets & capital allowances
 - Inventory-api owns the fixed-asset register; treasury owns the financial side. An inventory asset
@@ -55,7 +70,8 @@ posting is **event-driven** (NATS JetStream via the transactional outbox) and **
   payroll engine's `TaxableAllowances` lane for PAYE. Non-cash benefits: taxable excess over the
   KES 3,000/month de-minimis (opt-in `NonCashAsTaxable`).
 - **Casual/subcontracted labour** (e.g. a PM/consultant paying casual workers) is a documented,
-  approvable `CasualLaborRecord` that posts to GL on approval and can retire an imprest/advance.
+  approvable ERP `CasualPayment` that publishes `erp.casual_payment.approved`, posts to GL on approval
+  and can retire an imprest/advance.
 - **Payslip reversal**: a payroll batch can be reversed (`reverse` command) → `erp.payroll.reversed`
   → inverse GL journal.
 

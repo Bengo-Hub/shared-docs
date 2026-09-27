@@ -429,13 +429,14 @@ The following entities belong to a single owner. **No other service may store th
 | Rider/fleet member profiles, KYC, vehicles, shifts | **logistics-api** | ordering-backend (only `rider_id`, `logistics_task_id` refs in order_assignments) |
 | Tenant and user identity (full profile, sessions, MFA, OAuth) | **auth-api** | ordering-backend, pos-api (only `tenant_id`, `user_id` refs; minimal JIT cache allowed for FK only) |
 | Quotations, quotation lines | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
-| Expenses, expense categories, expense claims | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
+| Expenses, expense categories | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
+| Staff expense claims (reimbursements) | **erp-api** (`ExpenseClaim`, verified 2026-09-27) | treasury-api posts approved claims from `erp.expense_claim.approved` and holds no claim table |
 | Tax codes, tax periods, tax filings, eTIMS devices, eTIMS invoices | **treasury-api** | erp (remove after migration), pos-api, inventory-api |
-| Budgets, budget lines | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
+| Budgets, budget lines (including project budgets, decided 2026-09-27) | **treasury-api** | erp (remove after migration), ordering-backend, pos-api, projects-api (its unused `Budget`, `Expense` and `TimeLog` tables are being dropped; projects reads budgets over S2S) |
 | Approval workflow config for financial entities (approval workflows, steps, records) | **treasury-api** | erp (generic approvals module stays for non-financial workflows; financial approval config migrates to treasury) |
 | Vendor bills, vendor bill lines | **treasury-api** | erp (remove after migration), inventory-api |
 | Bank accounts, bank statements, bank statement lines, reconciliation rules | **treasury-api** | erp (remove after migration) |
-| Forecasts, forecast data points | **treasury-api** | erp (remove after migration) |
+| Forecasts, forecast data points | **treasury-api** | erp (remove after migration). Not built yet (verified 2026-09-27); planned as forecast-type budgets rather than separate tables |
 | Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks | **marketflow-api** | ordering-backend, pos-api, treasury-api, inventory-api, logistics-api (store only `crm_contact_id` nullable FK) |
 | Patient, PatientVisit, TriageRecord, ExaminationRecord, LabOrder/Line, Prescription/Line, ControlledSubstanceLog, Ward/Bed/Admission, Referral, PatientTransfer (planned, 2026-09-02) (clinical workflow) | **hospital-api** (real owner, migrated 2026-08-29) | pos-api (removed — no longer applicable) |
 
@@ -496,14 +497,14 @@ The following entities belong to a single owner. **No other service may store th
 | Treasury Service | `treasury.expense.submitted` | Notifications | Expense claim submitted for review |
 | Treasury Service | `treasury.expense.approved` | Notifications | Expense claim approved notification |
 | Treasury Service | `treasury.quotation.sent` | Notifications | Quotation email/WhatsApp delivery (recipient_email, public_token) |
-| Treasury Service | `treasury.quotation.accepted` | Notifications | Quotation accepted notification |
-| Treasury Service | `treasury.quotation.delivery_challan_created` | Logistics, Notifications | Delivery challan created from quotation (logistics_task_id ref) |
-| Treasury Service | `treasury.quotation.converted_to_order` | Ordering, Notifications | Quotation converted to sales order (order_id ref) |
+| Treasury Service | `treasury.quotation.accepted` | Notifications | Quotation accepted notification. **Not emitted yet** (verified 2026-09-27) |
+| Treasury Service | `treasury.quotation.delivery_challan_created` | Logistics, Notifications | Delivery challan created from quotation (logistics_task_id ref). **Not emitted** (verified 2026-09-27); the challan is created by a direct S2S call to logistics-api |
+| Treasury Service | `treasury.quotation.converted_to_order` | Ordering, Notifications | Quotation converted to sales order (order_id ref). **Not emitted** (verified 2026-09-27); conversion creates a local treasury sales order only |
 | Treasury Service | `treasury.invoice.sent` | Notifications | Invoice email/WhatsApp delivery (recipient_email, public_token) |
-| Treasury Service | `treasury.invoice.reminder_sent` | Notifications | Payment reminder delivery |
-| Treasury Service | `treasury.etims.transmitted` | Notifications | eTIMS transmission confirmation |
-| Treasury Service | `treasury.budget.approved` | Projects, ERP | Budget approved — update project/ERP budget refs |
-| Treasury Service | `treasury.budget.rejected` | Projects, ERP | Budget rejected — notify requestor |
+| Treasury Service | `treasury.dunning.reminder_sent` | Notifications | Payment reminder delivery (the real subject; this row used to say `treasury.invoice.reminder_sent`) |
+| Treasury Service | `treasury.etims.invoice_transmitted` | Notifications | eTIMS transmission confirmation (the real subject; this row used to say `treasury.etims.transmitted`). Failures publish `treasury.etims.transmission_failed` |
+| Treasury Service | `treasury.budget.approved` | Projects, ERP | **Not emitted yet** (verified 2026-09-27). Planned with `treasury.budget.submitted`, `.revised`, `.closed` and `.threshold_crossed` under plan budgets-planning-projects-bi-2026-09-27 |
+| Treasury Service | `treasury.budget.rejected` | Projects, ERP | **Not emitted yet** (verified 2026-09-27). Planned under the same plan |
 | Subscriptions Service | `subscription.billing.renewal` | Treasury | Process subscription renewal payment |
 | Subscriptions Service | `subscription.billing.overage` | Treasury | Process overage charges |
 | Subscriptions Service | `subscription.billing.proration` | Treasury | Process proration adjustment |
