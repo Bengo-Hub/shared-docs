@@ -4816,9 +4816,14 @@ record.</p>
 <td>erp (remove after migration), ordering-backend, pos-api</td>
 </tr>
 <tr>
-<td>Expenses, expense categories, expense claims</td>
+<td>Expenses, expense categories</td>
 <td><strong>treasury-api</strong></td>
 <td>erp (remove after migration), ordering-backend, pos-api</td>
+</tr>
+<tr>
+<td>Staff expense claims (reimbursements)</td>
+<td><strong>erp-api</strong> (<code>ExpenseClaim</code>, verified 2026-09-27)</td>
+<td>treasury-api posts approved claims from <code>erp.expense_claim.approved</code> and holds no claim table</td>
 </tr>
 <tr>
 <td>Tax codes, tax periods, tax filings, eTIMS devices, eTIMS invoices</td>
@@ -4826,9 +4831,9 @@ record.</p>
 <td>erp (remove after migration), pos-api, inventory-api</td>
 </tr>
 <tr>
-<td>Budgets, budget lines</td>
+<td>Budgets, budget lines (including project budgets, decided 2026-09-27)</td>
 <td><strong>treasury-api</strong></td>
-<td>erp (remove after migration), ordering-backend, pos-api</td>
+<td>erp (remove after migration), ordering-backend, pos-api, projects-api (its unused <code>Budget</code>, <code>Expense</code> and <code>TimeLog</code> tables are being dropped; projects reads budgets over S2S)</td>
 </tr>
 <tr>
 <td>Approval workflow config for financial entities (approval workflows, steps, records)</td>
@@ -4848,7 +4853,7 @@ record.</p>
 <tr>
 <td>Forecasts, forecast data points</td>
 <td><strong>treasury-api</strong></td>
-<td>erp (remove after migration)</td>
+<td>erp (remove after migration). Not built yet (verified 2026-09-27); planned as forecast-type budgets rather than separate tables</td>
 </tr>
 <tr>
 <td>Leads, Contacts, Deals, Pipeline stages, Accounts, CRM Activities, CRM Tasks</td>
@@ -5084,19 +5089,19 @@ record.</p>
 <td style="text-align: left;">Treasury Service</td>
 <td style="text-align: left;"><code>treasury.quotation.accepted</code></td>
 <td style="text-align: left;">Notifications</td>
-<td style="text-align: left;">Quotation accepted notification</td>
+<td style="text-align: left;">Quotation accepted notification. <strong>Not emitted yet</strong> (verified 2026-09-27)</td>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
 <td style="text-align: left;"><code>treasury.quotation.delivery_challan_created</code></td>
 <td style="text-align: left;">Logistics, Notifications</td>
-<td style="text-align: left;">Delivery challan created from quotation (logistics_task_id ref)</td>
+<td style="text-align: left;">Delivery challan created from quotation (logistics_task_id ref). <strong>Not emitted</strong> (verified 2026-09-27); the challan is created by a direct S2S call to logistics-api</td>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
 <td style="text-align: left;"><code>treasury.quotation.converted_to_order</code></td>
 <td style="text-align: left;">Ordering, Notifications</td>
-<td style="text-align: left;">Quotation converted to sales order (order_id ref)</td>
+<td style="text-align: left;">Quotation converted to sales order (order_id ref). <strong>Not emitted</strong> (verified 2026-09-27); conversion creates a local treasury sales order only</td>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
@@ -5106,27 +5111,27 @@ record.</p>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
-<td style="text-align: left;"><code>treasury.invoice.reminder_sent</code></td>
+<td style="text-align: left;"><code>treasury.dunning.reminder_sent</code></td>
 <td style="text-align: left;">Notifications</td>
-<td style="text-align: left;">Payment reminder delivery</td>
+<td style="text-align: left;">Payment reminder delivery (the real subject; this row used to say <code>treasury.invoice.reminder_sent</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
-<td style="text-align: left;"><code>treasury.etims.transmitted</code></td>
+<td style="text-align: left;"><code>treasury.etims.invoice_transmitted</code></td>
 <td style="text-align: left;">Notifications</td>
-<td style="text-align: left;">eTIMS transmission confirmation</td>
+<td style="text-align: left;">eTIMS transmission confirmation (the real subject; this row used to say <code>treasury.etims.transmitted</code>). Failures publish <code>treasury.etims.transmission_failed</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
 <td style="text-align: left;"><code>treasury.budget.approved</code></td>
 <td style="text-align: left;">Projects, ERP</td>
-<td style="text-align: left;">Budget approved — update project/ERP budget refs</td>
+<td style="text-align: left;"><strong>Not emitted yet</strong> (verified 2026-09-27). Planned with <code>treasury.budget.submitted</code>, <code>.revised</code>, <code>.closed</code> and <code>.threshold_crossed</code> under plan budgets-planning-projects-bi-2026-09-27</td>
 </tr>
 <tr>
 <td style="text-align: left;">Treasury Service</td>
 <td style="text-align: left;"><code>treasury.budget.rejected</code></td>
 <td style="text-align: left;">Projects, ERP</td>
-<td style="text-align: left;">Budget rejected — notify requestor</td>
+<td style="text-align: left;"><strong>Not emitted yet</strong> (verified 2026-09-27). Planned under the same plan</td>
 </tr>
 <tr>
 <td style="text-align: left;">Subscriptions Service</td>
@@ -5386,7 +5391,7 @@ record.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 23, 2026 17:25:49 UTC">September 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 27, 2026 18:39:54 UTC">September 27, 2026</span>
   </span>
 
     

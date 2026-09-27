@@ -3552,19 +3552,37 @@ posting is <strong>event-driven</strong> (NATS JetStream via the transactional o
 <td>NON-taxable: DR expense (6100, or 6200 per-diem/mileage) / CR Employee Payable 2600. Taxable → skipped (taxed via payslip)</td>
 </tr>
 <tr>
-<td><code>erp.casual_labor.approved</code></td>
+<td><code>erp.casual_payment.approved</code></td>
 <td>claim subscriber</td>
 <td>DR Casual Labour 6300 / CR Employee Payable 2600</td>
 </tr>
+<tr>
+<td><code>erp.consultant_voucher.approved</code></td>
+<td>consultant subscriber</td>
+<td>consultant cost with cost center on the GL lines</td>
+</tr>
 </tbody>
 </table>
+<blockquote>
+<p>Verified against code 2026-09-27. The casual labour subject is <code>erp.casual_payment.approved</code> (ERP schema <code>CasualPayment</code>); an earlier version of this table said <code>erp.casual_labor.approved</code>, which nothing publishes. Known gaps, in progress under <code>.claude/plans/budgets-planning-projects-bi-2026-09-27.md</code>: the claim and casual payment subscribers drop <code>cost_center_id</code>, and <code>erp.payroll.processed</code> sends an empty cost center with no per-project split.</p>
+</blockquote>
 <h2 id="projects-finance">Projects ↔ finance<a class="headerlink" href="#projects-finance" title="Permanent link">&para;</a></h2>
+<p>Verified against code 2026-09-27.</p>
 <ul>
-<li><strong>projects-api owns no expense/budget module</strong> (only project/task/milestone/member/tender). Project
-  costs flow through <strong>project-tagged ERP expense claims</strong> + <strong>project-tagged inventory requisitions/
-  POs</strong> (both carry <code>project_id</code>). Treasury budgets gain <code>project_id</code>/<code>cost_center_id</code>/<code>parent_budget_id</code>
-  so a project budget rolls up into the company fiscal-year budget; <code>BudgetLine.actual_amount</code> is
-  computed from posted ledger transactions (live on read + <code>POST /budgets/{id}/recompute-actuals</code>).</li>
+<li><strong>Treasury owns all budgets, including project budgets</strong> (decision 2026-09-27). projects-api still
+  has <code>Budget</code>, <code>Expense</code> and <code>TimeLog</code> Ent schemas, but they have no service, handler or route and are
+  being dropped. projects-api will read budgets and financials from treasury over S2S
+  (<code>/s2s/{tenant}/projects/{id}/financials</code>) and proxy budget edits to treasury budgets of
+  <code>budget_type=project</code>. Neither side has a client for the other yet.</li>
+<li>Treasury <code>budgets</code> and <code>budget_lines</code> already carry <code>project_id</code>, <code>cost_center_id</code> and
+  <code>parent_budget_id</code>. <code>BudgetLine.actual_amount</code> is written by <code>POST /budgets/{id}/recompute-actuals</code>,
+  but today it counts draft journal entries, skips KES conversion and returns 0 for a line with no
+  account, so project actuals are not reliable yet.</li>
+<li>Project cost reaches the GL through <strong>project-tagged inventory POs</strong> (<code>project_id</code> on the PO bill
+  subscriber) and <strong>project-tagged ERP claims and casual payments</strong> (the claim subscriber reads
+  <code>project_id</code>, but drops <code>cost_center_id</code>). Payroll has no project split. Invoices, bills and
+  expenses carry no project.</li>
+<li>All of the above is In progress under <code>.claude/plans/budgets-planning-projects-bi-2026-09-27.md</code>.</li>
 </ul>
 <h2 id="assets-capital-allowances">Assets &amp; capital allowances<a class="headerlink" href="#assets-capital-allowances" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3582,7 +3600,8 @@ posting is <strong>event-driven</strong> (NATS JetStream via the transactional o
   payroll engine's <code>TaxableAllowances</code> lane for PAYE. Non-cash benefits: taxable excess over the
   KES 3,000/month de-minimis (opt-in <code>NonCashAsTaxable</code>).</li>
 <li><strong>Casual/subcontracted labour</strong> (e.g. a PM/consultant paying casual workers) is a documented,
-  approvable <code>CasualLaborRecord</code> that posts to GL on approval and can retire an imprest/advance.</li>
+  approvable ERP <code>CasualPayment</code> that publishes <code>erp.casual_payment.approved</code>, posts to GL on approval
+  and can retire an imprest/advance.</li>
 <li><strong>Payslip reversal</strong>: a payroll batch can be reversed (<code>reverse</code> command) → <code>erp.payroll.reversed</code>
   → inverse GL journal.</li>
 </ul>
@@ -3624,7 +3643,7 @@ posting is <strong>event-driven</strong> (NATS JetStream via the transactional o
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 07:37:37 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 27, 2026 18:39:54 UTC">September 27, 2026</span>
   </span>
 
     
