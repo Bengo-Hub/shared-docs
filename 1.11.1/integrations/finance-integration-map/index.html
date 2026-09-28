@@ -3182,6 +3182,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#budget-events-and-commitments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Budget events and commitments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#projects-finance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3404,6 +3415,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#budget-events-and-commitments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Budget events and commitments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#projects-finance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3564,25 +3586,64 @@ posting is <strong>event-driven</strong> (NATS JetStream via the transactional o
 </tbody>
 </table>
 <blockquote>
-<p>Verified against code 2026-09-27. The casual labour subject is <code>erp.casual_payment.approved</code> (ERP schema <code>CasualPayment</code>); an earlier version of this table said <code>erp.casual_labor.approved</code>, which nothing publishes. Known gaps, in progress under <code>.claude/plans/budgets-planning-projects-bi-2026-09-27.md</code>: the claim and casual payment subscribers drop <code>cost_center_id</code>, and <code>erp.payroll.processed</code> sends an empty cost center with no per-project split.</p>
+<p>Verified against code 2026-09-28. The casual labour subject is <code>erp.casual_payment.approved</code> (ERP schema <code>CasualPayment</code>). Claim and casual payment GL lines carry the claim's <code>cost_center_id</code> and <code>project_id</code>. <code>erp.payroll.processed</code> carries <code>allocations[]</code> per employee (project and cost centre from <code>EmployeeProjectAllocation</code>, the rest on the department cost centre), and treasury splits the salary expense lines by them; liability and bank lines stay unsplit.</p>
 </blockquote>
+<h2 id="budget-events-and-commitments">Budget events and commitments<a class="headerlink" href="#budget-events-and-commitments" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Consumer</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inventory.purchase_order.sent</code> / <code>.cancelled</code></td>
+<td>treasury PO commitment subscriber</td>
+<td>opens / releases a budget commitment on the purchase account; bills draw it down, full receipt consumes it</td>
+</tr>
+<tr>
+<td><code>erp.expense_claim.created</code> / <code>.updated</code> / <code>.deleted</code> / <code>.approved</code></td>
+<td>treasury claim subscriber</td>
+<td>opens, updates, releases or consumes the claim's commitment (taxable, non-KES and already booked claims hold nothing)</td>
+</tr>
+<tr>
+<td><code>project.closed</code> / <code>project.deleted</code></td>
+<td>treasury project subscriber</td>
+<td>closes approved and active project budgets, cancels drafts, releases open commitments</td>
+</tr>
+<tr>
+<td><code>treasury.budget.approved</code></td>
+<td>projects-api</td>
+<td>sets <code>Project.budget</code> (budget at completion) from <code>planned_cost</code></td>
+</tr>
+<tr>
+<td><code>treasury.budget.threshold_crossed</code></td>
+<td>notifications-api (subscribes to <code>treasury.&gt;</code>)</td>
+<td>alert once per line per threshold</td>
+</tr>
+</tbody>
+</table>
+<p>Budget checks before spend: inventory-api calls <code>POST /s2s/{tenant}/ap/purchase-budget-check</code> before sending a PO, and erp-api calls <code>POST /s2s/{tenant}/budgets/claim-check</code> before approving a claim. A stop answers 409 <code>over_budget</code> (inventory: <code>OVER_BUDGET</code>), and approvers can override. Treasury subscribers bind to whichever JetStream stream owns the subject (<code>platform/events.StreamFor</code>).</p>
 <h2 id="projects-finance">Projects ↔ finance<a class="headerlink" href="#projects-finance" title="Permanent link">&para;</a></h2>
-<p>Verified against code 2026-09-27.</p>
+<p>Verified against code 2026-09-28.</p>
 <ul>
-<li><strong>Treasury owns all budgets, including project budgets</strong> (decision 2026-09-27). projects-api still
-  has <code>Budget</code>, <code>Expense</code> and <code>TimeLog</code> Ent schemas, but they have no service, handler or route and are
-  being dropped. projects-api will read budgets and financials from treasury over S2S
-  (<code>/s2s/{tenant}/projects/{id}/financials</code>) and proxy budget edits to treasury budgets of
-  <code>budget_type=project</code>. Neither side has a client for the other yet.</li>
-<li>Treasury <code>budgets</code> and <code>budget_lines</code> already carry <code>project_id</code>, <code>cost_center_id</code> and
-  <code>parent_budget_id</code>. <code>BudgetLine.actual_amount</code> is written by <code>POST /budgets/{id}/recompute-actuals</code>,
-  but today it counts draft journal entries, skips KES conversion and returns 0 for a line with no
-  account, so project actuals are not reliable yet.</li>
-<li>Project cost reaches the GL through <strong>project-tagged inventory POs</strong> (<code>project_id</code> on the PO bill
-  subscriber) and <strong>project-tagged ERP claims and casual payments</strong> (the claim subscriber reads
-  <code>project_id</code>, but drops <code>cost_center_id</code>). Payroll has no project split. Invoices, bills and
-  expenses carry no project.</li>
-<li>All of the above is In progress under <code>.claude/plans/budgets-planning-projects-bi-2026-09-27.md</code>.</li>
+<li><strong>Treasury owns all budgets, including project budgets</strong> (decision 2026-09-27). projects-api's old
+  <code>Budget</code>, <code>Expense</code> and <code>TimeLog</code> tables are dropped. projects-api creates, edits and submits its
+  project budgets in treasury over S2S (acting as the signed-in user) and reads
+  <code>GET /s2s/{tenant}/budgets/projects/financials?ids=</code> in one batch per page, then computes earned
+  value from its own task estimates and progress (<code>/financials/projects/{id}</code>, <code>/financials/portfolio</code>).</li>
+<li>Budget actuals are booked KES ledger lines only, grouped by account, cost centre, project and
+  month, and matched to the most specific budget line; they agree with the P&amp;L. Details:
+  <code>finance-service/treasury-api/docs/budgets-and-planning.md</code>.</li>
+<li>Project cost reaches the GL through project-tagged inventory PO bills, ERP claims and casual
+  payments, payroll salary lines split by allocation, expenses (<code>metadata.project_id</code>) and bill
+  purchase legs. Project revenue comes from invoices tagged with <code>metadata.project_id</code>.</li>
+<li>Hours: projects-api reads approved and submitted timesheet hours per project from erp-api
+  (<code>GET /hrm/attendance/timesheets/project-hours</code>) for utilisation. erp-api reports a payroll month's
+  gross pay by project (<code>GET /hrm/payroll/labour-cost</code>) with the same split payroll posts.</li>
+<li>There is no historic backfill: postings made before the dimensions existed stay undimensioned.</li>
 </ul>
 <h2 id="assets-capital-allowances">Assets &amp; capital allowances<a class="headerlink" href="#assets-capital-allowances" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3643,7 +3704,7 @@ posting is <strong>event-driven</strong> (NATS JetStream via the transactional o
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 27, 2026 18:39:54 UTC">September 27, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 28, 2026 17:05:58 UTC">September 28, 2026</span>
   </span>
 
     
