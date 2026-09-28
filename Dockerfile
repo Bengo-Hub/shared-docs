@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
 # Stage 1 — build the MkDocs site from docs/ only (mkdocs.yml's default docs_dir).
-# internal/, hospital-quotation/, library-service/, processa-integration/, tools/,
+# internal/, hospital-quotation/, library-service/, processa-integration/,
+# aelia-creator-commerce/ (confidential SRDD), tools/,
 # and everything else at repo root is never read by `mkdocs build` and never
 # lands in site/ — this build step doesn't change what's published either way.
 FROM python:3.12-slim AS build

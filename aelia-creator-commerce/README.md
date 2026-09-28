@@ -10,12 +10,18 @@ It also includes the eight "next technical documents" from the requirements spec
 
 Commercial terms between the parties are out of scope. They are governed by a separate agreement.
 
+> **Confidential and not published.** This folder is outside `docs/`, so the public MkDocs site and GitHub Pages never include it. It is also excluded from the shared-docs Docker build context (`.dockerignore`).
+
 | Artifact | Path |
 |---|---|
-| Source (Markdown) | [`AELIA-Creator-Commerce-System-Requirements-and-Design.md`](AELIA-Creator-Commerce-System-Requirements-and-Design.md) |
+| SRDD source (Markdown) | [`AELIA-Creator-Commerce-System-Requirements-and-Design.md`](AELIA-Creator-Commerce-System-Requirements-and-Design.md) |
 | Rendered PDF (A4, about 88 pages) | `AELIA-Creator-Commerce-System-Requirements-and-Design.pdf` |
+| Source documents consolidated, with text extracts | [`sources/`](sources/README.md) |
+| Chart generator and generated SVGs | `charts/build_charts.py`, `charts/*.svg` |
+| Planning notes and review decisions | [`notes/srdd-plan.md`](notes/srdd-plan.md) |
+| Facts to confirm against the local Codevertex repos | [`notes/fact-check-checklist.md`](notes/fact-check-checklist.md) |
+| PDF build pipeline and QA tools | `build/` (`build-pdf.cjs`, `shared.cjs`, `tools/`) |
 | Logo | `media/codevertex-logo.svg` |
-| Build pipeline | `build/` |
 
 ## Document map
 
@@ -35,19 +41,32 @@ Commercial terms between the parties are out of scope. They are governed by a se
 | K · Test & UAT Plan | Test levels, critical money scenarios, adapter conformance suite, UAT scripts, gate acceptance |
 | L · Deployment & Support Runbook | Pipeline, environments, Kubernetes, release, monitoring, backup, support SLAs, runbooks, technical risks, traceability, sign-off |
 
-## Regenerate the PDF
+## Local review workflow
 
 ```bash
-cd build
-npm install          # first time only (markdown-it, mermaid 9.4.3, puppeteer-core, pdfjs-dist)
-node build-pdf.cjs   # -> ../AELIA-Creator-Commerce-System-Requirements-and-Design.pdf
+git pull origin claude/keen-lovelace-4zpscj
+cd aelia-creator-commerce/build
+npm install                        # first time only: markdown-it, mermaid 9.4.3, puppeteer-core, pdfjs-dist
+
+# 1. check facts against the local service repos: work through ../notes/fact-check-checklist.md
+# 2. edit ../AELIA-Creator-Commerce-System-Requirements-and-Design.md
+npm run charts                     # regenerate ../charts/*.svg; prints requirement counts for §7.2
+npm run build                      # -> ../AELIA-Creator-Commerce-System-Requirements-and-Design.pdf
+npm run preview -- '#sec-22'       # screenshot a section to build/shots/ (visual QA)
+npm run audit -- 700               # list near-empty pages (layout QA)
+npm run sources                    # optional: re-extract ../sources/text/*.txt (needs pip install pypdf)
 ```
 
-The build renders the Markdown into the Codevertex house-style HTML shell. That shell has a cream and plum cover, a TOC grouped by Part, Mermaid diagrams, inline-SVG charts and HTML illustrations. The shell is printed to A4 with a locally installed Chrome or Chromium. `findChrome()` also finds the Playwright Chromium under `/opt/pw-browsers`, and `PUPPETEER_EXECUTABLE_PATH` overrides it.
+On Windows, the build finds Chrome or Edge in the standard install paths. Set `PUPPETEER_EXECUTABLE_PATH` to use another browser. In Linux containers, it also finds the Playwright Chromium under `/opt/pw-browsers`.
 
-The build prints twice. After the first pass, `pdfjs-dist` reads back the real page of every section, and the second pass writes exact TOC page numbers. It also reports any Mermaid diagram that fails to render.
+### How the build works
 
-The pipeline is adapted from `processa-integration/architecture/build/`.
+The build renders the Markdown into the Codevertex house-style HTML shell:
+- a cream and plum cover
+- a TOC grouped by Part
+- Mermaid diagrams, SVG charts and HTML illustrations
+
+The shell is then printed to A4 with Chrome. The build prints twice: after the first pass, `pdfjs-dist` reads back the real page of every section, and the second pass writes exact TOC page numbers. It reports any Mermaid diagram that fails to render, and scales diagrams taller than a page to fit. The pipeline is adapted from `processa-integration/architecture/build/`.
 
 ## Editing conventions
 
@@ -62,6 +81,6 @@ The pipeline is adapted from `processa-integration/architecture/build/`.
   - use `<br/>` for line breaks
   - diagrams taller than a page are scaled to fit automatically
 - **Figure captions:** `<p class="fig">Figure N. …</p>`, with `<code>` for code inside.
-- **Charts:** inline SVG inside `<div class="chart">…</div>`.
+- **Charts:** a `<!-- chart:NAME -->` marker inside `<div class="chart">…</div>` is replaced at build time by `charts/NAME.svg`. Change chart data in `charts/build_charts.py`. The scope chart counts `[MVP]`/`[v1]`/`[Later]` tags in the requirement tables automatically.
 - **Other HTML blocks:** stat tiles (`.kpis` / `.kpi`), illustrations (`.mocks`, `.swim`, `.layers`, `.uc`, `.stflow`), and `<div class="tight">` for dense tables. See the CSS in `build/build-pdf.cjs`.
 - **Keep it SRDD-only.** Commercial terms belong in the separate agreement.

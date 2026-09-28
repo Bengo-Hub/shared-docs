@@ -1,0 +1,943 @@
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+P R O J E C T  P R O P O S A L  A N D  D E V E L O P M E N T  C O S T  V A L U A T I O N
+AELIA CREATOR
+COMMERCE PLATFORM
+What it takes to design, build, launch and run the Creator Commerce Platform in six months, costed line by line from
+the team's actual cost, as the investment behind Codevertex's 30% revenue share.
+Document Project Proposal and Development Cost Valuation
+Prepared for Aelia Holdings Limited, attention Erick Wanga
+Prepared by Codevertex Africa Limited, Titus Owuor, Director and Technical Lead
+Delivery Development starts 5 October 2026 · MVP pilot live at month 3 · version 1 live at month 6
+Headline figures Build quotation KES 1,477,218 · total Codevertex contribution KES 2,223,558
+Date and validity 26 September 2026 · figures valid for 30 days
+BUILD IT · RUN IT · GROW IT · SHARE THE UPSIDE
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 1 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+01 Purpose and Executive Summary
+Aelia's board has chosen a revenue-share partnership over a shareholding. Codevertex funds and
+delivers the build, and in return receives 30% of the platform's net revenue under a legally binding
+agreement. For that to be fair to both sides, the contribution behind the 30% has to be measured the
+way a paying client would measure it.
+This proposal prices the project as though Aelia were paying for it: the development team for six months
+from 5 October 2026, the build infrastructure, and the Codevertex platform services the build plugs into.
+It then sets out, just as plainly, what Aelia pays to run the platform once it is live, and how the net
+revenue is shared.
+The quotation is the team's actual cost, and it covers more than coding. Aelia provides the system
+requirements; within the same fees, Codevertex's technical lead refines them and prepares the full
+system design with the Aelia team before the developers start. The same figures give Aelia a solid basis
+for the return-on-investment section of its business plan.
+The arrangement in one paragraph
+Codevertex carries the build cost: development and build infrastructure. Aelia
+carries everything else: marketing, sales, pilot recruitment, and the platform's
+direct running costs from launch, about KES 8,288 a month for the ERP
+subscription and domains. Hosting and support after launch are part of
+Codevertex's share, never billed. What remains after running costs is net
+platform revenue, shared 70% to Aelia and 30% to Codevertex every month.
+While the share is being paid there is no repayment deadline; section 15 sets
+out the only two cases where one applies. Read as a quotation, KES
+1,477,218 is the cash Aelia would otherwise have needed upfront.
+KES 1,477,218
+Build quotation
+development team fees, 10%
+contingency and build infrastructure over
+26 weeks
+KES 746,340
+Platform brought in
+Codevertex services Aelia plugs into
+instead of building, at the same team
+cost
+KES 2,223,558
+Total contribution
+the investment Codevertex puts in, and
+the basis for the 30% revenue share
+3 and 6
+Months to pilot and v1
+a real pilot with paying brands at month
+3, the full version 1 at month 6
+Development team fees · KES 1,260,000 Platform brought in · KES 746,340
+Contingency and build infrastructure · KES 217,218
+Build quotation, KES 1,477,218
+Total Codevertex contribution behind the 30% share, KES 2,223,558
+Figure 1. What makes up the investment behind the 30% share. Every figure is broken down line by line in sections 08 to 10.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 2 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+02 Scope of Work
+AREA MVP PILOT, LIVE AT MONTH 3 VERSION 1, LIVE AT MONTH 6 LATER PHASES, NOT IN THIS QUOTATION
+Accounts and access Single sign-on for brands, creators and Aelia staff;
+roles and permissions; brand and creator verification
+Two-step login for admins, full audit log, access
+review
+Nothing further needed
+Brand and Creator
+Passports
+Creator Passport v1 with verified creator details;
+Brand Passport v1 with organisation details
+Passport v2 with track record, platform history and
+connected social account metrics
+Deeper audience analytics
+Campaigns Brief builder with content rights; admin-curated
+shortlist; workspace and messaging; submission,
+revisions, approval
+Rules-based matching; ratings and reviews;
+rebooking; improvements from pilot feedback
+Full AI matching engine trained on platform
+data
+Money and tax M-Pesa and card funding; commission ledger;
+creator payouts with starting fee and balance; bank
+transfer with proof upload and finance verification;
+configurable tax engine
+Monthly withholding certificates; configurable fee
+settings
+Other currencies and countries, already a
+per-account setting from day one
+AI-generated content Handled as a managed service by AELIA Creative &
+Digital
+Integrated AI video tools with automatic cost per
+clip; posting on Aelia's own channels
+More AI tools and formats
+Insight and administration Basic dashboards and verification queue Brand reporting and campaign insights; full admin
+console for disputes and moderation
+Advanced analytics
+Channels Mobile-first web app that installs to a phone's home
+screen, with public landing and sign-up pages
+Same, hardened and load tested Native Android and iOS store apps
+Operations Development, staging and production environments;
+automated deployment; monitoring; backups
+Security and data-protection review; load test;
+restore drill; runbooks; handover training; two weeks
+of close post-launch support
+Nothing further needed
+What this quotation covers
+Aelia Brand House has three arms: AELIA Marketing, AELIA Creative & Digital with its Academy, and the Creator Commerce Platform. This quotation covers the Creator Commerce
+Platform and its dedicated site. The general Brand House website that introduces all three arms is a separate, smaller build and is quoted separately.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 3 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+03 How the Platform Plugs Into Codevertex
+Aelia gets its own platform, built new around brands and creators working together. Everything underneath it that every serious platform needs, and that Codevertex already runs in
+production for businesses across Kenya, is plugged in rather than rebuilt. That is where the time and cost saving comes from, and it is also why one partner can build, host, secure and
+keep improving the platform without Aelia hiring a separate consultant for each job.
+Brands Creators Aelia admin and finance
+use the web app
+AELIA Creator Commerce Platform
+Web app, installable on phones
+Aelia's own backend services
+Aelia's own database
+Built new for this project
+COVERED BY THE 30% SHARE
+Login and Account Service
+sign-on, client portal, users
+Notifications Service
+email and push included
+Billing split, AI runtime, toolkit
+commission, matching, widgets
+Hosting, security, backups
+servers, certificates, restores
+Support and maintenance
+by the technical lead
+PAID DIRECTLY BY AELIA
+ERP subscription
+HR, payroll, treasury, CRM · from KES 8,000
+First month free
+one-month ERP trial after v1 launch
+Domain renewals
+at cost · about KES 3,450 a year
+WhatsApp plan, a month
+Basic: 100 messages, KES 500
+Standard: 500 messages, KES 1,000
+Pro: unlimited messages, KES 2,000
+billed on usage
+PAY AS YOU USE
+SMS, about KES 1 each AI credits, KES 10 each AI video, per clip M-Pesa and card fees
+No monthly fee to Aelia Aelia's running costs
+Figure 2. Everything on the left, including hosting and support after launch, is covered by Codevertex's 30% share. Aelia pays the items on the right directly, and pay-as-you-use items only when used.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 4 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+04 The Team and How We Work Together
+AELIA HOLDINGS CODEVERTEX AFRICA
+Steering, monthly: budget, scope, gate sign-off
+Board representative
+Erick Wanga
+Director
+Titus Owuor
+Product, weekly: backlog and decisions
+Product owner
+priorities, acceptance
+Technical lead
+Titus Owuor
+Delivery, fortnightly: a working demo every sprint
+Pilot operations
+Creative & Digital, Marketing
+Delivery team
+Steve and Meshack
+Figure 3. Three levels of contact, each with a fixed rhythm.
+RESPONSIBILITY AELIA TITUS STEVE MESHACK
+Product priorities and backlog
+order
+A C C C
+Critical technical decisions A jointly R, A jointly C C
+Backend services and
+integrations
+I A R I
+Web app and user experience C A C R
+Infrastructure, security, releases I A, R C C
+Payment, commission and tax
+logic
+C A, R R I
+Pilot recruitment and
+onboarding
+A, R C I I
+User acceptance testing A, R R C C
+R does the work · A is accountable and signs off · C is consulted · I is kept informed
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 5 / 22
+Titus Owuor
+TECHNICAL LEAD, BACKEND AND
+INFRASTRUCTURE
+Director of Codevertex Africa. Refines Aelia's
+requirements and prepares the system design. Owns the
+architecture, payments, commission and tax logic,
+security, infrastructure and releases. Reports progress to
+Aelia every week. Oversees critical technical decisions
+and makes recommendations on them; those decisions
+are taken jointly with Aelia.
+86 planned days all 26 weeks 70.5% loaded
+Steve Oginga
+BACKEND ENGINEER
+Builds the platform's services: onboarding, Passports,
+campaigns, messaging, payouts, tax, reporting, and the
+connections into the Codevertex services the platform
+plugs into.
+101 planned days all 26 weeks 82.8% loaded
+Meshack Isava
+FRONTEND ENGINEER
+Builds everything people see and touch: the design
+system in AELIA's brand, the brand and creator journeys,
+dashboards, the admin console, and the installable
+phone experience.
+100 planned days all 26 weeks 82% loaded
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+05 Delivery Methodology
+Agile delivery in 13 two-week sprints, with a working demo at the end of every sprint and five formal gates where Aelia signs off before the next stage starts.
+Sprint planning
+day 1
+Build and code review
+days 2 to 8, fully tested
+Staging and testing
+day 9, deployed automatically
+Demo to Aelia
+day 10, accept or adjust
+Retrospective
+and backlog refinement
+next sprint, 13 sprints in 26 weeks
+Figure 4. Every sprint follows the same ten working days.
+Definition of Done, for every feature
+Meets the acceptance criteria Aelia agreed at sprint planning
+Code reviewed by a second engineer; automated tests pass
+Payment, commission and tax code has at least 70% test coverage
+Deployed to staging automatically and checked on a phone and a laptop
+No known high or critical security issue left open
+Demonstrated to Aelia and accepted
+How Aelia stays informed
+A short written update every Friday: done, next, anything blocked
+A live demo of working software at the end of every sprint
+A shared project board Aelia can open at any time
+A monthly steering meeting on budget, scope and the next gate
+A named contact for urgent questions: Titus Owuor
+Change control
+New ideas are welcome at any point. Each one is costed within three working days at the same team cost per day used in this proposal, so Aelia always knows the effect on time and cost
+before saying yes.
+Change requested
+by Aelia or the team
+Impact estimate, 3 working days
+days, cost and schedule effect
+Aelia
+approves?
+yes
+Scheduled in the next sprint
+contribution or invoice updated
+no
+Parked in the backlog
+Figure 5. Approved changes are added to the contribution, or invoiced if Aelia prefers to pay for them directly.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 6 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+06 Delivery Plan and Team Loading
+Prep
+Month 1 Month 2 Month 3 Month 4 Month 5 Month 6
+S1 S2 S3 S4 S5 S6 S7 S8 S9 S10 S11 S12 S13Sprints
+D · Requirements and system design Before 5 October, technical lead · 43,903
+P0 · Setup and foundations Wk 1–2 · 92,196
+P1 · Brand and Creator core Wk 2–6 · 144,878
+P2 · Campaigns and marketplace Wk 5–9 · 122,927
+P3 · Payments and MVP pilot launch Wk 8–13 · 219,511
+P4 · Intelligence, reputation and AI content Wk 14–22 · 390,732
+P5 · Hardening, user testing and v1 launch Wk 21–26 · 245,853
+Gates
+G1 G2 G3 G4 G5
+G1 Environments live, week 2 · G2 MVP pilot live, week 13 · G3 Feature complete, week 22 · G4 User testing signed off, v1 live, week 24 · G5 Handover, week 26
+Figure 6. Requirements and design (amber) are finished before the developers start. Build phases then overlap so building and testing run side by side: dark blue phases build the MVP pilot, teal phases build
+version 1. Costs in KES.
+TEAM MEMBER UP TO THE PILOT, WITH PHASE D AFTER THE PILOT, WEEKS 14 TO 26 WHOLE PROJECT
+Titus Owuor, technical lead 44 days · 72.1% loaded 42 days · 68.9% loaded 86 of 122 available days · 70.5%
+Steve Oginga, backend engineer 47 days · 77% loaded 54 days · 88.5% loaded 101 of 122 available days · 82.8%
+Meshack Isava, frontend engineer 51 days · 83.6% loaded 49 days · 80.3% loaded 100 of 122 available days · 82%
+Available days allow for public holidays, including the December break, and leave. No one is planned above 90% in any window, which leaves room to absorb the unexpected without moving a gate.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 7 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+07 Phases, Deliverables and Exit Criteria
+Each phase ends with something Aelia can see working, and a clear test that has to pass before the next gate. Days are shown for Titus, Steve and Meshack in that order.
+PHASE DELIVERABLES EXIT CRITERIA AND GATE DAYS T / S /
+M KES
+D · Requirements and
+system design
+BEFORE 5 OCTOBER
+Aelia's requirements refined into an agreed specification with
+acceptance criteria; system design covering architecture, data,
+service interfaces and integrations; screen flows; a ready build
+backlog
+Requirements and design signed off by Aelia, so
+developers start on 5 October with nothing left to
+guess
+10 / 0 / 0 43,903
+P0 · Setup and foundations
+WEEKS 1 TO 2
+Development, staging and production environments on accounts
+Aelia owns; automated deployment and monitoring; design system in
+AELIA's brand; single sign-on working
+G1: environments live. Every change deploys to
+staging automatically. A test brand and a test creator
+can sign in
+9 / 4 / 8 92,196
+P1 · Brand and Creator
+core
+WEEKS 2 TO 6
+Brand onboarding and verification; creator onboarding; Creator
+Passport v1; Brand Passport v1; admin verification queue and user
+management
+A brand and a creator register, are verified by an
+Aelia admin, and see their Passports. Demo
+accepted
+3 / 15 / 15 144,878
+P2 · Campaigns and
+marketplace
+WEEKS 5 TO 9
+Brief builder with content rights; discovery and admin-curated
+shortlist; campaign workspace and messaging; submission, revision
+and approval; notifications at every step
+A full campaign runs in staging from brief to
+approved content, with notifications firing at each
+step
+1 / 12 / 15 122,927
+Pilot build and version 1
+PHASE DELIVERABLES EXIT CRITERIA AND GATE DAYS T / S /
+M KES
+P3 · Payments and MVP
+pilot launch
+WEEKS 8 TO 13
+M-Pesa and card funding; commission ledger; creator payouts with
+starting fee and balance; bank transfer with proof upload and finance
+verification; configurable tax engine; dashboards; production go-live
+G2, pilot live: a real campaign is funded, delivered,
+approved and paid out in production, and the ledger
+reconciles to the shilling
+21 / 16 / 13 219,511
+P4 · Intelligence, reputation
+and AI content
+WEEKS 14 TO 22
+Rules-based matching; Passport v2 with social account connections;
+brand reporting; withholding certificates; ratings and rebooking; fee
+settings; AI-generated content with automatic cost per clip; pilot
+improvements
+G3, feature complete: every brief gets a ranked
+shortlist, every AI clip is costed automatically, pilot
+feedback is triaged every sprint
+22 / 34 / 33 390,732
+P5 · Hardening, user
+testing and v1 launch
+WEEKS 21 TO 26
+Admin console for disputes, moderation and audit; security and data-
+protection review; load test; backup and restore drill; user acceptance
+testing; documentation and training; launch and two weeks of close
+post-launch support
+G4: user testing signed off and v1 live. G5:
+handover complete, zero open high or critical
+security findings, restore proven within 4 hours
+20 / 20 / 16 245,853
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 8 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+08 How the Price Is Built
+The quotation is the team's actual cost for the six months from 5 October 2026, with nothing added for overhead. Fixed monthly fees mean the cost does not grow with hours worked. It
+works out at about KES 4,390 per planned team day, the figure used for every work package, the platform brought in and any approved change.
+COST LINE MONTHLY PERIOD KES
+Development team: technical lead, backend engineer, frontend engineer KES 210,000 a month 6 months 1,260,000
+Contingency, 10% of team fees, used only with Aelia's written approval 126,000
+Build infrastructure and tools, at published prices 91,218
+Build quotation 1,477,218
+VAT: not charged 0
+Titus Owuor, technical lead Steve Oginga, backend engineer Meshack Isava, frontend engineer
+D · Requirements and system design 10d KES 43,903
+P0 · Setup and foundations 9d 8d KES 92,196
+P1 · Brand and Creator core 15d 15d KES 144,878
+P2 · Campaigns and marketplace 12d 15d KES 122,927
+P3 · Payments and MVP pilot launch 21d 16d 13d KES 219,511
+P4 · Intelligence, reputation and AI content 22d 34d 33d KES 390,732
+P5 · Hardening, user testing and v1 launch 20d 20d 16d KES 245,853
+Figure 7. Days per person in each phase, with the phase's cost, across 39 work packages.
+Design and build, one price
+The same fees cover refining Aelia's requirements, the
+full system design, and then building, testing and
+launching the platform.
+Where the money goes
+About half the team fees, KES 623,415, are spent up to
+the pilot, phases D to P3, so Aelia has a working, earning
+platform at month 3.
+Why contingency is included
+Every build meets surprises, such as a payment provider
+changing an approval step. Ten percent is the lower end
+of normal practice for a fixed plan.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 9 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+09 Work Breakdown: Pilot Build, Days per Person
+WORK PACKAGE TITUS STEVE MESHACK DAYS KES
+D · Requirements and system design 43,903
+Requirements refinement with the Aelia team: gaps, priorities, acceptance criteria 4 – – 4 17,561
+System design: architecture, data design, service interfaces, integrations 4 – – 4 17,561
+Screen flows and a ready build backlog for the developers, reviewed with Aelia 2 – – 2 8,781
+P0 · Setup and foundations 92,196
+Environments, automated deployment, AELIA-owned accounts, secrets, monitoring 7 1 – 8 35,122
+AELIA design system, app shell, landing and sign-up pages, installable app base – – 6 6 26,342
+Single sign-on with the shared login screen, roles and permissions 2 3 2 7 30,732
+P1 · Brand and Creator core 144,878
+Brand onboarding, organisation profile, verification workflow 1 5 4 10 43,902
+Creator onboarding and Creator Passport v1 with verified details 1 5 5 11 48,293
+Brand Passport v1 (organisation and verification) – 2 2 4 17,561
+Admin foundations: verification queue, user management, configuration 1 3 4 8 35,122
+P2 · Campaigns and marketplace 122,927
+Campaign brief builder with content rights 1 3 4 8 35,122
+Creator discovery, search and admin-curated shortlist – 2 3 5 21,951
+Campaign workspace and messaging v1 – 3 4 7 30,732
+Content submission, revisions, approval – 3 4 7 30,732
+Notifications at each campaign step – 1 – 1 4,390
+P3 · Payments and MVP pilot launch 219,511
+M-Pesa and card payments, campaign funding 6 3 3 12 52,683
+Per-transaction commission ledger and reconciliation 6 3 – 9 39,512
+Creator payouts, starting-fee and balance schedules 1 3 2 6 26,341
+Manual bank transfer with proof upload and finance verification – 3 3 6 26,341
+Configurable tax engine (work categories and rates) 4 1 1 6 26,341
+Transaction statuses and basic dashboards – 1 2 3 13,171
+Pilot deployment, production hardening, go-live support 4 2 2 8 35,122
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 10 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+09 Work Breakdown: Version 1, Days per Person
+WORK PACKAGE TITUS STEVE MESHACK DAYS KES
+P4 · Intelligence, reputation and AI content 390,732
+Rules-based matching v1, then refinement from pilot data 7 6 2 15 65,854
+Creator and Brand Passport v2: track record and platform history – 3 4 7 30,732
+Reporting, performance data, campaign insights for brands – 4 7 11 48,293
+Monthly withholding certificates 1 1 1 3 13,171
+Messaging, discovery and brief enhancements from pilot feedback – 3 3 6 26,341
+Two-sided ratings and reviews – 3 4 7 30,732
+Rebooking flow – 3 2 5 21,951
+Revenue tracking and configurable fee settings – 3 2 5 21,951
+AI-generated content lane: AI video tools, automatic cost per clip 7 3 3 13 57,073
+Social account connections for Creator Passport metrics 4 2 2 8 35,122
+Pilot support and iteration 3 3 3 9 39,512
+P5 · Hardening, user testing and v1 launch 245,853
+Full admin console: disputes, moderation, audit log – 5 6 11 48,293
+Security and data-protection review, fixes, access review 6 3 – 9 39,512
+Load testing, backup and restore drills 4 2 – 6 26,341
+User acceptance testing with pilot brands and creators, fixes 3 4 5 12 52,683
+Documentation: technical guides, runbooks, admin guide, handover training 4 3 2 9 39,512
+Launch and two weeks of close post-launch support 3 3 3 9 39,512
+Total development team fees 86 101 100 287 1,260,000
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 11 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+10 Build Infrastructure and the Platform Brought In
+BUILD INFRASTRUCTURE BASIS, AT PUBLISHED PRICES KES
+Staging and testing environment A 4 GB cloud server at USD 48 a month for 6 months, DigitalOcean list price 37,440
+Automated build and deployment GitHub Team at USD 4 per user a month, 3 users, 6 months, for protected branches, review rules and extra build
+minutes
+9,360
+AI video tool testing Creatify Pro at USD 99 a month for months 4 to 6, while the AI content lane is built 38,610
+SMS and WhatsApp testing About 1,500 test SMS at about KES 1 each, plus a Basic WhatsApp plan at KES 500 a month for 3 months 3,000
+Production capacity during build and pilot About 8% of Codevertex's managed production cluster for 6 months 2,808
+Total 91,218
+Codevertex platform brought in, at replacement value
+The value of each service is based on the effort the same team would need to build it to the standard this platform needs, priced at the same cost per team day as the build. Aelia pays no
+licence fee for any of it. It is counted as part of Codevertex's contribution because it is real, running software that Aelia would otherwise have to build and pay for.
+SERVICE WHAT AELIA GETS WITHOUT BUILDING IT DAYS
+SAVED KES
+Login and Account Service Single sign-on, two-step login for admins, client portal, people who belong to several businesses, roles 37 162,439
+Payments Service M-Pesa and card collection, payment confirmations, payouts to third parties, reconciliation, KRA eTIMS
+invoicing, manual payment confirmation
+46 201,951
+Billing Service Plans, feature switches, and the engine that splits each payment between parties 22 96,585
+Notifications Service Email, SMS, WhatsApp and push from one call, message templates, prepaid SMS credits and WhatsApp
+plans
+18 79,024
+Shared toolkit and UI library Ready-made login and payment screens, service connections, event messaging, caching 18 79,024
+Managed platform infrastructure Managed servers, secure web addresses with automatic certificate renewal, deployment pipelines,
+monitoring, logs, backups
+14 61,463
+AI assistant runtime The AI assistant engine reused for creator matching and the brief builder 15 65,854
+Total platform brought in 170 746,340
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 12 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+11 Total Contribution and What the 30% Pays For
+With the Codevertex platform Aelia platform build · 1,260,000 KES 1,260,000
+pilot at month 3
+Built entirely from scratch Aelia platform build · 1,260,000 services · 746,340 KES 2,006,340
+pilot around month 8
+Figure 8. Labour only. Building from scratch costs about KES 746,340 more, and roughly 20 more weeks of backend work would push the pilot from month 3 to around month 8.
+CODEVERTEX CONTRIBUTION KES
+Development team fees 1,260,000
+Contingency 126,000
+Build infrastructure and tools 91,218
+Build quotation 1,477,218
+Platform brought in, replacement value 746,340
+Total contribution behind the 30% share 2,223,558
+What the 30% share pays for
+Capital and risk
+Codevertex funds the whole build, KES 1,477,218 of
+team fees, contingency and infrastructure, paying the
+team every month from week 1 with no guaranteed
+return. If the platform earns little, Codevertex earns little.
+A running platform, not a blank page
+Software already live in production for businesses across
+Kenya, plus every future improvement to those shared
+services, passed to Aelia at no extra cost.
+Support for the life of the partnership
+After launch, Codevertex's technical lead looks after the
+platform, its security and the AI content lane at no extra
+charge. The 30% share is Codevertex's only payment for
+this.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 13 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+12 Running the Platform After Launch
+WHO PAYS ITEM KES A
+MONTH
+IN THE 30% SHARE Support and maintenance by Codevertex's technical lead:
+monitoring, security patches, fixes, backups, running the AI
+content lane
+KES 0
+IN THE 30% SHARE Login and Account Service, Notifications Service, billing
+split, AI assistant runtime, shared toolkit
+KES 0
+IN THE 30% SHARE Hosting the AELIA platform: production servers, security
+certificates and renewals, backups and server oversight, handled
+by Codevertex
+KES 0
+AELIA, FIRST MONTH FREE ERP starting suite for Aelia's own team, up to 25 employees and
+10 system users, covering HR, payroll, CRM, and treasury with
+payments, payouts, invoicing and KRA eTIMS. One-month free
+trial after version 1 launch, instead of the standard 14 days
+from 8,000
+AELIA, AT COST Domain renewals for the platform's own addresses: a .com at
+about USD 15 and a .co.ke at about KES 1,500, KES 3,450 a
+year
+288
+AELIA, IF USED WhatsApp plan: Basic KES 500 for 100 messages, Standard
+KES 1,000 for 500 messages, or Pro KES 2,000 for unlimited
+messages
+500 to
+2,000
+PAY AS YOU USE SMS about KES 1 each · AI credits KES 10 each · M-Pesa and
+card fees at the providers' published rates
+usage
+PAY AS YOU USE AI video tools: KES 1,150 to 1,770 all-in per clip, recovered in a
+brand price that starts from KES 5,000
+per clip
+KES 8,288
+Aelia's fixed monthly running cost
+ERP subscription and domains; hosting is covered by the 30%
+share. It is KES 288 in the first month after launch, during the
+ERP free trial.
+Support after launch, inside the 30%
+Round-the-clock uptime monitoring and alerts
+Security patches, updates and certificate renewals
+Daily backups and quarterly restore tests
+Bug fixes, with critical issues answered within 2 hours
+Running the AI-generated content pipeline
+Small improvements as the platform grows
+A monthly health report to Aelia
+As Aelia's team grows
+KES 8,000 covers up to 25 employees, about KES 320 each,
+with treasury and CRM included. HR tools alone cost from
+about KES 135 a user on Zoho People to about KES 650 an
+employee on Workpay. Beyond 25 employees, HR and payroll
+move to a per-employee enterprise rate agreed by both sides,
+guided by the Kenyan market range of KES 100 to 400 per
+employee a month for cloud HR and payroll software. At an
+illustrative KES 250, a team of 40 would add KES 3,750 a
+month.
+Larger new features are costed at the same team cost per day.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 14 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+13 How the Revenue Share Works
+Gross platform revenue
+KES 1,100,000
+commissions, AI content fees,
+subscriptions, featured listings
+Less direct operating costs
+KES 100,000
+ERP, domains, messaging,
+gateway fees and AI tool costs
+Net platform revenue
+KES 1,000,000
+split monthly
+Aelia, 70%
+KES 700,000
+Codevertex, 30%
+KES 300,000Never counted as revenue, passed straight through:
+creator fees held for payout, withholding tax, VAT collected for KRA
+Figure 9. One illustrative month. The same three steps run every month, from a statement generated directly from the platform's own ledger.
+Gross platform revenue
+Everything the platform itself earns: commission on
+campaigns, AI-generated content fees, subscriptions,
+featured listings, and any new revenue line added later.
+Money that belongs to creators, and taxes collected for
+KRA, pass straight through and are never counted.
+Direct operating costs
+Only the costs of running this platform: the ERP
+subscription, domains, messaging, gateway fees and AI
+tool costs. Hosting, support and maintenance are not
+deducted; they are part of Codevertex's 30%. Aelia's
+wider overheads such as rent, salaries and marketing are
+not deducted either.
+The monthly split
+Net platform revenue is split 70% to Aelia and 30% to
+Codevertex, paid within 15 days of month end. Both sides
+see the same numbers, because the statement comes
+from the platform's own records, not from a spreadsheet.
+WHAT MADE UP THE KES 100,000 IN FIGURE 9 KES
+ERP subscription with HR, payroll, treasury and CRM 8,000
+Domain renewals, monthly share 288
+WhatsApp and SMS, AI credits, gateway fees, AI video tools 91,712
+Direct operating costs 100,000
+When each charge starts
+Weeks 1 to 26: no development or infrastructure charges
+Pilot, months 3 to 6: only pay-as-you-use items, billed at cost
+From version 1 launch: domain renewals, at cost
+ERP subscription: free for the first month after launch, then KES 8,000 a month
+Hosting and support after launch: never billed, covered by the 30% share
+First revenue-share statement: the first full month after version 1 launch
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 15 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+14 Payback and Return on Investment
+to recover the build quotation, KES 1,477,218 to recover the total contribution, KES 2,223,558
+0 6 12 18 24 30 36
+months after version 1 launch
+KES 250,000 net a month
+30% share: KES 75,000
+19.7 months
+29.6 months
+KES 500,000 net a month
+30% share: KES 150,000
+9.8 months
+14.8 months
+KES 1,000,000 net a month
+30% share: KES 300,000
+4.9 months
+7.4 months
+KES 2,000,000 net a month
+30% share: KES 600,000
+2.5 months
+3.7 months
+Figure 10. How long Codevertex's 30% share takes to recover the investment. The more the platform earns, the sooner Codevertex is repaid.
+Aelia's position
+Aelia puts in no development capital, so its 70% is
+earned on running costs alone. Instead of finding KES
+1,477,218 upfront, Aelia has a live platform at month 3
+and pays about KES 8,288 a month to run it from version
+1. At KES 1 million net a month, Aelia keeps KES
+700,000 a month, KES 8.4 million a year.
+Codevertex's risk
+A new marketplace usually earns little in its first year. At
+KES 250,000 net a month, the 30% share takes about
+30 months to repay the full contribution. The 30% prices
+in that risk, and section 15 sets out how the build cost is
+handled if revenue stays slow.
+A planning marker for the business plan
+Using the 8% commission in Aelia's own concept paper,
+the platform covers its fixed running cost at about KES
+103,600 of campaign value a month, roughly 5
+campaigns of KES 20,000. It reaches KES 1 million net at
+about KES 12.6 million of campaign value a month,
+before other revenue lines.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 16 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+15 If Revenue Is Slow: Protecting the Build Investment
+As long as the 30% share is being paid, there is no repayment timeline at all: the share itself recovers the build cost, however long that takes. A timeline applies in only two cases: if the
+platform earns no net revenue for a sustained period, or if Aelia chooses to part ways before the build cost is recovered.
+Version 1
+launch
+12-month runway
+nothing owed; review at month 6
+30% share
+being paid?
+yes No repayment timeline
+the share recovers the build cost
+checked every month
+no, for six months in a row
+A. Repay and continue
+unrecovered build cost in up
+to 6 instalments; 30% continues
+B. Extend once
+6 more months with a
+written marketing plan
+C. Pause and part ways
+Aelia keeps brand and data;
+code passes once repaid
+Aelia asks to part ways
+before the cost is recovered
+Repay within 60 days
+only the unrecovered
+build cost, no interest
+Figure 11. The 30% share replaces any repayment deadline. Repayment only comes into play in the two cases on the right and below. Details on the next page.
+What is being protected
+The build quotation, KES 1,477,218: real cash
+Codevertex pays out during the build. The platform
+brought in is not counted here, so any repayment never
+exceeds what was actually spent.
+Worked example
+After the runway, the platform goes six months in a row
+with no net revenue. Codevertex has received KES
+300,000 in share so far, so the unrecovered build cost is
+KES 1,177,218. Under option A, Aelia repays it in six
+instalments of KES 196,203, and the 30% share
+continues.
+Aelia's go-to-market commitments
+Because recovery depends on marketing, Aelia commits
+to a named marketing lead, a written launch plan and
+budget before version 1 launch, the pilot recruitment
+targets in section 16, and a short monthly marketing
+report.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 17 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+15 If Revenue Is Slow: Proposed Terms
+POINT CODEVERTEX'S PROPOSED POSITION
+The share replaces any deadline While the 30% share is being paid, Aelia has no repayment obligation and no deadline of any kind. The build cost is recovered through the share
+alone, however long that takes.
+Revenue runway The first twelve months after version 1 launch. Nothing is owed on the build cost during this time, whatever the platform earns.
+Joint review, month 6 If net platform revenue is not yet covering the platform's running costs, both parties will agree a written recovery plan within 30 days, for example a
+marketing push, pricing changes or a narrower focus. The review creates no payment obligation.
+No-revenue trigger This applies only after the runway. If the platform produces no net revenue, so that no 30% share is payable, for six consecutive months, Aelia will
+choose option A, B or C within 30 days. Any month in which a share is payable resets the count.
+Option A: repay and continue Aelia repays the unrecovered build cost, meaning the build quotation less all share already paid, in up to six monthly instalments with no interest.
+The 30% share then continues as agreed, with Codevertex remaining the technology partner.
+Option B: extend once The trigger period is extended once by six months, backed by a written marketing plan and budget from Aelia. If no share has become payable by
+the end of the extension, Aelia will choose option A or C.
+Option C: pause and part ways The platform is paused and running costs stop. Aelia keeps its brand, customer relationships and data. Aelia may pay the unrecovered build cost
+at any time, and the platform code then passes to Aelia.
+Parting ways early If Aelia ends the partnership, or moves the platform to another developer, before the build cost is recovered, Aelia will repay the unrecovered build
+cost within 60 days.
+If Codevertex delivers late If the pilot or version 1 is delayed for reasons within Codevertex's control, the runway starts later by the same period. If version 1 is not live by the
+end of month 9 after development starts, Aelia may exit without owing any build cost.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 18 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+16 Key Performance Indicators
+Delivery: how Codevertex is measured
+INDICATOR TARGET
+Gates met on schedule Pilot live in week 13, v1 live in week 24
+Sprint reliability 85% or more of committed work done
+each sprint
+Test coverage on payment, commission and tax
+code
+70% or more
+Platform uptime from pilot launch 99.5% or more a month
+Page and API speed 95% of requests answered in under 0.5
+seconds
+Security Zero open high or critical findings at
+launch
+Recovery Service restored within 4 hours, at
+most 24 hours of data at risk
+Ledger accuracy Payouts and commission reconcile to
+the shilling every month
+Critical support response Within 2 hours, any day
+Pilot: how the idea is proven, months 3 to 6
+INDICATOR TARGET
+Brands onboarded and verified 8 to 10
+Creators onboarded with a verified Passport 15 to 20
+Campaigns run end to end 5 or more
+Paid transactions through the platform 3 or more
+Content delivered on time 90% or more
+Brands intending to book again 2 or more
+Growth, after version 1
+INDICATOR WHY IT MATTERS REPORTED
+Monthly campaign value The base every commission is earned
+on
+Live dashboard
+Active brands and creators Health of both sides of the
+marketplace
+Live dashboard
+Repeat booking rate Proof that brands get value and come
+back
+Monthly
+AI-generated content orders Growth of the fastest-margin lane Monthly
+Net platform revenue What both partners actually share Monthly
+statement
+Every indicator comes straight from the platform's own records, so Aelia and Codevertex always read
+the same numbers.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 19 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+17 Points to Settle in the Revenue-Share Agreement
+POINT CODEVERTEX'S PROPOSED POSITION
+Revenue definition Net platform revenue is gross platform revenue less the agreed direct operating costs, as set out in section 13. Creator funds and taxes are never
+counted as revenue.
+Deductible costs Only costs on a fixed list attached to the agreement may be deducted: the ERP subscription, domains, messaging, gateway fees and AI tool costs.
+Any new cost line needs both parties' written approval.
+Hosting and support Platform hosting, and support by Codevertex's technical lead, are part of the 30% share. They are never invoiced and never deducted as an operating
+cost.
+ERP as Aelia grows KES 8,000 a month covers the starting suite for up to 25 employees. Above that, HR and payroll are charged per employee at an enterprise rate
+agreed by both sides, guided by the Kenyan market range of KES 100 to 400 per employee a month.
+Reporting and audit A monthly statement is generated from the platform ledger. Codevertex has read access to the platform's finance dashboards, and either party may
+audit the figures once a year.
+Payment The share is paid monthly by bank transfer, within 15 days of month end. No share is payable for a month with no net revenue, and a loss in one
+month is not carried into the next.
+Build cost recovery Governed by section 15. No repayment deadline applies while the 30% share is being paid.
+Term Runs for as long as the platform operates, with a minimum of five years from version 1 launch.
+Buyout From year three, Aelia may buy out the share for three times the previous twelve months' share, never below any unrecovered build cost. After a
+buyout, support continues under a separate paid support agreement.
+New features New features are priced at this proposal's cost per team day and are either invoiced or, by agreement, added to the contribution.
+Continuity The source code is kept in a repository both parties can access from day one, with full runbooks. If the partnership ends, Codevertex provides 90 days
+of transition support.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 20 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+17 Legal Safeguards in the Agreement
+Each party should have the final agreement reviewed by its own advocates before signing.
+POINT PROPOSED POSITION
+Ownership of the code Copyright in the platform code stays with Codevertex until the build cost is recovered, through the share or by repayment, and then passes to Aelia by
+written assignment. The agreement expressly excludes the transfer that section 31 of the Copyright Act would otherwise make to the commissioning
+party. Until then Aelia uses the code under an exclusive licence. Aelia owns its brand, customers and data from day one; Codevertex keeps the shared
+services it brings in.
+Repayment limit Any repayment is limited to the unrecovered build cost, with no interest or fees on top.
+Revenue kept on the platform Work with brands or creators first met through the platform counts as platform revenue even if it is completed elsewhere, including through AELIA
+Marketing or AELIA Creative & Digital. Services between Aelia's own businesses are priced at normal market rates.
+Sale or change of control If the platform or Aelia is sold, the agreement binds the buyer, unless Aelia completes the buyout before the sale.
+Taxes Amounts are stated before any tax that becomes chargeable by law, which is added when it applies. Where the law requires Aelia to withhold tax on
+payments to Codevertex, Aelia deducts it and issues the withholding certificate within the period the law requires.
+Liability Each party's total liability under the agreement is capped at the revenue share paid in the twelve months before the claim, and neither party is liable
+for indirect losses such as lost profits. The cap does not apply to fraud, wilful misconduct or payment obligations.
+Regulation and licences Aelia holds the licences its business needs, sets its customer terms and files its own tax returns, including creator withholding. Money moves only
+through licensed payment providers, and Codevertex never holds client funds.
+Late payment If the share or a repayment remains unpaid 30 days after Codevertex gives written notice, Codevertex may pause new feature work. If it remains
+unpaid 90 days after the notice, Aelia is treated as having chosen to part ways early.
+Data protection Aelia is the data controller and Codevertex the data processor, under a written data-processing agreement. Each registers with the Office of the Data
+Protection Commissioner where the law requires it.
+Disputes The directors meet within 14 days of a dispute being raised. An unresolved dispute goes to mediation, and then to arbitration in Nairobi under the rules
+of the Nairobi Centre for International Arbitration. The agreement is governed by the laws of Kenya.
+If Codevertex walks away If Codevertex ends the partnership without cause, it gives up any unrecovered build cost, and the continuity terms apply.
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 21 / 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   P R O J E C T  P R O P O S A L A N D  C O S T  VA L U AT I O N AELIA CREATOR COMMERCE
+18 Assumptions, Exclusions and Commercial Terms
+Assumptions and what Aelia provides
+Complete system requirements from Aelia, refined and signed off together with the system
+design before 5 October 2026
+A named Aelia product owner, available for weekly decisions and fortnightly demos
+Brand assets, copy and content for the platform's public pages
+Marketing, sales and pilot recruitment led and paid for by Aelia
+Business accounts in Aelia's name: M-Pesa paybill, Paystack, KRA PIN and eTIMS
+Legal review of the terms of service and privacy notice, and registration with the Office of
+the Data Protection Commissioner
+Scope as set out in section 02; changes follow the change-control process
+The team is retained on fixed monthly fees; if Aelia-side delays extend the build past week
+26, each extra month adds KES 210,000
+Not included
+Native Android and iOS store apps, a later phase
+The general Aelia Brand House website, quoted separately
+An independent third-party penetration test, if Aelia wants one
+Legal and regulatory fees; paid advertising; content production
+If the build were invoiced instead
+For reference only, the same build as a paid engagement would be invoiced against the gates:
+MILESTONE SHARE KES
+On signing, before work starts 30% 443,165
+G2, MVP pilot live, week 13 30% 443,165
+G4, user testing signed off and v1 live, week 24 30% 443,165
+G5, handover complete, week 26 10% 147,723
+Total 100% 1,477,218
+All figures in Kenyan shillings. USD figures converted at KES 130. Valid for 30 days from 26
+September 2026.
+For Aelia Holdings Limited
+Name, signature and date
+For Codevertex Africa Limited
+Titus Owuor, Director
+Delivery risks and how they are handled
+RISK EFFECT HOW IT IS HANDLED OWNER
+Payment and tax account approvals take
+longer than planned
+Pilot payments delayed Applications for M-Pesa, Paystack and KRA eTIMS start in week 1; payments are
+built and tested in sandbox mode meanwhile
+Aelia, with Codevertex
+Scope grows during the build Gates slip, cost rises Change control with a costed estimate for every request; nothing is added without
+Aelia's approval
+Both
+Too few pilot brands or creators Pilot results are weak Recruitment starts in month 2 through AELIA Marketing's existing clients and the
+Academy's creators
+Aelia
+AI video tool prices change AI content margin shrinks Cost per clip is tracked automatically and the brand price is a setting Aelia can
+change at any time
+Codevertex
+A team member is unavailable Work slows Shared code reviews, written runbooks, and backup from the wider Codevertex
+engineering team
+Codevertex
+CODEVERTEX AFRICA LIMITED · CONFIDENTIAL PROPOSAL FOR AELIA HOLDINGS LIMITED 22 / 22

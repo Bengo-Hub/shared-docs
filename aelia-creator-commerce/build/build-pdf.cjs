@@ -206,7 +206,13 @@ code{background:#efe6ea;border-radius:3px;padding:1px 4px;font-size:8.4pt;font-f
 `;
 
 // ── body ──────────────────────────────────────────────────────────────────────
-const mdSrc = fs.readFileSync(MD, 'utf8');
+// <!-- chart:NAME --> markers are replaced with ../charts/NAME.svg (regenerate: python3 ../charts/build_charts.py)
+const CHARTS = path.join(ARCH, 'charts');
+const mdSrc = fs.readFileSync(MD, 'utf8').replace(/<!-- chart:([\w-]+) -->/g, (m, name) => {
+  const file = path.join(CHARTS, `${name}.svg`);
+  if (!fs.existsSync(file)) throw new Error(`chart not found: ${file} (run: python3 charts/build_charts.py)`);
+  return fs.readFileSync(file, 'utf8').replace(/\n/g, ' ');
+});
 let body = md.render(mdSrc);
 
 // id each h2 sequentially; "Part X ..." headings open a new page and group the TOC

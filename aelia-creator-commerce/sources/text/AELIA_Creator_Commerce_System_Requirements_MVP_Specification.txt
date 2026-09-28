@@ -1,0 +1,233 @@
+AELIA CREATOR COMMERCE PLATFORM     SYSTEM REQUIREMENTS & MVP SPECIFICATION 
+1 
+ 
+AELIA CREATOR COMMERCE PLATFORM 
+System Requirements & 
+MVP Specification 
+A concise product and system requirements specification defining what the AELIA Creator Commerce Platform must deliver in its initial 
+MVP and how it should evolve. 
+CREATE COLLABORATE COMMERCE GROW 
+Empowering Creators Connecting Brands Driving Value Building Opportunities 
+ 
+DOCUMENT DETAILS 
+Version 1.0 
+Prepared by Erick Wanga 
+For Aelia Holdings Limited 
+Technology Partner Codevertex Africa 
+Date September 2026 
+Status Product Requirements / Pre-Development 
+Marketing Objective → Creator Match → Campaign → Content → Commerce → Measurement → Relationship  
+PART 1 — PLATFORM OVERVIEW 
+1.1 Purpose 
+AELIA Creator Commerce is a technology-enabled marketplace connecting brands with creators for influence and content, while 
+providing the tools required to match, collaborate, contract, pay, measure and build repeat commercial relationships. 
+Core Commercial Journey 
+Marketing Objective → Creator Match → Campaign → Content → Commerce → Measurement → Relationship  
+1.2 Platform Model 
+Component Requirement 
+Influence Marketplace Creators publish content to their own audiences on behalf of brands.  
+Content Marketplace Creators produce content for brands, whether or not they publish it to their own audiences.  
+Brand Side Brands discover creators, create campaigns, collaborate, manage content, fund campaigns and measure results.  
+Creator Side Creators build professional profiles, discover opportunities, deliver campaigns, get paid and build commercial relationships.  
+AELIA Operations Verification, matching support, campaign administration, payment monitoring, disputes, reporting and platform management.  
+
+
+=====PAGE=====
+AELIA CREATOR COMMERCE PLATFORM     SYSTEM REQUIREMENTS & MVP SPECIFICATION 
+2 
+1.3 Core Users 
+User Primary Role 
+Brands Create and manage creator campaigns. 
+Creators Offer influence, content and creative services.  
+AELIA Administration Manage platform operations and marketplace quality.  
+Finance / Administration Monitor transactions and reconciliation. 
+Super Administrator Manage system-level configuration. 
+1.4 Business Objectives 
+# Objective 
+1 Connect brands with relevant creators. 
+2 Turn marketing objectives into structured creator campaigns.  
+3 Create professional commercial opportunities for creators.  
+4 Facilitate campaign collaboration and payment.  
+5 Measure campaign and commercial outcomes. 
+6 Build two-sided reputation and trust. 
+7 Enable repeat bookings and relationships. 
+8 Build creator-commerce data and intelligence. 
+9 Generate sustainable platform revenue. 
+PART 2 — CORE FUNCTIONAL REQUIREMENTS 
+Platform Module What the System Must Do 
+User Registration & Verification Register and verify Brands, Creators and authorized platform users. 
+Creator Passport Capture creator identity, niche, skills, platforms, audience, performance, rates, packages, availability, usage rights and ca mpaign history. 
+Brand Passport Capture organization information, industry, location, verification, campaign history, payment reliability and commercial repu tation. 
+Creator Discovery Allow brands to search, filter, review and shortlist suitable creators. 
+Creator Matching Recommend creators based on audience, niche, platform, geography, performance, budget, reliability, suitability and availabil ity. 
+Campaign Creation Allow brands to define objective, audience, platforms, deliverables, creators, budget, timeline, content requirements and rig hts. 
+Campaign Workspace Manage briefs, creators, agreements, messages, deliverables, deadlines, content, approvals, payments and performance in one p lace. 
+Content Marketplace Support both influence campaigns and UGC/content-production campaigns. 
+Content Submission Allow creators to submit content, receive revisions and obtain approval. 
+Contracts & Rights Record deliverables, fees, deadlines, revisions, cancellation, ownership, usage, geography, exclusivity and other agreed term s. 
+Communication Enable campaign-related messaging and notifications. 
+Payments Facilitate campaign funding, transaction tracking, creator payouts and reconciliation through an appropriate payment provider . 
+Performance Tracking Track reach, views, engagement, clicks, leads, conversions and sales where technically measurable.  
+Reputation Enable Brands to review Creators and Creators to review Brands. 
+Rebooking Enable repeat bookings, saved creators, future invitations and ongoing relationships. 
+Reporting Provide campaign, financial and performance reporting. 
+Administration Manage verification, campaigns, transactions, disputes, users, analytics and platform configuration.  
+
+=====PAGE=====
+AELIA CREATOR COMMERCE PLATFORM     SYSTEM REQUIREMENTS & MVP SPECIFICATION 
+3 
+2.1 AELIA Match Principle 
+The platform recommends. The brand decides.  
+For the MVP, matching may be rules-based and supported by AELIA's human team. More advanced intelligence can be introduced after 
+validation. 
+PART 3 — USER JOURNEYS & MVP SCOPE 
+ 
+3.1 Brand Journey 3.2 Creator Journey 
+Stage Activity Stage Activity 
+1 Register 1 Register 
+2 Verify 2 Verify 
+3 Create Campaign 3 Complete Creator Passport 
+4 Define Objective 4 Connect Socials 
+5 Match 5 Set Niche / Rates / Availability 
+6 Shortlist 6 Discover Opportunities 
+7 Select 7 Apply / Accept 
+8 Agree 8 Create 
+9 Fund 9 Submit 
+10 Collaborate 10 Revise 
+11 Review / Approve 11 Approve 
+12 Publish 12 Publish where required 
+13 Measure 13 Performance 
+14 Pay 14 Get Paid 
+15 Review 15 Review 
+16 Rebook 16 Rebook 
+3.3 MVP — MUST HAVE 
+Area MVP Requirement 
+Brand Registration, verification, campaign creation, creator discovery, shortlisting and selection  
+Creator Registration, verification, Creator Passport, rates, availability and opportunities  
+Campaigns Campaign brief, budget, timeline, deliverables and campaign workspace  
+Matching Rules-based creator recommendations 
+Collaboration Messaging, submissions, revisions and approvals  
+Contracts Basic commercial terms and content rights 
+Payments Funding, transaction records and creator payout through configured provider  
+Performance Basic campaign reporting 
+Reputation Brand and creator reviews 
+Rebooking Repeat booking capability 
+Administration Verification, campaign, payment and dispute management  
+Platform Responsive web / PWA experience 
+
+=====PAGE=====
+AELIA CREATOR COMMERCE PLATFORM     SYSTEM REQUIREMENTS & MVP SPECIFICATION 
+4 
+3.4 NOT REQUIRED FOR INITIAL MVP 
+Future Capability Timing 
+Native Android application Later 
+Native iOS application Later 
+Advanced AI-generated content Later 
+Advanced predictive AI Later 
+Full affiliate ecosystem Later 
+Regional expansion Later 
+Advanced automation Later 
+PART 4 — TECHNICAL, DATA & TRUST REQUIREMENTS 
+Area Requirement 
+Architecture AELIA should own its application and platform data while integrating approved Codevertex shared services.  
+Frontend Responsive web / PWA for MVP; architecture should remain mobile -ready. 
+Backend Agreed AELIA / Codevertex architecture with documented services and responsibilities.  
+Database AELIA-specific database and data model. 
+Authentication Secure authentication and role-based access. 
+APIs Complete documentation for all shared services and external integrations.  
+Payments Use an appropriate licensed payment provider; AELIA should not assume it operates regulated payment/escrow services.  
+Social Integrations Instagram, Facebook, TikTok, YouTube, LinkedIn or other platforms where APIs and permissions permit.  
+Security Authentication, authorization, encryption, API security, audit logs, backups and monitoring.  
+Privacy Consent, privacy information, retention, deletion, user access, processor management and breach response.  
+Data Model Users, organizations, creators, brands, campaigns, deliverables, agreements, transactions, payouts, reviews, disputes and per formance. 
+Notifications Email, SMS, WhatsApp where available and in -platform notifications. 
+Analytics Campaign, creator, brand, financial and platform performance data.  
+4.1 Critical Ownership & Access 
+Asset / Resource Requirement 
+Domain & DNS AELIA controlled 
+Source Code AELIA access/control 
+Database AELIA access/control 
+Analytics AELIA access/control 
+Payment Accounts Appropriate AELIA access 
+API Credentials Controlled access 
+Cloud Environment Controlled access 
+Documentation AELIA access 
+Backups AELIA access 
+App Store Accounts AELIA controlled when applicable 
+Critical AELIA assets should not exist only inside Codevertex -controlled accounts. 
+Codevertex may administer agreed infrastructure, but AELIA must maintain appropriate ownership or controlled access. 
+
+=====PAGE=====
+AELIA CREATOR COMMERCE PLATFORM     SYSTEM REQUIREMENTS & MVP SPECIFICATION 
+5 
+4.2 API Documentation 
+API Documentation Requirement Description 
+Purpose What the API/service does 
+Endpoints Available API endpoints 
+Authentication How systems authenticate 
+Request Format Required information sent to API 
+Response Format Information returned 
+Error Codes Possible errors 
+Rate Limits Usage restrictions 
+Versioning API version management 
+Sandbox / Test Test environment 
+Production Live environment 
+Monitoring API/service monitoring 
+Dependencies Required services 
+Ownership / Access Who controls and accesses the API 
+PART 5 — PILOT, ACCEPTANCE & DECISIONS 
+5.1 Pilot Validation 
+Indicator Target 
+Participating Brands 8–10 
+Participating Creators 15–20 
+Real Campaigns At least 5 
+Paid End-to-End Transactions At least 3 
+On-Time Delivery 90%+ 
+Rebooking Intentions At least 2 
+User Feedback Collected and reviewed 
+Economic Validation Campaign value, platform revenue, creator payout, payment costs and support costs  
+5.2 Definition of Done 
+BUILD → TEST → SECURITY CHECK → DOCUMENTATION → UAT → AELIA APPROVAL  
+Requirement Completion Condition 
+Functionality Works according to approved requirement 
+UI / UX Relevant screens and workflow completed 
+Integration Required APIs tested 
+Security Access and permissions tested 
+Error Handling Key failure scenarios tested 
+Documentation Technical/user documentation updated 
+Analytics Required events configured 
+UAT User Acceptance Testing passed 
+Approval Accepted by designated AELIA product owner 
+
+=====PAGE=====
+AELIA CREATOR COMMERCE PLATFORM     SYSTEM REQUIREMENTS & MVP SPECIFICATION 
+6 
+5.3 Key Decisions Before Development 
+# Decision 
+1 Final legal structure and ownership model 
+2 Whether Creator Commerce operates within Aelia Holdings or through a dedicated entity / SPV 
+3 Payment provider and transaction architecture 
+4 Tax treatment and configurable withholding logic 
+5 Final Codevertex shared services and APIs to be reused 
+6 Data-controller / data-processor responsibilities 
+7 Commission and pricing model 
+8 MVP pilot brands and creators 
+9 Final Brand Agreement 
+10 Final Creator Agreement 
+11 Infrastructure, SLA, support and maintenance arrangements 
+12 Source-code, data, account and access arrangements 
+5.4 Next Technical Documents 
+Document Purpose 
+Technical Architecture Specification How the platform will be built 
+API Specification How systems will communicate 
+Database / Data Model Specification How platform data will be structured 
+UI/UX Design Specification Screens, workflows and user experience 
+Security & Data Protection Specification Security and privacy controls 
+Payment Integration Specification Payment and transaction architecture 
+Test & UAT Plan Testing and acceptance 
+Deployment & Support Runbook Operations, maintenance and support 
+CORE MVP PRINCIPLE 
+Connect a real brand with a suitable creator, manage the campaign, facilitate payment, measure the outcome 
+and create the basis for repeat business. 
+The MVP should therefore prioritize commercial validation, usability, trust, transaction integrity, campaign delivery, measurement and 
+repeat business rather than attempting to deliver every planned future capability. 

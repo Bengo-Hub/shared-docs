@@ -1,0 +1,738 @@
+C O D E V E R T E X  A F R I C A  |   T E C H N O L O G Y PA R T N E R S H I P P R O P O S A L AELIA CREATOR COMMERCE
+T E C H N I C A L  PA R T N E R S H I P  &  F E A S I B I L I T Y  R E P O R T
+CREATOR COMMERCE
+FEASIBILITY REPORT
+A pilot-study look at whether AELIA Creator Commerce can be built faster by connecting to technology
+Codevertex already runs, checked against who else is already building something similar, with a plan that lands
+a real pilot in three months and a full version in six.
+Document Technical Partnership & Feasibility Report
+Prepared for Aelia Holdings Limited
+Prepared by Codevertex Africa, Technology Partner
+Status Pilot study, pre-build
+Date 21 September 2026
+CONNECT THE ECOSYSTEM · CORRECT THE PLAN · BUILD THE PILOT · SHARE THE UPSIDE
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 1
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+01 Verdict and Recommendation
+Codevertex Africa has spent the past two years building and now runs a set of business
+software used by companies across Kenya today: point-of-sale and inventory management,
+online ordering, delivery logistics, accounting and payments, subscription billing, and a
+system that sends email, SMS, and WhatsApp messages on a client's behalf. All of it sits
+behind one shared login, so a business signs up once and turns on whichever pieces it
+needs. Codevertex also built and runs a CRM and marketing-automation product called
+MarketFlow, originally for a direct-selling client and now being adapted for other kinds of
+businesses.
+None of that was built with a creator marketplace in mind, and none of it does what AELIA
+Creator Commerce needs to do on its own. But a large part of what any new marketplace
+needs on the plumbing side, meaning how a person logs in, how money moves safely
+between two parties, how a subscription gets billed, how a message gets sent, already exists
+inside Codevertex and is already running in production for other businesses. That is the
+opportunity this report tests: whether AELIA can get built faster by connecting to that existing
+plumbing rather than building all of it again from the beginning.
+6
+Codevertex systems
+reviewed: login and
+identity, accounting and
+payments, subscriptions,
+messaging, internal HR
+systems, and the
+MarketFlow CRM.
+4
+Confirmed, live African
+competitors already doing
+large parts of what AELIA
+proposes. See the market
+review ahead.
+3/6
+Months to a working pilot,
+and to a full version
+matching the developer
+brief's own MVP scope.
+The recommendation
+AELIA needs its own new software, built specifically around brands and creators
+working together, because that two-sided relationship does not fit the shape of anything
+Codevertex already runs. Its data models are all built for a single business managing its
+own customers, MarketFlow included, and forcing a brand-to-creator relationship into
+that shape would mean fighting the underlying database design at every turn.
+What AELIA does not need is to build its supporting infrastructure from scratch. The
+plan in this report connects it, from day one, to five things Codevertex already operates
+in production: the login and account system, the payments and payout engine, the
+subscription billing system, the messaging system for email, SMS, and WhatsApp, and
+the AI assistant already running inside MarketFlow.
+That combination should get AELIA to a real pilot fast, using infrastructure that is
+already proven rather than untested.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 2
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+02 What We Reviewed, and Corrections to Make
+Both documents are unusually disciplined for a concept stage. The same prove-the-workflow-first principle repeats throughout, and the developer brief is careful to flag its own technical
+choices as recommendations rather than decisions. Six things still need correcting, informed by how Codevertex's own systems work today and current Kenyan market conditions.
+ISSUE WHAT THE DOCUMENTS SAY WHAT NEEDS TO CHANGE
+Mobile scope contradicts the
+timeline
+BLOCKS THE 3-MONTH MVP
+The Concept paper lists native apps under what not to build first. The
+Developer Brief then overrides that and requires Android and iOS store apps
+as a launch requirement.
+Follow the Concept paper's original sequencing. A mobile-first responsive web app
+should be the MVP, installable to a phone's home screen the same way Codevertex
+already does elsewhere in its platform. Native apps become a later-phase item once
+the pilot has validated demand.
+Recommended stack forfeits
+everything reusable
+COSTS 4–6 WEEKS
+The brief recommends a NestJS and Node.js backend, while noting the
+engineer may propose an equivalent stack.
+Use Codevertex's own standard: Go for Aelia's backend, Next.js for Aelia's web app,
+the same stack as every other Codevertex product. This is what makes the reuse case
+on the following pages actually usable, since Codevertex's shared toolkit only drops in
+cleanly on a Go backend.
+A homegrown escrow is not a real
+option
+LEGAL
+Both documents correctly flag that AELIA should not assume it can operate an
+internal escrow service, but stop short of naming what is required.
+Holding client funds in Kenya requires a Payment Service Provider licence from the
+Central Bank of Kenya, a process that takes months. The good news: the Payments
+Service already pays out to third parties over licensed M-Pesa and Paystack rails today.
+Adding "creator" as a payee type is the right move, not a new PSP relationship.
+The commission math skips a live
+tax rule
+CHANGES THE NUMBERS
+The illustrative example shows a KES 20,000 fee, an 8% commission, and an
+18,400 payout, with tax only a general mention.
+Kenya's Finance Act 2023 digital-content withholding tax is now enforced. Meta,
+YouTube, and TikTok already deduct 5% at source. The withholding itself is mandatory
+on Aelia as the payer, not optional; what is creator-initiated is the KRA PIN registration
+that has to happen first so Aelia can remit it correctly. This belongs in the MVP, not a
+later phase.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 3
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+02 What We Reviewed, and Corrections to Make (continued)
+ISSUE WHAT THE DOCUMENTS SAY WHAT NEEDS TO CHANGE
+"The market isn't empty"
+understates how crowded the field is
+POSITIONING
+The Concept paper says, correctly in spirit, that the market isn't empty, but
+names no one. It could not: AELIA's own competitive-landscape document
+naming specific rivals was supplied to this report separately, afterward.
+That document lists eighteen comparable platforms. Checked independently for this
+report: Wowzi, Zaumu, Tikora, and Aktivate are confirmed, live, and already doing large
+parts of what both AELIA documents propose, not one funded rival but four. See the
+market section for the full breakdown.
+The 12-month roadmap does not fit
+this report's mandate
+Both documents lay out a 12-month, six-phase roadmap: two months each of
+validation, design, MVP build, pilot, intelligence, and scale.
+Compressed to a three-month pilot and a six-month full version, by running validation,
+design, and build at the same time instead of one after another, and pushing native
+apps and the full matching engine to a later phase.
+Why these corrections matter together
+Individually each is a small fix. Together they change the shape of the build: a lighter mobile story, a Go-native stack that inherits Codevertex's existing plumbing instead of rebuilding it,
+a payments design that reuses a licensed rail instead of seeking a new one, tax handling built into the payout engine from day one, honest competitive positioning against a genuinely
+crowded field rather than one rival, and a calendar that actually matches the three and six month mandate.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 4
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+03 Market and Competitive Landscape
+Desk research done specifically for this report in September 2026, checked against the concept paper and against the AELIA team's own separate competitive-landscape document. Three
+tiers of competition, plus a fourth category neither source mentions: AI-generated content as a substitute for hiring a human creator.
+Global enterprise influencer platforms. CreatorIQ, GRIN, Aspire, and Upfluence define the feature bar for a serious creator platform. None are real competitors for AELIA's Kenya launch;
+they price at $2,200–$2,500 a month, aimed at US/EU e-commerce stacks, and none handle M-Pesa or East African tax rules. They matter as a UX reference today, and as the bar Aelia will
+need to clear once it competes in markets where they do.
+Direct Africa and Kenya competition
+PLAYER WHAT IT IS WHY IT MATTERS TO AELIA
+Wowzi Data-driven brand-and-creator marketplace, automated campaign setup, live
+tracking, content approval.
+CONFIRMED RIVAL AT SCALE  23 countries, 100,000+ creators, 150 clients, Kenya as a case
+study.
+Zaumu Nairobi, launched 2025: AI-based brand-creator matching, milestone contracts,
+direct payouts.
+CONFIRMED, KENYA-FIRST  Closest single match to AELIA's own AI Match and Creator Passport
+concept.
+Tikora Pan-African, KYC-verified creators, campaign escrow released only on
+approval, same-day payouts.
+CONFIRMED  12,000+ creators. Proves the fund-then-approve pattern here is already live, not
+novel.
+Aktivate Nigeria and Kenya, UGC briefs, affiliate commerce via its own ShopLink,
+creator payments.
+CONFIRMED  Founded 2022. Already combines influence and affiliate commerce.
+Influencer Africa, Collabstr,
+Diglancers
+Pan-African discovery and directory platforms listing verified creators. Confirmed and live, but thinner than the four above on contracts and payment.
+InfluencerX, NaInfluence,
+HADHI, Oiqora,
+Vumasasa, Trendupp
+Named in AELIA's own competitive review as comparable Kenya/Africa
+platforms.
+NOT INDEPENDENTLY CONFIRMED  Plausible early-stage entrants, not confirmed rivals to plan
+around yet.
+TIMA, KWETU, Wingu
+Creatives
+Nairobi-based full-service influencer marketing agencies, not platforms. Not software competitors. Potential channel partners for the manual-first pilot.
+At least four of these, Wowzi, Zaumu, Tikora, and Aktivate, are confirmed and live with matching, escrow, and payouts already solved, echoing AELIA's own competitive-landscape document:
+the gap is integration and position, not a missing feature. Codevertex's existing infrastructure, AELIA Marketing's own agency relationships, and the Creator Passport plus dual
+Influence/Content marketplace are the real edge, not a longer feature list. Wowzi's and Zaumu's footprints both point the same direction Aelia's own roadmap already takes, Kenya first, then
+East Africa, then the wider continent, with currency, country, and tax rules as a per-account setting from day one.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 5
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+03 Market and Competitive Landscape (continued)
+The free alternative every brand already has. TikTok's Creator Marketplace and Creativity Program, and Meta's Brand Collabs Manager, let a brand find and pay creators at zero platform
+cost today. AELIA's pitch cannot be "we have a list of creators." It has to be the things those native tools cannot offer: KES-denominated contracts and payouts, KRA withholding handled
+automatically, cross-platform matching from one brief, and a paper trail a Kenyan SME's accountant can reconcile.
+The fourth competitor: AI-generated ads. Neither AELIA document mentions this, and it changes the shape of the Campaign Composer, covered later in this report. A brand with a KES
+15,000 budget increasingly has a third option beyond finding a cheap nano-creator or skipping influencer marketing altogether: an AI-generated UGC-style ad, produced in minutes for a few
+dollars.
+TOOL CATEGORY RELEVANT STRENGTH
+HeyGen Avatar UGC ads Broad support for ads, with avatar dubbing in more than 175 languages: the strongest multilingual reach.
+Arcads Avatar UGC ads More than 300 AI actors, built specifically for direct-response, performance-style ad creative.
+Creatify Avatar UGC ads Turns a product page into a finished video ad, needing almost no creative direction.
+Captions (Mirage) Foundation-model avatar The most realistic emotional range available, at a higher cost, suited to bigger-budget campaigns.
+Sora 2, Veo 3.1, Kling
+3.0, Runway
+Raw video-generation models Cinematic-tier b-roll, priced $0.09–$0.75 per second, needing real prompting and human review before use as an ad.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 6
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+04 How Aelia Plugs Into the Codevertex Ecosystem
+Aelia gets its own new system rather than living inside MarketFlow. What matters here is how it connects to what Codevertex already runs, service by service, and the pattern it follows to do
+that without creating two copies of the same data anywhere on the platform.
+How Aelia connects without duplicating data
+When one Codevertex product needs another's data, it never copies that data into its own database. It stores a simple reference and listens for updates. Several of Codevertex's other
+business products already do this with MarketFlow today, keeping a pointer to the relevant MarketFlow customer record rather than duplicating it, and pulling the live details only when
+they actually need them. That is the integration shape Aelia follows too: its own database, a thin reference back into MarketFlow only if a brand's Aelia activity ever needs to enrich its
+MarketFlow record, and live updates either way. The accounting system's own quotation feature shows the same pattern with a small addition worth copying directly: it stores a
+reference to the relevant MarketFlow customer, plus a cached copy of their name and email, so a quote can display a customer's name without a live lookup every time it is opened.
+Aelia's own campaign records do the same with a brand or creator reference and a cached display name, and nothing more.
+Aelia Brand House has three arms. This report builds one of them.
+Aelia Holdings runs three connected businesses: AELIA Marketing, the agency doing standard marketing-agency work; AELIA Creative & Digital, which produces content and trains
+creators through its Academy; and the Creator Commerce Platform this report is about. That means two websites, not one. A general Aelia Brand House site introduces all three, a low-
+complexity parallel build that does not compete with the three-month marketplace build for engineering time. The Creator Commerce Platform gets its own dedicated site and domain,
+the "Aelia's web app" this report designs from here on. Wherever this report says Aelia's own team or channels for producing or distributing content, that means AELIA Creative & Digital
+and AELIA Marketing specifically, not this platform's own engineering team.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 7
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+04 Service by Service: What Aelia Reuses and How
+SERVICE WHAT IT DOES, AND WHAT AELIA BUILDS ON IT STATUS
+The Login and Account
+Service
+More than a login check: it is the single sign-on behind every Codevertex product, the client portal a business uses to manage its own account, and
+where team members and roles get administered. One human already holds accounts across many different businesses today, so Brand and
+Creator are both simply ordinary accounts in this same system, with identity, portal access, and user management already handled.
+REUSE AS-IS
+The Payments Service Its payout engine already accepts riders, suppliers, staff, and equity holders as payee types, wired to real M-Pesa and Paystack rails. Adding
+"creator" as a fifth type is the natural next step, not new infrastructure.
+REUSE, EXTEND
+PAYEE TYPE
+The Billing Service Its service-charge plan already splits a transaction between a platform account and a tenant account. AELIA's version is a three-way split, brand to
+platform cut to creator, a direct extension of the same mechanism.
+REUSE, EXTEND TO 3-
+WAY SPLIT
+The Notifications Service One call sends email, SMS, WhatsApp, or push, with a dedicated path for other services to call it with no user context at all. AELIA calls it exactly as
+every other product already does.
+REUSE AS-IS
+MarketFlow's AI assistant
+(Vera)
+Built generically, not tied to any one business use, and it already checks information safely across most of Codevertex's other products, making it the
+clearest reuse case for Aelia's own matching.
+REUSE AS-IS
+The HR Service A pure HR and payroll system, with no vendor, accounts-payable, or ledger entities of its own. Even its own payroll disbursement goes through the
+Payments Service. Nothing here for AELIA to consume directly.
+NOT APPLICABLE
+Shared building blocks A ready-made set of components for login, communication between products, and payments, already used across the whole platform, plus a shared
+design library with prebuilt login and payment screens an AELIA app can use directly.
+REUSE AS-IS
+Social platform connections MarketFlow already has a working "connect your account" flow for Facebook Pages and TikTok's business tools, the same handshake a Creator
+Passport needs. It is built for running ads though, only pulling ad-campaign numbers, not follower count, engagement, or audience makeup, and it
+does not yet reach Instagram or YouTube at all. Aelia needs the missing platforms, the right profile-reading permissions, and its own encrypted
+storage for each creator's connected account.
+REUSE THE PATTERN,
+BUILD THE REST
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 8
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+05 Recommended Architecture
+New services, shared infrastructure. Aelia's backend, written in Go, owns a fresh database built around the developer brief's own data model: brands, creators, campaigns, deliverables,
+agreements, transactions, reviews, and disputes. It calls out to five existing systems rather than reimplementing any of them.
+The identity question resolves cleanly
+The Login and Account Service, Codevertex's single sign-on, client portal, and user-management system in one, already supports one human belonging to many businesses, so Brand
+and Creator can both simply be ordinary accounts in it. The two-sided relationship, which campaigns and which payouts, is data Aelia's own backend owns on its own: a plain link
+between a brand account and a creator account, never a change to the login system.
+Aelia's web app (Next.js)
+Brand, Creator, and Admin dashboards
+Aelia's backend (Go)
+new service, owns campaign, creator, and payout data
+Aelia's database
+not shared with any other product
+The Login & Account Service
+secure login,
+business and user sync
+The Payments Service
+payment intents
+commission, payouts
+The Billing Service
+brand and creator plans
+feature gates
+dashed lines are
+immediate calls
+Shared event bus: campaign, payout, and creator updates
+The Notifications Service
+email, SMS, WhatsApp, push
+MarketFlow's Vera (AI)
+AELIA Match v1 and the
+AI Brief Builder
+Figure 1. Integration architecture. Aelia's backend and web app are new. Dashed lines are immediate calls for login, payments, and feature checks. The event bus carries background
+updates. AELIA owns exactly one new database.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 9
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+05 The Transaction Lifecycle, as a Swimlane
+The developer brief's 17-state campaign machine compresses cleanly into three lanes: Brand, AELIA Platform, and Creator, with money and content approval as the two threads that cross
+lanes.
+BRAND
+AELIA PLATFORM
+CREATOR
+Post brief, pick
+from the shortlist
+Review and
+approve content
+Rate the creator,
+rebook
+AELIA Match shortlists,
+confirms, and introduces
+the creator
+Fund via Paystack
+split-payment
+(not a Codevertex ledger)
+Release payout: deposit
+and/or balance, per the
+agreement, minus 5% KRA
+Meet the brand,
+sign the contract
+Deliver and
+submit content
+Get paid net,
+rate the brand
+Figure 2. Transaction lifecycle swimlane. The platform lane never holds money itself. Funding sits inside Paystack's split-payment account, with AELIA only holding the payment-intent
+record.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 10
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+05 How One Campaign Actually Moves Through the Platform
+This is the exact sequence the platform needs to support, spelled out step by step because the diagram on the previous page compresses it.
+STEP WHAT HAPPENS
+1 A brand posts a campaign brief: objective, audience, platform, deliverables, and budget. No money moves yet.
+2 AELIA Match generates options against that brief: creators whose Passport fits the niche, AELIA Creative & Digital's own production when the budget matches its rates, and, where it fits, the AI-
+generated lane, run by AELIA Creative & Digital rather than the brand. The brand sees whichever apply, side by side.
+3 The brand picks one option, or shortlists a few. This is a preference, not a booking yet.
+4 Someone at Aelia, not just an algorithm, reviews the brand's pick against the brief and confirms it is genuinely the best fit, or suggests an adjustment. This is the point where a human catches a bad
+match before a brand's money or a creator's time is committed.
+5 Aelia contacts the chosen creator directly and arranges an introduction with the brand, a real conversation, not an automated notification the creator might miss. Steps 5 and 6 assume an external
+creator; the in-house and AI lanes skip straight to production once funded, since AELIA Creative & Digital is already the party doing the work, and the AI lane can also publish through AELIA Marketing's
+own channels as an add-on.
+6 Brand and creator agree the specific terms, deliverables, deadline, fee, usage rights, and the payout schedule below, and the campaign agreement is signed. In practice, the brand accepts Aelia's
+campaign terms and the creator accepts Aelia's creator terms for this brief, not necessarily one document both sign together.
+7 Only now does the brand fund the campaign, paid to Aelia through the licensed payment rail, never held as a private balance. A brand paying by direct bank transfer instead, common for corporates,
+uploads proof of payment for Aelia's finance team to verify before the campaign moves to funded, extending a manual-payment path the Payments Service already supports.
+8 Aelia's commission is set aside immediately. What happens next to the creator's share depends on the payout schedule agreed in step 6.
+9 The creator produces and submits the content. The brand reviews it, asks for permitted revisions if needed, and approves it.
+10 Whatever portion of the fee was not already released in step 8 is paid out now, with the 5% KRA withholding applied wherever the money actually reaches the creator. Both sides can rate each other,
+and the brand can rebook the same creator directly next time.
+Payout timing is a term of the agreement, not a fixed platform rule
+SCHEDULE HOW IT WORKS WHEN IT FITS
+Full payment on approval The creator is paid in full only once the brand has approved the finished
+content.
+The safest default for a first-time pairing.
+Starting fee, then balance A partial amount is released once the contract is signed, to cover production
+costs, with the remainder paid on approval.
+Common for higher-budget campaigns or real upfront production cost.
+Full payment upfront The whole fee is released as soon as the contract is signed and the campaign
+is funded.
+Reserved for creators with a strong completion and on-time delivery history in their
+Passport.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 11
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+05 Use Case Diagram
+Four actors against the MVP-critical use cases from the developer brief's role table. Finance/Admin is deliberately split from AELIA Admin because it maps to a distinct payment-reconciliation
+permission, not just a UI toggle.
+Brand
+Creator
+Aelia Admin
+Finance/Admin
+Create campaign brief Get AELIA Match shortlist Fund and approve content
+Build Creator Passport Accept brief, submit content Track payout,
+rate the brand
+Choose the AI-generated lane Rebook a previous creator
+Verify users,
+moderate, resolve disputes
+Monitor payouts,
+reconcile, issue KRA statements
+Figure 3. Use case diagram.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 12
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+06 Human Creators vs. AI-Generated Content
+Neither source document anticipates this, but it may be the single biggest lever for making AELIA work for the SME budgets the Concept paper names as its primary target. A KES 100,000
+launch budget can afford two or three real creators, or a dozen AI-generated variants to test against each other. AELIA should let the brand see both costed out on the same screen, from the
+first budget input.
+Objective and budget
+(the brand's brief)
+Campaign
+Composer
+Human Creator lane
+Highest trust and reach, slower
+Commission-based (5–8%)
+Hybrid lane
+Creator brief, AI-assisted cuts
+for extra variants or languages
+AI-Generated lane
+Minutes, KES 5,000+ a clip, flat fee floor
+Reach via AELIA Marketing
+Deliverable, then
+approval, then publish
+Figure 4. The Composer's three lanes.
+LANE AELIA'S COMMERCIAL TREATMENT
+Human
+Creator
+Standard commission model. The platform's core, unchanged from the source
+documents.
+Hybrid Creator commission plus a small flat AI-processing fee per extra cut. Additive revenue,
+not competing with creator income.
+AI-
+Generated
+Flat fee, KES 5,000–18,000 a clip, no creator commission. Vendor generation runs $2–
+4 a clip on HeyGen or Creatify's own published pricing; with operator time, distribution
+management, and infrastructure share added, all-in cost is roughly KES 1,150–1,770,
+so the KES 5,000 floor is a 3–4× margin, not an arbitrary number. AELIA Creative &
+Digital runs the tool and publishes via AELIA Marketing's own channels; any paid boost
+beyond that is separate, brand-funded media spend.
+Aelia is a fulfilment option too, not only a matchmaker. A brand can pick an external
+creator, hand the brief to AELIA Creative & Digital, the sister business the concept paper
+names for creative services, when the budget fits its rate card, or take the AI lane above, with
+Aelia accountable on all three.
+Build recommendation. Integrate HeyGen or Creatify first, both API-first and built to turn a
+script or product URL into an ad with almost no prompt engineering. Treat Sora 2, Veo 3.1,
+Kling, and Runway as a later cinematic tier, gated behind human review. This whole lane is
+additive scope for a later phase, not the three-month MVP.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 13
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+07 Payments, Commission, and Compliance
+Extend the existing payout rail
+Holding client money in Kenya requires a PSP licence from the Central Bank of Kenya, a months-
+long process. The Payments Service already disburses over licensed M-Pesa and Paystack rails
+today; adding "creator" as a payee type is the right move. The one legal sign-off needed: use
+Paystack's split-payment feature for the brand-funding leg so commission and payout route at the
+processor level in real time, rather than sitting in a Codevertex-held balance.
+5% KRA withholding is mandatory, not optional
+Kenya's Finance Act 2023 digital-content withholding tax is now actively enforced. Meta,
+YouTube, and TikTok already deduct 5% at source. The withholding is mandatory on Aelia as
+payer; the KRA PIN registration collected during onboarding is the creator-initiated step that
+makes remitting it correctly possible. Required for the MVP, not added later.
+Data Protection Act, 2019
+Both source documents call for privacy by design without naming the law. AELIA becomes a
+registered data controller the moment it stores creator and brand data at scale. ODPC registration
+is a Phase 0 legal task, with a real consent log and data-subject-request flow from day one.
+Sponsored-content disclosure
+MarketFlow's existing compliance filter is specific to its original client and does not carry over.
+AELIA needs its own lightweight content-safety module: a disclosure tag on published content
+and a brand-safety report path in the admin console.
+The illustrative payout, corrected
+LINE ITEM CONCEPT PAPER'S FIGURE CORRECTED FOR KRA WITHHOLDING
+Creator fee, gross KES 20,000 KES 20,000
+AELIA platform commission (8%) -KES 1,600 -KES 1,600
+KRA digital-content withholding (5% of gross) not modelled -KES 1,000
+Net paid to the creator KES 18,400 KES 17,400
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 14
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+07 What Creators and Brands Actually Pay
+Neither source document commits to a number here on purpose: the concept paper lists pricing itself as a question the manual-first pilot is meant to answer by asking real brands, not
+guessing. This report keeps that discipline, but a technical partnership still needs a starting point to build against, so this is a structure to validate, not a final price list.
+Creators pay nothing to join
+Signing up, building a Creator Passport, and receiving campaign invitations all stay free. The only
+charge a creator ever sees is the platform commission, taken out of a payout only when they
+actually earn, matching the concept paper's own principle of keeping basic participation
+accessible.
+Brands: commission first, a paid tier for those who want more
+A brand pays the campaign commission on every booking regardless of tier. A monthly plan is
+optional and only changes the commission rate and how many campaigns can run at once, the
+same free-to-paid shape MarketFlow already runs successfully in Kenyan shillings today.
+TIER PROPOSED MONTHLY FEE COMMISSION WHAT IT INCLUDES
+Starter Free 8% Up to two active campaigns at a time, full access to AELIA Match recommendations, standard support. The right
+entry point for the SMEs the concept paper names as Aelia's primary target.
+Growth ~KES 5,000 ~6% More concurrent campaigns, member pricing on the AI-generated content lane, and basic campaign analytics.
+Agency ~KES 15,000 or custom Lowest tier, negotiated Built for an agency managing several brand clients on one account, matching the "future agency role" the
+developer brief already anticipates: bulk campaign tools, dedicated support, consolidated reporting.
+Every figure above is a proposal built on the same free-plus-paid-tier shape MarketFlow already validated with real Kenyan customers, not invented from nothing. It belongs in front of the
+pilot's brands during validation, alongside the commission percentage itself, before either number is written into a contract.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 15
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+08 Infrastructure and Operating Costs
+What Codevertex actually runs today
+Everything Codevertex operates, more than twenty products including MarketFlow, sits on one
+production server: 12 processor cores and 48 gigabytes of memory, billed at $45 a month. That
+server currently runs at roughly a quarter of its processing capacity and just over 40 percent of its
+memory, across 143 running application instances. There is real room to spare, not a rounding
+error.
+What Aelia would actually add
+MarketFlow, the closest comparison, runs its entire set of services on well under one processor
+core and around a gigabyte of memory. Aelia's two new services would ask for a similar or
+smaller amount, fitting inside the existing server's headroom for the pilot and the six-month build.
+What is already free
+Every domain on that server, Aelia's included once added, gets its security certificate
+automatically at no cost, since the server already renews these for everything running on it.
+The one real cost Aelia does carry
+Its own domain name. Every Codevertex product lives under codevertexafrica.com, right for an
+internal tool, wrong for a consumer brand. Aelia should register and own its own domain outright,
+a small, predictable cost of roughly ten to twenty-five dollars a year depending on the name and
+extension chosen.
+How the costs split
+COST WHO PAYS WHY
+The shared server, today's $45/month CODEVERTEX Part of the infrastructure contributed in kind behind the equity terms. Aelia's load fits inside existing headroom.
+Aelia's own domain name AELIA Aelia owns its own brand outright; a Codevertex-owned domain would sit awkwardly against that.
+Security certificates CODEVERTEX No separate bill, but Codevertex runs the server, so renewal is already part of its own operational upkeep, automatic for
+every domain including Aelia's.
+Payment processor fees Recovered per transaction Standard marketplace practice, not a separate bill.
+AI-generation vendor costs Aelia Recovered through the flat fee charged for the AI-generated lane.
+A bigger or dedicated server, if ever needed Aelia, at cost, no markup Only if Aelia-specific growth requires it; reviewed at the month-6 checkpoint, not budgeted today.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 16
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+09 Legal Documents and Contracts
+A creator marketplace sits between more parties, and moves more money between them, than almost anything else Codevertex has built. This section maps what needs to exist, and
+resolves one structural question the source documents leave open.
+The decision this report makes: Aelia stands in the middle of every deal, not beside it
+Brand pays Aelia, and Aelia, after its cut, pays the creator. That means Aelia is not simply introducing two parties who then strike their own deal. It is the counterparty to both sides at
+once: selling a campaign service to the brand, and buying a creator's content or influence for it. In practice, Aelia signs its own agreement with the brand for a campaign, and its own
+agreement with the creator for the same campaign, tied together by one shared reference. The brand and creator work together directly once introduced, but sign nothing with each
+other, only with Aelia. The one right a brand needs from a creator, permission to use content in its own advertising, is granted to Aelia under the creator's agreement and passed on to
+the brand under the brand's agreement. Confirm this shape with a Kenyan commercial lawyer before the first real contract goes out, since it also decides how tax applies to Aelia's own
+commission.
+AELIA
+counterparty on every deal
+Codevertex
+shareholders, services,
+and IP licence agreements
+Brand
+terms of service +
+campaign brief per deal
+Creator
+terms of service +
+engagement agreement per deal
+Outside vendors
+payment processor,
+AI-vendor data terms
+dashed lines: brand and creator work together directly once introduced, but sign nothing with each other
+Figure 6. Contracts map. Aelia holds a separate agreement with each party rather than the brand and creator contracting with each other.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 17
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+09 Legal Documents and Contracts (continued)
+Between Codevertex and Aelia
+A shareholders' or partnership agreement formalising equity,
+authority, and vesting; a technology and infrastructure services
+agreement for the shared login, payments, billing, and
+messaging systems; and an IP ownership and licence
+agreement.
+Platform-wide, for every user
+A platform terms of service; a privacy policy required under
+Kenya's Data Protection Act; acceptable-use rules for content
+and campaigns; and a dispute-resolution clause naming the
+governing law and venue.
+Specific to brands
+A brand terms of service covering verification, payment terms,
+and the platform fee; and a short campaign brief or order form
+per campaign, the actual contract a given engagement runs
+on.
+Specific to creators
+A creator terms of service covering verification and payout
+terms; an independent-contractor acknowledgment; and a
+content rights agreement setting out what is kept, what is
+licensed to the brand, for how long, and where.
+With outside parties
+A merchant agreement for the payment rail, likely a new sub-
+account under Codevertex's existing Paystack and M-Pesa
+relationship; a data-handling agreement with the AI ad-
+generation vendor; and a referral agreement with any
+recruiting agency partner.
+What must exist before day one
+Not everything above, but the campaign brief, both terms-of-
+service documents, and the privacy policy all need to exist
+before the first real campaign runs, already scheduled inside
+the roadmap's opening legal workstream.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 18
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+10 The 6-Month Roadmap: MVP Live at Month 3
+Validation, design, and build run at the same time rather than in sequence, which is how a 12-month sequential plan compresses to six without cutting the prove-it-manually-first principle both
+source documents insist on.
+M0 M1 M2 M3 M4 M5 M6
+Phase 0: foundations, recruiting
+Phase 1: Brand/Creator core, Passport
+Phase 2: campaign & manual matching
+Phase 3: payments, KRA tax
+MVP pilot live
+Phase 4: AELIA Match, AI content
+Phase 5: admin, disputes, hardening
+v1 launch
+Figure 5. Compressed roadmap. Phase 3's payment rails start in month 2 so the MVP pilot can go live with real transactions by month 3.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 19
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+10 Roadmap Detail: Phases 0–5
+PHASE TIMING KEY TASKS
+0. Foundations Month 1 Legal: ODPC registration and counsel sign-off on using the Payments Service's existing Paystack split-payment feature, plus a creator agreement and IP
+and usage-rights template reviewed by counsel. Tech: Aelia's backend and web app repositories on the Go and Next.js stack, single sign-on through the
+Login and Account Service, automated build and deployment, and a staging environment. Business: recruit the first 15–20 creators and 8–10 brand pilots
+by phone, WhatsApp, and agency partners such as TIMA and KWETU, in parallel with the build.
+1. Brand and Creator core Month 1–2 Organisation onboarding and verification. Creator Passport covering identity, niches, rates, and portfolio, with manual social-account entry and API-based
+verification deferred to Phase 4. Role-based access. Brand and creator subscription products seeded.
+2. Campaign and
+messaging
+Month 2 Campaign brief creation, capturing objective, audience, and budget. A manual, admin-curated creator shortlist rather than AELIA Match yet. A campaign
+workspace with in-app messaging. Content submission, revision, and approval. The messaging system wired for every state-change alert.
+3. Payments
+MVP CHECKPOINT
+Month 2–3 A new commission plan in the Billing Service extended to a three-way split. The Payments Service's payout engine extended with a creator payee type.
+Paystack split-payment wired for the brand-funding leg. 5% KRA withholding calculation and monthly certificates. Transaction statuses surfaced on both
+dashboards. MVP acceptance means a real brand can fund a real campaign and a real creator can get paid, end to end.
+4. Intelligence and AI
+content
+Month 3–5 AELIA Match as a rules-based scoring pass, reusing Vera's agent-loop pattern. The Campaign Composer's three lanes. The first AI-generation vendor
+integration. Reviews and reputation both ways. The rebook flow.
+5. Admin, disputes,
+hardening
+Month 5–6 A full admin console: verification, moderation, dispute case management, configuration, and an audit log. Load and security testing. The install-as-app flow.
+UAT with the pilot's real brands and creators. A go or no-go review against the developer brief's own MVP acceptance criteria before a wider launch.
+Native Android and iOS apps, full affiliate and promo-code commerce tracking, and East African expansion all stay explicitly out of scope through month six. A v1 done well beats a v1 done
+everywhere, and both source documents already say so.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 20
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+11 Partnership and Equity Terms
+Framed as a technology partner and CTO joining at idea or pre-seed stage, not a contractor billing for a scope of work, the ask below sits inside the normal market range for what is being
+contributed.
+The real alternative isn't a cheaper CTO. It's hiring a contractor every time something needs building.
+Without a technical co-founder, Aelia's other path is hiring this out: an agency for the initial build, then a fresh engagement every time something changes afterward, a new AI vendor
+integration when HeyGen or Creatify change pricing or API, the day-to-day work of running the AI-generated ad pipeline and keeping it priced correctly, a payment rail for the move into
+Uganda or Tanzania, a security patch, a feature a competitor just shipped. Each restarts the same three costs. Money: at current Kenyan market rates, building this scope from zero,
+without Codevertex's existing login, payments, billing, and notification infrastructure, is a reasonable planning estimate of KES 7 million to 13 million, roughly $50,000 to $90,000, for the
+six-month build alone, before an ongoing maintenance retainer typically running 15 to 20 percent of that a year. Security: a contractor builds a system handling money and personal
+data once and moves to the next client; Codevertex's patterns are already carrying that responsibility in production for other paying businesses today. Confidentiality: every external
+engagement hands a third party the commission structure and creator and brand data, with no ongoing stake in protecting any of it once the invoice is paid. An equity-aligned CTO is
+paid, in the same currency as the founder, to protect exactly that.
+The technical weight behind 30 percent
+Not a brochure site. A real per-transaction commission ledger with no precedent anywhere in Codevertex's systems. A multi-party payment flow holding funds through Paystack's split-
+payment mechanism, automating Kenya's 5% withholding tax, and reconciling manual bank transfers against uploaded proof. An AI content pipeline operating third-party vendors on
+Aelia's behalf, priced correctly against real cost. A compliance surface spanning the Data Protection Act, KRA withholding, and content disclosure that has to be right from day one.
+None of it ends at launch: matching quality, vendor relationships, and security posture all need continuous technical ownership, exactly what the CTO role and equity below are
+structured to cover.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 21
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+11 Partnership and Equity Terms (continued)
+Benchmark
+Research into technical co-founder equity norms puts a genuine early co-founding CTO at 10 to 25 percent for labour alone, rising toward 40 to 50 percent for a pre-product equal co-
+founder. Codevertex is contributing more than one person's labour: a live, operating multi-service ecosystem covering login, payments, billing, notifications, hosting, and a proven AI
+agent runtime, all of which a from-scratch build would otherwise have to replicate over many more months and a larger budget. A 30 percent stake sits within, and arguably at the
+conservative end of, that range once the infrastructure contributed in kind and the technical weight on the previous page are counted alongside the CTO's own time.
+TERM PROPOSED POSITION
+Equity 30 percent of Aelia Holdings Limited's Aelia Creator Commerce initiative. The exact structure, whether a new share issue or a transfer from the existing holder, should be settled
+with counsel. The remaining 70 percent stays with the current owner.
+Role and authority CTO with full authority over day-to-day technical decisions: architecture, coding standards, hiring, and routine infrastructure operations. For decisions with real financial or legal
+weight, PSP and vendor choices, a material infrastructure-spend change, or security posture, the CTO leads the evaluation and recommendation and oversees execution, but
+sign-off is joint. Product and commercial decisions, such as pricing and the commission rate, remain joint throughout.
+Vesting Standard four-year vesting with a one-year cliff, or milestone-based against this report's own checkpoints: Phase 0 legal and infrastructure live, the MVP pilot live at month three,
+and v1 launch at month six.
+IP ownership Aelia owns all Aelia-specific application code, brand, and creator and campaign data outright. Codevertex retains ownership of the underlying shared platform and licenses it to
+Aelia under an inter-company services agreement, the same arrangement any Codevertex-hosted client has, written down rather than left implicit.
+Cost sharing Full breakdown on the infrastructure page above. In short: the shared server is Codevertex's in-kind contribution; Aelia carries its own domain name and vendor costs specific to
+features it alone uses.
+Reserved matters A short list requiring both parties' sign-off regardless of the CTO's technical authority: changing the platform commission rate, taking on external funding, and any data-sharing
+arrangement with a third party outside the Codevertex ecosystem.
+Leaver provisions Standard good-leaver and bad-leaver buy-back on unvested equity. Vested equity is kept in either case, consistent with the milestone-vesting structure above.
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 22
+
+
+=====PAGE=====
+A E L I A C R E ATO R  C O M M E R C E   |   F E A S I B I L I T Y R E P O R T AELIA CREATOR COMMERCE
+12 Risks and Open Decisions
+RISK SEVERITY MITIGATION AND OWNER
+Legal sign-off on the Paystack split-payment
+approach slips past month one
+HIGH Get counsel engaged in week one. Since the Payments Service's Paystack integration already exists, this is a legal review rather than
+a vendor procurement cycle, but it is the single most schedule-critical dependency for the month-three MVP checkpoint.
+The manual pilot cannot recruit enough real brands
+and creators fast enough
+MEDIUM Lean on TIMA, KWETU, and Wingu Creatives as warm-intro channel partners rather than cold outreach. Both source documents' own
+validation targets can run smaller for a true pilot: 8–10 brands and 15–20 creators.
+Wowzi or a similar player moves into Kenya's SME
+segment before AELIA launches
+MEDIUM Differentiate on what a pan-African platform under-invests in locally: KES-native contracts, automatic KRA withholding, and an AI-
+content lane for budgets too small for either platform's human-creator marketplace.
+Paystack split-payment vs. a plain ledger balance for
+the funded-to-released holding period
+MEDIUM This is the one narrow legal question left on payments. Get counsel's sign-off before Phase 3 starts, since it sits on the MVP critical
+path.
+The 30 percent equity ask needs the current owner's
+agreement before Phase 0 legal work starts
+MEDIUM A negotiation, not an engineering task. Phase 0's legal workstream is most efficiently contracted once the partnership itself is signed.
+Sources and Method
+AELIA-Creator-Commerce-Platform-Concept.pdf and AELIA-Creator-Commerce-Platform-Developer-Brief.pdf, both supplied and read in full, plus the AELIA prototype mockup and the AELIA
+team's own competitive-landscape document. Direct reads of MarketFlow's own architecture, entity, agent, and compliance documentation, and Codevertex's canonical cross-service data-
+ownership registry. Two full code-level audits commissioned specifically for this report, covering database schemas, request handlers, and background workers rather than just
+documentation: one covering MarketFlow's CRM, AI, and web layers, and one covering login, payments, billing, messaging, and internal HR systems. Web research on CreatorIQ, Grin,
+Aspire, Upfluence, Wowzi, Zaumu, Tikora, Aktivate, Collabstr, Elev8or, Diglancers, TIMA, KWETU, Wingu Creatives, HeyGen, Arcads, Creatify, Captions, Synthesia, Sora 2, Veo 3.1, Kling
+3.0, and Runway pricing, Central Bank of Kenya payment-service-provider licensing, Kenya's 2026 digital-content withholding tax enforcement, and technical co-founder equity benchmarks,
+all gathered in September 2026.
+CODEVERTEX AFRICA · A TECHNOLOGY PARTNER IN THIS BUILD
+CODEVERTEX AFRICA · AELIA CREATOR COMMERCE FEASIBILITY REPORT 23

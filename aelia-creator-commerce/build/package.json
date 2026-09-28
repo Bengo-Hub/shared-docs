@@ -4,7 +4,11 @@
   "private": true,
   "description": "Build the AELIA Creator Commerce System Requirements & Design Document PDF from markdown",
   "scripts": {
-    "build": "node build-pdf.cjs"
+    "charts": "python3 ../charts/build_charts.py",
+    "build": "node build-pdf.cjs",
+    "preview": "node tools/preview.cjs",
+    "audit": "node tools/page-audit.mjs",
+    "sources": "python3 tools/extract-sources.py"
   },
   "dependencies": {
     "markdown-it": "^14.1.0",
