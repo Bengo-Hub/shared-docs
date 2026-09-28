@@ -1,0 +1,15 @@
+{
+  "name": "aelia-creator-commerce-srdd-pdf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build the AELIA Creator Commerce System Requirements & Design Document PDF from markdown",
+  "scripts": {
+    "build": "node build-pdf.cjs"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "mermaid": "9.4.3",
+    "pdfjs-dist": "^4.10.38",
+    "puppeteer-core": "^24.0.0"
+  }
+}

@@ -1,0 +1,3 @@
+# Build dependencies and intermediates (the PDF itself is committed as the deliverable)
+build/node_modules/
+build/output.html
