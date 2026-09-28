@@ -35,26 +35,39 @@ posting is **event-driven** (NATS JetStream via the transactional outbox) and **
 | `erp.casual_payment.approved` | claim subscriber | DR Casual Labour 6300 / CR Employee Payable 2600 |
 | `erp.consultant_voucher.approved` | consultant subscriber | consultant cost with cost center on the GL lines |
 
-> Verified against code 2026-09-27. The casual labour subject is `erp.casual_payment.approved` (ERP schema `CasualPayment`); an earlier version of this table said `erp.casual_labor.approved`, which nothing publishes. Known gaps, in progress under `.claude/plans/budgets-planning-projects-bi-2026-09-27.md`: the claim and casual payment subscribers drop `cost_center_id`, and `erp.payroll.processed` sends an empty cost center with no per-project split.
+> Verified against code 2026-09-28. The casual labour subject is `erp.casual_payment.approved` (ERP schema `CasualPayment`). Claim and casual payment GL lines carry the claim's `cost_center_id` and `project_id`. `erp.payroll.processed` carries `allocations[]` per employee (project and cost centre from `EmployeeProjectAllocation`, the rest on the department cost centre), and treasury splits the salary expense lines by them; liability and bank lines stay unsplit.
+
+## Budget events and commitments
+
+| Event | Consumer | Effect |
+|---|---|---|
+| `inventory.purchase_order.sent` / `.cancelled` | treasury PO commitment subscriber | opens / releases a budget commitment on the purchase account; bills draw it down, full receipt consumes it |
+| `erp.expense_claim.created` / `.updated` / `.deleted` / `.approved` | treasury claim subscriber | opens, updates, releases or consumes the claim's commitment (taxable, non-KES and already booked claims hold nothing) |
+| `project.closed` / `project.deleted` | treasury project subscriber | closes approved and active project budgets, cancels drafts, releases open commitments |
+| `treasury.budget.approved` | projects-api | sets `Project.budget` (budget at completion) from `planned_cost` |
+| `treasury.budget.threshold_crossed` | notifications-api (subscribes to `treasury.>`) | alert once per line per threshold |
+
+Budget checks before spend: inventory-api calls `POST /s2s/{tenant}/ap/purchase-budget-check` before sending a PO, and erp-api calls `POST /s2s/{tenant}/budgets/claim-check` before approving a claim. A stop answers 409 `over_budget` (inventory: `OVER_BUDGET`), and approvers can override. Treasury subscribers bind to whichever JetStream stream owns the subject (`platform/events.StreamFor`).
 
 ## Projects ↔ finance
 
-Verified against code 2026-09-27.
+Verified against code 2026-09-28.
 
-- **Treasury owns all budgets, including project budgets** (decision 2026-09-27). projects-api still
-  has `Budget`, `Expense` and `TimeLog` Ent schemas, but they have no service, handler or route and are
-  being dropped. projects-api will read budgets and financials from treasury over S2S
-  (`/s2s/{tenant}/projects/{id}/financials`) and proxy budget edits to treasury budgets of
-  `budget_type=project`. Neither side has a client for the other yet.
-- Treasury `budgets` and `budget_lines` already carry `project_id`, `cost_center_id` and
-  `parent_budget_id`. `BudgetLine.actual_amount` is written by `POST /budgets/{id}/recompute-actuals`,
-  but today it counts draft journal entries, skips KES conversion and returns 0 for a line with no
-  account, so project actuals are not reliable yet.
-- Project cost reaches the GL through **project-tagged inventory POs** (`project_id` on the PO bill
-  subscriber) and **project-tagged ERP claims and casual payments** (the claim subscriber reads
-  `project_id`, but drops `cost_center_id`). Payroll has no project split. Invoices, bills and
-  expenses carry no project.
-- All of the above is In progress under `.claude/plans/budgets-planning-projects-bi-2026-09-27.md`.
+- **Treasury owns all budgets, including project budgets** (decision 2026-09-27). projects-api's old
+  `Budget`, `Expense` and `TimeLog` tables are dropped. projects-api creates, edits and submits its
+  project budgets in treasury over S2S (acting as the signed-in user) and reads
+  `GET /s2s/{tenant}/budgets/projects/financials?ids=` in one batch per page, then computes earned
+  value from its own task estimates and progress (`/financials/projects/{id}`, `/financials/portfolio`).
+- Budget actuals are booked KES ledger lines only, grouped by account, cost centre, project and
+  month, and matched to the most specific budget line; they agree with the P&L. Details:
+  `finance-service/treasury-api/docs/budgets-and-planning.md`.
+- Project cost reaches the GL through project-tagged inventory PO bills, ERP claims and casual
+  payments, payroll salary lines split by allocation, expenses (`metadata.project_id`) and bill
+  purchase legs. Project revenue comes from invoices tagged with `metadata.project_id`.
+- Hours: projects-api reads approved and submitted timesheet hours per project from erp-api
+  (`GET /hrm/attendance/timesheets/project-hours`) for utilisation. erp-api reports a payroll month's
+  gross pay by project (`GET /hrm/payroll/labour-cost`) with the same split payroll posts.
+- There is no historic backfill: postings made before the dimensions existed stay undimensioned.
 
 ## Assets & capital allowances
 - Inventory-api owns the fixed-asset register; treasury owns the financial side. An inventory asset
