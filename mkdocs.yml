@@ -130,6 +130,8 @@ nav:
           - Idempotency & the Outbox Pattern: platform-standards/idempotency-and-outbox.md
           - Resilience — Circuit Breakers & Retries: platform-standards/resilience-and-retries.md
           - Rate Limiting: platform-standards/rate-limiting.md
+          - Realtime Fan-out (WebSocket/SSE): platform-standards/realtime-fanout.md
+          - Scheduled Jobs & Migrations at 2+ Replicas: platform-standards/multi-replica-jobs.md
           - Service-to-Service (S2S) Conventions: platform-standards/s2s-conventions.md
           - Swagger/OpenAPI Docs Gating: platform-standards/swagger-docs-gating.md
           - Secrets Management: platform-standards/secrets-management.md
