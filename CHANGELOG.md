@@ -2,6 +2,22 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.12.0] - 2026-10-01
+
+### Added
+- **Platform Standards: Realtime Fan-out** (new): WebSocket/SSE across replicas with the shared
+  Broadcaster, FanoutHub and Pump, plus streaming hygiene (timeouts, buffering, heartbeats).
+- **Platform Standards: Scheduled Jobs & Migrations at 2+ Replicas** (new): which guard to use for
+  sweeps, long jobs, once-per-period work and per-event side effects; why session advisory locks
+  fail through PgBouncer; the single locked migration path.
+
+### Changed
+- **Rate Limiting**: rewritten for shared-ratelimit v0.2 (GCRA, exact across pods), trusted client
+  IP, default exemptions, per-pod fallback, brute-force protections per flow.
+- **Caching**: how entries are added, expire, get evicted and invalidated; bounded per-pod caches;
+  dashboard aggregate caching; the three-layer media cache (device, edge, origin).
+- **Idempotency & the Outbox Pattern**: multi-replica claim and Nats-Msg-Id dedupe.
+
 ## [1.11.1] - 2026-09-26
 
 ### Added

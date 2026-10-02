@@ -9,6 +9,15 @@ Idempotency on the consuming side is handled by `shared/events/idempotency.go`'s
 - `Claim` — an atomic `ON CONFLICT DO NOTHING` insert, race-safe across replicas. Use this for irreversible side effects (payouts, GL postings) where two replicas processing the same event concurrently would double-execute.
 - `AlreadyProcessed` / `MarkProcessed` — a process-then-mark pattern for idempotent-but-cheap-to-check handlers.
 
+## Multi-replica publishing
+
+Every replica runs the outbox poller. Rows are claimed with `UPDATE ... WHERE id IN (SELECT ...
+FOR UPDATE SKIP LOCKED)` (shared-events v0.6.2+), so two pods never publish the same row; a claimed
+row left in PROCESSING by a crashed pod is reclaimed after two minutes. Every JetStream publish
+carries `Nats-Msg-Id` = event ID (v0.7.0+), so that reclaim republishing an event the crashed pod
+had already sent is dropped by JetStream's duplicate window. Services on v0.6.1 double-published
+from every pod until 2026-10-01.
+
 ## THE OUTBOX ENVELOPE LAW — read this before writing to `outbox_events` by hand
 
 The poller reconstructs the event **solely** from the `outbox_events.payload` column via `FromJSON(payload)` → `Subject()`. The payload column **must hold the full `Event.ToJSON()` envelope** — `id`, `event_type`, `aggregate_type`, `aggregate_id`, `tenant_id`, `payload`, etc. — never just the inner business payload.

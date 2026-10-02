@@ -1,16 +1,91 @@
 # Rate Limiting
 
-Rate limiting exists at two layers: ingress-level, in front of every service, and application-level, within specific services that need finer-grained control.
+Rate limiting runs at two layers: the ingress in front of every service, and inside each service
+through one shared module, `github.com/Bengo-Hub/shared-ratelimit`.
 
-## Ingress-level
+## Ingress level
 
-Every service's ingress carries `nginx.ingress.kubernetes.io/limit-rps` and `limit-connections` annotations, tuned per service (for example, auth-api at 20 rps / 100 connections, ordering-backend at 50 rps / 200 connections). This is the first line of defense against abusive traffic, applied before a request even reaches a pod — see [DevOps-K8s Ingress & CORS](../architecture/devops-k8s-ingress-cors.md) for the per-service values.
+Every service's ingress carries `nginx.ingress.kubernetes.io/limit-rps` and `limit-connections`
+annotations (for example auth-api 20 rps / 100 connections). These counters live in each
+ingress-nginx pod, so they are a coarse first line against floods, not an exact limit. See
+[DevOps-K8s Ingress & CORS](../architecture/devops-k8s-ingress-cors.md) for the per-service values.
 
-## Application-level
+## Application level
 
-Application-level rate limiting lives in one shared module — [`github.com/Bengo-Hub/shared-ratelimit`](https://github.com/Bengo-Hub/shared-ratelimit) — with two primitives for two different problems. treasury-api and notifications-api each independently built one of these before the extraction; both now import the shared package instead of maintaining their own copy.
+Every Go service uses `shared-ratelimit` (v0.2+). There are no local limiters left in the fleet.
 
-- **`ratelimit.Limiter`** — a Redis sliding-window request limiter (sorted-set log), for abuse throttling by IP or tenant. treasury-api's usage: `ratelimit.NewLimiter(redisClient, log, "treasury")` → `rateLimiter.Middleware(ratelimit.IPKey, 120, time.Minute)` — 120 req/min per IP, with `X-RateLimit-*` response headers and a 429 JSON body on rejection.
-- **`ratelimit.Quota`** — a Redis daily usage-quota counter (`INCR`, calendar-day-bucketed key, ~25h expiry), for per-tenant/per-feature metering sourced from the tenant's subscription plan (e.g. `email_notifications_per_day` from the JWT's subscription claims — see [Trinity Authorization Pattern](../architecture/trinity-authorization-pattern.md)). notifications-api's usage: `ratelimit.NewQuota(redisClient)` → `quota.Check(ctx, tenantID, featureKey, limit)`, or `ratelimit.RequireQuota(quota, featureKey, claimsFn)` as middleware.
+### Algorithm: GCRA in Redis
 
-If you're adding application-level rate limiting to a new service: import `shared-ratelimit` rather than writing a third implementation. Use `Limiter` for abuse/traffic protection (the limit is a fixed config value, not tied to a plan); use `Quota` for plan/feature metering (the limit comes from the caller's subscription tier via JWT claims).
+`Limiter` uses GCRA (generic cell rate algorithm) through `github.com/go-redis/redis_rate/v10`.
+GCRA is the token bucket expressed as one timestamp per key: it allows a burst up to `Burst`
+requests after an idle period, then `Limit` per `Window` on average. The whole check-and-consume
+step is one Lua script that Redis runs atomically on its own clock, so every replica of a service
+shares one exact limit with one round trip and one small key per subject.
+
+| Algorithm | Why it is not used |
+|---|---|
+| Fixed window `INCR` | Allows twice the limit across a window edge. Still fine for daily quotas (see `Quota`). |
+| Sliding window log (sorted set) | Exact, but one entry per request and three round trips; v0.1 also checked and recorded in separate calls, so parallel requests on different pods all passed. |
+| Sliding window counter | Close approximation, but no burst allowance. |
+| Leaky bucket as a queue | Delays requests instead of answering 429, wrong for an API. |
+
+A concurrency test in the module runs 200 parallel requests through four limiter instances (four
+pods) sharing one Redis at a limit of 50 and asserts exactly 50 pass.
+
+### Client IP
+
+`ratelimit.ClientIP` takes `X-Real-IP`, which ingress-nginx sets from `CF-Connecting-IP` (it only
+trusts that header from Cloudflare's ranges), then `CF-Connecting-IP`, then the peer address.
+`X-Forwarded-For` is never trusted: Cloudflare appends to whatever the client sent, so its first
+entry is attacker-controlled. Mount `ratelimit.TrustedRealIP` instead of chi's `middleware.RealIP`,
+which copies client-sent `True-Client-IP`/`X-Forwarded-For` into `RemoteAddr`.
+
+### Usage
+
+```go
+limiter := ratelimit.NewLimiter(redisClient, log, "myservice")
+
+// General per-IP limit. Mount it AFTER CORS so a 429 still carries CORS headers.
+r.Use(limiter.Middleware(ratelimit.IPKey, 300, time.Minute))
+
+// Login, PIN, OTP: per IP and per target identifier.
+r.With(limiter.MiddlewareWith(ratelimit.CompositeKey(ratelimit.IPKey, accountKey),
+    ratelimit.Options{Name: "login-ip-acct", Limit: 10, Window: 15 * time.Minute})).Post("/login", h)
+
+// Outside HTTP (provider send budgets, workers):
+ok, retryAfter := limiter.Allow(ctx, "smtp", ratelimit.Options{Name: "email-provider", Limit: 200, Window: time.Hour}, 1)
+```
+
+Tenant or user keys must come from verified claims (`ratelimit.ValueKey`), never a raw header:
+anyone can send `X-Tenant-ID` and spend another tenant's allowance.
+
+### Behavior
+
+| Topic | Behavior |
+|---|---|
+| Headers | `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`; on 429 also `Retry-After` and `{"error":"rate limit exceeded",...}`. |
+| Exempt by default | WebSocket upgrades, `Accept: text/event-stream`, `/healthz`, `/readyz`, `/livez`, `/health`, `/ready`, `/live`, `/metrics`. Kubelet probes share a node IP and must never get a 429. Add more with `Options.Skip` (pos-api skips its payment-status and catalog-version polls). |
+| Redis down | Each pod falls back to an in-process bucket allowing `Limit / ExpectedReplicas` (default 2), bounded to 10,000 keys, so throttling continues without blocking real users. |
+| Memory | GCRA keys expire when the bucket refills. Redis runs `allkeys-lru`. |
+
+### Daily quotas
+
+`Quota` meters plan features per tenant per UTC day (limit from JWT claims). One Lua call
+increments, keeps the 25 hour TTL and rolls back on rejection. `CheckN(n)` is all-or-nothing for a
+batch, so a send to 20 recipients either fits today's quota or consumes nothing.
+
+## Brute-force protection
+
+| Flow | Protection |
+|---|---|
+| auth-api login | Per IP (60/min), per IP and account (10 per 15 min), per account across IPs (30/hour). |
+| auth-api one-time codes (OTP, email verify) | Atomic compare-and-consume; the 5th wrong guess destroys the code. Sends capped at 5 per 10 minutes. |
+| pos-api, inventory-api PIN | 8 per IP per minute on PIN routes; pos counts PIN failures with an SQL increment and locks the member. |
+| library-api PIN and card identify | 10 per IP per minute. |
+| ticketing public tickets | 5 per IP per hour, 10 per email per day. |
+| marketflow-ai public chat | 15 per IP and 100 per tenant per minute. |
+
+## Non-Go services
+
+TruLoad (.NET) uses ASP.NET's in-memory rate limiter per pod behind the ingress limit; ISPBilling
+(FastAPI) relies on the ingress limit. Both are tracked in the internal gap analysis.
