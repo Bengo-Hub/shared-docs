@@ -87,5 +87,14 @@ batch, so a send to 20 recipients either fits today's quota or consumes nothing.
 
 ## Non-Go services
 
-TruLoad (.NET) uses ASP.NET's in-memory rate limiter per pod behind the ingress limit; ISPBilling
-(FastAPI) relies on the ingress limit. Both are tracked in the internal gap analysis.
+TruLoad (.NET) uses ASP.NET's built-in rate limiter, per pod, behind the ingress limit. It runs after
+authentication so every policy partitions per signed-in user, or per client IP (`X-Real-IP`) for
+anonymous calls; the `auth` policy (per IP, no queue) covers login, 2FA, password and SSO
+endpoints. Limits come from the database settings and an admin reload applies at once.
+
+ISPBilling (FastAPI) keeps its counters in Redis (`app/core/rate_limit.py`, one atomic Lua call per
+hit, so the limit holds across replicas). Credential endpoints (admin login, onboarding codes,
+hotspot login, voucher redeem, PPPoE login) get two layers: per client IP at
+`RATE_LIMIT_REQUESTS` per `RATE_LIMIT_WINDOW`, kept generous because hotspot customers often share
+one public IP, and per account or email at 10 per 5 minutes. `RATE_LIMIT_ENABLED=false` turns it
+off; a Redis outage lets requests through.
