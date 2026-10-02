@@ -2,6 +2,14 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.12.1] - 2026-10-02
+
+### Changed
+- **Caching**: private media (KYC documents, patient photos) now load only through short-lived
+  signed URLs; how to sign, strip and configure the key.
+- **Rate Limiting**: TruLoad and ISPBilling sections describe their new per-user, per-IP and
+  per-account limits.
+
 ## [1.12.0] - 2026-10-01
 
 ### Added

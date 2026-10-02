@@ -68,6 +68,12 @@ Uploaded media is cached at three layers, closest to the user first:
    - no directory listings, no dotfiles, no path escapes; a sandbox CSP for SVG/HTML/XML;
    - `MediaOptions.Private` marks sensitive trees `private, no-store` (logistics KYC uploads,
      every hospital patient photo); those are never cached anywhere but the browser session.
+   - `MediaOptions.Signer` (a `MediaSigner`) makes those private files load only through a signed
+     URL: an `<img>` cannot send a bearer token, so the API signs the URL (valid 12 hours) every
+     time it returns the record, and `/media` answers 404 to an unsigned, expired or forged one.
+     Forms send the signed URL back on save, so handlers store it with `StripMediaSignature`.
+     The key comes from `MEDIA_SIGNING_SECRET` (falls back to `INTERNAL_SERVICE_KEY`) and must be
+     the same on every replica.
 
 Upload handlers must always write a new, unique file name; never overwrite a file in place under
 an immutable name. library-api overwrites covers in place, so it serves them with
