@@ -2,6 +2,16 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.0] - 2026-10-04
+
+### Added
+- **PayHero Reference** (Technical Guide, Integrations): account modes and Teams, channel sync
+  and routing, M-Pesa and cross-border collections, currency conversion, offline paybill, prompt
+  guard, callbacks, wallet withdrawals, KYC, routes and jobs.
+- **Accepting payments with PayHero** (User Guide, Treasury): step-by-step setup for tenants,
+  from creating the PayHero account to routing, verification, the offline paybill and common
+  issues.
+
 ## [1.12.1] - 2026-10-02
 
 ### Changed

@@ -93,6 +93,7 @@ nav:
           - Treasury:
               - user-guide/treasury/index.md
               - Invoicing & Payments: user-guide/treasury/invoicing-and-payments.md
+              - Accepting payments with PayHero: user-guide/treasury/payhero.md
               - Reports: user-guide/treasury/reports.md
           - POS:
               - user-guide/pos/index.md
@@ -144,6 +145,7 @@ nav:
           - M-Pesa (Daraja) Reference: integrations/mpesa-integration-reference.md
           - Paystack Reference: integrations/paystack-integration-reference.md
           - Paystack Callback Page: integrations/paystack-callback-page.md
+          - PayHero Reference: integrations/payhero-integration-reference.md
           - Notifications REST API: integrations/notifications-rest-api-integration.md
           - Finance Integration Map: integrations/finance-integration-map.md
           - eTIMS API Quickstart: integrations/etims-api.md
