@@ -11,6 +11,9 @@ admin or finance user. If you're building against the API directly, see the
 - **[Invoicing & Payments](invoicing-and-payments.md)**: creating invoices, the public link
   customers pay from, and how a payment gets recorded, whether it comes through the platform's
   own checkout or was paid another way (bank transfer, cash) and needs reconciling manually.
+- **[Accepting payments with PayHero](payhero.md)**: setting up PayHero so customers pay by
+  M-Pesa (and mobile money, card or bank outside Kenya) straight into your own paybills, tills
+  and bank accounts, plus the offline paybill, verification and wallet withdrawals.
 - **[Reports](reports.md)**: Profit & Loss (full statement and summary), Cash Flow, and Tax
   Summary, and how to pick the period or date range each one covers.
 

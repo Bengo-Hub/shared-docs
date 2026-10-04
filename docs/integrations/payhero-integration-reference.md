@@ -1,0 +1,182 @@
+# PayHero Integration Reference
+
+> **Source**: [PayHero API documentation](https://docs.payhero.africa) (API 2.0.0)
+> **Owner**: treasury-api
+> **Updated**: October 2026
+
+PayHero Africa is treasury's gateway for M-Pesa collections into a tenant's own paybills, tills
+and bank accounts, for mobile money in other countries (MTN, Airtel and other networks), for card
+hosted checkout, bank deposits and the offline paybill, and for payouts from a tenant's PayHero
+wallet. Only the 2.0.0 API is used.
+
+See [Payment Workflow](payment-workflow.md) for the end-to-end flow every gateway shares (intent
+creation, the shared pay page, `initiate_url`, callbacks). This page covers what is specific to
+PayHero. For the tenant-facing setup steps, see the
+[PayHero user guide](../user-guide/treasury/payhero.md).
+
+## Hosts and authentication
+
+| Host | Used for |
+|---|---|
+| `https://api.payhero.africa` | Payments, rail discovery, status, balance, beneficiaries, payment channels |
+| `https://auth.payhero.africa` | Teams (accounts), invites, KYC |
+| `https://connect.payhero.africa` | Identity verification checks (billed per check) |
+
+All three use HTTP Basic auth with the API username and password. The platform's key is stored
+encrypted in treasury's gateway configuration and is never exposed to tenants.
+
+## Account modes
+
+The platform owner configures PayHero once (Platform, Gateways). Each tenant then turns PayHero on
+in one of three modes:
+
+| Mode | Account used | Own wallet | Notes |
+|---|---|---|---|
+| `platform_team` (default) | The tenant's own **Team** inside the platform's PayHero organization | Yes, isolated per Team | Required for escrow and wallet collections |
+| `platform_root` | The platform's root account; the tenant claims specific channels | No | Channel collections only |
+| `own_account` | The tenant's own PayHero API key (stored encrypted) | Its own | The account is detected from the key's channels on the first sync |
+
+A `platform_team` tenant without a Team has no account at all. It never falls back to the
+platform's account, so its collections and payouts can never touch the platform's wallet.
+
+Creating Teams requires a PayHero **enterprise** organization. On other plans PayHero refuses
+Team creation; treasury explains the options: upgrade the organization with PayHero, use the
+shared platform account mode, connect the tenant's own PayHero account, or link a Team created on
+the PayHero dashboard.
+
+PayHero has no API to create channels or wallets. A Team gets its wallet (and a service wallet
+that pays PayHero's own costs) when it is created. Paybills, tills and bank accounts are added on
+the PayHero dashboard by someone invited into the Team, then synced into treasury. Collections
+need credit in the service wallet; with an empty one PayHero refuses the payment.
+
+### Who sets what
+
+| Setting | Level | Where |
+|---|---|---|
+| API key, organization and root account | Platform | Platform, Gateways, PayHero (Detect fills the ids) |
+| Gateway available to tenants, platform primary | Platform | Platform, Gateways |
+| PayHero on, mode, country, offline paybill | Tenant | Settings, Payments, PayHero, Account |
+| Team (create or link) | Tenant, or the platform owner on their behalf | Settings, Payments, PayHero, Account |
+| Channels on or off, routing, payment links | Tenant | Settings, Payments, PayHero, Channels and routing |
+| KYC checks and tier | Tenant | Settings, Payments, PayHero, Verification |
+| Which gateways customers see, tenant primary | Tenant | Settings, Payments, Gateways |
+
+## Channels and routing
+
+Treasury syncs a tenant's channels on demand and every 15 minutes, and keeps an on/off switch per
+channel. Each collection is routed to a channel in this order:
+
+1. the outlet override,
+2. the payment's reference type (for example `invoice` or `pos_order`),
+3. the default channel (the first active channel when none is set).
+
+The routing screen only lists payment types the tenant can actually receive: those of the
+products it subscribes to, those it received in the last 180 days, and those already routed.
+
+A Kenyan M-Pesa pay-in settles straight into the routed channel. Escrow contributions and wallet
+top-ups carry no channel and land in the Team wallet.
+
+## What customers are offered
+
+`GET /api/v1/pay/{tenant}/gateways` lists PayHero methods only when the tenant's account can take
+a payment (it has a Team or its own account). With an account, the methods come from PayHero's
+rail discovery for the payment's country (M-Pesa, Airtel, MTN, other networks, card, bank), plus
+the offline paybill when enabled. If discovery is unavailable, M-Pesa alone is offered.
+
+The response also carries `providers.mpesa` (`payhero` or `daraja`), so the POS can hide tenders
+that only work with Daraja, such as matching a payment the customer already made to the till.
+
+## Collections
+
+| Rail | Endpoint |
+|---|---|
+| Kenyan M-Pesa | `POST /api/v2/payments` with the routed channel (or the Team wallet) |
+| Every other pay-in (other countries, Airtel, MTN, card, bank) | `POST /api/global/payments` |
+| Offline paybill | V1 collection with `is_offline: true` |
+
+**Country and currency.** The payment's currency picks the country's rails (KES on Kenya's, UGX on
+Uganda's, and so on); the tenant's configured country is the fallback and also drives which
+networks the pay page lists. Each rail charges in its own country's currency, so a payment in
+another currency (say a USD invoice paid by M-Pesa) is converted at the stored exchange rate and
+rounded up to whole units. The conversion is kept on the payment intent, settlement checks the
+amount against it, and the ledger still posts the intent's own currency and amount. With no rate
+available the payment is refused rather than charged in the wrong currency.
+
+**Offline paybill.** For payers who cannot take a phone prompt. The pay page shows PayHero's
+paybill and an account number; the payer pays from the M-Pesa menu and the payment settles like
+any other when PayHero's callback arrives.
+
+**Prompt guard.** Every gateway that sends a prompt to the payer's phone goes through one guard:
+after repeated failed or cancelled prompts to the same phone (or many for the same tenant) in a
+short window, further prompts pause and the payer is pointed to the offline paybill. A successful
+payment clears the count for that phone.
+
+## Where the money lands in the books
+
+Each synced channel maps to one of the tenant's financial accounts (Banking, Accounts). On sync,
+an unmapped channel is matched by account number, or to the only account at the bank named in the
+channel; the tenant can change it by hand. The Team wallet maps to an account too. When a
+collection settles, its ledger entry debits the mapped account, so each account's balance follows
+the money.
+
+## Callbacks
+
+`POST /api/v1/webhooks/payhero`. PayHero callbacks are not signed, so a callback is only treated
+as a hint: treasury looks the payment up with PayHero's transaction status endpoint before settling
+it through the single settlement path. Payout callbacks are confirmed the same way, and a payout
+whose callback never arrives is looked up again after 15 minutes.
+
+Payments made on a PayHero dashboard Payment Link have no treasury intent and cannot be attributed
+to a tenant from the callback, so they are logged only. Tenants can still save their Payment Link
+and Hosted Checkout URLs in treasury to share them.
+
+## Payouts and wallet withdrawals
+
+Kenyan phones, paybills and tills are paid out through V1 withdraw; everything else through the
+global withdrawal endpoint. Payouts always come from the tenant's own account and follow the
+tenant's payout approval policy.
+
+A tenant moves money out of its Team wallet with `POST .../wallet/withdraw` to one of its own
+channels or a phone. The disbursement approval policy applies (the request returns
+`409 approval_required` until approved). When the payout succeeds, the amount moves between the
+mapped accounts in the books. PayHero's costs come out of the service wallet, which is topped up
+on the PayHero dashboard.
+
+## KYC
+
+Collecting from the public into a Team wallet needs KYC tier 3 (national ID plus the company's KRA
+PIN). Verification checks are billed by PayHero, so a check only runs when the request confirms
+the charge (`confirm: true`; otherwise `428`). Treasury stores each check's lookup token, verified
+name and status, never the numbers entered. Tiers are refreshed daily.
+
+## API routes
+
+Tenant routes live under `/{tenant}/gateways/payhero` (reads need `treasury.gateways.view`,
+writes `treasury.gateways.manage`):
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `` | Status: mode, Team, KYC, channels, routing, links, verifications |
+| PUT / DELETE | `` | Enable or change mode / disable |
+| POST | `/team`, `/team/link`, `/team/invite` | Create the Team; link an existing Team; invite an admin |
+| POST | `/channels/sync`, `/channels/{id}/claim` | Sync channels; claim a root-account channel (`platform_root`) |
+| PATCH | `/channels/{id}` | Switch a channel on or off |
+| PUT | `/channels/{id}/account`, `/wallet-account` | Map a channel or the wallet to a financial account |
+| PUT | `/routing`, `/payment-links` | Channel routing; saved Payment Links |
+| GET | `/routing/options` | Payment types this tenant can route |
+| GET | `/balance`, `/discovery?country=` | Team wallet balance; rails for a country |
+| POST / GET | `/wallet/withdraw`, `/wallet/withdrawals` | Withdraw from the Team wallet; recent withdrawals |
+| GET / POST | `/kyc/pricing`, `/kyc/checks`, `/kyc/verify/{check}`, `/kyc`, `/kyc/refresh` | KYC and verification |
+
+Platform routes: `GET/PUT /platform/gateways/payhero/settings`,
+`POST /platform/gateways/payhero/settings/detect`, `GET /platform/gateways/payhero/teams`,
+`POST /platform/gateways/payhero/teams/{tenantID}/link`.
+
+## Background jobs
+
+| Job | Every | Purpose |
+|---|---|---|
+| Channel sync | 15 minutes | Keep every tenant's channels current |
+| KYC sync | 24 hours | Refresh Team KYC tiers |
+
+Each runs once per period across all treasury replicas.
