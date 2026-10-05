@@ -2,6 +2,14 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.4] - 2026-10-05
+
+### Changed
+- **Payment workflow**: PayHero as its own gateway on the pay page (its own checkout with the
+  rails it offers), the optional `gateway` pin on initiate, and the `gateways` link parameter.
+- **PayHero Reference**: what customers are offered (`payhero` and `payhero_methods`, Daraja-only
+  `mpesa`, offline paybill only once confirmed).
+
 ## [1.13.3] - 2026-10-05
 
 ### Changed

@@ -67,7 +67,8 @@ After the user selects a gateway on the pay page, the **calling service’s back
 }
 ```
 
-- For M-Pesa: `payment_method: "mpesa"`, `phone_number: "254712345678"`.
+- For M-Pesa: `payment_method: "mpesa"`, `phone_number: "254712345678"`. Optional `gateway` pins the provider: `"daraja"` (the business's own paybill or till) or `"payhero"`. Without it, treasury tries Daraja first, then PayHero.
+- For PayHero's other rails: `payment_method` is the rail (`airtel_money`, `mtn_momo`, `payhero_momo`, `payhero_card`, `payhero_bank`) with `gateway: "payhero"`.
 - For COD: `payment_method: "cash"` — intent is marked succeeded without gateway.
 - For **manual / paid at till**: `payment_method: "manual"` or `"till"` — intent is marked succeeded without calling the gateway (user confirmed they paid at agent/till).
 
@@ -109,13 +110,14 @@ When the user clicks “I paid at till / agent” in the UI, the service backend
 | `redirect_url`  | No       | Where to send user after payment (path or URL)    |
 | `button_text`   | No       | Label for post-payment button (e.g. “View my order”) |
 | `initiate_url`  | No       | Service backend URL to POST to initiate/confirm   |
-| `gateways`      | No       | Comma-separated: paystack, mpesa, cod (default: all) |
+| `gateways`      | No       | Comma-separated: paystack, payhero, mpesa, wallet, cod (default: all). Older links naming PayHero rails (`airtel_money`, `payhero_offline`, ...) open PayHero on those rails. |
 
 **Page behavior**:
 
 - Renders **invoice summary** at top (invoice number, amount, description).
-- Renders **gateway cards** with official logos (Paystack, M-Pesa, COD) for the chosen `gateways`.
-- On gateway click, opens the **respective payment modal** (Paystack, M-Pesa, or COD) with the same payment details.
+- Renders **gateway cards** for the chosen `gateways`, led by the official logos (Paystack, PayHero, M-Pesa); a logo that already says the name stands in for the title. With exactly one gateway in an embedded page, it opens straight away.
+- On gateway click, opens the **respective payment modal** with the same payment details. PayHero, like Paystack, has its own checkout: the rails it offers for the payment's currency (M-PESA, Airtel Money, MTN MoMo, card, bank) on the left and the chosen rail's form on the right. M-Pesa is the business's own Daraja paybill or till.
+- Provider logos come from `@bengo-hub/shared-ui-lib` (`brand-logos`) only.
 
 **initiate_url** (recommended): The pay page and modals POST to this URL with body e.g. `{ intent_id, payment_method, customer_email?, phone_number? }`. The service backend then calls treasury-api `POST .../intents/{id}/initiate` (or confirm-manual) and returns `authorization_url`, `checkout_request_id`, or `redirect_url` so the UI can redirect or show “Check your phone”.
 

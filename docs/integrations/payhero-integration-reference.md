@@ -116,13 +116,24 @@ collections are never surcharged.
 
 ## What customers are offered
 
-`GET /api/v1/pay/{tenant}/gateways` lists PayHero methods only when the tenant's account can take
-a payment (it has a Team or its own account). With an account, the methods come from PayHero's
-rail discovery for the payment's country (M-Pesa, Airtel, MTN, other networks, card, bank), plus
-the offline paybill when enabled. If discovery is unavailable, M-Pesa alone is offered.
+PayHero is its own gateway, separate from Daraja M-Pesa. `GET /api/v1/pay/{tenant}/gateways`
+lists `payhero` only when the tenant's account can take a payment (it has a Team or its own
+account), with its rails in `payhero_methods`:
 
-The response also carries `providers.mpesa` (`payhero` or `daraja`), so the POS can hide tenders
-that only work with Daraja, such as matching a payment the customer already made to the till.
+```json
+{"gateways":["paystack","payhero","cod"],"payhero_methods":["mpesa","airtel_money","payhero_card"],"providers":{}}
+```
+
+- The rails come from PayHero's discovery for the payment's country (M-Pesa, Airtel, MTN, other
+  networks, card, bank). If discovery is unavailable, M-Pesa alone is offered.
+- `mpesa` in `gateways` means Daraja only (the business's own paybill or till).
+- The offline paybill (`payhero_offline`) is offered only when the business switched it on and the
+  platform has confirmed it with a live payment (`payhero.offline_paybill_verified`).
+
+The payment page shows one PayHero option that opens a checkout listing these rails. Each rail is
+started with `gateway: "payhero"` on the initiate call, which pins PayHero: the payment never falls
+back to the business's Daraja account. The POS shows one PayHero tender; STK Push and C2B (matching
+a payment the customer already made to the till) are Daraja only.
 
 ## Collections
 
