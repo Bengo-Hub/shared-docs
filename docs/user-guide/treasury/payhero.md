@@ -72,6 +72,19 @@ In **Settings, Payments, Gateways**, make sure PayHero is switched on and, if yo
 another M-Pesa provider, choose which one is primary. Your POS and your invoice payment page then
 show the PayHero methods available in your country.
 
+## What your customer sees when they pay
+
+1. They open your payment link (or **Pay Now** on an invoice) and see the methods your account
+   accepts in their country.
+2. They choose M-Pesa and type their phone number. The page says **Check your phone** and waits.
+3. M-Pesa sends a prompt to their phone. For a bank paybill it names the bank's paybill and your
+   account number there; they enter their PIN.
+4. The money goes straight into the channel you routed that payment to. PayHero tells treasury,
+   treasury confirms the payment with PayHero, and the invoice or sale is marked paid. The page
+   updates on its own.
+
+If the prompt never arrives, they can use the offline paybill below instead.
+
 ## Offline paybill for customers who cannot get a prompt
 
 Sometimes the M-Pesa prompt does not reach the customer (no network, the prompt times out, or

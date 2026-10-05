@@ -2,6 +2,14 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.1] - 2026-10-05
+
+### Changed
+- **Accepting payments with PayHero** (User Guide, Treasury): what the customer sees from the
+  payment link to the M-Pesa prompt and confirmation.
+- **PayHero Reference**: payments to the platform follow the platform's routing; personal
+  channels and off-books collections for the platform owner; each payment is booked once.
+
 ## [1.13.0] - 2026-10-04
 
 ### Added
