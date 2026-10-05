@@ -75,39 +75,57 @@ enter. Your verification level is refreshed daily.
 
 ## Step 5: Choose what your customers see
 
-In **Settings, Payments, Gateways**, make sure PayHero is switched on and, if you also use
-another M-Pesa provider, choose which one is primary. Your POS and your invoice payment page then
-show the PayHero methods available in your country.
+In **Settings, Payments, Gateways**, make sure PayHero is switched on. PayHero shows as its own
+payment option, like Paystack, everywhere your customers pay:
+
+- The **payment page** has a **PayHero** option. It opens PayHero's checkout, with the methods
+  PayHero offers for the payment's currency down the side (M-PESA, Airtel Money, MTN MoMo, card
+  and others, depending on the country) and the chosen method's form beside them.
+- The **POS** has one **PayHero** button (with PayHero's logo) that opens the same checkout.
+- **STK Push** and **C2B** on the POS, and **M-Pesa** on the payment page, are your own M-Pesa
+  paybill or till connected directly through Safaricom (Daraja). They only appear when that is
+  set up; PayHero never shows under them.
 
 ## What your customer sees when they pay
 
-1. They open your payment link (or **Pay Now** on an invoice) and see the methods your account
-   accepts in their country.
-2. They choose M-Pesa and type their phone number. The page says **Check your phone** and waits.
+1. They open your payment link (or **Pay Now** on an invoice) and see the options your account
+   accepts.
+2. They choose **PayHero**, keep **M-PESA** selected and type their phone number. The page says
+   **Check your phone** and waits.
 3. M-Pesa sends a prompt to their phone. For a bank paybill it names the bank's paybill and your
    account number there; they enter their PIN.
 4. The money goes straight into the channel you routed that payment to. PayHero tells treasury,
    treasury confirms the payment with PayHero, and the invoice or sale is marked paid. The page
    updates on its own.
 
-If the prompt never arrives, they can use the offline paybill below instead.
-
 ## The PayHero fee
 
-PayHero charges a small fee per payment. Depending on how Codevertex has set it up, either your
-account carries it, or your customer pays it on top of the amount: the payment page then shows
-the fee and the total before the prompt is sent, and the fee is recorded in your books as a
-recovered charge. Every payment's fee is shown with the transaction.
+PayHero charges a small flat fee per payment, from its published fee schedule (Codevertex keeps
+a copy up to date every day). You choose who pays it on the PayHero Account tab:
+
+- **Customer pays** (the default): the fee is added to the amount. The payment page shows the fee
+  and the total before the prompt is sent, and the fee is recorded in your books as a recovered
+  charge.
+- **I pay**: the customer is prompted for the amount only and you carry the fee.
+
+Every payment's fee is shown with the transaction. On the shared platform account PayHero takes
+its fees from Codevertex's PayHero wallet, so Codevertex invoices you once a month for the fees
+recorded on your payments that month.
 
 ## Offline paybill for customers who cannot get a prompt
 
 Sometimes the M-Pesa prompt does not reach the customer (no network, the prompt times out, or
-several failed attempts in a row). Turn on **Offline paybill** on the Account tab and the payment
-page will also offer **M-Pesa Paybill**: the customer sees a paybill and an account number and
-pays from their M-Pesa menu. The payment is confirmed automatically when it arrives.
+several failed attempts in a row). The **Offline paybill** switch on the Account tab adds an
+**M-PESA Paybill** method to PayHero's checkout: the customer sees a paybill and an account
+number and pays from their M-Pesa menu, and the payment is confirmed automatically when it
+arrives.
+
+The offline paybill is not available yet: it appears only after Codevertex has confirmed it with
+a live payment, even if your switch is on. Until then customers who cannot get a prompt can try
+again later or pay another way.
 
 After several failed or cancelled prompts to the same phone, Treasury pauses further prompts for a
-while and points the customer to the offline paybill, so nobody gets flooded with prompts.
+while, so nobody gets flooded with prompts.
 
 ## Payments in another currency
 
@@ -127,9 +145,10 @@ own fees come from the service wallet, which you top up on the PayHero dashboard
 
 | What you see | Why | What to do |
 |---|---|---|
-| The POS or payment page shows no M-Pesa option | PayHero is on, but your PayHero account has not been created or linked yet | Finish Step 1, or ask Codevertex to link your account |
+| The POS or payment page shows no PayHero option | PayHero is on, but your PayHero account has not been created or linked yet | Finish Step 1, or ask Codevertex to link your account |
+| The POS shows PayHero but no STK Push or C2B | STK Push and C2B are for an M-Pesa paybill or till connected directly through Safaricom | Use the PayHero button for M-Pesa |
 | "Merchant has insufficient balance" | Your PayHero service wallet is empty | Top it up on the PayHero dashboard |
 | Payments arrive in the wrong till | Routing sends that payment type or outlet elsewhere | Check Channels and routing |
 | A new paybill is missing | Channels have not synced yet | Click Sync channels, or wait up to 15 minutes |
-| The customer did not receive the prompt | Network or phone issue | Ask them to use the M-Pesa Paybill option |
+| The customer did not receive the prompt | Network or phone issue | Check the number and send it again, or take another payment method |
 | A payment made from a PayHero Payment Link does not appear | Dashboard Payment Links are not linked to an invoice or sale | Send customers your Treasury invoice link instead |

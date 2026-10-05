@@ -2,6 +2,15 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.3] - 2026-10-05
+
+### Changed
+- **Accepting payments with PayHero**: PayHero is its own payment option on the payment page
+  and the POS, with a checkout listing its methods (M-PESA, Airtel Money, MTN MoMo, card and
+  others by country); STK Push, C2B and M-Pesa are only for a paybill or till connected directly
+  through Safaricom. Each business chooses who pays the PayHero fee (default: the customer);
+  shared-account fees are invoiced monthly. The offline paybill appears only once confirmed.
+
 ## [1.13.2] - 2026-10-05
 
 ### Changed
