@@ -76,6 +76,21 @@ products it subscribes to, those it received in the last 180 days, and those alr
 A Kenyan M-Pesa pay-in settles straight into the routed channel. Escrow contributions and wallet
 top-ups carry no channel and land in the Team wallet.
 
+### Payments to the platform
+
+Plan subscriptions, renewals, support-agreement charges, top-ups and card setup are charged on the
+platform's own PayHero account and follow its routing, whatever gateway the paying tenant uses;
+the pay page lists the platform's methods for them. A payment made from an invoice's Pay Now page
+takes the invoice's own routing (a subscription invoice routes as a subscription, not as a manual
+invoice).
+
+### Personal channels (platform owner)
+
+The platform owner can mark a channel as a personal account with a payee name. It never maps to a
+company account, never takes a business route and is the only channel personal collections
+(support agreements set to Personal) settle into, by M-Pesa only. Those invoices are kept off the
+company's books entirely: no ledger entry, receivable, eTIMS submission or report figure.
+
 ## What customers are offered
 
 `GET /api/v1/pay/{tenant}/gateways` lists PayHero methods only when the tenant's account can take
@@ -118,6 +133,10 @@ an unmapped channel is matched by account number, or to the only account at the 
 channel; the tenant can change it by hand. The Team wallet maps to an account too. When a
 collection settles, its ledger entry debits the mapped account, so each account's balance follows
 the money.
+
+Each payment is booked once: a gateway payment of an invoice posts one receipt per payment
+intent (enforced in the database), the invoice's paid amount changes under a row lock once per
+intent, and voiding a manual payment removes only that payment.
 
 ## Callbacks
 
