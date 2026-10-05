@@ -10,6 +10,8 @@ read the [PayHero Integration Reference](../../integrations/payhero-integration-
 
 ## Before you start
 
+- PayHero is included from the **Growth** plans (it comes with M-Pesa integration). On a lower
+  plan the PayHero tab shows an upgrade option instead.
 - You need to be an admin with permission to manage payment gateways in Treasury.
 - Have your paybill, till or bank account details ready. PayHero adds these on its own dashboard,
   not in Treasury.
@@ -24,7 +26,7 @@ to use it:
 | Option | When to choose it |
 |---|---|
 | **Your own PayHero account under Codevertex** (recommended) | You get your own PayHero wallet, kept separate from every other business. Needed for escrow and wallet payments. |
-| **Shared platform account** | You only want payments to go into specific paybills or tills you claim. No wallet of your own. |
+| **Shared platform account** | You only want payments to go into your own paybill or till. Codevertex adds it on its PayHero account and attaches it to you; the money still goes straight to you. No wallet of your own. |
 | **Your existing PayHero account** | You already have a PayHero account and API key. Your key is stored encrypted. |
 
 With the recommended option, click **Create account**. Your business name, email and phone are
@@ -38,6 +40,11 @@ M-Pesa in Kenya, MTN and Airtel in Uganda) and how phone numbers are read.
 > set it up for you, or use one of the other two options in the meantime.
 
 ## Step 2: Add your paybills, tills and bank accounts
+
+On the **shared platform account**, send your paybill or till details to the Codevertex team.
+They add it on the PayHero account and attach it to your business; it then appears under
+**Channels and routing** and your customers' payments settle straight into it. Skip the rest of
+this step.
 
 PayHero channels (paybills, tills, bank accounts) are added on the PayHero dashboard. From the
 Account tab, use **Invite admin** to send a dashboard invitation to the person who will add them.
@@ -84,6 +91,13 @@ show the PayHero methods available in your country.
    updates on its own.
 
 If the prompt never arrives, they can use the offline paybill below instead.
+
+## The PayHero fee
+
+PayHero charges a small fee per payment. Depending on how Codevertex has set it up, either your
+account carries it, or your customer pays it on top of the amount: the payment page then shows
+the fee and the total before the prompt is sent, and the fee is recorded in your books as a
+recovered charge. Every payment's fee is shown with the transaction.
 
 ## Offline paybill for customers who cannot get a prompt
 
