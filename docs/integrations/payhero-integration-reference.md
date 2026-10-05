@@ -91,6 +91,29 @@ company account, never takes a business route and is the only channel personal c
 (support agreements set to Personal) settle into, by M-Pesa only. Those invoices are kept off the
 company's books entirely: no ledger entry, receivable, eTIMS submission or report figure.
 
+### Plans
+
+PayHero is gated on the plan's `mpesa_integration` feature (from the Growth tier, like direct
+M-Pesa): without it the PayHero write routes answer 403, the pay page offers no PayHero method and
+initiation refuses. Payments to the platform are not gated.
+
+### Shared-account tenants
+
+A tenant in `platform_root` mode collects into its own paybill or till added on the platform's
+PayHero account. The platform owner assigns the channel to it
+(`POST /platform/gateways/payhero/channels/{id}/assign`); tenants cannot claim channels. The
+platform never lists, routes to or maps an assigned channel, and the tenant's collections are its
+own (its intent, its ledger, never platform revenue or a payout owed).
+
+### Fees
+
+PayHero takes its cost from the account's prepaid service wallet. Treasury prices it from the
+platform fee rules for gateway `payhero` (amount bands), records it on every collection
+(`gateway_fee` metadata, `transaction_cost`) and, when the platform setting `fee_bearer` is
+`payer`, adds it to the tenant's prompt (quote: `GET /pay/{tenant}/fees/payhero`) and books it in
+the tenant's ledger as a recovered charge (4600). Payments to the platform, escrow and personal
+collections are never surcharged.
+
 ## What customers are offered
 
 `GET /api/v1/pay/{tenant}/gateways` lists PayHero methods only when the tenant's account can take

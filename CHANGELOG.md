@@ -2,6 +2,14 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.2] - 2026-10-05
+
+### Changed
+- **Accepting payments with PayHero**: PayHero from the Growth plans; the shared platform account
+  (Codevertex attaches your paybill or till); the PayHero fee and who pays it.
+- **PayHero Reference**: plan gate, platform-assigned channels on the shared account, fee
+  pricing, recording and the payer-borne option.
+
 ## [1.13.1] - 2026-10-05
 
 ### Changed
