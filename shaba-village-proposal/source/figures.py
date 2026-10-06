@@ -10,7 +10,7 @@ def fig_architecture():
         b.append(box(22 + i * 182, 30, 168, 42, l, "user", 10))
 
     b.append(lane(10, 98, 740, 76, "", "#FBF6FA"))
-    b.append(box(24, 118, 190, 48, ["marketplace-ui (R3)", "Boma Commerce, public site"], "new", 10, dashed=True))
+    b.append(box(24, 118, 190, 48, ["marketplace-ui (R3)", "Maskani Marketplace"], "new", 10, dashed=True))
     b.append(box(232, 118, 230, 48, ["property-ui", "portals, console, gate, vendors"], "new", 10))
     b.append(box(500, 118, 236, 48, ["property-api", "multi-tenant property domain"], "new", 10))
 
