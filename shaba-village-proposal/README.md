@@ -1,6 +1,9 @@
-# Shaba Village Estate Platform: Technical Proposal and SRDD
+# Codevertex Property Platform: SRDD and Shaba Village launch proposal
 
-`Shaba-Village-Estate-Platform-SRDD-Codevertex.pdf` is the client document (56 pages). It uses the
+`Codevertex-Property-Platform-SRDD-Shaba-Village.pdf` is the client document (78 pages). It specifies the
+multi-tenant property SaaS across four releases (R1 estate management and Shaba launch, R2 rental and
+portfolio management, R3 public marketplace, R4 extensions), with tenant-configurable modules, use case
+presets, a seeded charge catalogue and layered configuration, plus the Release 1 commercials for Shaba Village. It uses the
 same build, typeface (TeX Gyre Heros), page design and diagram style as the Hadia SRDD, with a
 linked contents page and PDF bookmarks.
 
@@ -12,8 +15,8 @@ replaces it. The main corrections:
 
 | Area | Original draft | This version |
 |---|---|---|
-| Client fit | Rent collection from tenants, landlords, public marketplace, land listings | Shaba Village's actual model: units sold outright or by deposit and instalments, then estate charges billed to owners. Marketplace and land listings removed |
-| Architecture | A new monolith with its own users, invoices, payments, receipts, notifications and audit tables | Only `estates-api` and `estates-ui` are new. Identity, invoices, M-Pesa, ledger, approvals, payouts, payroll and messaging reuse auth, treasury, erp and notifications, with references by ID |
+| Product shape | A single generic rental app | Multi-tenant SaaS: estate operators (Shaba first), property managers and landlords, and a verified public marketplace in R3; modules and use cases configured per tenant and per property |
+| Architecture | A new monolith with its own users, invoices, payments, receipts, notifications and audit tables | Only `property-api`, `property-ui` and (R3) `marketplace-ui` are new. Identity, invoices, M-Pesa, ledger, approvals, payouts, payroll and messaging reuse auth, treasury, erp and notifications, with references by ID |
 | Money | One payments table, no fund separation | Sales and estate funds kept apart (paybills, bank accounts, ledgers), ready for handover to the management corporation |
 | Utilities | "Utility billing" with no method | Meter rounds with photos, anomaly checks, estimates, water balance against Mavoko and borehole supply; electricity not resold |
 | Service providers | A "service provider" role that updates job status | Full provider cycle: licences with expiry, contracts and SLAs, schedules, guard posts, rosters, patrols, evidence, vendor portal, SLA credits, approval and payment |

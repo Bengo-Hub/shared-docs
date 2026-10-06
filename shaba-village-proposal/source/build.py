@@ -17,7 +17,7 @@ import pikepdf
 import figures as F
 
 here = Path(__file__).parent
-OUT = here.parent / "Shaba-Village-Estate-Platform-SRDD-Codevertex.pdf"
+OUT = here.parent / "Codevertex-Property-Platform-SRDD-Shaba-Village.pdf"
 logo_uri = "data:image/png;base64," + base64.b64encode((here / "logo.png").read_bytes()).decode()
 
 FORBIDDEN = ["—", "§", "→", "“", "”", "’"]
@@ -35,6 +35,7 @@ def assemble():
         "FIG_WORKORDER": F.fig_workorder(), "FIG_VENDOR": F.fig_vendor(), "FIG_GATE": F.fig_gate(),
         "FIG_ONBOARD": F.fig_onboarding(), "FIG_ERD": F.fig_erd(), "FIG_GANTT": F.fig_gantt(),
         "FIG_WIRE": F.fig_wireframes(), "FIG_OWNERSHIP": F.fig_ownership(),
+        "FIG_TENANCY": F.fig_tenancy(), "FIG_RELEASES": F.fig_releases(), "FIG_LEASE": F.fig_lease(), "FIG_LISTING": F.fig_listing(),
     }
     for k, v in figs.items():
         body = body.replace("{" + k + "}", v)
@@ -104,7 +105,7 @@ def toc_html(toc, pages):
 
 
 def page_html(body, css):
-    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shaba Village Estate Platform SRDD</title>'
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Codevertex Property Platform SRDD</title>'
             f'<style>{css}</style></head><body>{body}</body></html>')
 
 
@@ -164,9 +165,9 @@ def main():
 
     with pikepdf.open(here / "body.pdf") as pdf, pikepdf.open(here / "cover.pdf") as cov:
         pdf.pages.insert(0, cov.pages[0])
-        pdf.docinfo["/Title"] = "Shaba Village Estate Management Platform: Technical Proposal and SRDD"
+        pdf.docinfo["/Title"] = "Codevertex Property Platform: SRDD and Shaba Village Launch Proposal"
         pdf.docinfo["/Author"] = "Codevertex Africa Limited"
-        pdf.docinfo["/Subject"] = "Software requirements and design, delivery plan and commercial terms"
+        pdf.docinfo["/Subject"] = "Multi-tenant property management and real estate marketplace platform"
         pdf.Root.PageMode = pikepdf.Name.UseOutlines
         pdf.remove_unreferenced_resources()
         pdf.save(OUT, compress_streams=True, recompress_flate=True,

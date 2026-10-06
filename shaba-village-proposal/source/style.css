@@ -85,3 +85,5 @@ table.sched td:first-child, th.nw { white-space: nowrap; }
 .keep { break-inside: avoid; }
 table.qi td:last-child { white-space: nowrap; }
 table.qi td:first-child { width: 38%; }
+
+table.req4 td:nth-child(3), table.req4 th:nth-child(3) { text-align: center; width: 1%; font-weight: 700; color: var(--muted); }
