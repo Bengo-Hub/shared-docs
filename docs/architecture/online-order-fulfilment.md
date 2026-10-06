@@ -119,8 +119,8 @@ ROOM SERVICE, BAR TAB, ONLINE PICKUP, ONLINE DELIVERY) and the source (POS, or t
 with its order number), the customer for counter hand-overs, the promised time and the order
 note. The KDS board groups and counts tickets by the same order type.
 
-Online `dine_in` orders are not handed to the outlet today (`isOutletFulfilled` covers pickup and
-delivery only).
+Online dine-in (table QR) is not offered: checkout refuses `dine_in` with a 400 asking for pickup
+or delivery, since such an order would never reach the outlet.
 
 ## Payment options
 
