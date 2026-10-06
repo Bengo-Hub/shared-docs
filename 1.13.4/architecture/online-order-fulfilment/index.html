@@ -2436,6 +2436,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Order lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-outlet-does-with-a-confirmed-order-by-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the outlet does with a confirmed order, by use case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3510,6 +3527,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Order lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-outlet-does-with-a-confirmed-order-by-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the outlet does with a confirmed order, by use case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3654,6 +3688,21 @@ the payment options, the acceptance policy, who may act at each stage, and per-t
    (bookings and dine-in get none).</li>
 <li><strong>Payment.</strong> Online payment (STK, card, wallet) marks it paid through the treasury callback.
    Pay-on-collection and manual M-Pesa orders do not wait for payment.</li>
+<li><strong>Retry window.</strong> A prompt the customer cancels or lets time out does not cancel the order.
+     It stays <code>pending</code> with its stock held until a deadline stamped at checkout
+     (<code>orders.payment_retry_window_minutes</code>, default 30); each failed attempt is recorded once on
+     the order. The order page shows "Payment not completed" with the time left and <strong>Retry
+     payment</strong> (<code>POST /orders/{id}/payment/retry</code>, guests <code>POST /orders/guest/{id}/payment/retry</code>),
+     which reuses the open intent or creates a fresh one (<code>ORD-...-R{n}</code>). Retries are refused when
+     the order is paid or a payment is processing (409), after the window (410), or more than 5
+     times or within 20 seconds of the last (429).</li>
+<li>A success on any attempt confirms the order once and it moves on as a first-time payment
+     would (acceptance, outlet hand-off, messages). A second success on a paid order is flagged for
+     refund; a success after the order was cancelled leaves it cancelled and is logged for
+     reconciliation. Refunds for these are manual.</li>
+<li>The stale-payment poller works in bounded pages, cancels only after the window, never on a
+     treasury error, and allows 10 minutes while a prompt is still processing. Staff see these
+     orders as "Awaiting payment (retry open until HH:MM)" with no Accept action.</li>
 <li><strong>Acceptance.</strong> Tenant setting <code>orders.auto_accept</code> (ordering service config, default
    <code>false</code>):</li>
 <li>Manual (default): ordering publishes <code>ordering.order.awaiting_acceptance</code>. pos-api creates the
@@ -3686,7 +3735,9 @@ the payment options, the acceptance policy, who may act at each stage, and per-t
    declined it.</li>
 <li><strong>Rider declines</strong> (before pickup): <code>POST /{tenant}/riders/me/tasks/{id}/decline {reason}</code>.
      The task returns to <code>pending</code>, <code>logistics.task.unassigned</code> is published, the dispatch board
-     gets an alert, and with auto-assign on the next rider is picked.</li>
+     gets an alert, and with auto-assign on the next rider is picked. ordering marks the order and
+     its assignment <code>needs_rider</code> and clears the rider (only if that rider is still the current
+     one, so a newer assignment is kept).</li>
 <li><strong>Failed delivery</strong> (after pickup): the rider sets <code>failed</code> with a reason. The assignment
      ends (the rider is free), <code>logistics.task.failed</code> carries <code>failure_reason</code>, and the dispatch
      board is alerted to get the order back to the outlet.</li>
@@ -3695,7 +3746,14 @@ the payment options, the acceptance policy, who may act at each stage, and per-t
      <code>reassign: true</code>).</li>
 <li>Live tracking for the customer: <code>GET /api/v1/s2s/dispatch/{tenant}/tasks/{id}/tracking</code>
      (service key) returns the rider's last position, name, phone and ETA while the rider is
-     working the task.</li>
+     working the task; ordering serves it on <code>/delivery/tracking</code> and the order page's
+     <code>rider_location</code> stream.</li>
+<li>The <code>ordering.order.ready</code> payload always carries the outlet's name, address and phone as the
+     pickup point (coordinates only when set). A failed delivery emails the business
+     (<code>ordering.order.delivery_failed</code>, template <code>ordering/delivery_failed_tenant</code>).</li>
+<li>ordering ignores logistics task events whose <code>source_service</code> is set and is not <code>ordering</code>.
+     Tasks the POS dispatches for till delivery orders carry <code>source_service = pos</code>; pos-api follows
+     them itself and shows the rider's progress on the POS delivery queue.</li>
 <li><strong>Cancellation</strong> releases stock, refunds a prepaid order and voids the POS record and its
    tickets. A customer can cancel only until the kitchen starts; after that the outlet rejects.
    logistics-api consumes <code>ordering.order.cancelled</code> and cancels the open delivery task (the
@@ -3705,6 +3763,37 @@ the payment options, the acceptance policy, who may act at each stage, and per-t
 the request whose status write wins, so duplicate or redelivered events never repeat them.</p>
 <p>Service bookings (salon, barber, garage) create a POS appointment instead of a takeaway ticket;
 the storefront hides booked slots (public <code>GET /{tenant}/pos/appointments/booked-slots</code>).</p>
+<h3 id="what-the-outlet-does-with-a-confirmed-order-by-use-case">What the outlet does with a confirmed order, by use case<a class="headerlink" href="#what-the-outlet-does-with-a-confirmed-order-by-use-case" title="Permanent link">&para;</a></h3>
+<p>pos-api decides it once (<code>outletpolicy.WorkflowFor</code>) from the outlet's use case and the order type,
+for online and till orders alike:</p>
+<table>
+<thead>
+<tr>
+<th>Outlet</th>
+<th>Online pickup / delivery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hospitality, quick service</td>
+<td>KDS tickets on the routed stations and kitchen/bar chits, then the pickup or delivery queue</td>
+</tr>
+<tr>
+<td>Retail, and goods from a services outlet</td>
+<td>Straight to the pickup or delivery queue as a pick list; no kitchen ticket or chit</td>
+</tr>
+<tr>
+<td>Services booking</td>
+<td>Appointment in the outlet calendar</td>
+</tr>
+</tbody>
+</table>
+<p>Every kitchen/bar chit prints the order type in large letters (DINE-IN, TAKEAWAY, DELIVERY,
+ROOM SERVICE, BAR TAB, ONLINE PICKUP, ONLINE DELIVERY) and the source (POS, or the online store
+with its order number), the customer for counter hand-overs, the promised time and the order
+note. The KDS board groups and counts tickets by the same order type.</p>
+<p>Online <code>dine_in</code> orders are not handed to the outlet today (<code>isOutletFulfilled</code> covers pickup and
+delivery only).</p>
 <h2 id="payment-options">Payment options<a class="headerlink" href="#payment-options" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3991,7 +4080,7 @@ removes the override. Tenant updates clear the shared <code>tenant:&lt;slug&gt;<
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 15:53:14 UTC">October 6, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 20:46:45 UTC">October 6, 2026</span>
   </span>
 
     
