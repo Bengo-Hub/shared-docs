@@ -16,7 +16,7 @@
 
 <section id="summary">
 <h2 class="nonum">Executive summary</h2>
-<p>Codevertex Property is a multi-tenant software-as-a-service platform for the Kenyan real estate market, built on the same shared services that already run Codevertex's commerce, finance and HR products. One platform serves three kinds of business, each as an isolated tenant with its own users, properties, money and brand:</p>
+<p>Codevertex Makazi is a multi-tenant software-as-a-service platform for the Kenyan real estate market, built on the same shared services that already run Codevertex's commerce, finance and HR products. One platform serves three kinds of business, each as an isolated tenant with its own users, properties, money and brand:</p>
 <ul>
 <li><b>Estate operators and developers</b> such as Shaba Village, who sell homes and apartments outright or by instalments and then manage the estate and bill owners for water, service charge and shared services.</li>
 <li><b>Property management firms</b> that let and manage buildings for many landlords: they list units, onboard tenants on signed leases, collect rent and utilities, arrange repainting and repairs, assign caretakers and managers to each property, and remit to landlords with statements.</li>
@@ -47,9 +47,11 @@
 <section id="introduction">
 <h2>Introduction</h2>
 <h3>Purpose</h3>
-<p>This document specifies the requirements and design of the Codevertex Property platform across its releases, the delivery plan for Release 1, and the commercial terms for Shaba Village as launch tenant. It is the basis for development, testing and acceptance, and replaces the earlier property management requirements document.</p>
+<p>This document specifies the requirements and design of Codevertex Makazi across its releases, the delivery plan for Release 1, and the commercial terms for Shaba Village as launch tenant. It is the basis for development, testing and acceptance, and replaces the earlier property management requirements document.</p>
 <h3>Product vision</h3>
-<p>Kenyan property businesses run on spreadsheets, paybill statements, WhatsApp groups and paper files. Rent and service charge are reconciled by hand, deposits disappear into general accounts, repairs are chased by phone, and house hunters lose money to fake listings. Codevertex Property gives each business one system of record for its properties, people, agreements and money, and gives the public one place to find property that is real, available and verified.</p>
+<p>Kenyan property businesses run on spreadsheets, paybill statements, WhatsApp groups and paper files. Rent and service charge are reconciled by hand, deposits disappear into general accounts, repairs are chased by phone, and house hunters lose money to fake listings. Makazi gives each business one system of record for its properties, people, agreements and money, and gives the public one place to find property that is real, available and verified.</p>
+<h3>The name</h3>
+<p><i>Makazi</i> is Kiswahili for homes, dwellings and settlements: the places people live, and the estates, buildings and land they are part of. It names the whole platform, from the estate office to the rental portfolio. The public marketplace in Release 3 carries the same name as <b>Makazi Market</b>, so a house hunter who finds a home there meets the same brand again in the portal where they pay rent or service charge. In line with other Codevertex products such as Books, whose service is treasury-api, the brand sits on functional service names: property-api, property-ui and marketplace-ui.</p>
 <h3>Launch tenant: Shaba Village</h3>
 <p>Shaba Village is a residential estate in Syokimau, off Mombasa Road, in the Mavoko area of Machakos County. It comprises homes and apartments, including two and three bedroom units, sold outright or on deposit and instalments. Estate management supplies water from the Mavoko Water and Sewerage Company connection and two boreholes through an underground reservoir and unit tanks, and runs perimeter security, 24-hour guarding, landscaping, cleaning, garbage collection, sewer and parking, all billed to owners every month. Shaba's needs define Release 1; its configuration is described in <a href="#model">Estate management: Shaba Village configuration</a>.</p>
 <h3>Scope by release</h3>
@@ -122,7 +124,7 @@
 <tr><td>Kenyan estate disputes</td><td>Unaccounted service charge and mixed funds drive litigation by owners</td><td>Separate fund ledgers, budget against actual, AGM statements</td></tr>
 </table>
 <h3>Positioning</h3>
-<p>Local tools collect rent but do not run an estate, sell units or manage providers; global tools are priced in dollars and do not speak M-Pesa, eTIMS or Kenyan tax. Codevertex Property combines both, and it is the only product in the segment that sits on a full accounting, payroll and messaging stack already in production.</p>
+<p>Local tools collect rent but do not run an estate, sell units or manage providers; global tools are priced in dollars and do not speak M-Pesa, eTIMS or Kenyan tax. Makazi combines both, and it is the only product in the segment that sits on a full accounting, payroll and messaging stack already in production.</p>
 </section>
 
 <section id="overview">
