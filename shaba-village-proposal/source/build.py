@@ -17,7 +17,7 @@ import pikepdf
 import figures as F
 
 here = Path(__file__).parent
-OUT = here.parent / "Lintel-SRDD-Shaba-Village-Codevertex.pdf"
+OUT = here.parent / "Codevertex-Boma-SRDD-Shaba-Village.pdf"
 logo_uri = "data:image/png;base64," + base64.b64encode((here / "logo.png").read_bytes()).decode()
 
 FORBIDDEN = ["—", "§", "→", "“", "”", "’"]
@@ -105,7 +105,7 @@ def toc_html(toc, pages):
 
 
 def page_html(body, css):
-    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Lintel SRDD</title>'
+    return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Codevertex Boma SRDD</title>'
             f'<style>{css}</style></head><body>{body}</body></html>')
 
 
@@ -165,7 +165,7 @@ def main():
 
     with pikepdf.open(here / "body.pdf") as pdf, pikepdf.open(here / "cover.pdf") as cov:
         pdf.pages.insert(0, cov.pages[0])
-        pdf.docinfo["/Title"] = "Lintel by Codevertex: SRDD and Shaba Village Launch Proposal"
+        pdf.docinfo["/Title"] = "Codevertex Boma: SRDD and Shaba Village Launch Proposal"
         pdf.docinfo["/Author"] = "Codevertex Africa Limited"
         pdf.docinfo["/Subject"] = "Multi-tenant property management and real estate marketplace platform"
         pdf.Root.PageMode = pikepdf.Name.UseOutlines
