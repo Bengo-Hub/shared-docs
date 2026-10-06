@@ -1,0 +1,141 @@
+<section id="functional">
+<h2>Functional requirements</h2>
+<p>Priority: <b>M</b> must have, <b>S</b> should have, <b>C</b> could have. All M and S requirements are in the build price.</p>
+<table class="req">
+<tr><th>ID</th><th>Requirement</th><th>Pri.</th></tr>
+<tr class="grp"><td colspan="3">Estate register and accounts</td></tr>
+<tr><td>FR-01</td><td>Record blocks, houses and apartments with code, type, bedrooms, floor area, parking bays, meter serials and unit entitlement.</td><td>M</td></tr>
+<tr><td>FR-02</td><td>Record owners, joint owners and ownership dates per unit. A change of ownership keeps the history and closes the old owner's account on the transfer date.</td><td>M</td></tr>
+<tr><td>FR-03</td><td>Record occupants (owner, household member, tenant) with dates. Owners add and remove their own occupants, vehicles and domestic staff.</td><td>M</td></tr>
+<tr><td>FR-04</td><td>Import units, owners, occupants, sale contracts and opening balances from a spreadsheet template, with validation and a dry run before commit.</td><td>M</td></tr>
+<tr><td>FR-05</td><td>Owners, buyers, occupants and vendor supervisors sign in with a mobile number and a 6-digit one-time password. Staff use single sign-on with MFA.</td><td>M</td></tr>
+<tr><td>FR-06</td><td>Owners accept the terms and privacy notice on first sign-in; version and time are recorded.</td><td>M</td></tr>
+<tr class="grp"><td colspan="3">Unit sales and instalments</td></tr>
+<tr><td>FR-07</td><td>Maintain price lists by unit type and phase with effective dates. Unit availability shown as available, reserved, under agreement, fully paid, handed over and titled.</td><td>M</td></tr>
+<tr><td>FR-08</td><td>Reserve a unit for a named buyer for a set period on payment of a reservation fee. Expired reservations release the unit automatically.</td><td>M</td></tr>
+<tr><td>FR-09</td><td>Record a sale contract: buyer KYC, price, discounts, deposit, payment terms, agreement date, advocates, and the signed agreement document.</td><td>M</td></tr>
+<tr><td>FR-10</td><td>Generate an instalment schedule (monthly, quarterly or milestone based) or record an outright purchase. Schedules can be restructured with approval; the original is kept.</td><td>M</td></tr>
+<tr><td>FR-11</td><td>Buyers pay instalments by sales paybill or M-Pesa prompt. Payments settle the oldest due instalment first; overpayments reduce the next instalment.</td><td>M</td></tr>
+<tr><td>FR-12</td><td>Reminders before each due date and after a missed one. Late charges apply only as the agreement provides. Defaults beyond the grace period are escalated to the sales officer.</td><td>M</td></tr>
+<tr><td>FR-13</td><td>Purchase statement in PDF and spreadsheet: price, payments with M-Pesa receipts, balance and next due date.</td><td>M</td></tr>
+<tr><td>FR-14</td><td>Handover checklist with meter readings, keys, snag list and owner signature; estate billing starts on the handover date, prorated for the first month.</td><td>M</td></tr>
+<tr><td>FR-15</td><td>Track title stages (sectional plan, lease or title preparation, stamp duty, registration, release) with dates and documents.</td><td>S</td></tr>
+<tr><td>FR-16</td><td>Defects raised during the defects liability period are logged as work orders against the contractor.</td><td>S</td></tr>
+<tr class="grp"><td colspan="3">Billing and utilities</td></tr>
+<tr><td>FR-17</td><td>Configure charge types, rates, bases (fixed, per type, by entitlement, metered), effective dates, fund and bill-to rules.</td><td>M</td></tr>
+<tr><td>FR-18</td><td>Caretakers record monthly meter readings on a phone with a photo per meter. Readings lower than the last, zero, or above three times the 3-month average are flagged.</td><td>M</td></tr>
+<tr><td>FR-19</td><td>Missing readings are estimated from the 3-month average, marked as estimated on the bill, and corrected on the next actual reading.</td><td>M</td></tr>
+<tr><td>FR-20</td><td>Record bulk readings for the Mavoko connection and each borehole; produce a water balance with loss percentage and an alert above the set threshold.</td><td>M</td></tr>
+<tr><td>FR-21</td><td>Run the monthly billing for all units: one invoice per unit and fund, with line items, meter reading, photo link and due date. Reruns never duplicate an invoice.</td><td>M</td></tr>
+<tr><td>FR-22</td><td>Issue one-off invoices for special levies, recharges and parking, and credit notes for corrections, under approval above a limit.</td><td>M</td></tr>
+<tr><td>FR-23</td><td>Owners view each bill with the meter photo and may query a line within 7 days; queries enter the finance queue.</td><td>S</td></tr>
+<tr class="grp"><td colspan="3">Payments and collections</td></tr>
+<tr><td>FR-24</td><td>Match paybill payments by account number to the unit account, allocate by the configured order (oldest first by default), and receipt by SMS or WhatsApp.</td><td>M</td></tr>
+<tr><td>FR-25</td><td>Owners pay from the portal by M-Pesa prompt; finance records bank transfers and cheques with references.</td><td>M</td></tr>
+<tr><td>FR-26</td><td>Unmatched payments go to a suspense queue; assigning one to a unit allocates and receipts it.</td><td>M</td></tr>
+<tr><td>FR-27</td><td>Overpayments are held as credit and applied to the next invoice.</td><td>M</td></tr>
+<tr><td>FR-28</td><td>Escalating reminders at configurable days after the due date; a demand letter generated at a set age for review and sending.</td><td>M</td></tr>
+<tr><td>FR-29</td><td>Arrears payment plans agreed with an owner, with their own schedule and reminders.</td><td>S</td></tr>
+<tr><td>FR-30</td><td>Clearance certificate for a unit resale, issued only when all estate balances are nil.</td><td>S</td></tr>
+<tr><td>FR-31</td><td>Owner statement per fund, on demand, in PDF and spreadsheet.</td><td>M</td></tr>
+<tr class="grp"><td colspan="3">Service providers</td></tr>
+<tr><td>FR-32</td><td>Register vendors with KRA PIN, contacts, payment details and compliance documents (NEMA waste licence, PSRA licence, county permit, NCA registration, insurance), each with an expiry date and alerts 30 days ahead.</td><td>M</td></tr>
+<tr><td>FR-33</td><td>Record vendor contracts: scope, fee basis (monthly, per visit, per job), start and end, SLAs, service credits and renewal date.</td><td>M</td></tr>
+<tr><td>FR-34</td><td>Generate recurring service visits from contract schedules: garbage collection days, cleaning rosters by block, landscaping, pest control, tank cleaning, fence and pump servicing.</td><td>M</td></tr>
+<tr><td>FR-35</td><td>Record visit completion with time and photos by the vendor supervisor or caretaker. A visit not completed in its window is marked missed. Residents can report a missed collection.</td><td>M</td></tr>
+<tr><td>FR-36</td><td>Security agency: define posts and shifts, receive the agency's roster, sign guards on and off at the gate tablet, and report post coverage against the contract.</td><td>M</td></tr>
+<tr><td>FR-37</td><td>Patrol checkpoints with QR tags; scheduled rounds; scans recorded with time; missed rounds reported.</td><td>S</td></tr>
+<tr><td>FR-38</td><td>Register agency personnel deployed at the estate (name, agency, role, phone), issue access badges and deactivate them on removal.</td><td>M</td></tr>
+<tr><td>FR-39</td><td>Vendors submit invoices through the vendor portal with their eTIMS invoice number. The platform shows the contract fee, delivered service, missed service and the resulting service credit before approval.</td><td>M</td></tr>
+<tr><td>FR-40</td><td>Approved vendor bills are paid by bank transfer or M-Pesa from the estate account, with withholding tax where applicable, and a remittance advice sent to the vendor.</td><td>M</td></tr>
+<tr><td>FR-41</td><td>Vendor scorecard: on-time visits, missed visits, post coverage, incidents and resident complaints by month.</td><td>S</td></tr>
+<tr class="grp"><td colspan="3">Maintenance</td></tr>
+<tr><td>FR-42</td><td>Residents raise maintenance requests with category, description and photos, and follow progress.</td><td>M</td></tr>
+<tr><td>FR-43</td><td>Work orders carry priority with SLA targets, are assigned to estate staff or a vendor, and record time on site, parts, cost and completion photos.</td><td>M</td></tr>
+<tr><td>FR-44</td><td>Jobs above a set value need a quote and approval before work starts.</td><td>M</td></tr>
+<tr><td>FR-45</td><td>Residents confirm completion or reopen within 7 days. In-unit work can be recharged to the unit.</td><td>M</td></tr>
+<tr><td>FR-46</td><td>Preventive maintenance schedules for shared assets (pumps, boreholes, tanks, reservoir, electric fence, gate, drainage, fire equipment) generate work orders automatically.</td><td>M</td></tr>
+<tr class="grp"><td colspan="3">Security and access</td></tr>
+<tr><td>FR-47</td><td>Residents create visitor passes (single visit or recurring) with a time window; the visitor receives a QR code and a 6-digit code by SMS or WhatsApp.</td><td>M</td></tr>
+<tr><td>FR-48</td><td>Guards verify passes at the gate, record walk-in visitors and request host approval in the app or by SMS. Entry and exit are logged with plate number where applicable.</td><td>M</td></tr>
+<tr><td>FR-49</td><td>Deliveries, domestic staff and contractors on an open work order have their own pass types.</td><td>M</td></tr>
+<tr><td>FR-50</td><td>The gate tablet works offline for at least 8 hours, using cached passes, and synchronises on reconnection.</td><td>M</td></tr>
+<tr><td>FR-51</td><td>Guards and staff record incidents with category, time, location and photos in a digital occurrence book; serious incidents alert the estate manager at once.</td><td>M</td></tr>
+<tr><td>FR-52</td><td>Estate management may restrict a person from entry with a recorded reason and review date.</td><td>S</td></tr>
+<tr class="grp"><td colspan="3">Estate staff</td></tr>
+<tr><td>FR-53</td><td>Estate staff and casual workers are managed in the ERP: records, contracts, leave, attendance, payroll with PAYE, NSSF, SHIF and the housing levy, and casual daily payments by M-Pesa.</td><td>M</td></tr>
+<tr><td>FR-54</td><td>Work orders and service checks can be assigned to ERP staff; staff sign-on at the gate is shared with ERP attendance.</td><td>S</td></tr>
+<tr class="grp"><td colspan="3">Communication and documents</td></tr>
+<tr><td>FR-55</td><td>Send notices to the whole estate, a block, owners only or occupants, by SMS, WhatsApp, email and in-app, with delivery status.</td><td>M</td></tr>
+<tr><td>FR-56</td><td>Water interruption and emergency alerts with priority delivery.</td><td>M</td></tr>
+<tr><td>FR-57</td><td>Document library: by-laws, house rules, AGM notices and minutes, budgets, audited accounts, insurance certificates, with access by role.</td><td>M</td></tr>
+<tr><td>FR-58</td><td>Non-binding owner polls with one response per unit.</td><td>C</td></tr>
+<tr class="grp"><td colspan="3">Finance, reports and administration</td></tr>
+<tr><td>FR-59</td><td>Annual service charge budget by cost line; budget against actual every month; income and expenditure statement for the AGM.</td><td>M</td></tr>
+<tr><td>FR-60</td><td>Reports and dashboards as set out in <a href="#reporting">Reporting and analytics</a>, exportable to PDF, CSV and Excel.</td><td>M</td></tr>
+<tr><td>FR-61</td><td>Settings: charges, tariffs, penalties, allocation order, reminder days, approval limits, SLA targets, retention periods.</td><td>M</td></tr>
+<tr><td>FR-62</td><td>Data subject requests (access, correction, deletion) with deadline tracking.</td><td>M</td></tr>
+<tr><td>FR-63</td><td>Audit log of every change to charges, invoices, allocations, sale contracts, approvals, access rights and settings.</td><td>M</td></tr>
+</table>
+</section>
+
+<section id="nonfunctional">
+<h2>Non-functional requirements</h2>
+<table class="nfr">
+<tr><th>ID</th><th>Attribute</th><th>Requirement</th></tr>
+<tr><td>NFR-01</td><td>Mobile performance</td><td>Owner portal initial transfer under 200 KB excluding images. Largest Contentful Paint under 2.5 seconds on a mid-range Android phone over 3G. Photos served as resized WebP.</td></tr>
+<tr><td>NFR-02</td><td>Response time</td><td>95th percentile under 300 ms for reads and 600 ms for writes, excluding M-Pesa latency. Gate pass verification under 1 second, online or offline.</td></tr>
+<tr><td>NFR-03</td><td>Capacity and growth</td><td>Designed for 2,000 units, 100,000 gate events and 5,000 payments a month, scalable tenfold without redesign: keyset pagination on all lists, monthly partitions for gate events, reports from daily aggregates, read replica for analytics.</td></tr>
+<tr><td>NFR-04</td><td>Billing performance</td><td>A billing run for 1,000 units completes within 2 minutes and is safe to retry.</td></tr>
+<tr><td>NFR-05</td><td>Availability</td><td>99.5% monthly for the portal, gate service and payment matching. Two replicas per service; zero-downtime deployments.</td></tr>
+<tr><td>NFR-06</td><td>Financial integrity</td><td>Each M-Pesa receipt recorded once; each invoice issued once per unit and period; balanced double-entry ledger; daily reconciliation of paybill statements against payments.</td></tr>
+<tr><td>NFR-07</td><td>Security</td><td>OWASP ASVS Level 2, TLS throughout, encryption of identity numbers and KRA PINs at field level, MFA for staff, audit trail on financial and configuration changes.</td></tr>
+<tr><td>NFR-08</td><td>Privacy</td><td>Data minimisation, consent records, retention schedule enforced by automated purge, documented hosting location and transfer safeguards.</td></tr>
+<tr><td>NFR-09</td><td>Accessibility</td><td>WCAG 2.2 Level AA.</td></tr>
+<tr><td>NFR-10</td><td>Localisation</td><td>English at launch; text externalised for Kiswahili. Dates and amounts in Kenyan format.</td></tr>
+<tr><td>NFR-11</td><td>Recovery</td><td>Daily encrypted offsite backups retained as 7 daily and 4 weekly copies; quarterly restore drills. RPO 24 hours, RTO 4 hours.</td></tr>
+<tr><td>NFR-12</td><td>Observability</td><td>Structured logs, tracing, alerts on failed billing runs, unmatched payment build-up, offline gate devices, error rates and latency.</td></tr>
+<tr><td>NFR-13</td><td>Maintainability</td><td>Codevertex platform stack and conventions, automated tests, documented APIs, versioned database migrations.</td></tr>
+</table>
+</section>
+
+<section id="architecture">
+<h2>Solution architecture</h2>
+<figure>{FIG_ARCH}<figcaption>Solution architecture</figcaption></figure>
+<h3>Components</h3>
+<table>
+<tr><th>Component</th><th>Status</th><th>Function</th></tr>
+<tr><td>estates-ui</td><td class="new">New</td><td>Next.js progressive web application with four surfaces: owner portal, management console, gate tablet and vendor portal. Uses the Codevertex shared UI library for sign-in, the payment modal, data tables with export, document preview, legal links and cookie consent.</td></tr>
+<tr><td>estates-api</td><td class="new">New</td><td>Go service for units, ownership, occupancy, charge rules, meters, billing runs, sale contracts, work orders, vendors' contracts and visits, agency personnel, posts and patrols, passes, gate events, incidents, notices and statistics. Does not move money.</td></tr>
+<tr><td>auth-api</td><td class="reuse">Existing, extended</td><td>Tenant, staff single sign-on with MFA, roles, sessions, terms acceptance. Extended with mobile one-time password sign-in for owners, occupants and vendor supervisors.</td></tr>
+<tr><td>treasury-api</td><td class="reuse">Existing, extended</td><td>Customers and balances, invoices and credit notes, recurring billing, payment intents, M-Pesa prompt and paybill (C2B), allocation, dunning reminders, statements, vendor bills, approvals, payouts, withholding tax, eTIMS, budgets and the general ledger. Extended with paybill matching by unit account number and instalment schedules linked to sale contracts.</td></tr>
+<tr><td>treasury-ui</td><td class="reuse">Existing</td><td>Finance console for the ledger, bank reconciliation, vendor bills, approvals and financial statements.</td></tr>
+<tr><td>erp-api, erp-ui</td><td class="reuse">Existing</td><td>Estate staff records, contracts, attendance, leave, payroll with statutory deductions, casual worker payments and asset register. Payroll posts to treasury.</td></tr>
+<tr><td>notifications-api</td><td class="reuse">Existing</td><td>SMS, WhatsApp, email and push delivery with templates and delivery status. Estate templates added.</td></tr>
+<tr><td>subscriptions-api</td><td class="reuse">Existing</td><td>Shaba Village's plan, feature entitlements and limits.</td></tr>
+<tr><td>Shared libraries</td><td class="reuse">Existing</td><td>Authentication client, service client with retries and circuit breakers, event outbox, cache with job leases, rate limiting, pagination, HTTP middleware, shared UI library.</td></tr>
+</table>
+<h3>Architecture principles</h3>
+<ul>
+<li><b>Single data owner.</b> Each record has one home. estates-api stores the treasury invoice, account and plan IDs, the ERP employee ID and the auth user ID, and reads balances from treasury rather than keeping its own.</li>
+<li><b>Single payment path.</b> Only treasury-api talks to M-Pesa and the banks. estates-api asks treasury to invoice and to pay.</li>
+<li><b>Event driven.</b> Treasury publishes payment, invoice and payout events through a transactional outbox to NATS. estates-api consumes them idempotently by event ID.</li>
+<li><b>Replica safe.</b> Billing runs, reminders, SLA timers and purges run once per period across all replicas using shared leases.</li>
+<li><b>Built for growth.</b> Indexed tenant and estate keys on every table, keyset pagination, time-partitioned event tables, aggregates for reports and a read replica for heavy queries.</li>
+<li><b>Standard stack.</b> Go with Ent and Atlas migrations, Next.js, Helm and ArgoCD.</li>
+</ul>
+<h3>What already exists</h3>
+<p>Most of what an estate needs financially is already in production on the platform. The table shows where the estate build reuses it.</p>
+<table>
+<tr><th>Need</th><th>Existing capability used</th></tr>
+<tr><td>Monthly invoices with numbering, tax and due dates</td><td>treasury invoicing and recurring schedules</td></tr>
+<tr><td>M-Pesa prompts and paybill confirmations, recorded once per receipt</td><td>treasury M-Pesa gateway and C2B inbox</td></tr>
+<tr><td>Escalating overdue reminders with a pay link</td><td>treasury dunning worker</td></tr>
+<tr><td>Owner and vendor balances, ageing and statements</td><td>treasury receivables and payables</td></tr>
+<tr><td>Vendor bills, approval with OTP, payment by bank or M-Pesa</td><td>treasury vendor bills, approvals engine and payout dispatcher</td></tr>
+<tr><td>Withholding tax and eTIMS</td><td>treasury tax module and KRA integration</td></tr>
+<tr><td>Instalment plans</td><td>treasury instalment plans, extended for sale contracts</td></tr>
+<tr><td>Payroll, casual workers, attendance</td><td>erp-api payroll and casual payment modules</td></tr>
+<tr><td>SMS, WhatsApp and email with delivery status</td><td>notifications-api</td></tr>
+</table>
+</section>

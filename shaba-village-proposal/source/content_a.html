@@ -1,0 +1,188 @@
+<section class="page">
+<h2 class="nonum">Document control</h2>
+<table>
+<tr><th>Version</th><th>Date</th><th>Author</th><th>Description</th></tr>
+<tr><td>1.0</td><td>6 October 2026</td><td>Codevertex Africa Limited</td><td>Issued for client review</td></tr>
+</table>
+<table>
+<tr><th>Role</th><th>Party</th><th>Responsibility</th></tr>
+<tr><td>Product owner</td><td>Shaba Village estate management</td><td>Scope approval, business rules, by-law and tariff decisions, data supply, legal sign-off</td></tr>
+<tr><td>Finance lead</td><td>Shaba Village</td><td>Charge rates, opening balances, bank and paybill set-up, approval limits</td></tr>
+<tr><td>Delivery lead</td><td>Codevertex</td><td>Planning, scope control, reporting, risk management</td></tr>
+<tr><td>Technical lead</td><td>Codevertex</td><td>Architecture, code quality, security, releases</td></tr>
+</table>
+{TOC}
+</section>
+
+<section id="summary">
+<h2 class="nonum">Executive summary</h2>
+<p>Codevertex Africa Limited proposes to design, build and launch the Shaba Village Estate Platform. The platform runs the estate's two money streams and its daily operations in one place. The first stream is the sale of homes and apartments, paid outright or by deposit and instalments. The second is the monthly billing of water, service charge, garbage collection, security and other estate charges to every owner.</p>
+<p>Owners see their purchase progress, bills, meter readings and receipts on their phone and pay by M-Pesa against their unit number. Payments are matched and receipted automatically. The management team works from one console covering units, billing, arrears, sales, maintenance, service providers, gate security and reports. Security, cleaning and garbage agencies work through the same platform, and their invoices are checked against the service they actually delivered before payment.</p>
+<p>The platform is built on Codevertex's production services for sign-in, accounting, M-Pesa collections, payroll and messaging. Only the estate-specific service and its screens are new, which keeps the build price and the delivery time low.</p>
+<h3 class="nonum">Key outcomes</h3>
+<ul>
+<li>Every unit carries one balance per fund, visible to the owner at any time, with statements on demand.</li>
+<li>Paybill payments matched to the right unit and receipted within a minute, with no manual reconciliation for correctly referenced payments.</li>
+<li>Monthly bills, including metered water, issued for all units in one run on the 1st, with reading photos as evidence.</li>
+<li>Instalment schedules, reminders and purchase statements for every buyer, from reservation to handover and title.</li>
+<li>Service provider contracts, schedules, guard posts and patrols tracked, and vendor invoices adjusted for missed service before payment.</li>
+<li>Visitor passes and gate logs that protect residents while collecting only the data the law allows.</li>
+<li>Estate staff, including casual workers, paid through the ERP payroll with statutory deductions.</li>
+<li>Sales money and estate service money kept in separate accounts and ledgers, ready for handover to the owners' management corporation.</li>
+</ul>
+<h3 class="nonum">Engagement summary</h3>
+<div class="kpis">
+<div><span>14 weeks</span>Delivery period, launch in February 2027</div>
+<div><span>KES 350,000</span>Fixed build price, inclusive of taxes</div>
+<div><span>KES 20,000</span>Recommended monthly fee: subscription, hosting, support</div>
+<div><span>KES 10,000</span>Entry monthly tier, up to 150 units</div>
+</div>
+</section>
+
+<section id="introduction">
+<h2>Introduction</h2>
+<h3>Purpose</h3>
+<p>This document specifies the requirements, design, delivery plan and commercial terms for the Shaba Village Estate Platform. It is the basis for development, testing and acceptance, and replaces the earlier generic property management requirements document.</p>
+<h3>About Shaba Village</h3>
+<p>Shaba Village is a residential estate in Syokimau, off Mombasa Road, in the Mavoko area of Machakos County. It comprises homes and apartments, including two and three bedroom units. Units are sold outright or on a deposit and instalment basis. Estate management supplies water from the Mavoko Water and Sewerage Company connection and two boreholes, stored in an underground reservoir and unit tanks, and runs shared services: perimeter security with electric fencing, 24-hour guarding, landscaping, cleaning of common areas, garbage collection, sewer and parking. These services are billed to owners every month.</p>
+<h3>Product scope</h3>
+<table>
+<tr><th>Area</th><th>Included</th></tr>
+<tr><td>Estate register</td><td>Blocks, houses and apartments, unit types and entitlements, owners and joint owners, occupants and tenants, household members, vehicles, domestic staff</td></tr>
+<tr><td>Unit sales</td><td>Price lists, reservations, sale agreements, deposits, instalment schedules, purchase statements, late payment handling, handover, defects and title progress</td></tr>
+<tr><td>Billing and collections</td><td>Service charge, water, garbage, security levy, sinking fund, parking and special levies; meter readings; monthly billing runs; M-Pesa paybill and prompt payments; allocation; receipts; statements; arrears and payment plans; clearance certificates</td></tr>
+<tr><td>Service providers</td><td>Vendor onboarding and licence tracking, contracts and SLAs, garbage and cleaning schedules, security posts, rosters and patrols, service evidence, vendor portal, invoice checking, approvals and payment</td></tr>
+<tr><td>Maintenance</td><td>Resident requests, work orders, preventive schedules for pumps, tanks and fences, quotes, completion evidence, recharges to units, defects liability claims</td></tr>
+<tr><td>Security and access</td><td>Gate tablet application, visitor passes, walk-in approval, deliveries, contractor access, vehicle log, incident reports, digital occurrence book</td></tr>
+<tr><td>Estate staff</td><td>Caretakers, plumbers, gardeners and casual workers in the ERP: records, attendance, payroll, casual payments, statutory deductions</td></tr>
+<tr><td>Communication</td><td>Notices by block or estate, water interruption and emergency alerts, AGM notices, document library</td></tr>
+<tr><td>Finance and reporting</td><td>Separate ledgers for sales and estate funds, service charge budget against actual, income and expenditure for the AGM, collections, arrears, water balance, vendor performance</td></tr>
+<tr><td>Compliance</td><td>Consent records, privacy notices, data requests, retention, access logging, legal policy drafts, WCAG 2.2 AA accessibility</td></tr>
+</table>
+<p><b>Excluded:</b> native iOS and Android store applications (the web application installs on the home screen instead), smart meter and CCTV hardware, conveyancing and legal advice, rent collection on behalf of owners who let their units, marketing of units to the public, and land or property listings for third parties.</p>
+<h3>Definitions</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Unit</td><td>A house or apartment with its own code, for example B07 (block B, unit 7)</td></tr>
+<tr><td>Owner</td><td>The registered or contracted purchaser of a unit; joint owners share one unit account</td></tr>
+<tr><td>Occupant</td><td>A person living in the unit: the owner, a household member or a tenant of the owner</td></tr>
+<tr><td>Unit entitlement</td><td>The share of common costs carried by a unit, set by unit type or floor area</td></tr>
+<tr><td>Service charge</td><td>The monthly contribution to the cost of running the estate</td></tr>
+<tr><td>Sinking fund</td><td>A reserve for major repairs and replacement of shared assets</td></tr>
+<tr><td>Estate fund</td><td>Money collected for estate services, held apart from sale proceeds</td></tr>
+<tr><td>Billing run</td><td>The monthly process that issues one invoice per unit for all estate charges</td></tr>
+<tr><td>Water balance</td><td>Water supplied by Mavoko and the boreholes compared with water billed to units</td></tr>
+<tr><td>SLA</td><td>Service level agreement: measurable targets in a provider contract</td></tr>
+<tr><td>Work order</td><td>A recorded job for repair or maintenance</td></tr>
+<tr><td>Management corporation</td><td>The owners' body corporate formed under the Sectional Properties Act, 2020</td></tr>
+<tr><td>Paybill, STK push</td><td>M-Pesa business number; payment prompt sent to the payer's phone</td></tr>
+<tr><td>ODPC, DPIA</td><td>Office of the Data Protection Commissioner; data protection impact assessment</td></tr>
+<tr><td>eTIMS, WHT</td><td>KRA electronic tax invoice system; withholding tax</td></tr>
+<tr><td>RPO, RTO, UAT</td><td>Recovery point and recovery time objectives; user acceptance testing</td></tr>
+</table>
+<h3>References</h3>
+<ul>
+<li>Property Management and Real Estate Services Platform requirements document, version 1.0, October 2026 (superseded by this document)</li>
+<li>Codevertex platform documentation: microservice architecture, cross-service data ownership, treasury invoicing and payments, M-Pesa integration, approvals, ERP payroll, notifications</li>
+<li>Sectional Properties Act, 2020; Data Protection Act, 2019 and its Regulations, 2021; ODPC draft Guidance Note for the Private Security Sector, 2025</li>
+<li>Mavoko Water and Sewerage Company approved tariff, 2023/24 to 2025/26</li>
+<li>Web Content Accessibility Guidelines 2.2; OWASP Application Security Verification Standard 4</li>
+</ul>
+</section>
+
+<section id="overview">
+<h2>Overall description</h2>
+<h3>Product perspective</h3>
+<p>Shaba Village operates as a tenant of the Codevertex platform. Two new components, estates-ui and estates-api, provide the estate product. Sign-in, invoicing, M-Pesa collections, the ledger, approvals, payroll and messaging are provided by existing platform services, described in <a href="#architecture">Solution architecture</a>. The estate service holds references to their records and never keeps a second copy.</p>
+<h3>User classes</h3>
+<table>
+<tr><th>Role</th><th>Description</th><th>Main permissions</th><th>Sign-in</th></tr>
+<tr><td>Owner</td><td>Purchaser of a unit, resident or living elsewhere, including diaspora owners</td><td>Statements, payments, purchase progress, meter readings, requests, visitor passes, household, documents, privacy</td><td>Phone and OTP</td></tr>
+<tr><td>Occupant</td><td>Household member or tenant nominated by the owner</td><td>Visitor passes, requests, notices; bills only if the owner assigns them</td><td>Phone and OTP</td></tr>
+<tr><td>Buyer</td><td>Purchaser before handover</td><td>Purchase statement, instalment schedule, payments, documents, handover snag list</td><td>Phone and OTP</td></tr>
+<tr><td>Estate manager</td><td>Runs daily operations</td><td>All operations, work orders, vendors, notices, reports</td><td>SSO with MFA</td></tr>
+<tr><td>Finance officer</td><td>Billing and collections</td><td>Charges, billing runs, allocations, adjustments within limits, vendor bills, reports</td><td>SSO with MFA; OTP per approval</td></tr>
+<tr><td>Sales officer</td><td>Unit sales</td><td>Price lists, reservations, agreements, instalment plans, buyer documents</td><td>SSO with MFA</td></tr>
+<tr><td>Caretaker</td><td>On-site staff lead</td><td>Meter readings, work orders, service visit checks, notices</td><td>SSO, phone</td></tr>
+<tr><td>Guard</td><td>Agency guard on duty</td><td>Gate tablet only: passes, walk-ins, deliveries, patrols, incidents</td><td>Gate PIN on a registered tablet</td></tr>
+<tr><td>Vendor supervisor</td><td>Agency or contractor representative</td><td>Own contracts, schedules, rosters, work orders, invoices, documents</td><td>Phone and OTP</td></tr>
+<tr><td>Administrator</td><td>Shaba Village directors and delegates</td><td>All permissions, staff roles, settings, approvals above limit</td><td>SSO with MFA</td></tr>
+</table>
+<h3>Operating environment</h3>
+<ul>
+<li>Owners, occupants and vendors: any modern mobile or desktop browser; installable as a progressive web application</li>
+<li>Gate: an Android tablet at each gate in kiosk mode, with offline operation during network loss</li>
+<li>Hosting: Codevertex Kubernetes platform with PostgreSQL, Redis, NATS JetStream and object storage, behind Cloudflare</li>
+<li>Payments: Safaricom M-Pesa through Shaba Village's own paybills (Daraja API); bank transfers recorded against unit accounts</li>
+<li>Messaging: Africa's Talking (SMS), Meta WhatsApp Cloud API, Codevertex mail server (email)</li>
+</ul>
+<h3>Constraints</h3>
+<ul>
+<li>Money is collected only into Shaba Village's own paybills and bank accounts. Codevertex never receives estate or buyer funds.</li>
+<li>The estate service does not move money. Invoices, payments and payouts are executed by the treasury service.</li>
+<li>Utility supply is never cut off automatically for arrears. Kenyan courts and tribunals have held that disconnection without due process is unlawful.</li>
+<li>Electricity is supplied by Kenya Power prepaid meters per unit and is not resold by the estate.</li>
+<li>Conveyancing, title registration and legal notices are performed by advocates; the platform records their progress.</li>
+</ul>
+<h3>Assumptions and dependencies</h3>
+<ul>
+<li>Shaba Village supplies the unit register, owner list, sale agreements and opening balances by week 4, in the import template provided.</li>
+<li>Shaba Village holds, or opens, separate paybills and bank accounts for sale collections and for the estate fund, and grants Daraja API access by week 3.</li>
+<li>Shaba Village confirms the charge schedule, water tariff, penalty rules and allocation order from its by-laws and sale agreements by week 5.</li>
+<li>Service provider contracts and licences are made available for loading by week 8.</li>
+<li>Shaba Village appoints a product owner able to decide within 2 working days and documents within 3.</li>
+<li>Shaba Village registers with the ODPC as a data controller and engages an advocate to approve the legal pack.</li>
+<li>Shaba Village provides one Android tablet per gate, with a data connection.</li>
+<li>Messaging, payment provider charges and the domain name are client-borne costs, as set out in <a href="#commercials">Commercial terms</a>.</li>
+</ul>
+</section>
+
+<section id="model">
+<h2>Estate operating model</h2>
+<p class="lead">This chapter sets out who pays what, into which account, and how Shaba Village's two money streams stay apart.</p>
+<h3>Charges</h3>
+<table>
+<tr><th>Charge</th><th>Billed to</th><th>Basis</th><th>Fund</th></tr>
+<tr><td>Unit price</td><td>Buyer</td><td>Outright, or deposit plus instalments per the sale agreement</td><td>Sales</td></tr>
+<tr><td>Reservation fee</td><td>Prospective buyer</td><td>Fixed, credited to the deposit when the agreement is signed</td><td>Sales</td></tr>
+<tr><td>Service charge</td><td>Owner</td><td>Fixed per unit type, or annual budget divided by unit entitlement</td><td>Estate</td></tr>
+<tr><td>Water</td><td>Owner, or the occupant if the owner assigns it</td><td>Metered: consumption times the estate tariff, plus any fixed meter charge</td><td>Estate</td></tr>
+<tr><td>Garbage collection</td><td>Owner or occupant</td><td>Fixed per unit, or included in service charge</td><td>Estate</td></tr>
+<tr><td>Security levy</td><td>Owner</td><td>Fixed per unit, or included in service charge</td><td>Estate</td></tr>
+<tr><td>Sinking fund</td><td>Owner</td><td>Fixed or percentage of service charge, kept in its own ledger account</td><td>Estate (reserve)</td></tr>
+<tr><td>Extra parking</td><td>Owner or occupant</td><td>Per additional bay</td><td>Estate</td></tr>
+<tr><td>Special levy</td><td>Owner</td><td>One-off amount approved at a general meeting, by entitlement</td><td>Estate</td></tr>
+<tr><td>Recharges</td><td>Owner</td><td>Cost of in-unit repairs or damage, with the work order as evidence</td><td>Estate</td></tr>
+<tr><td>Late payment charge</td><td>Owner or buyer</td><td>Only where the by-laws or sale agreement provide; capped and never compounded</td><td>As the debt</td></tr>
+</table>
+<p>Every charge type, rate and effective date is configurable by finance. A rate change applies from its effective date and never alters invoices already issued.</p>
+
+<h3>Worked example: monthly bill</h3>
+<table>
+<tr><th>Unit B07, three bedroom, October 2026</th><th class="num">KES</th></tr>
+<tr><td>Service charge, three bedroom rate</td><td class="num">4,500</td></tr>
+<tr><td>Water: reading 1,284 less 1,275 = 9 m3 at KES 150</td><td class="num">1,350</td></tr>
+<tr><td>Garbage collection</td><td class="num">300</td></tr>
+<tr><td>Sinking fund</td><td class="num">300</td></tr>
+<tr class="total"><td>Total due by 10 November 2026</td><td class="num">6,450</td></tr>
+</table>
+<p class="small">Rates are illustrative and are set by Shaba Village. For comparison, the Mavoko Water and Sewerage Company approved domestic tariff ranges from KES 120 per m3 for the first 6 m3 to KES 170 per m3 above 300 m3.</p>
+
+<h3>Who receives the bill</h3>
+<p>The owner is liable for all estate charges by default. Where an owner lets the unit, the owner may assign water, garbage and parking to the tenant, who then receives those bills and pays with the same unit account number. Service charge, sinking fund and special levies remain with the owner. If an assigned tenant leaves with an unpaid balance, the balance reverts to the owner after 30 days, as the owner terms state.</p>
+
+<h3>Fund segregation</h3>
+<figure>{FIG_FUNDS}<figcaption>Fund segregation and accounting</figcaption></figure>
+<p>Sale proceeds belong to the developer. Estate charges are collected to run the estate on behalf of all owners. Mixing the two is the most common cause of service charge disputes in Kenyan estates. The platform keeps them apart by design: separate paybills and bank accounts, separate cost centres and ledger accounts in treasury, and separate statements. A buyer who is also an owner sees both balances, but a payment to one account can never settle the other.</p>
+
+<h3>Payment references</h3>
+<table>
+<tr><th>Payment</th><th>Paybill</th><th>Account number</th></tr>
+<tr><td>Estate charges</td><td>Estate paybill</td><td>Unit code, for example B07</td></tr>
+<tr><td>Unit purchase</td><td>Sales paybill</td><td>S plus unit code, for example S-B07</td></tr>
+</table>
+<p>Owners may also pay by M-Pesa prompt from the portal, which needs no reference, or by bank transfer with the unit code as reference. Payments that cannot be matched are placed in a suspense queue for finance, with the payer's name and number to assist.</p>
+
+<h3>Transition to the management corporation</h3>
+<p>Under the Sectional Properties Act, 2020, common property in a sectionally registered estate is owned and managed by a management corporation of the unit owners. The estate fund books, unit accounts, sinking fund, vendor contracts and records are kept so that they can be handed over complete when the corporation is formed. Shaba Village can then continue as managing agent for the corporation on the same platform, or hand over administrative control entirely.</p>
+</section>
