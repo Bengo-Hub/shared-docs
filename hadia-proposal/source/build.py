@@ -28,13 +28,13 @@ def slug(s):
 
 
 def assemble():
-    body = "".join((here / f"content_{p}.html").read_text() for p in "abcd")
+    body = "".join((here / f"content_{p}.html").read_text() for p in ("a", "b", "c", "hosting", "d", "index"))
     figs = {
         "FIG_ARCH": F.fig_architecture(), "FIG_MONEY": F.fig_money(), "FIG_STATES": F.fig_pot_states(),
         "FIG_PAYOUT": F.fig_payout(), "FIG_SWEEP": F.fig_sweep(), "FIG_TENANT": F.fig_tenant_onboarding(),
         "FIG_OWNER": F.fig_owner_onboarding(), "FIG_LISTING": F.fig_listing(), "FIG_RESERVE": F.fig_reservation(),
         "FIG_CONTRIB": F.fig_contribution(), "FIG_REFUND": F.fig_refund(), "FIG_ERD": F.fig_erd(),
-        "FIG_GANTT": F.fig_gantt(), "FIG_WIRE": F.fig_wireframes(),
+        "FIG_GANTT": F.fig_gantt(), "FIG_WIRE": F.fig_wireframes(), "FIG_OWNERSHIP": F.fig_ownership(),
     }
     for k, v in figs.items():
         body = body.replace("{" + k + "}", v)
