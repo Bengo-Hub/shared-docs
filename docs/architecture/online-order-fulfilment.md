@@ -26,6 +26,21 @@ Last reviewed 2026-10-06.
    (bookings and dine-in get none).
 2. **Payment.** Online payment (STK, card, wallet) marks it paid through the treasury callback.
    Pay-on-collection and manual M-Pesa orders do not wait for payment.
+   - **Retry window.** A prompt the customer cancels or lets time out does not cancel the order.
+     It stays `pending` with its stock held until a deadline stamped at checkout
+     (`orders.payment_retry_window_minutes`, default 30); each failed attempt is recorded once on
+     the order. The order page shows "Payment not completed" with the time left and **Retry
+     payment** (`POST /orders/{id}/payment/retry`, guests `POST /orders/guest/{id}/payment/retry`),
+     which reuses the open intent or creates a fresh one (`ORD-...-R{n}`). Retries are refused when
+     the order is paid or a payment is processing (409), after the window (410), or more than 5
+     times or within 20 seconds of the last (429).
+   - A success on any attempt confirms the order once and it moves on as a first-time payment
+     would (acceptance, outlet hand-off, messages). A second success on a paid order is flagged for
+     refund; a success after the order was cancelled leaves it cancelled and is logged for
+     reconciliation. Refunds for these are manual.
+   - The stale-payment poller works in bounded pages, cancels only after the window, never on a
+     treasury error, and allows 10 minutes while a prompt is still processing. Staff see these
+     orders as "Awaiting payment (retry open until HH:MM)" with no Accept action.
 3. **Acceptance.** Tenant setting `orders.auto_accept` (ordering service config, default
    `false`):
    - Manual (default): ordering publishes `ordering.order.awaiting_acceptance`. pos-api creates the
@@ -58,7 +73,9 @@ Last reviewed 2026-10-06.
    declined it.
    - **Rider declines** (before pickup): `POST /{tenant}/riders/me/tasks/{id}/decline {reason}`.
      The task returns to `pending`, `logistics.task.unassigned` is published, the dispatch board
-     gets an alert, and with auto-assign on the next rider is picked.
+     gets an alert, and with auto-assign on the next rider is picked. ordering marks the order and
+     its assignment `needs_rider` and clears the rider (only if that rider is still the current
+     one, so a newer assignment is kept).
    - **Failed delivery** (after pickup): the rider sets `failed` with a reason. The assignment
      ends (the rider is free), `logistics.task.failed` carries `failure_reason`, and the dispatch
      board is alerted to get the order back to the outlet.
@@ -67,7 +84,14 @@ Last reviewed 2026-10-06.
      `reassign: true`).
    - Live tracking for the customer: `GET /api/v1/s2s/dispatch/{tenant}/tasks/{id}/tracking`
      (service key) returns the rider's last position, name, phone and ETA while the rider is
-     working the task.
+     working the task; ordering serves it on `/delivery/tracking` and the order page's
+     `rider_location` stream.
+   - The `ordering.order.ready` payload always carries the outlet's name, address and phone as the
+     pickup point (coordinates only when set). A failed delivery emails the business
+     (`ordering.order.delivery_failed`, template `ordering/delivery_failed_tenant`).
+   - ordering ignores logistics task events whose `source_service` is set and is not `ordering`.
+     Tasks the POS dispatches for till delivery orders carry `source_service = pos`; pos-api follows
+     them itself and shows the rider's progress on the POS delivery queue.
 8. **Cancellation** releases stock, refunds a prepaid order and voids the POS record and its
    tickets. A customer can cancel only until the kitchen starts; after that the outlet rejects.
    logistics-api consumes `ordering.order.cancelled` and cancels the open delivery task (the
@@ -78,6 +102,25 @@ the request whose status write wins, so duplicate or redelivered events never re
 
 Service bookings (salon, barber, garage) create a POS appointment instead of a takeaway ticket;
 the storefront hides booked slots (public `GET /{tenant}/pos/appointments/booked-slots`).
+
+### What the outlet does with a confirmed order, by use case
+
+pos-api decides it once (`outletpolicy.WorkflowFor`) from the outlet's use case and the order type,
+for online and till orders alike:
+
+| Outlet | Online pickup / delivery |
+|---|---|
+| Hospitality, quick service | KDS tickets on the routed stations and kitchen/bar chits, then the pickup or delivery queue |
+| Retail, and goods from a services outlet | Straight to the pickup or delivery queue as a pick list; no kitchen ticket or chit |
+| Services booking | Appointment in the outlet calendar |
+
+Every kitchen/bar chit prints the order type in large letters (DINE-IN, TAKEAWAY, DELIVERY,
+ROOM SERVICE, BAR TAB, ONLINE PICKUP, ONLINE DELIVERY) and the source (POS, or the online store
+with its order number), the customer for counter hand-overs, the promised time and the order
+note. The KDS board groups and counts tickets by the same order type.
+
+Online `dine_in` orders are not handed to the outlet today (`isOutletFulfilled` covers pickup and
+delivery only).
 
 ## Payment options
 
