@@ -52,10 +52,26 @@ Last reviewed 2026-10-06.
    of delivery with the customer's code and, for pay on delivery, the cash or M-Pesa code taken.
    `logistics.task.completed` delivers the order, settles it with the method used and consumes
    stock. An outlet delivering with its own staff marks it delivered from the POS queue instead.
+   Assignment from every path (dispatcher, auto-dispatch, batching, self-claim) is one
+   conditional update, so a job never ends up with two riders. Auto-dispatch only uses riders
+   whose last GPS fix is under 10 minutes old and never offers a job back to a rider who
+   declined it.
+   - **Rider declines** (before pickup): `POST /{tenant}/riders/me/tasks/{id}/decline {reason}`.
+     The task returns to `pending`, `logistics.task.unassigned` is published, the dispatch board
+     gets an alert, and with auto-assign on the next rider is picked.
+   - **Failed delivery** (after pickup): the rider sets `failed` with a reason. The assignment
+     ends (the rider is free), `logistics.task.failed` carries `failure_reason`, and the dispatch
+     board is alerted to get the order back to the outlet.
+   - Riders cannot cancel a delivery. Dispatchers can unassign or reassign before pickup and
+     cancel with a reason (`POST /{tenant}/tasks/{id}/unassign|cancel`, assign with
+     `reassign: true`).
+   - Live tracking for the customer: `GET /api/v1/s2s/dispatch/{tenant}/tasks/{id}/tracking`
+     (service key) returns the rider's last position, name, phone and ETA while the rider is
+     working the task.
 8. **Cancellation** releases stock, refunds a prepaid order and voids the POS record and its
    tickets. A customer can cancel only until the kitchen starts; after that the outlet rejects.
-   An open delivery task is not cancelled automatically yet: logistics-api does not consume
-   `ordering.order.cancelled`, so a dispatcher must cancel it in logistics-ui.
+   logistics-api consumes `ordering.order.cancelled` and cancels the open delivery task (the
+   rider is freed; if the order was already picked up the dispatch board is told to get it back).
 
 Every status change runs its one-time effects (cash settlement, loyalty, stock, refund) only for
 the request whose status write wins, so duplicate or redelivered events never repeat them.
@@ -83,11 +99,15 @@ order's COD amount (change given is not owed).
 | Endpoint | Who |
 |---|---|
 | `GET /{tenant}/riders/me/cash` | the rider |
-| `GET /{tenant}/cash/riders` | `logistics.tasks.manage` |
-| `POST /{tenant}/cash/riders/{memberId}/remit` `{amount_received, notes}` | `logistics.tasks.manage` |
+| `GET /{tenant}/cash/riders` | `logistics.tasks.manage`, not riders |
+| `POST /{tenant}/cash/riders/{memberId}/remit` `{amount_received, notes}` | `logistics.tasks.manage`, not riders |
 
 A hand-in stamps every outstanding cash delivery with one remittance id, the amount expected,
-received and any shortfall.
+received and any shortfall, in one transaction; a second submit of the same hand-in is refused.
+
+Riders hold `logistics.tasks.manage` so they can move their own jobs. Dispatcher routes (the task
+board list, create, assign, unassign, cancel, dispatch, rating, rider cash) refuse a caller who
+is a fleet member of the tenant unless they also hold `logistics.fleet.manage`.
 
 ## Who does what
 
@@ -99,7 +119,8 @@ received and any shortfall.
 | Start / Ready / Served | KDS | `pos.kds.change` | kitchen, bar, barista, manager |
 | Ready without KDS, hand over | POS queue | `pos.online_orders.change` | counter roles |
 | Assign rider | POS queue or logistics-ui | `pos.online_orders.change` / `logistics.tasks.manage` | counter roles, dispatcher |
-| Take an open job, legs, proof of delivery | rider app | the rider's own fleet membership | rider |
+| Take an open job, legs, decline before pickup, failed delivery, proof of delivery | rider app | the rider's own fleet membership | rider |
+| Unassign, reassign, cancel a delivery | logistics-ui task page | `logistics.tasks.manage` (not riders) | dispatcher |
 | Record rider cash hand-in | logistics-ui Rider Cash | `logistics.tasks.manage` | dispatcher, manager |
 | Acceptance policy | ordering settings | ordering config manage | tenant admin |
 
