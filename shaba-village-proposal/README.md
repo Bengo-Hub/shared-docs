@@ -23,7 +23,7 @@ replaces it. The main corrections:
 | Staff | Not covered | Regular and casual staff in erp-api payroll and casual payments |
 | Security | Not covered | Gate tablet with offline mode, passes, walk-in approval, occurrence book, data minimisation per ODPC guidance |
 | Compliance | One line on "Kenyan data protection" | Data Protection Act and registration, ODPC private security guidance, Sectional Properties Act, Water Act, Energy Act, Waste Act, PSRA, Estate Agents Act, AML, tax and eTIMS, case law on disconnection, GDPR for diaspora owners |
-| Commercials | None | KES 350,000 build; monthly tiers adapted from the ERP subscription tiers (10,000, 20,000, 35,000, quote) including hosting and support |
+| Commercials | None | KES 250,000 build; monthly tiers adapted from the ERP subscription tiers (10,000, 20,000, 35,000, quote) including hosting and support |
 
 ## Rebuilding
 
