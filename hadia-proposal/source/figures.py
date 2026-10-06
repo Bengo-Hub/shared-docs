@@ -22,7 +22,7 @@ def fig_architecture():
 
     b.append(lane(10, 326, 740, 76, "", "#FDF9F1"))
     ext = [["PayHero", "collections, wallet, payouts"], ["M-Pesa, Airtel, card", "payer rails"],
-           ["Africa's Talking", "SMS"], ["WhatsApp Cloud API", "messages"], ["Brevo", "email"]]
+           ["Africa's Talking", "SMS"], ["WhatsApp Cloud API", "messages"], ["SMTP mail server", "email"]]
     for x, l in zip(xs, ext):
         b.append(box(x, 348, 135, 46, l, "ext", 10.5))
 
