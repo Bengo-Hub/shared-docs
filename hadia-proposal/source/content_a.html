@@ -1,0 +1,129 @@
+<section class="page">
+<h2 class="nonum">Document control</h2>
+<table>
+<tr><th>Version</th><th>Date</th><th>Author</th><th>Description</th></tr>
+<tr><td>1.0</td><td>6 October 2026</td><td>Codevertex Africa Limited</td><td>Issued for client review</td></tr>
+</table>
+<table>
+<tr><th>Role</th><th>Party</th><th>Responsibility</th></tr>
+<tr><td>Product owner</td><td>Hadia</td><td>Scope approval, business decisions, legal sign-off, pilot events</td></tr>
+<tr><td>Delivery lead</td><td>Codevertex</td><td>Planning, scope control, reporting, risk management</td></tr>
+<tr><td>Technical lead</td><td>Codevertex</td><td>Architecture, code quality, security, releases</td></tr>
+</table>
+{TOC}
+</section>
+
+<section id="summary">
+<h2 class="nonum">Executive summary</h2>
+<p>Codevertex Africa Limited proposes to design, build and launch the Hadia Gifting Registry, a mobile-first platform on which registry owners list gifts for an occasion, share a single link, and receive item reservations and M-Pesa cash contributions from guests. Cash contributions are held in escrow and paid out to owners automatically, net of Hadia's commission, under rules configured by Hadia.</p>
+<p>The platform is built on Codevertex's production services for identity, payments, accounting, escrow, approvals and messaging. The registry service, web application and administration console are developed specifically for Hadia.</p>
+<h3 class="nonum">Key outcomes</h3>
+<ul>
+<li>Registries published and shared within five minutes of sign-up, with no application download for owners or guests.</li>
+<li>Duplicate gifts eliminated through atomic item reservations visible to all guests in real time.</li>
+<li>M-Pesa contributions credited exactly once and reconciled hourly against the PayHero wallet.</li>
+<li>Payouts and commission deductions executed automatically by threshold and event date, with approval required only above Hadia's limit.</li>
+<li>Commission transferred to Hadia's business account daily without manual intervention.</li>
+<li>Compliance with the Data Protection Act, consumer protection, payments and accessibility requirements from launch.</li>
+</ul>
+<h3 class="nonum">Engagement summary</h3>
+<div class="kpis">
+<div><span>12 weeks</span>Delivery period</div>
+<div><span>KES 240,000</span>Fixed build price</div>
+<div><span>KES 8,000</span>Monthly service fee: treasury subscription and dedicated support</div>
+<div><span>KES 12,000</span>Hosting per year, billed to Hadia</div>
+</div>
+</section>
+
+<section id="introduction">
+<h2>Introduction</h2>
+<h3>Purpose</h3>
+<p>This document specifies the requirements, design, delivery plan and commercial terms for the Hadia Gifting Registry. It is the basis for development, testing and acceptance.</p>
+<h3>Product scope</h3>
+<table>
+<tr><th>Area</th><th>Included</th></tr>
+<tr><td>Public website</td><td>Landing page, how it works, occasions, help centre, legal pages, cookie consent</td></tr>
+<tr><td>Owner application</td><td>Mobile sign-up, registries, items, sharing, gift log, thank-you tracking, payout settings, premium upgrade, privacy settings</td></tr>
+<tr><td>Guest experience</td><td>Registry page, reservations, M-Pesa contributions (Airtel Money and card where enabled), receipts, reservation cancellation</td></tr>
+<tr><td>Funds management</td><td>Escrow per registry, automated payouts, commission deduction and sweep, contribution limits, refunds, reconciliation, accounting</td></tr>
+<tr><td>Administration</td><td>Registry and user management, approvals, exception queue, reports, fee and limit settings, moderation, data requests</td></tr>
+<tr><td>Messaging</td><td>SMS and WhatsApp receipts and alerts, email, marketing opt-in</td></tr>
+<tr><td>Compliance</td><td>Legal policy drafts, consent records, data export and deletion, WCAG 2.2 AA accessibility</td></tr>
+</table>
+<p><b>Excluded:</b> native iOS and Android applications, wedding planning and RSVP tools, gift delivery and retail, retailer affiliate integrations, formal legal opinions, marketing campaigns.</p>
+<h3>Definitions</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Registry</td><td>An owner's list of items and cash funds for an event</td></tr>
+<tr><td>Escrow account</td><td>The treasury record holding a registry's cash contributions</td></tr>
+<tr><td>Payout</td><td>Transfer of a registry balance, net of commission, to the owner</td></tr>
+<tr><td>Commission</td><td>Hadia's percentage fee on cash contributions, deducted at payout</td></tr>
+<tr><td>Sweep</td><td>Scheduled transfer of earned commission to Hadia's business account</td></tr>
+<tr><td>Premium</td><td>One-time paid upgrade per registry</td></tr>
+<tr><td>STK push</td><td>M-Pesa payment prompt sent to the payer's phone</td></tr>
+<tr><td>PayHero Team</td><td>Hadia's PayHero account with an isolated wallet</td></tr>
+<tr><td>KYC, AML</td><td>Know Your Customer; anti-money laundering</td></tr>
+<tr><td>ODPC, DPIA</td><td>Office of the Data Protection Commissioner; data protection impact assessment</td></tr>
+<tr><td>eTIMS</td><td>KRA electronic Tax Invoice Management System</td></tr>
+<tr><td>PWA</td><td>Progressive web application</td></tr>
+<tr><td>UAT</td><td>User acceptance testing</td></tr>
+<tr><td>RPO, RTO</td><td>Recovery point objective; recovery time objective</td></tr>
+</table>
+<h3>References</h3>
+<ul>
+<li>Hadia landing page concept and Gift Wishlist and Cash-Gifting Platform build report, August 2026</li>
+<li>Codevertex platform documentation: treasury escrow, PayHero integration, settlement flows, authentication, notifications</li>
+<li>Data Protection Act, 2019 and Data Protection (General) Regulations, 2021</li>
+<li>Web Content Accessibility Guidelines 2.2; OWASP Application Security Verification Standard 4</li>
+</ul>
+</section>
+
+<section id="overview">
+<h2>Overall description</h2>
+<h3>Product perspective</h3>
+<p>Hadia operates as a tenant of the Codevertex platform. Two new applications, hadia-ui and hadia-api, provide the registry product. Identity, payments, ledger, escrow, approvals and messaging are provided by existing platform services, described in <a href="#architecture">Solution architecture</a>.</p>
+<h3>Product functions</h3>
+<ul>
+<li>Registry creation and management for weddings, baby showers, housewarmings, graduations and birthdays</li>
+<li>Item listing by manual entry or product link, with reserve, fund or combined modes</li>
+<li>Guest reservations without duplicates, and cash contributions by M-Pesa</li>
+<li>Escrow of contributions with automated payouts and commission deduction</li>
+<li>Premium upgrade per registry: custom link, printable list, instant payouts</li>
+<li>Administration, reporting, reconciliation and compliance management</li>
+</ul>
+<h3>User classes</h3>
+<table>
+<tr><th>Role</th><th>Description</th><th>Permissions</th><th>Authentication</th></tr>
+<tr><td>Guest</td><td>Family, friends, diaspora relatives, colleagues</td><td>View registry, reserve, contribute, leave a message, cancel own reservation</td><td>None; OTP when reserving</td></tr>
+<tr><td>Registry owner</td><td>Couple, parent, graduate or host, aged 18 or over</td><td>Manage registries and items, share, view gifts, thank guests, set payout number, purchase premium</td><td>Mobile number and OTP</td></tr>
+<tr><td>Co-owner</td><td>Invited by the owner</td><td>Edit items, thank guests</td><td>Mobile number and OTP</td></tr>
+<tr><td>Hadia support</td><td>Hadia staff</td><td>User support, moderation, data requests</td><td>SSO with MFA</td></tr>
+<tr><td>Hadia finance</td><td>Hadia staff</td><td>Approvals, ledger, reports, fees and limits</td><td>SSO with MFA; OTP per approval</td></tr>
+<tr><td>Hadia administrator</td><td>Founder and delegates</td><td>All permissions, staff roles, settings</td><td>SSO with MFA</td></tr>
+</table>
+<h3>Operating environment</h3>
+<ul>
+<li>Guests and owners: any modern mobile or desktop browser; installable as a PWA</li>
+<li>Hosting: Codevertex Kubernetes platform with PostgreSQL, Redis, NATS JetStream and object storage, behind Cloudflare</li>
+<li>Payments: PayHero (M-Pesa, Airtel Money, card); messaging: Africa's Talking (SMS), Meta WhatsApp Cloud API, SMTP email</li>
+</ul>
+<h3>Constraints</h3>
+<ul>
+<li>Funds are collected, held and disbursed only through a licensed payment service provider.</li>
+<li>The registry service does not move money; all payments are executed by the treasury service.</li>
+<li>Retailer product data is inconsistent; manual item entry is the primary method.</li>
+<li>Payment onboarding depends on Hadia's company registration and PayHero KYC.</li>
+</ul>
+<h3>Assumptions and dependencies</h3>
+<ul>
+<li>Hadia is a registered Kenyan company with a KRA PIN and business bank account or paybill by week 2.</li>
+<li>Hadia completes PayHero KYC to tier 3 and provides requested documents within 3 working days.</li>
+<li>Hadia appoints a product owner with authority to decide within 2 working days.</li>
+<li>Hadia provides brand assets, approves copy and supplies consented testimonials.</li>
+<li>Hadia engages a Kenyan advocate to approve the legal pack and advise on payment regulation.</li>
+<li>Hadia recruits 3 to 5 pilot events for week 11.</li>
+<li>The treasury platform subscription, including escrow and M-Pesa features, and dedicated support are covered by the monthly service fee.</li>
+<li>Hadia bears hosting, domain, SMS, WhatsApp and payment provider charges as set out in the commercial terms.</li>
+<li>Hadia purchases and renews the domain name annually, or engages Codevertex to do so under the managed domain service.</li>
+</ul>
+</section>

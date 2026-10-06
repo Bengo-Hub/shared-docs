@@ -1,0 +1,43 @@
+<section id="hosting">
+<h2>Hosting, backup and disaster recovery</h2>
+<p class="lead">This section states where Hadia's data is held, how it is backed up and how service is restored after a failure.</p>
+
+<h3>Hosting location</h3>
+<table>
+<tr><th>Component</th><th>Provider and location</th><th>Content</th></tr>
+<tr><td>Application and database servers</td><td>Contabo Cloud VPS, European Union region (Germany). Dedicated virtual server: 12 vCPU, 47 GB RAM, 484 GB NVMe storage, running Kubernetes (k3s)</td><td>hadia-ui, hadia-api, treasury, authentication, notifications; PostgreSQL databases</td></tr>
+<tr><td>Offsite backups</td><td>Cloudflare R2 object storage, separate provider and infrastructure; encrypted at rest</td><td>Nightly encrypted database backups</td></tr>
+<tr><td>Edge network</td><td>Cloudflare (TLS termination, CDN, web application firewall)</td><td>Traffic in transit and cached public assets; no database content</td></tr>
+<tr><td>Email</td><td>Codevertex mail server (mx1.codevertexafrica.com) on the same platform</td><td>Outbound email; no third-party email processor</td></tr>
+<tr><td>Funds</td><td>PayHero, Kenya</td><td>Gift funds and payment records. Funds never reside on Codevertex infrastructure.</td></tr>
+</table>
+<p>Hosting outside Kenya is a cross-border transfer under sections 48 to 50 of the Data Protection Act. The transfer is documented in the DPIA with its safeguards: provider security certification, encryption in transit and at rest for backups, access restriction and a data processing agreement. Hosting in a Kenyan data centre is available on request and would be quoted as a change to the hosting cost.</p>
+
+<h3>Backup schedule</h3>
+<table>
+<tr><th>Backup</th><th>Frequency</th><th>Scope</th><th>Storage</th><th>Retention</th></tr>
+<tr><td>Platform recovery backup</td><td>Daily, 05:00 EAT</td><td>All platform databases, verified for integrity after each run</td><td>Server disk and Cloudflare R2 (offsite)</td><td>Each new copy replaces the previous one only after it is verified and confirmed offsite</td></tr>
+<tr><td>Hadia tenant backup</td><td>Daily, 05:00 EAT</td><td>Hadia's registry and treasury data only, encrypted</td><td>Cloudflare R2 (offsite), with optional mirror to Hadia's own storage (Google Drive, OneDrive, S3, SFTP)</td><td>7 daily and 4 weekly copies</td></tr>
+<tr><td>Payment records</td><td>Continuous</td><td>Every collection and payout</td><td>PayHero and Safaricom, independently of Codevertex</td><td>Provider retention</td></tr>
+</table>
+
+<h3>Recovery objectives</h3>
+<table>
+<tr><th>Objective</th><th>Target</th><th>Meaning for Hadia</th></tr>
+<tr><td>Recovery point objective (RPO)</td><td>24 hours</td><td>In the worst case, total loss of the server, changes made since the last nightly backup are restored from other sources. Contributions and payouts in that window are recovered from PayHero's transaction records and re-reconciled, so no payment record is lost. Registry edits, item changes and reservations made in that window may need to be re-entered.</td></tr>
+<tr><td>Recovery time objective (RTO)</td><td>4 hours</td><td>Service is restored on a replacement server within 4 hours of a declared disaster.</td></tr>
+<tr><td>Optional enhanced RPO</td><td>15 minutes</td><td>Continuous database log archiving to offsite storage, quoted on request.</td></tr>
+</table>
+
+<h3>Restore testing</h3>
+<p>A restore drill is performed quarterly: the latest offsite backup is restored into an isolated environment, record counts and ledger balances are verified against production, and a short report is shared with Hadia. The first drill takes place before launch, in week 11.</p>
+
+<h3>Platform outage response</h3>
+<table>
+<tr><th>Scenario</th><th>Impact</th><th>Response</th></tr>
+<tr><td>Service or pod failure</td><td>Seconds to minutes</td><td>Automatic restart; two replicas per service; health checks every 2 minutes with alerting</td></tr>
+<tr><td>Server failure or provider outage</td><td>Platform unavailable</td><td>Automated rebuild on a replacement server from version-controlled configuration and backed-up encryption keys, followed by restore of the latest backup and reconciliation with PayHero.</td></tr>
+<tr><td>During any outage</td><td>Guests cannot contribute; payouts pause</td><td>Funds remain safe in Hadia's PayHero wallet. Pending payouts resume automatically on recovery. Hadia is notified within 30 minutes of a confirmed incident and updated every 2 hours.</td></tr>
+</table>
+<p>Capacity scales by adding nodes to the cluster under a documented procedure, without service interruption. Additional capacity is planned with Hadia as monthly contributions grow.</p>
+</section>
