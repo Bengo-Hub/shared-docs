@@ -1,6 +1,6 @@
 # Hadia Gifting Registry: Technical Proposal and SRDD
 
-`Hadia-Gifting-Registry-SRDD-Codevertex.pdf` is the client document (40 pages). It is set in
+`Hadia-Gifting-Registry-SRDD-Codevertex.pdf` is the client document (41 pages). It is set in
 TeX Gyre Heros, a Helvetica-class typeface under the GUST Font License, with vector diagrams,
 a linked contents page and PDF bookmarks.
 

@@ -82,3 +82,4 @@ table.nfr td:first-child { white-space: nowrap; font-weight: 700; color: var(--b
 table.nfr td:nth-child(2) { width: 22%; font-weight: 700; color: var(--ink); }
 ol { break-inside: avoid; } h3 + ol, h3 + p, h3 + table { break-before: avoid; }
 table.sched td:first-child, th.nw { white-space: nowrap; }
+.keep { break-inside: avoid; }
