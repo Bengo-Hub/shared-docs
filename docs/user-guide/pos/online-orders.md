@@ -33,9 +33,23 @@ preparation time.
 
 ## 3. Prepare
 
+What happens once an order is accepted depends on your kind of outlet:
+
+| Outlet | Pickup and delivery orders |
+|---|---|
+| Restaurant, café, bar, hotel, quick service | Tickets go to the KDS station that makes each item and the kitchen and bar chits print. |
+| Shop (retail) | No kitchen. The order goes straight to the queue as a pick list ("To pick & pack"); the bill prints as the pick list if your outlet prints orders automatically. |
+| Service business selling goods (salon products, spare parts) | Same as a shop. Online bookings for a service go to **Appointments**, not the queue. |
+
 Restaurants: the kitchen presses **Start** and **Ready** on the KDS; the customer sees
 "Preparing" and then "Ready". Printer-only kitchens and shops packing an order press **Ready**
 on the queue card instead.
+
+Every kitchen and bar chit prints the order type in large letters at the top (**DINE-IN**,
+**TAKEAWAY**, **DELIVERY**, **ROOM SERVICE**, **BAR TAB**, **ONLINE PICKUP**, **ONLINE DELIVERY**)
+and where the order came from (**POS** or **Online store** with its order number), the customer's
+name for takeaway and delivery, the promised time for a scheduled order and the customer's note.
+Chits for items added later keep the order type under the **ADDITIONAL ITEMS** line.
 
 ## 4. Hand over a pickup order
 
