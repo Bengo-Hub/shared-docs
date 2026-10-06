@@ -4,53 +4,54 @@ from diagrams import *  # noqa: F401,F403
 def fig_architecture():
     b = []
     b.append(lane(10, 8, 740, 72, ""))
-    users = [["Owners and residents", "phone, no app install"], ["Estate management", "office, finance, caretaker"],
-             ["Gate and guards", "tablet at each gate"], ["Service providers", "agency supervisors"]]
+    users = [["Public visitors", "house hunters (R3)"], ["Owners and tenants", "phone, no app install"],
+             ["Tenant staff", "managers, finance, caretakers"], ["Guards and providers", "gate tablet, vendor portal"]]
     for i, l in enumerate(users):
-        b.append(box(22 + i * 182, 30, 168, 42, l, "user", 10.2))
+        b.append(box(22 + i * 182, 30, 168, 42, l, "user", 10))
 
     b.append(lane(10, 98, 740, 76, "", "#FBF6FA"))
-    b.append(box(60, 118, 250, 48, ["estates-ui", "Next.js PWA: portal, console, gate, vendors"], "new", 10.2))
-    b.append(box(430, 118, 270, 48, ["estates-api", "Go: units, charges, meters, sales, works"], "new", 10.2))
+    b.append(box(24, 118, 190, 48, ["marketplace-ui (R3)", "public listings, SEO, search"], "new", 10, dashed=True))
+    b.append(box(232, 118, 230, 48, ["property-ui", "portals, console, gate, vendors"], "new", 10))
+    b.append(box(500, 118, 236, 48, ["property-api", "multi-tenant property domain"], "new", 10))
 
     b.append(lane(10, 222, 740, 84, "", "#F3FAF6"))
-    xs = [20, 167, 314, 461, 608]
-    labels = [["auth-api", "SSO, phone OTP, roles"], ["treasury-api", "invoices, M-Pesa, ledger"],
-              ["erp-api", "staff, payroll, casuals"], ["notifications-api", "SMS, WhatsApp, email"],
-              ["subscriptions-api", "plan and features"]]
+    labels = [["auth-api", "tenants, SSO, OTP"], ["treasury-api", "billing, M-Pesa, GL"],
+              ["erp-api", "staff, payroll"], ["notifications", "SMS, WhatsApp"],
+              ["subscriptions", "plans, limits"], ["marketflow-api", "leads (R3)"], ["maps", "geocoding (R3)"]]
+    xs = [16 + i * 105 for i in range(7)]
     for x, l in zip(xs, labels):
-        b.append(box(x, 244, 135, 52, l, "reuse", 10.2))
+        b.append(box(x, 244, 99, 52, l, "reuse", 9.6))
 
     b.append(lane(10, 326, 740, 76, "", "#FDF9F1"))
-    ext = [["Safaricom M-Pesa", "Shaba paybills"], ["Bank", "estate and sales accounts"],
-           ["KRA", "eTIMS, PIN checks"], ["Africa's Talking", "SMS"], ["WhatsApp Cloud API", "messages"]]
-    for x, l in zip(xs, ext):
-        b.append(box(x, 348, 135, 46, l, "ext", 10.2))
+    ext = [["Safaricom M-Pesa", "each tenant's paybills"], ["Banks", "tenant accounts"],
+           ["KRA", "eTIMS, WHT, PIN checks"], ["Africa's Talking", "SMS"], ["WhatsApp Cloud API", "messages"]]
+    for i, l in enumerate(ext):
+        b.append(box(20 + i * 147, 348, 135, 46, l, "ext", 10))
 
-    b.append(box(10, 414, 740, 32, ["Platform: PostgreSQL per service, Redis, NATS JetStream, MinIO, Cloudflare edge, Kubernetes with GitOps"], "grey", 10, bold_first=False))
+    b.append(box(10, 414, 740, 32, ["Platform: PostgreSQL per service with tenant row security, Redis, NATS JetStream, MinIO, Cloudflare, Kubernetes, GitOps"], "grey", 9.6, bold_first=False))
 
-    b.append(arrow([(106, 72), (150, 118)]))
-    b.append(arrow([(288, 72), (220, 118)]))
-    b.append(arrow([(470, 72), (290, 118)]))
-    b.append(arrow([(652, 72), (300, 118)]))
-    b.append(arrow([(310, 142), (430, 142)], "REST"))
-    b.append(arrow([(110, 166), (88, 244)], "sign-in", lx=84, ly=205))
-    b.append(arrow([(200, 166), (225, 244)], "pay modal", lx=200, ly=205))
-    b.append(arrow([(445, 166), (300, 244)], color=BRAND))
-    for tx in (382, 529, 676):
-        b.append(arrow([(565, 166), (tx, 244)], color=BRAND))
-    b.append(label_bg(660, 205, "S2S, service-client"))
-    b.append(arrow([(262, 244), (470, 166)], color=GREEN, dashed=True))
-    b.append(label_bg(372, 192, "payment and bill events (NATS)"))
-    b.append(arrow([(234, 296), (88, 348)]))
-    b.append(arrow([(250, 296), (234, 348)]))
-    b.append(arrow([(270, 296), (382, 348)]))
-    b.append(arrow([(529, 296), (529, 348)]))
-    b.append(arrow([(560, 296), (660, 348)]))
-    for y, t in ((8, "Users"), (98, "Estate applications"), (222, "Codevertex platform services"), (326, "External providers")):
+    b.append(arrow([(106, 72), (119, 118)]))
+    b.append(arrow([(288, 72), (320, 118)]))
+    b.append(arrow([(470, 72), (370, 118)]))
+    b.append(arrow([(652, 72), (420, 118)]))
+    b.append(arrow([(462, 142), (500, 142)], "REST"))
+    b.append(arrow([(119, 118), (119, 106), (640, 106), (640, 118)], dashed=True))
+    b.append(label_bg(380, 110, "published listings (R3)"))
+    b.append(arrow([(260, 166), (65, 244)], "sign-in", lx=150, ly=210))
+    b.append(arrow([(300, 166), (170, 244)], "pay modal", lx=226, ly=228))
+    for x in xs[1:]:
+        b.append(arrow([(618, 166), (x + 50, 244)], color=BRAND))
+    b.append(label_bg(690, 200, "S2S"))
+    b.append(arrow([(150, 296), (88, 348)]))
+    b.append(arrow([(170, 296), (234, 348)]))
+    b.append(arrow([(185, 296), (381, 348)]))
+    b.append(arrow([(380, 296), (528, 348)]))
+    b.append(arrow([(400, 296), (675, 348)]))
+    for y, t in ((8, "Users"), (98, "Property applications"), (222, "Codevertex platform services"), (326, "External providers")):
         b.append(lane_title(10, y, t))
-    b.append(legend(20, 458, [("new", "Built for the estate"), ("reuse", "Codevertex platform service"),
+    b.append(legend(20, 458, [("new", "Built for the platform"), ("reuse", "Existing Codevertex service"),
                               ("ext", "Third party"), ("user", "People")]))
+    b.append(text(740, 467, "Dashed: Release 3", 9.5, 500, MUTED, "end"))
     return svg(760, 476, "".join(b), "Solution architecture")
 
 
@@ -145,7 +146,7 @@ def fig_water():
 
 def fig_payment():
     actors = [("o", "Owner|phone", "user"), ("mp", "M-Pesa", "ext"), ("tr", "treasury-api", "reuse"),
-              ("es", "estates-api", "new"), ("nt", "notifications|api", "reuse")]
+              ("es", "property-api", "new"), ("nt", "notifications|api", "reuse")]
     msgs = [
         ("o", "mp", "Paybill, account B07, KES 6,450", "call"),
         ("mp", "tr", "C2B confirmation", "call"),
@@ -170,7 +171,7 @@ def fig_workorder():
     b.append(arrow([(520, 43), (570, 43)], "vendor"))
     b.append(box(570, 20, 180, 46, ["Vendor assigned", "quote if above limit"], "ext", 10))
     b.append(arrow([(445, 73), (445, 100)], "staff", lx=458, ly=92, anchor="start"))
-    b.append(box(360, 100, 170, 42, ["Estate staff assigned", "erp-api employee"], "reuse", 10))
+    b.append(box(360, 100, 170, 42, ["Staff assigned", "erp-api employee"], "reuse", 10))
     b.append(arrow([(660, 66), (660, 160), (530, 160)]))
     b.append(arrow([(445, 142), (445, 165)]))
     b.append(box(330, 165, 230, 42, ["Work done", "photos, parts, time on site"], "new", 10))
@@ -194,7 +195,7 @@ def fig_vendor():
         b.append(box(x, 20, w, 60, l, kinds[i], 10))
         if i < len(steps) - 1:
             b.append(arrow([(x + w, 50), (x + w + g, 50)]))
-    b.append(text(10, 104, "estates-api runs the first four steps. treasury-api holds the vendor bill, the approval and the payment.", 9.5, 400, MUTED, "start"))
+    b.append(text(10, 104, "property-api runs the first four steps. treasury-api holds the vendor bill, the approval and the payment.", 9.5, 400, MUTED, "start"))
     return svg(760, 112, "".join(b), "Service provider cycle")
 
 
@@ -235,18 +236,18 @@ def fig_onboarding():
 def fig_erd():
     b = []
     ents = {
-        "unit": (10, 20, ["units", "estate_id, block, code (B07)", "type, size, entitlement", "sale_status, occupancy"]),
-        "own": (285, 20, ["unit_ownerships", "unit_id, owner_id, share", "from_date, to_date", "treasury_account_id"]),
-        "occ": (560, 20, ["occupancies", "unit_id, occupant, role", "bill_to rules, from, to"]),
-        "chg": (10, 150, ["charge_rules", "charge type, basis", "rate, from_date, fund", "penalty rule ref"]),
-        "met": (285, 150, ["meters, meter_readings", "unit_id or source, serial", "reading, photo_key", "status, period"]),
-        "run": (560, 150, ["billing_runs, run_lines", "estate_id, period (unique)", "unit_id, invoice_id (treasury)"]),
-        "sale": (10, 285, ["sale_contracts", "unit_id, buyer_id, price", "plan_id (treasury)", "title_stage, handover_at"]),
-        "wo": (285, 285, ["work_orders", "unit_id or area, category", "priority, sla_due_at", "assignee (vendor or erp)"]),
-        "ven": (560, 285, ["vendor_contracts, visits", "vendor_id (treasury), sla", "schedule, evidence keys"]),
-        "gate": (10, 410, ["passes, gate_events", "unit_id, code_hash, window", "event time (monthly partitions)"]),
-        "agg": (285, 410, ["estate_daily_stats", "estate_id, day (unique)", "collections, water, works"]),
-        "pers": (560, 410, ["agency_personnel, posts", "vendor_id, name, role", "post, shift, patrol scans"]),
+        "port": (10, 20, ["portfolios, mandates", "tenant_id, client (landlord)", "fee rules, remittance account"]),
+        "prop": (285, 20, ["properties, blocks", "tenant_id, portfolio_id, type", "location, outlet_id (auth)"]),
+        "unit": (560, 20, ["units", "property_id, code, use, size", "entitlement, status"]),
+        "own": (10, 140, ["ownerships, occupancies", "unit_id, party, from, to", "bill_to rules, account_id"]),
+        "lease": (285, 140, ["leases (R2)", "unit_id, tenant party, term", "rent, escalation, deposit"]),
+        "chg": (560, 140, ["charge_rules, meters", "basis, rate, fund", "readings, photo_key"]),
+        "sale": (10, 260, ["sale_contracts", "unit_id, buyer, price", "plan_id (treasury), title"]),
+        "run": (285, 260, ["billing_runs, run_lines", "tenant, property, period", "invoice_id (treasury)"]),
+        "wo": (560, 260, ["work_orders, vendors", "unit or area, priority, SLA", "vendor_id (treasury)"]),
+        "list": (10, 380, ["listings (R3)", "unit_id or land, type, price", "status, verified_at, geo"]),
+        "gate": (285, 380, ["passes, gate_events", "property_id, code_hash", "monthly partitions"]),
+        "agg": (560, 380, ["daily_stats", "tenant, property, day", "collections, occupancy"]),
     }
     for k, (x, y, lines) in ents.items():
         h = 22 + 15 * (len(lines) - 1) + 8
@@ -257,11 +258,10 @@ def fig_erd():
             b.append(text(x + 10, y + 37 + i * 15, ln, 9.5, 400, INK, "start"))
     b.append(arrow([(200, 50), (285, 50)], "1 : n"))
     b.append(arrow([(475, 50), (560, 50)], "1 : n"))
-    b.append(arrow([(380, 110), (380, 150)], "1 : n", lx=400, ly=135))
-    b.append(arrow([(475, 180), (560, 180)], "feeds"))
-    b.append(arrow([(200, 180), (285, 180)], "prices"))
-    b.append(arrow([(470, 315), (560, 315)], "vendor"))
-    return svg(760, 485, "".join(b), "estates-api data model")
+    b.append(arrow([(560, 75), (200, 150)], "1 : n", lx=330, ly=112))
+    b.append(arrow([(600, 95), (475, 150)], "1 : n", lx=548, ly=128))
+    b.append(text(380, 482, "Every table carries tenant_id; row-level security enforces it in the database.", 9.5, 500, MUTED))
+    return svg(760, 490, "".join(b), "property-api data model")
 
 
 def fig_wireframes():
@@ -330,11 +330,11 @@ def fig_gantt():
 def fig_ownership():
     b = []
     cols = [
-        (10, "Owned by Shaba Village", "new", [["Estate data", "owners, units, ledgers"], ["Money", "own paybills and banks"],
-                                                ["Documents", "agreements, by-laws"], ["Brand and accounts", "domain, Safaricom, Meta"]]),
-        (265, "Licensed from Codevertex", "reuse", [["Estates service", "estates-api, estates-ui"], ["Treasury and ERP", "books, payroll"],
+        (10, "Owned by each tenant", "new", [["Estate data", "owners, units, ledgers"], ["Money", "own paybills and banks"],
+                                                ["Documents", "agreements, by-laws"], ["Brand and accounts", "domain, paybills, Meta"]]),
+        (265, "Licensed from Codevertex", "reuse", [["Property platform", "property-api, property-ui"], ["Treasury and ERP", "books, payroll"],
                                                    ["Notifications", "SMS, WhatsApp, email"], ["Platform operations", "hosting, backups, deploys"]]),
-        (520, "Third-party providers", "ext", [["Safaricom", "M-Pesa paybills"], ["Banks", "estate and sales accounts"],
+        (520, "Third-party providers", "ext", [["Safaricom", "M-Pesa paybills"], ["Banks", "tenant accounts"],
                                               ["Africa's Talking", "SMS delivery"], ["Meta", "WhatsApp delivery"]]),
     ]
     for x, title, kind, items in cols:
@@ -344,5 +344,102 @@ def fig_ownership():
             b.append(box(x + 15, 48 + i * 56, 200, 46, it, kind, 10.5))
     b.append(arrow([(240, 140), (265, 140)], color=BRAND))
     b.append(arrow([(495, 140), (520, 140)], color=BRAND))
-    b.append(text(380, 296, "Shaba Village licenses the platform for the term of the service agreement; its data, documents and money remain its own.", 9.5, 400, MUTED))
+    b.append(text(380, 296, "Each tenant licenses the platform for its subscription term; its data, documents and money remain its own.", 9.5, 400, MUTED))
     return svg(760, 306, "".join(b), "Ownership boundaries")
+
+
+def fig_tenancy():
+    b = []
+    b.append(box(280, 8, 200, 40, ["Codevertex platform", "operations, plans, marketplace"], "grey", 10))
+    tenants = [(20, ["Estate operator", "e.g. Shaba Village"], "new"), (270, ["Property manager", "manages for landlords"], "new"),
+               (520, ["Landlord or developer", "self-managed"], "new")]
+    for x, l, k in tenants:
+        b.append(box(x, 78, 220, 44, l, k, 10.5))
+        b.append(arrow([(380, 48), (x + 110, 78)]))
+    b.append(label_bg(380, 68, "tenant = organisation in auth-api"))
+    b.append(box(270, 150, 220, 40, ["Client portfolios", "one per landlord, with mandate"], "reuse", 10))
+    b.append(arrow([(380, 122), (380, 150)]))
+    b.append(box(20, 150, 220, 40, ["Estate", "phases, blocks"], "reuse", 10))
+    b.append(arrow([(130, 122), (130, 150)]))
+    b.append(box(520, 150, 220, 40, ["Own portfolio", "buildings, plots"], "reuse", 10))
+    b.append(arrow([(630, 122), (630, 150)]))
+    b.append(box(150, 218, 460, 40, ["Properties", "estates, apartment blocks, office and retail buildings, land; staff assigned per property"], "reuse", 10))
+    for x in (130, 380, 630):
+        b.append(arrow([(x, 190), (380 if x == 380 else (250 if x < 380 else 510), 218)]))
+    b.append(box(150, 284, 460, 40, ["Units", "houses, apartments, offices, shops, bays, plots"], "reuse", 10))
+    b.append(arrow([(380, 258), (380, 284)]))
+    b.append(box(40, 350, 210, 40, ["Owners, buyers", "estate and sales accounts"], "user", 10))
+    b.append(box(275, 350, 210, 40, ["Tenants and occupants", "leases (R2)"], "user", 10))
+    b.append(box(510, 350, 210, 40, ["Listings (R3)", "published to the marketplace"], "ext", 10))
+    for x in (145, 380, 615):
+        b.append(arrow([(380, 324), (x, 350)]))
+    return svg(760, 398, "".join(b), "Tenant and property hierarchy")
+
+
+def fig_releases():
+    rows = [("R1", "MVP and Shaba Village launch", "14 weeks", "Multi-tenant core, properties and units, staff per property, estate billing, utilities, sales and instalments, owner portal, providers, works, gate, ERP staff, reports", "new"),
+            ("R2", "Rental and portfolio management", "Q2 2027", "Landlord clients and mandates, tenant onboarding, leases, rent and deposits, inspections, turnover repairs, landlord statements and remittances, commercial leases", "reuse"),
+            ("R3", "Public marketplace", "Q3 2027", "Listings for rent and sale (homes, offices, shops, land), search and map, enquiries, viewings, applications, verified listers, featured listings", "ext"),
+            ("R4", "Extensions", "Later", "Native apps, smart meters, e-signatures, tenant credit checks, owner voting, AI assistant", "grey")]
+    b = []
+    for i, (r, t, when, d, k) in enumerate(rows):
+        y = 10 + i * 66
+        b.append(box(10, y, 70, 56, [r], k, 16))
+        b.append(box(90, y, 660, 56, [], "plain"))
+        b.append(text(104, y + 20, t, 11, 700, INK, "start"))
+        b.append(text(740, y + 20, when, 10, 700, GOLD, "end"))
+        words, line, lines = d.split(" "), "", []
+        for w in words:
+            if len(line) + len(w) > 112:
+                lines.append(line)
+                line = w
+            else:
+                line = (line + " " + w).strip()
+        lines.append(line)
+        for j, ln in enumerate(lines[:2]):
+            b.append(text(104, y + 36 + j * 13, ln, 9.4, 400, MUTED, "start"))
+    return svg(760, 276, "".join(b), "Release plan")
+
+
+def fig_lease():
+    b = []
+    steps = [["Listing or enquiry", "vacant unit"], ["Application", "consent, KYC"], ["Approval", "manager, landlord"],
+             ["Lease and deposit", "signed, paid"], ["Move-in", "inspection, keys"]]
+    w, g = 132, 15
+    for i, l in enumerate(steps):
+        x = 10 + i * (w + g)
+        b.append(box(x, 20, w, 54, l, "new" if i else "ext", 10))
+        if i < len(steps) - 1:
+            b.append(arrow([(x + w, 47), (x + w + g, 47)]))
+    steps2 = [["Monthly rent", "invoices, M-Pesa"], ["Renewal or review", "notice, escalation"], ["Move-out", "inspection, readings"],
+              ["Deposit settled", "deductions itemised"], ["Turnover", "repaint, repairs, clean"]]
+    for i, l in enumerate(steps2):
+        x = 10 + (4 - i) * (w + g)
+        b.append(box(x, 120, w, 54, l, "reuse" if i < 4 else "warn", 10))
+        if i < len(steps2) - 1:
+            b.append(arrow([(x, 147), (x - g, 147)]))
+    b.append(arrow([(674, 74), (674, 120)]))
+    b.append(arrow([(76, 120), (76, 74)], "vacant again", lx=88, ly=100, anchor="start"))
+    b.append(text(380, 198, "Rent collected is remitted to the landlord monthly, net of management fees, approved expenses and withholding tax.", 9.5, 400, MUTED))
+    return svg(760, 206, "".join(b), "Lease lifecycle")
+
+
+def fig_listing():
+    b = []
+    b.append(box(10, 20, 150, 48, ["Lister", "manager, agent, developer"], "user", 10))
+    b.append(arrow([(160, 44), (195, 44)]))
+    b.append(box(195, 20, 150, 48, ["Verification", "KYC, EARB, documents"], "warn", 10))
+    b.append(arrow([(345, 44), (380, 44)]))
+    b.append(box(380, 20, 150, 48, ["Moderation", "photos, price, duplicates"], "warn", 10))
+    b.append(arrow([(530, 44), (565, 44)]))
+    b.append(box(565, 20, 185, 48, ["Published", "search, map, share link"], "new", 10))
+    b.append(arrow([(657, 68), (657, 100)]))
+    b.append(box(565, 100, 185, 48, ["House hunter", "enquiry or viewing request"], "user", 10))
+    b.append(arrow([(565, 124), (530, 124)]))
+    b.append(box(380, 100, 150, 48, ["Lead to lister", "contact masked, CRM"], "reuse", 10))
+    b.append(arrow([(380, 124), (345, 124)]))
+    b.append(box(195, 100, 150, 48, ["Viewing", "booked, confirmed"], "reuse", 10))
+    b.append(arrow([(195, 124), (160, 124)]))
+    b.append(box(10, 100, 150, 48, ["Application", "into R2 leasing or sale"], "new", 10))
+    b.append(text(380, 172, "Units managed on the platform can be published from their vacancy in one step, already verified.", 9.5, 400, MUTED))
+    return svg(760, 180, "".join(b), "Listing and enquiry flow")

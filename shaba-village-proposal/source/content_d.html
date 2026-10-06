@@ -3,7 +3,7 @@
 <p class="lead">Workflows not covered in the preceding chapters. Steps marked <span class="tag auto">auto</span> run without user or staff action.</p>
 <figure>{FIG_WIRE}<figcaption>Key screens (low fidelity)</figcaption></figure>
 
-<h3 id="wf-setup">Estate set-up</h3>
+<h3 id="wf-setup">Launch tenant set-up: Shaba Village</h3>
 <table class="steps">
 <tr><th>Step</th><th>Action</th><th>Responsible</th></tr>
 <tr><td>1</td><td>Create the Shaba Village tenant, assign the plan and create staff accounts with roles.</td><td>Codevertex</td></tr>
@@ -78,11 +78,11 @@
 
 <section id="data">
 <h2>Data design</h2>
-<p class="lead">estates-api owns the estate domain and references other services by ID: users in auth-api, accounts, invoices, plans and vendors in treasury-api, and employees in erp-api.</p>
-<figure>{FIG_ERD}<figcaption>estates-api data model</figcaption></figure>
+<p class="lead">property-api owns the multi-tenant property domain and references other services by ID: tenants, branches and users in auth-api; accounts, invoices, plans and vendors in treasury-api; employees and assets in erp-api; leads in marketflow-api.</p>
+<figure>{FIG_ERD}<figcaption>property-api data model</figcaption></figure>
 <h3>Data owned elsewhere</h3>
 <table>
-<tr><th>Data</th><th>Owner</th><th>Held in estates-api</th></tr>
+<tr><th>Data</th><th>Owner</th><th>Held in property-api</th></tr>
 <tr><td>Login identity, sessions, roles</td><td>auth-api</td><td>User ID</td></tr>
 <tr><td>Invoices, payments, balances, statements, instalment plans, vendor bills, ledger</td><td>treasury-api</td><td>Account, invoice, plan and vendor IDs</td></tr>
 <tr><td>Staff records, attendance, payroll, casual payments, assets</td><td>erp-api</td><td>Employee and asset IDs</td></tr>
@@ -105,7 +105,7 @@
 
 <section id="interfaces">
 <h2>Interfaces, events and notifications</h2>
-<h3>estates-api endpoints</h3>
+<h3>property-api endpoints</h3>
 <table>
 <tr><th>Area</th><th>Endpoints</th><th>Access</th></tr>
 <tr><td>Register</td><td>GET, POST /units; GET, PATCH /units/{id}; /units/{id}/ownerships, /occupancies, /vehicles; POST /imports</td><td>Staff; owners for own unit</td></tr>
@@ -116,7 +116,12 @@
 <tr><td>Works</td><td>GET, POST /work-orders; PATCH /work-orders/{id}; POST /work-orders/{id}/complete, /confirm, /reopen</td><td>Staff, vendor, resident</td></tr>
 <tr><td>Vendors</td><td>/vendors/{id}/contracts, /documents, /visits, /personnel, /rosters, /invoices</td><td>Staff; vendor for own records</td></tr>
 <tr><td>Gate</td><td>POST /gate/verify, /gate/events, /gate/sync; /patrols/scans; /incidents</td><td>Registered gate device</td></tr>
-<tr><td>Communication</td><td>POST /notices; GET /documents</td><td>Staff; residents read</td></tr>
+<tr><td>Communication</td><td>POST /notices</td><td>Staff</td></tr>
+<tr><td>Documents</td><td>GET, POST /templates; POST /documents/generate; POST /documents/{id}/accept, /upload-signed; GET /documents/{id}/link</td><td>By role and relationship</td></tr>
+<tr><td>Portfolios (R2)</td><td>GET, POST /portfolios; /portfolios/{id}/mandate, /statements, /remittances</td><td>Manager; landlord read</td></tr>
+<tr><td>Leasing (R2)</td><td>/applications; /leases; POST /leases/{id}/activate, /review, /renew, /notice, /move-out; /inspections; /turnovers</td><td>Letting, manager; lessee own</td></tr>
+<tr><td>Listings (R3)</td><td>POST /units/{id}/listing; /listings/{id}/publish, /close; public GET /market/search, /market/listings/{slug}; POST /market/enquiries, /viewings, /applications</td><td>Lister; public, rate limited</td></tr>
+<tr><td>Tenant settings</td><td>/settings/charge-catalogue, /catalogues/{name}, /custom-fields, /approval-rules, /reminders</td><td>Tenant administrator</td></tr>
 <tr><td>Reports and privacy</td><td>GET /reports/{name}; POST /privacy/export, /privacy/delete</td><td>By role</td></tr>
 </table>
 <h3>Treasury interfaces used</h3>
@@ -133,16 +138,19 @@
 <h3>Events</h3>
 <table>
 <tr><th>Event</th><th>Publisher</th><th>Consumer action</th></tr>
-<tr><td>treasury.payment.succeeded</td><td>treasury</td><td>estates-api refreshes the unit balance view, updates purchase progress and requests a receipt</td></tr>
-<tr><td>treasury.invoice.created</td><td>treasury</td><td>estates-api marks the run line as issued; notifications sends the bill</td></tr>
-<tr><td>treasury.dunning.reminder_sent</td><td>treasury</td><td>notifications delivers the reminder; estates-api records it on the unit timeline</td></tr>
-<tr><td>treasury.payout.completed</td><td>treasury</td><td>estates-api marks the vendor invoice as paid and notifies the vendor</td></tr>
-<tr><td>estates.billing_run.completed</td><td>estates-api</td><td>Finance summary; dashboard refresh</td></tr>
-<tr><td>estates.work_order.created, assigned, completed</td><td>estates-api</td><td>Notifications to resident, assignee and manager</td></tr>
-<tr><td>estates.visitor.arrived</td><td>estates-api</td><td>Host notification</td></tr>
-<tr><td>estates.incident.reported</td><td>estates-api</td><td>Alert to manager and agency supervisor</td></tr>
-<tr><td>estates.vendor.document_expiring</td><td>estates-api</td><td>Alert to manager and vendor</td></tr>
-<tr><td>estates.unit.handed_over</td><td>estates-api</td><td>Estate billing starts; welcome message to the owner</td></tr>
+<tr><td>treasury.payment.succeeded</td><td>treasury</td><td>property-api refreshes the unit balance view, updates purchase progress and requests a receipt</td></tr>
+<tr><td>treasury.invoice.created</td><td>treasury</td><td>property-api marks the run line as issued; notifications sends the bill</td></tr>
+<tr><td>treasury.dunning.reminder_sent</td><td>treasury</td><td>notifications delivers the reminder; property-api records it on the unit timeline</td></tr>
+<tr><td>treasury.payout.completed</td><td>treasury</td><td>property-api marks the vendor invoice as paid and notifies the vendor</td></tr>
+<tr><td>property.billing_run.completed</td><td>property-api</td><td>Finance summary; dashboard refresh</td></tr>
+<tr><td>property.work_order.created, assigned, completed</td><td>property-api</td><td>Notifications to resident, assignee and manager</td></tr>
+<tr><td>property.visitor.arrived</td><td>property-api</td><td>Host notification</td></tr>
+<tr><td>property.incident.reported</td><td>property-api</td><td>Alert to manager and agency supervisor</td></tr>
+<tr><td>property.vendor.document_expiring</td><td>property-api</td><td>Alert to manager and vendor</td></tr>
+<tr><td>property.lease.activated, renewed, ended (R2)</td><td>property-api</td><td>Billing schedule starts or stops; listing closes or reopens; notifications</td></tr>
+<tr><td>property.listing.published, enquiry.created (R3)</td><td>property-api</td><td>Search projection refresh; lead created in marketflow; lister notified</td></tr>
+<tr><td>property.document.executed</td><td>property-api</td><td>Key-date reminders scheduled; parties notified</td></tr>
+<tr><td>property.unit.handed_over</td><td>property-api</td><td>Estate billing starts; welcome message to the owner</td></tr>
 </table>
 <p>Consumers are idempotent on event ID. Events are held in the outbox during broker outages and delivered on recovery.</p>
 <h3>Notifications</h3>
@@ -178,6 +186,16 @@
 <tr><td>Maintenance performance</td><td>Management</td><td>Work orders by category, time to respond and resolve, SLA breaches, cost by asset</td></tr>
 <tr><td>Vendor scorecard</td><td>Management</td><td>Visits delivered and missed, post coverage, incidents, complaints, service credits</td></tr>
 <tr><td>Security summary</td><td>Management</td><td>Visitors by day and hour, incidents by type, patrol completion</td></tr>
+<tr class="grp"><td colspan="3">Lettings and portfolios (R2)</td></tr>
+<tr><td>Rent roll and occupancy</td><td>Manager, landlord</td><td>Units, lessees, rent, lease dates, vacancy and days vacant per property</td></tr>
+<tr><td>Lease expiry and review schedule</td><td>Manager</td><td>Leases ending or due for review in the next 90 days</td></tr>
+<tr><td>Deposits held</td><td>Finance, landlord</td><td>Deposits by lease, refunds due and settled</td></tr>
+<tr><td>Landlord statement and remittance history</td><td>Landlord, finance</td><td>Collected, fees, expenses, tax, net remitted</td></tr>
+<tr><td>Turnover performance</td><td>Manager</td><td>Days from move-out to ready, cost per turnover</td></tr>
+<tr class="grp"><td colspan="3">Marketplace (R3)</td></tr>
+<tr><td>Listing performance</td><td>Lister</td><td>Views, enquiries, viewings, applications and days to let or sell</td></tr>
+<tr class="grp"><td colspan="3">Platform</td></tr>
+<tr><td>Tenant usage and health</td><td>Codevertex</td><td>Active tenants, units under management, collections volume, plan limits, failed jobs; no access to tenant detail</td></tr>
 <tr class="grp"><td colspan="3">Finance</td></tr>
 <tr><td>Budget against actual</td><td>Management, owners (summary)</td><td>Each cost line, monthly and year to date</td></tr>
 <tr><td>Income and expenditure, sinking fund statement</td><td>AGM</td><td>From the estate fund ledger</td></tr>
@@ -203,26 +221,26 @@
 <h3>Production access</h3>
 <table>
 <tr><th>Control</th><th>Implementation</th></tr>
-<tr><td>Who has access</td><td>A named list of Codevertex platform engineers, provided to Shaba Village and updated within 5 working days of any change. No shared accounts.</td></tr>
+<tr><td>Who has access</td><td>A named list of Codevertex platform engineers, provided to tenants on request and updated within 5 working days of any change. No shared accounts.</td></tr>
 <tr><td>Server access</td><td>Key-based SSH only, behind a default-deny firewall</td></tr>
 <tr><td>Changes to production</td><td>Only through version-controlled GitOps deployment (ArgoCD); every change traceable to a reviewed commit</td></tr>
 <tr><td>Secrets</td><td>Sealed secrets; separate database credentials per service; Daraja credentials encrypted in the database</td></tr>
 <tr><td>Network isolation</td><td>Kubernetes network policies around payment, authentication and estate services</td></tr>
-<tr><td>Shaba Village staff</td><td>Role-based access through single sign-on with MFA; approvals require a one-time password</td></tr>
-<tr><td>Audit</td><td>Logins, approvals, settings and financial changes in tamper-evident audit logs, available to Shaba Village</td></tr>
+<tr><td>Tenant staff</td><td>Role-based access through single sign-on with MFA; approvals require a one-time password</td></tr>
+<tr><td>Audit</td><td>Logins, approvals, settings and financial changes in tamper-evident audit logs, available to each tenant for its own data</td></tr>
 </table>
 <h3>Codevertex access to estate data</h3>
-<p>Codevertex staff do not access Shaba Village's personal or financial records in normal operation. Access occurs only to resolve a support request, investigate an incident or perform a restore, is limited to the records concerned, and is logged. These obligations are set out in the data processing agreement, and every engineer with production access signs a confidentiality undertaking.</p>
+<p>Codevertex staff do not access any tenant's personal or financial records in normal operation. Access occurs only to resolve a support request, investigate an incident or perform a restore, is limited to the records concerned, and is logged. These obligations are set out in the data processing agreement, and every engineer with production access signs a confidentiality undertaking.</p>
 <h3>Security incident notification</h3>
 <table>
 <tr><th>Event</th><th>Timeline</th></tr>
-<tr><td>Codevertex notifies Shaba Village of a confirmed personal data breach</td><td>Within 24 hours of confirmation</td></tr>
-<tr><td>Shaba Village notifies the Data Protection Commissioner (section 43, Data Protection Act)</td><td>Within 72 hours of becoming aware; Codevertex supplies the facts</td></tr>
-<tr><td>Affected people notified where there is a real risk of harm</td><td>Without undue delay, with Shaba Village's approval of the message</td></tr>
+<tr><td>Codevertex notifies the affected tenant of a confirmed personal data breach</td><td>Within 24 hours of confirmation</td></tr>
+<tr><td>The tenant notifies the Data Protection Commissioner (section 43, Data Protection Act)</td><td>Within 72 hours of becoming aware; Codevertex supplies the facts</td></tr>
+<tr><td>Affected people notified where there is a real risk of harm</td><td>Without undue delay, with the tenant's approval of the message</td></tr>
 <tr><td>Written incident report: cause, impact, remediation</td><td>Within 5 working days</td></tr>
 </table>
 <h3>Penetration testing</h3>
-<p>An internal review against the OWASP Application Security Verification Standard is included in week 13. An independent penetration test is recommended before launch and annually, commissioned at Shaba Village's cost; Codevertex remediates all high and critical findings at no charge before launch.</p>
+<p>An internal review against the OWASP Application Security Verification Standard is included in week 13. An independent penetration test is recommended before launch and annually, commissioned at the launch tenant's option and cost; Codevertex remediates all high and critical findings at no charge before launch.</p>
 <h3>Data processors</h3>
 <table>
 <tr><th>Processor</th><th>Purpose</th><th>Data received</th><th>Location</th></tr>
