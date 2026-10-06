@@ -5,7 +5,7 @@
 <h3>Hosting location</h3>
 <table>
 <tr><th>Component</th><th>Provider and location</th><th>Content</th></tr>
-<tr><td>Application and database servers</td><td>Contabo Cloud VPS, European Union region (Germany), running Kubernetes (k3s)</td><td>property-ui, property-api, treasury, ERP, authentication, notifications; PostgreSQL databases</td></tr>
+<tr><td>Application and database servers</td><td>Contabo Cloud VPS, European Union region (Germany), running Kubernetes (k3s)</td><td>maskani-ui, maskani-api, treasury, ERP, authentication, notifications; PostgreSQL databases</td></tr>
 <tr><td>Offsite backups</td><td>Cloudflare R2 object storage, separate provider; encrypted</td><td>Nightly encrypted database backups</td></tr>
 <tr><td>Edge network</td><td>Cloudflare (TLS, CDN, web application firewall)</td><td>Traffic in transit and cached public assets; no database content</td></tr>
 <tr><td>Email</td><td>Codevertex mail server on the same platform</td><td>Outbound email; no third-party email processor</td></tr>
