@@ -1,0 +1,185 @@
+<section class="page">
+<h2 class="nonum">Document control</h2>
+<table>
+<tr><th>Version</th><th>Date</th><th>Author</th><th>Description</th></tr>
+<tr><td>1.0</td><td>6 October 2026</td><td>Codevertex Africa Limited</td><td>Issued for review: platform specification and launch proposal for Shaba Village</td></tr>
+</table>
+<table>
+<tr><th>Role</th><th>Party</th><th>Responsibility</th></tr>
+<tr><td>Product owner, platform</td><td>Codevertex</td><td>Product roadmap, multi-tenant design, pricing, marketplace policy</td></tr>
+<tr><td>Product owner, launch tenant</td><td>Shaba Village estate management</td><td>Shaba scope approval, business rules, by-law and tariff decisions, data supply, legal sign-off</td></tr>
+<tr><td>Finance lead, launch tenant</td><td>Shaba Village</td><td>Charge rates, opening balances, bank and paybill set-up, approval limits</td></tr>
+<tr><td>Delivery and technical leads</td><td>Codevertex</td><td>Planning, architecture, code quality, security, releases</td></tr>
+</table>
+{TOC}
+</section>
+
+<section id="summary">
+<h2 class="nonum">Executive summary</h2>
+<p>Maskani, by Codevertex, is a multi-tenant software-as-a-service platform for the Kenyan real estate market, built on the same shared services that already run Codevertex's commerce, finance and HR products. One platform serves three kinds of business, each as an isolated tenant with its own users, properties, money and brand:</p>
+<ul>
+<li><b>Estate operators and developers</b> such as Shaba Village, who sell homes and apartments outright or by instalments and then manage the estate and bill owners for water, service charge and shared services.</li>
+<li><b>Property management firms</b> that let and manage buildings for many landlords: they list units, onboard tenants on signed leases, collect rent and utilities, arrange repainting and repairs, assign caretakers and managers to each property, and remit to landlords with statements.</li>
+<li><b>Landlords, developers and agents</b> who manage their own portfolios or advertise property for rent or sale.</li>
+</ul>
+<p>A public marketplace, Maskani Marketplace, added in Release 3, lets house hunters and businesses browse homes, offices, shops, warehouses and land for rent or sale. It draws on the vacancies of properties already managed on the platform, so listings are verified at the source and a successful enquiry flows straight into a lease or a sale contract.</p>
+<p>The minimum viable product, Release 1, is deliberately tight. It builds the multi-tenant core and the full estate management workflow, and launches Shaba Village as the first tenant within 14 weeks. Rental and portfolio management for property managers follows in Release 2, and the marketplace in Release 3, on the same data model, so nothing built for Shaba is rebuilt later.</p>
+<h3 class="nonum">What Shaba Village gets at launch</h3>
+<ul>
+<li>One balance per unit and fund, visible to each owner on their phone, with statements on demand.</li>
+<li>Paybill payments matched to the right unit and receipted within a minute.</li>
+<li>Monthly bills, including metered water with photo evidence, issued for every unit in one run.</li>
+<li>Instalment schedules, reminders and purchase statements from reservation to handover and title.</li>
+<li>Sale agreements, handover forms, clearance certificates and notices generated from templates and stored against each unit.</li>
+<li>Service provider contracts, schedules, guard posts and patrols, with vendor invoices adjusted for missed service.</li>
+<li>Visitor passes and gate logs that collect only what the law allows.</li>
+<li>Estate staff and casual workers paid through the ERP payroll; sales and estate money kept in separate ledgers.</li>
+</ul>
+<h3 class="nonum">Engagement summary</h3>
+<div class="kpis">
+<div><span>14 weeks</span>Release 1 and Shaba launch, February 2027</div>
+<div><span>KES 250,000</span>Fixed launch build price, inclusive of taxes</div>
+<div><span>KES 20,000</span>Recommended monthly tier: subscription, hosting, support</div>
+<div><span>3 releases</span>Estate management, rental management, marketplace</div>
+</div>
+</section>
+
+<section id="introduction">
+<h2>Introduction</h2>
+<h3>Purpose</h3>
+<p>This document specifies the requirements and design of Maskani across its releases, the delivery plan for Release 1, and the commercial terms for Shaba Village as launch tenant. It is the basis for development, testing and acceptance, and replaces the earlier property management requirements document.</p>
+<h3>Product vision</h3>
+<p>Kenyan property businesses run on spreadsheets, paybill statements, WhatsApp groups and paper files. Rent and service charge are reconciled by hand, deposits disappear into general accounts, repairs are chased by phone, and house hunters lose money to fake listings. Maskani gives each business one system of record for its properties, people, agreements and money, and gives the public one place, Maskani Marketplace, to find property that is real, available and verified.</p>
+<h3>The name</h3>
+<p>The platform is <b>Maskani</b>, by Codevertex. In Kiswahili, maskani is home: the place you live and return to, and the base where your people gather. Every estate, apartment block and managed building is someone's maskani, and the platform runs them. The public marketplace in Release 3 is <b>Maskani Marketplace</b>, where homes, offices, shops and land are let and sold. A seeker who finds a home on Maskani Marketplace then pays rent or service charge through the Maskani portal of the business that let it. The services carry the brand: maskani-api, maskani-ui and, in Release 3, maskani-marketplace.</p>
+<h3>Launch tenant: Shaba Village</h3>
+<p>Shaba Village is a residential estate in Syokimau, off Mombasa Road, in the Mavoko area of Machakos County. It comprises homes and apartments, including two and three bedroom units, sold outright or on deposit and instalments. Estate management supplies water from the Mavoko Water and Sewerage Company connection and two boreholes through an underground reservoir and unit tanks, and runs perimeter security, 24-hour guarding, landscaping, cleaning, garbage collection, sewer and parking, all billed to owners every month. Shaba's needs define Release 1; its configuration is described in <a href="#model">Estate management: Shaba Village configuration</a>.</p>
+<h3>Scope by release</h3>
+<figure>{FIG_RELEASES}<figcaption>Release plan</figcaption></figure>
+<table>
+<tr><th>Area</th><th>Release 1 (MVP)</th><th>Later releases</th></tr>
+<tr><td>Platform</td><td>Multi-tenant core, self-service tenant settings, plans and limits, per-tenant branding and domain, platform administration</td><td>Self-service sign-up with trial (R2); marketplace operations (R3)</td></tr>
+<tr><td>Properties</td><td>Properties, blocks, units, staff assignment per property, owners, occupants, documents</td><td>Landlord client portfolios and management mandates (R2); listings (R3)</td></tr>
+<tr><td>Sales</td><td>Price lists, reservations, sale agreements, instalments, handover, title tracking</td><td>Off-plan milestone certificates and buyer marketplace leads (R3)</td></tr>
+<tr><td>Billing</td><td>Service charge, utilities, levies, meters, billing runs, M-Pesa matching, arrears, statements</td><td>Rent, deposits, escalations, landlord remittances (R2)</td></tr>
+<tr><td>Leasing</td><td>Tenants as occupants of owner units, with bill-to assignment</td><td>Full lease lifecycle: applications, leases, inspections, renewals, move-out, deposit refunds (R2)</td></tr>
+<tr><td>Operations</td><td>Service providers, SLAs, guard posts, patrols, work orders, preventive maintenance, gate and visitors</td><td>Turnover repaint and repair projects (R2); smart meters (R4)</td></tr>
+<tr><td>Documents</td><td>Template library, generated agreements and notices, uploads, signatures by acceptance or upload</td><td>Lease and mandate templates (R2); advanced electronic signatures (R4)</td></tr>
+<tr><td>Marketplace</td><td>Not in Release 1</td><td>Public search, map, enquiries, viewings, applications, verified listers, featured listings (R3)</td></tr>
+</table>
+<p><b>Excluded from all releases:</b> conveyancing and legal advice, mortgage origination, holding of client money by Codevertex, and short-stay holiday booking.</p>
+<h3>Definitions</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Tenant (platform)</td><td>A business subscribed to the platform, with its own isolated data, users and money. To avoid confusion, the document calls people who rent property <b>lessees</b> or <b>renters</b> wherever the two meanings could meet</td></tr>
+<tr><td>Portfolio</td><td>A group of properties: a property manager keeps one per landlord client</td></tr>
+<tr><td>Property</td><td>An estate, building, plot or complex, made up of units</td></tr>
+<tr><td>Unit</td><td>A house, apartment, office, shop, bay or plot with its own code, for example B07</td></tr>
+<tr><td>Owner, buyer</td><td>The registered or contracted purchaser of a unit</td></tr>
+<tr><td>Landlord</td><td>A property owner who lets units, directly or through a property manager</td></tr>
+<tr><td>Lessee, occupant</td><td>A person or business renting a unit; any person living in or using it</td></tr>
+<tr><td>Management mandate</td><td>The agreement under which a property manager acts for a landlord</td></tr>
+<tr><td>Unit entitlement</td><td>A unit's share of common costs</td></tr>
+<tr><td>Service charge, sinking fund</td><td>Monthly contribution to running costs; reserve for major repairs</td></tr>
+<tr><td>Billing run</td><td>The monthly process that issues invoices for all units of a property</td></tr>
+<tr><td>Listing</td><td>A public advertisement of a unit or land for rent or sale</td></tr>
+<tr><td>Management corporation</td><td>The owners' body corporate under the Sectional Properties Act, 2020</td></tr>
+<tr><td>SLA, work order</td><td>Measurable service target in a contract; a recorded repair or maintenance job</td></tr>
+<tr><td>Paybill, STK push</td><td>M-Pesa business number; payment prompt sent to the payer's phone</td></tr>
+<tr><td>ODPC, DPIA, EARB</td><td>Data Protection Commissioner; impact assessment; Estate Agents Registration Board</td></tr>
+<tr><td>eTIMS, WHT, MRI</td><td>KRA tax invoice system; withholding tax; monthly residential rental income tax</td></tr>
+</table>
+<h3>References</h3>
+<ul>
+<li>Property Management and Real Estate Services Platform requirements document, version 1.0, October 2026 (superseded)</li>
+<li>Codevertex platform documentation: microservice architecture and tenant isolation tiers, cross-service data ownership, treasury invoicing, payments, escrow and approvals, M-Pesa integration, ERP payroll, notifications, subscription gating</li>
+<li>Sectional Properties Act, 2020; Land Registration Act, 2012; Stamp Duty Act; Law of Contract Act as amended by the Business Laws (Amendment) Act, 2020; Estate Agents Act</li>
+<li>Data Protection Act, 2019 and Regulations, 2021; ODPC draft Guidance Note for the Private Security Sector, 2025</li>
+<li>KRA guidance on monthly rental income tax and withholding on rent; Mavoko Water and Sewerage Company tariff, 2023/24 to 2025/26</li>
+<li>Web Content Accessibility Guidelines 2.2; OWASP Application Security Verification Standard 4</li>
+</ul>
+</section>
+
+<section id="market">
+<h2>Market and tenant types</h2>
+<p class="lead">Who the platform serves, what each segment needs, and how comparable products have shaped the design.</p>
+<h3>Tenant types</h3>
+<table>
+<tr><th>Tenant type</th><th>Examples</th><th>Core needs</th><th>Release</th></tr>
+<tr><td>Estate operator or developer</td><td>Gated estates, apartment developments, sectional property schemes such as Shaba Village</td><td>Unit sales and instalments, owner billing, metered water, service providers, gate security, AGM transparency, handover to the management corporation</td><td>R1</td></tr>
+<tr><td>Property management firm</td><td>Letting and management agencies managing residential and commercial buildings for many landlords</td><td>Landlord portfolios and mandates, staff per property, tenant onboarding, leases, rent and utilities, deposits, repairs and repainting, landlord statements and remittances, management fees</td><td>R2</td></tr>
+<tr><td>Self-managing landlord</td><td>Owners of one or more apartment blocks, commercial buildings or rental plots</td><td>As above without the client layer: rent collection, repairs, caretakers, tax records</td><td>R2</td></tr>
+<tr><td>Agent or developer advertising</td><td>Registered estate agents, developers selling off-plan, land sellers</td><td>Verified listings, enquiries, viewings, lead handling</td><td>R3</td></tr>
+<tr><td>Service provider</td><td>Security, cleaning, garbage, maintenance contractors</td><td>Schedules, work orders, evidence, invoicing and payment across the tenants they serve</td><td>R1</td></tr>
+<tr><td>Public</td><td>House hunters, buyers, businesses seeking offices or shops, diaspora investors</td><td>Real, current listings with prices, photos, location and a safe way to enquire and apply</td><td>R3</td></tr>
+</table>
+<h3>Comparable systems and practice</h3>
+<table>
+<tr><th>Product or practice</th><th>What it shows</th><th>How it shaped the design</th></tr>
+<tr><td>Kenyan rent tools (paybill-first rent collection)</td><td>Automated paybill matching per unit and SMS or WhatsApp reminders are what reduce arrears locally</td><td>Unit-coded paybill accounts, automatic matching, escalating reminders</td></tr>
+<tr><td>AppFolio, Buildium (US)</td><td>Association and rental management with vendor portals, work orders, violations and owner statements in one product</td><td>Vendor portal, owner and landlord statements, one work order model for estates and rentals</td></tr>
+<tr><td>Yardi, MRI (global)</td><td>Commercial leases need escalations, service charge recovery and tenant statements</td><td>Commercial lease terms in R2: escalation, VAT on commercial rent, service charge recovery</td></tr>
+<tr><td>Gated estate access apps</td><td>QR passes, guard verification and host approval are now expected by residents</td><td>Gate tablet with passes, walk-in approval and offline mode</td></tr>
+<tr><td>Property portals (local and global)</td><td>Fake listings and deposit scams are the biggest risk in Kenyan house hunting</td><td>Verified listers, listings sourced from managed vacancies, masked contacts, no deposits outside the platform</td></tr>
+<tr><td>Kenyan estate disputes</td><td>Unaccounted service charge and mixed funds drive litigation by owners</td><td>Separate fund ledgers, budget against actual, AGM statements</td></tr>
+</table>
+<h3>Positioning</h3>
+<p>Local tools collect rent but do not run an estate, sell units or manage providers; global tools are priced in dollars and do not speak M-Pesa, eTIMS or Kenyan tax. Maskani combines both, and it is the only product in the segment that sits on a full accounting, payroll and messaging stack already in production.</p>
+</section>
+
+<section id="overview">
+<h2>Overall description</h2>
+<h3>Product perspective</h3>
+<p>Each customer is a tenant of the Codevertex platform. Three new components, maskani-ui, maskani-api and, in Release 3, maskani-marketplace, provide the property product. Sign-in, invoicing, M-Pesa, the ledger, approvals, payroll, messaging, plans, leads and maps come from existing platform services, described in <a href="#architecture">Solution architecture</a>. The property service holds references to their records and never keeps a second copy.</p>
+<h3>User classes</h3>
+<table>
+<tr><th>Role</th><th>Description</th><th>Main permissions</th><th>Sign-in</th></tr>
+<tr class="grp"><td colspan="4">Platform</td></tr>
+<tr><td>Platform administrator</td><td>Codevertex staff</td><td>Tenants, plans, marketplace moderation and verification; no access to tenant financial data except under a logged support grant</td><td>SSO with MFA</td></tr>
+<tr class="grp"><td colspan="4">Tenant staff</td></tr>
+<tr><td>Tenant administrator</td><td>Directors and delegates</td><td>All tenant settings, staff, roles, approvals above limit</td><td>SSO with MFA</td></tr>
+<tr><td>Property manager</td><td>Runs one or more assigned properties</td><td>Operations, leases, work orders, vendors, notices and reports for assigned properties only</td><td>SSO with MFA</td></tr>
+<tr><td>Finance officer</td><td>Billing, collections and payouts</td><td>Charges, billing runs, allocations, adjustments within limits, vendor bills, remittances</td><td>SSO with MFA; OTP per approval</td></tr>
+<tr><td>Sales or letting officer</td><td>Unit sales or lettings</td><td>Price lists, reservations, agreements, applications, listings</td><td>SSO with MFA</td></tr>
+<tr><td>Caretaker</td><td>On-site staff at an assigned property</td><td>Meter readings, work orders, inspections, service checks, notices</td><td>SSO, phone</td></tr>
+<tr class="grp"><td colspan="4">Customers of the tenant</td></tr>
+<tr><td>Owner, buyer</td><td>Purchaser of a unit, including diaspora owners</td><td>Statements, payments, purchase progress, readings, requests, passes, household, documents</td><td>Phone and OTP</td></tr>
+<tr><td>Landlord client</td><td>Property owner using a property manager (R2)</td><td>Portfolio dashboard, statements, remittances, approval of repairs above limit, documents</td><td>Phone and OTP</td></tr>
+<tr><td>Lessee or occupant</td><td>Renter, household member or tenant of an owner</td><td>Lease, bills and payments assigned to them, requests, passes, notices</td><td>Phone and OTP</td></tr>
+<tr class="grp"><td colspan="4">Field and partners</td></tr>
+<tr><td>Guard</td><td>Agency guard on duty</td><td>Gate tablet only: passes, walk-ins, deliveries, patrols, incidents</td><td>Gate PIN on a registered tablet</td></tr>
+<tr><td>Vendor supervisor</td><td>Agency or contractor representative</td><td>Own contracts, schedules, rosters, work orders, invoices, documents</td><td>Phone and OTP</td></tr>
+<tr class="grp"><td colspan="4">Public (Release 3)</td></tr>
+<tr><td>Visitor</td><td>Anyone browsing</td><td>Search and view listings</td><td>None</td></tr>
+<tr><td>Registered seeker</td><td>House hunter, buyer or business</td><td>Saved searches, enquiries, viewing requests, applications</td><td>Phone and OTP</td></tr>
+<tr><td>Lister</td><td>Verified agent, developer or private owner without a full subscription</td><td>Own listings, enquiries, viewings</td><td>Phone and OTP, verified</td></tr>
+</table>
+<p>One person can hold different roles in different tenants, for example an owner at Shaba Village who also rents an office managed by another tenant. They sign in once; each tenant sees only its own relationship with them.</p>
+<h3>Operating environment</h3>
+<ul>
+<li>All users: any modern mobile or desktop browser; installable as a progressive web application</li>
+<li>Gate: an Android tablet at each gate in kiosk mode, with offline operation during network loss</li>
+<li>Hosting: Codevertex Kubernetes platform with PostgreSQL, Redis, NATS JetStream and object storage, behind Cloudflare</li>
+<li>Payments: Safaricom M-Pesa through each tenant's own paybills (Daraja API) and bank transfers recorded against unit accounts</li>
+<li>Messaging: Africa's Talking (SMS), Meta WhatsApp Cloud API, Codevertex mail server (email)</li>
+</ul>
+<h3>Constraints</h3>
+<ul>
+<li>Money is collected only into each tenant's own paybills and bank accounts. Codevertex never receives tenant or customer funds.</li>
+<li>The property service does not move money. Invoices, payments and payouts are executed by the treasury service.</li>
+<li>Utility supply is never cut off automatically, and nobody is locked out, for arrears. Kenyan courts and tribunals have held self-help disconnection unlawful.</li>
+<li>Electricity is not resold; units use Kenya Power prepaid meters.</li>
+<li>Conveyancing, lease registration and legal notices are performed by advocates; the platform generates drafts, stores signed documents and records progress.</li>
+</ul>
+<h3>Assumptions and dependencies for the Shaba launch</h3>
+<ul>
+<li>Shaba Village supplies the unit register, owner list, sale agreements, templates of its existing forms and opening balances by week 4, in the import template provided.</li>
+<li>Shaba Village holds, or opens, separate paybills and bank accounts for sale collections and for the estate fund, and grants Daraja API access by week 3.</li>
+<li>Shaba Village confirms the charge schedule, water tariff, penalty rules and allocation order from its by-laws and sale agreements by week 5.</li>
+<li>Service provider contracts and licences are available for loading by week 8.</li>
+<li>Shaba Village appoints a product owner able to decide within 2 working days and supply documents within 3.</li>
+<li>Shaba Village registers with the ODPC as a data controller and engages an advocate to approve the legal pack and document templates.</li>
+<li>Shaba Village provides one Android tablet per gate, with a data connection.</li>
+<li>Messaging, payment provider charges and the domain name are client-borne costs, as set out in <a href="#commercials">Commercial terms</a>.</li>
+</ul>
+</section>
