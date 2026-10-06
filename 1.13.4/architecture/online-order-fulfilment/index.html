@@ -3679,11 +3679,27 @@ the payment options, the acceptance policy, who may act at each stage, and per-t
    wins). <code>logistics.task.picked_up</code> moves the order to <code>out_for_delivery</code>; the rider submits proof
    of delivery with the customer's code and, for pay on delivery, the cash or M-Pesa code taken.
    <code>logistics.task.completed</code> delivers the order, settles it with the method used and consumes
-   stock. An outlet delivering with its own staff marks it delivered from the POS queue instead.</li>
+   stock. An outlet delivering with its own staff marks it delivered from the POS queue instead.
+   Assignment from every path (dispatcher, auto-dispatch, batching, self-claim) is one
+   conditional update, so a job never ends up with two riders. Auto-dispatch only uses riders
+   whose last GPS fix is under 10 minutes old and never offers a job back to a rider who
+   declined it.</li>
+<li><strong>Rider declines</strong> (before pickup): <code>POST /{tenant}/riders/me/tasks/{id}/decline {reason}</code>.
+     The task returns to <code>pending</code>, <code>logistics.task.unassigned</code> is published, the dispatch board
+     gets an alert, and with auto-assign on the next rider is picked.</li>
+<li><strong>Failed delivery</strong> (after pickup): the rider sets <code>failed</code> with a reason. The assignment
+     ends (the rider is free), <code>logistics.task.failed</code> carries <code>failure_reason</code>, and the dispatch
+     board is alerted to get the order back to the outlet.</li>
+<li>Riders cannot cancel a delivery. Dispatchers can unassign or reassign before pickup and
+     cancel with a reason (<code>POST /{tenant}/tasks/{id}/unassign|cancel</code>, assign with
+     <code>reassign: true</code>).</li>
+<li>Live tracking for the customer: <code>GET /api/v1/s2s/dispatch/{tenant}/tasks/{id}/tracking</code>
+     (service key) returns the rider's last position, name, phone and ETA while the rider is
+     working the task.</li>
 <li><strong>Cancellation</strong> releases stock, refunds a prepaid order and voids the POS record and its
    tickets. A customer can cancel only until the kitchen starts; after that the outlet rejects.
-   An open delivery task is not cancelled automatically yet: logistics-api does not consume
-   <code>ordering.order.cancelled</code>, so a dispatcher must cancel it in logistics-ui.</li>
+   logistics-api consumes <code>ordering.order.cancelled</code> and cancels the open delivery task (the
+   rider is freed; if the order was already picked up the dispatch board is told to get it back).</li>
 </ol>
 <p>Every status change runs its one-time effects (cash settlement, loyalty, stock, refund) only for
 the request whose status write wins, so duplicate or redelivered events never repeat them.</p>
@@ -3740,16 +3756,19 @@ order's COD amount (change given is not owed).</p>
 </tr>
 <tr>
 <td><code>GET /{tenant}/cash/riders</code></td>
-<td><code>logistics.tasks.manage</code></td>
+<td><code>logistics.tasks.manage</code>, not riders</td>
 </tr>
 <tr>
 <td><code>POST /{tenant}/cash/riders/{memberId}/remit</code> <code>{amount_received, notes}</code></td>
-<td><code>logistics.tasks.manage</code></td>
+<td><code>logistics.tasks.manage</code>, not riders</td>
 </tr>
 </tbody>
 </table>
 <p>A hand-in stamps every outstanding cash delivery with one remittance id, the amount expected,
-received and any shortfall.</p>
+received and any shortfall, in one transaction; a second submit of the same hand-in is refused.</p>
+<p>Riders hold <code>logistics.tasks.manage</code> so they can move their own jobs. Dispatcher routes (the task
+board list, create, assign, unassign, cancel, dispatch, rating, rider cash) refuse a caller who
+is a fleet member of the tenant unless they also hold <code>logistics.fleet.manage</code>.</p>
 <h2 id="who-does-what">Who does what<a class="headerlink" href="#who-does-what" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3798,10 +3817,16 @@ received and any shortfall.</p>
 <td>counter roles, dispatcher</td>
 </tr>
 <tr>
-<td>Take an open job, legs, proof of delivery</td>
+<td>Take an open job, legs, decline before pickup, failed delivery, proof of delivery</td>
 <td>rider app</td>
 <td>the rider's own fleet membership</td>
 <td>rider</td>
+</tr>
+<tr>
+<td>Unassign, reassign, cancel a delivery</td>
+<td>logistics-ui task page</td>
+<td><code>logistics.tasks.manage</code> (not riders)</td>
+<td>dispatcher</td>
 </tr>
 <tr>
 <td>Record rider cash hand-in</td>
@@ -3966,7 +3991,7 @@ removes the override. Tenant updates clear the shared <code>tenant:&lt;slug&gt;<
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 15:34:10 UTC">October 6, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 15:53:14 UTC">October 6, 2026</span>
   </span>
 
     
