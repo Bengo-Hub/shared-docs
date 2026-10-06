@@ -3,9 +3,9 @@ vector, sharp and small."""
 
 from html import escape
 
-BRAND = "#7A1F63"
-BRAND_SOFT = "#F4E9F1"
-GOLD = "#C8902E"
+BRAND = "#6E1A5A"
+BRAND_SOFT = "#F6EEF4"
+GOLD = "#B8862B"
 GOLD_SOFT = "#FBF2E2"
 MAROON = "#8E2B2B"
 INK = "#1F2430"
@@ -32,7 +32,7 @@ def svg(w, h, body, title=""):
     t = f"<title>{escape(title)}</title>" if title else ""
     return (
         f'<svg viewBox="0 0 {w} {h}" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" '
-        f'font-family="DocSans, sans-serif">{t}'
+        f'font-family="Heros, Helvetica, Arial, sans-serif">{t}'
         '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
         f'orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{MUTED}"/></marker>'
         '<marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
@@ -104,8 +104,15 @@ def label_bg(x, y, s, size=9.5, anchor="middle"):
 
 
 def lane(x, y, w, h, title, fill=GREY_SOFT):
-    return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{fill}" stroke="{LINE}" stroke-dasharray="4 4"/>'
-            + text(x + 12, y + 18, title.upper(), 9.5, 700, MUTED, "start"))
+    out = f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{fill}" stroke="{LINE}" stroke-dasharray="4 4"/>'
+    return out + (lane_title(x, y, title) if title else "")
+
+
+def lane_title(x, y, title, size=8.5):
+    t = title.upper()
+    w = len(t) * size * 0.68 + 12
+    return (f'<rect x="{x + 6}" y="{y + 6}" width="{w}" height="{size + 7}" rx="3" fill="#FFFFFF"/>'
+            + text(x + 12, y + 6 + size + 2, t, size, 700, MUTED, "start"))
 
 
 def legend(x, y, items):
@@ -176,8 +183,10 @@ def gantt(rows, weeks=12, width=760, title="", milestones=()):
         out.append(text(12, y + 15, label, 9.8, 400, INK, "start"))
         fill, stroke = KINDS[kind]
         out.append(f'<rect x="{left + (s-1)*cw + 2}" y="{y+4}" width="{(e-s+1)*cw - 4}" height="{rh-8}" rx="4" fill="{stroke}" opacity="0.85"/>')
-    for wk, lab in milestones:
-        x = left + wk * cw - 2
-        out.append(f'<path d="M{x},{h-22} l6,8 l-6,8 l-6,-8z" fill="{GOLD}"/>')
-        out.append(text(x, h - 1 + 0, lab, 8.8, 600, INK))
-    return svg(width, h + 6, "".join(out), title)
+    for m in milestones:
+        wk, lab = m[0], m[1]
+        x = left + wk * cw
+        anchor = m[2] if len(m) > 2 else ("end" if wk >= weeks else ("start" if wk <= 0.5 else "middle"))
+        out.append(f'<path d="M{x},{h-24} l5,7 l-5,7 l-5,-7z" fill="{GOLD}"/>')
+        out.append(text(x, h + 2, lab, 8.8, 700, INK, anchor))
+    return svg(width, h + 10, "".join(out), title)
