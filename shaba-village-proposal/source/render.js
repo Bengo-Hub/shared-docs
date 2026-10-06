@@ -20,7 +20,7 @@ const path = require('path');
       margin: { top: '22mm', bottom: '18mm', left: '18mm', right: '18mm' },
       headerTemplate: `<div style="${font}width:100%;margin:0 18mm;padding-bottom:5px;border-bottom:0.6px solid #D9DCE3;display:flex;align-items:flex-end;justify-content:space-between">
         <img src="${logo}" style="height:22px">
-        <span>Codevertex Property Platform &nbsp;|&nbsp; SRDD and Shaba Village Launch &nbsp;|&nbsp; v1.0</span></div>`,
+        <span>Codevertex Makazi &nbsp;|&nbsp; SRDD and Shaba Village Launch &nbsp;|&nbsp; v1.0</span></div>`,
       footerTemplate: `<div style="${font}width:100%;margin:0 18mm;padding-top:5px;border-top:0.6px solid #D9DCE3;display:flex;justify-content:space-between">
         <span>Confidential</span><span>Codevertex Africa Limited &nbsp;|&nbsp; www.codevertexafrica.com</span>
         <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`,
