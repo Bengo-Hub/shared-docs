@@ -1,0 +1,254 @@
+<section id="workflows">
+<h2>Process workflows</h2>
+<p class="lead">Workflows not covered in the preceding chapters. Steps marked <span class="tag auto">auto</span> run without user or staff action.</p>
+<figure>{FIG_WIRE}<figcaption>Key screens (low fidelity)</figcaption></figure>
+
+<h3 id="wf-setup">Launch tenant set-up: Shaba Village</h3>
+<table class="steps">
+<tr><th>Step</th><th>Action</th><th>Responsible</th></tr>
+<tr><td>1</td><td>Create the Shaba Village tenant, assign the plan and create staff accounts with roles.</td><td>Codevertex</td></tr>
+<tr><td>2</td><td>Connect the estate and sales paybills (Daraja C2B and prompt) and record both bank accounts. Map each to its ledger and cost centre.</td><td>Codevertex, Shaba finance</td></tr>
+<tr><td>3</td><td>Configure charges, water tariff, penalties, allocation order, reminder days and approval limits.</td><td>Shaba finance</td></tr>
+<tr><td>4</td><td>Import units, owners, occupants, sale contracts and opening balances; reconcile totals to Shaba's records before commit.</td><td>Codevertex, Shaba finance</td></tr>
+<tr><td>5</td><td>Load vendors, contracts, licences, posts, checkpoints and preventive schedules.</td><td>Shaba management</td></tr>
+<tr><td>6</td><td>Load estate staff into the ERP with contracts and pay details.</td><td>Shaba management</td></tr>
+<tr><td>7</td><td>Run one billing cycle in parallel with the current method and compare unit by unit before going live.</td><td>Codevertex, Shaba finance</td></tr>
+<tr><td>8</td><td>Live KES 1 tests on both paybills, and a test vendor payment, each reconciled.</td><td>Codevertex, Shaba finance</td></tr>
+</table>
+
+<h3 id="wf-owner">Owner onboarding</h3>
+<figure>{FIG_ONBOARD}<figcaption>Owner onboarding</figcaption></figure>
+<table class="steps">
+<tr><th>Step</th><th>Action</th><th>System behaviour</th></tr>
+<tr><td>1</td><td>Owner records imported</td><td>Owner linked to unit with ownership date and opening balance</td></tr>
+<tr><td>2</td><td>Invitation sent</td><td>SMS with portal link and paybill details <span class="tag auto">auto</span></td></tr>
+<tr><td>3</td><td>Owner signs in</td><td>One-time password by SMS, WhatsApp fallback; codes hashed, 5-minute expiry, rate limited</td></tr>
+<tr><td>4</td><td>Owner accepts terms and privacy notice</td><td>Version and time recorded</td></tr>
+<tr><td>5</td><td>Owner adds household members, tenants, vehicles and domestic staff</td><td>Gate access created for each</td></tr>
+<tr><td>6</td><td>Owner views statement</td><td>Opening balance and current invoices from treasury</td></tr>
+</table>
+<p class="exception"><b>Exception:</b> owners who do not use smartphones continue to receive bills and receipts by SMS and pay by paybill. Staff can create visitor passes on their behalf.</p>
+
+<h3 id="wf-resale">Unit resale or transfer</h3>
+<ol>
+<li>The selling owner requests a clearance certificate.</li>
+<li>The platform checks that all estate balances are nil and issues the certificate with a reference and expiry. <span class="tag auto">auto</span></li>
+<li>On the transfer date, the old ownership closes, its account is finalised, and the new owner is invited. Meter readings are taken on the day so water is split correctly.</li>
+<li>Service charge for the month is apportioned by days between the two owners.</li>
+</ol>
+
+<h3 id="wf-tenant">Owner letting to a tenant</h3>
+<ol>
+<li>The owner adds the tenant as an occupant with start and end dates.</li>
+<li>The owner chooses which charges the tenant receives (water, garbage, parking).</li>
+<li>The tenant signs in by phone, creates visitor passes, raises requests and pays assigned bills with the unit account number.</li>
+<li>On the end date, the tenant's access ends automatically. A final meter reading is requested. <span class="tag auto">auto</span></li>
+</ol>
+
+<h3 id="wf-notice">Notices and alerts</h3>
+<ol>
+<li>The estate manager writes a notice, selects the audience (estate, block, owners, occupants) and channels.</li>
+<li>Emergency alerts are sent immediately on all channels. Routine notices respect quiet hours, 21:00 to 07:00.</li>
+<li>Delivery status per recipient is shown; failed SMS falls back to WhatsApp where available.</li>
+</ol>
+
+<h3 id="wf-agm">Annual budget and AGM</h3>
+<ol>
+<li>Finance prepares the next year's budget by cost line in treasury, with the prior year's actuals beside it.</li>
+<li>The proposed service charge per unit type is calculated from the budget and unit entitlements.</li>
+<li>The AGM pack (notice, budget, income and expenditure statement, sinking fund statement) is published in the document library and notified to owners.</li>
+<li>Rates approved at the AGM are entered with their effective date and apply from the next billing run.</li>
+</ol>
+
+<h3 id="wf-handover">Handover to the management corporation</h3>
+<ol>
+<li>The estate fund ledger, unit accounts, sinking fund balance, vendor contracts, asset register and documents are exported.</li>
+<li>The corporation is set up as its own tenant, or Shaba Village continues as managing agent under a new mandate.</li>
+<li>Paybills and bank accounts are transferred or mandates changed, and opening balances are carried over and reconciled.</li>
+</ol>
+
+<h3 id="wf-data">Data subject requests</h3>
+<ol>
+<li>An owner, occupant, visitor or agency worker submits a request for access, correction or deletion.</li>
+<li>Identity is confirmed by one-time password and the statutory deadline is recorded.</li>
+<li>Access requests produce a machine-readable export.</li>
+<li>Deletion erases or anonymises personal data. Financial, sale and tax records required by law are retained for the statutory period, and the requester is told what is kept and why.</li>
+</ol>
+</section>
+
+<section id="data">
+<h2>Data design</h2>
+<p class="lead">maskani-api owns the multi-tenant property domain and references other services by ID: tenants, branches and users in auth-api; accounts, invoices, plans and vendors in treasury-api; employees and assets in erp-api; leads in marketflow-api.</p>
+<figure>{FIG_ERD}<figcaption>maskani-api data model</figcaption></figure>
+<h3>Data owned elsewhere</h3>
+<table>
+<tr><th>Data</th><th>Owner</th><th>Held in maskani-api</th></tr>
+<tr><td>Login identity, sessions, roles</td><td>auth-api</td><td>User ID</td></tr>
+<tr><td>Invoices, payments, balances, statements, instalment plans, vendor bills, ledger</td><td>treasury-api</td><td>Account, invoice, plan and vendor IDs</td></tr>
+<tr><td>Staff records, attendance, payroll, casual payments, assets</td><td>erp-api</td><td>Employee and asset IDs</td></tr>
+<tr><td>Messages and delivery status</td><td>notifications-api</td><td>Message ID where audit requires</td></tr>
+</table>
+<h3>Scalability and performance measures</h3>
+<table>
+<tr><th>Measure</th><th>Purpose</th></tr>
+<tr><td>Tenant and estate ID with query-specific composite indexes on every table, versioned Atlas migrations</td><td>Consistent query speed as data grows; controlled schema change</td></tr>
+<tr><td>Keyset pagination on all lists</td><td>Constant response time regardless of page depth</td></tr>
+<tr><td>Gate events and patrol scans in monthly partitions, purged by partition at the end of retention</td><td>Fast writes and cheap deletion for the fastest-growing tables</td></tr>
+<tr><td>Unique keys on (estate, period) for billing runs, (unit, period) for readings and run lines, and (event ID) for consumed events</td><td>No duplicates from retries or redelivered events</td></tr>
+<tr><td>Daily aggregate table per estate, updated by events and rebuilt nightly</td><td>Dashboards and reports independent of raw data volume</td></tr>
+<tr><td>Read replica for reports and exports; dashboard results cached for 60 seconds and invalidated by events</td><td>Reporting never slows the gate or payments</td></tr>
+<tr><td>Bulk operations (billing, reminders, imports) in batches of 500 with progress tracking</td><td>Predictable memory and time at any estate size</td></tr>
+<tr><td>Identity numbers and KRA PINs encrypted at field level; phone numbers hashed for matching</td><td>Data protection</td></tr>
+<tr><td>Photos and documents in object storage with signed, short-lived links; keys only in the database</td><td>Small, fast database; private files</td></tr>
+</table>
+</section>
+
+<section id="interfaces">
+<h2>Interfaces, events and notifications</h2>
+<h3>maskani-api endpoints</h3>
+<table>
+<tr><th>Area</th><th>Endpoints</th><th>Access</th></tr>
+<tr><td>Register</td><td>GET, POST /units; GET, PATCH /units/{id}; /units/{id}/ownerships, /occupancies, /vehicles; POST /imports</td><td>Staff; owners for own unit</td></tr>
+<tr><td>Charges and billing</td><td>GET, PUT /charge-rules; POST /billing-runs; GET /billing-runs/{id}; POST /adjustments</td><td>Finance</td></tr>
+<tr><td>Meters</td><td>GET /reading-rounds/{period}; POST /meters/{id}/readings; GET /water-balance</td><td>Caretaker, finance</td></tr>
+<tr><td>Sales</td><td>GET, POST /sale-contracts; POST /sale-contracts/{id}/schedule, /restructure, /handover, /title-stages</td><td>Sales; buyer read-only</td></tr>
+<tr><td>Owner portal</td><td>GET /me/units, /me/statement, /me/purchase; POST /me/passes, /me/requests, /me/queries</td><td>Owner, occupant</td></tr>
+<tr><td>Works</td><td>GET, POST /work-orders; PATCH /work-orders/{id}; POST /work-orders/{id}/complete, /confirm, /reopen</td><td>Staff, vendor, resident</td></tr>
+<tr><td>Vendors</td><td>/vendors/{id}/contracts, /documents, /visits, /personnel, /rosters, /invoices</td><td>Staff; vendor for own records</td></tr>
+<tr><td>Gate</td><td>POST /gate/verify, /gate/events, /gate/sync; /patrols/scans; /incidents</td><td>Registered gate device</td></tr>
+<tr><td>Communication</td><td>POST /notices</td><td>Staff</td></tr>
+<tr><td>Documents</td><td>GET, POST /templates; POST /documents/generate; POST /documents/{id}/accept, /upload-signed; GET /documents/{id}/link</td><td>By role and relationship</td></tr>
+<tr><td>Portfolios (R2)</td><td>GET, POST /portfolios; /portfolios/{id}/mandate, /statements, /remittances</td><td>Manager; landlord read</td></tr>
+<tr><td>Leasing (R2)</td><td>/applications; /leases; POST /leases/{id}/activate, /review, /renew, /notice, /move-out; /inspections; /turnovers</td><td>Letting, manager; lessee own</td></tr>
+<tr><td>Listings (R3)</td><td>POST /units/{id}/listing; /listings/{id}/publish, /close; public GET /market/search, /market/listings/{slug}; POST /market/enquiries, /viewings, /applications</td><td>Lister; public, rate limited</td></tr>
+<tr><td>Tenant settings</td><td>/settings/charge-catalogue, /catalogues/{name}, /custom-fields, /approval-rules, /reminders</td><td>Tenant administrator</td></tr>
+<tr><td>Reports and privacy</td><td>GET /reports/{name}; POST /privacy/export, /privacy/delete</td><td>By role</td></tr>
+</table>
+<h3>Treasury interfaces used</h3>
+<table>
+<tr><th>Function</th><th>Treasury capability</th></tr>
+<tr><td>Owner and buyer accounts</td><td>Customer accounts and balances, one per unit and fund</td></tr>
+<tr><td>Monthly and one-off invoices, credit notes</td><td>Invoice creation (service to service), recurring schedules, credit notes</td></tr>
+<tr><td>Payments</td><td>Payment intents with M-Pesa prompt; paybill C2B confirmations matched by account number</td></tr>
+<tr><td>Instalments</td><td>Instalment plans linked to the sale contract</td></tr>
+<tr><td>Reminders</td><td>Dunning configuration and reminder events</td></tr>
+<tr><td>Vendors</td><td>Vendor records, vendor bills, approvals, payouts, withholding tax</td></tr>
+<tr><td>Budgets and statements</td><td>Budget lines, owner statements, income and expenditure, trial balance</td></tr>
+</table>
+<h3>Events</h3>
+<table>
+<tr><th>Event</th><th>Publisher</th><th>Consumer action</th></tr>
+<tr><td>treasury.payment.succeeded</td><td>treasury</td><td>maskani-api refreshes the unit balance view, updates purchase progress and requests a receipt</td></tr>
+<tr><td>treasury.invoice.created</td><td>treasury</td><td>maskani-api marks the run line as issued; notifications sends the bill</td></tr>
+<tr><td>treasury.dunning.reminder_sent</td><td>treasury</td><td>notifications delivers the reminder; maskani-api records it on the unit timeline</td></tr>
+<tr><td>treasury.payout.completed</td><td>treasury</td><td>maskani-api marks the vendor invoice as paid and notifies the vendor</td></tr>
+<tr><td>maskani.billing_run.completed</td><td>maskani-api</td><td>Finance summary; dashboard refresh</td></tr>
+<tr><td>maskani.work_order.created, assigned, completed</td><td>maskani-api</td><td>Notifications to resident, assignee and manager</td></tr>
+<tr><td>maskani.visitor.arrived</td><td>maskani-api</td><td>Host notification</td></tr>
+<tr><td>maskani.incident.reported</td><td>maskani-api</td><td>Alert to manager and agency supervisor</td></tr>
+<tr><td>maskani.vendor.document_expiring</td><td>maskani-api</td><td>Alert to manager and vendor</td></tr>
+<tr><td>maskani.lease.activated, renewed, ended (R2)</td><td>maskani-api</td><td>Billing schedule starts or stops; listing closes or reopens; notifications</td></tr>
+<tr><td>maskani.listing.published, enquiry.created (R3)</td><td>maskani-api</td><td>Search projection refresh; lead created in marketflow; lister notified</td></tr>
+<tr><td>maskani.document.executed</td><td>maskani-api</td><td>Key-date reminders scheduled; parties notified</td></tr>
+<tr><td>maskani.unit.handed_over</td><td>maskani-api</td><td>Estate billing starts; welcome message to the owner</td></tr>
+</table>
+<p>Consumers are idempotent on event ID. Events are held in the outbox during broker outages and delivered on recovery.</p>
+<h3>Notifications</h3>
+<table>
+<tr><th>Message</th><th>Recipient</th><th>Channel</th></tr>
+<tr><td>One-time password</td><td>Owner, occupant, vendor</td><td>SMS; WhatsApp fallback</td></tr>
+<tr><td>Monthly bill, reminders, receipts</td><td>Bill-to party</td><td>SMS or WhatsApp; email copy</td></tr>
+<tr><td>Instalment due, received, missed</td><td>Buyer</td><td>SMS or WhatsApp; email copy</td></tr>
+<tr><td>Visitor pass and arrival</td><td>Visitor; host</td><td>SMS or WhatsApp</td></tr>
+<tr><td>Work order updates</td><td>Requester, assignee</td><td>WhatsApp or SMS</td></tr>
+<tr><td>Notices and emergency alerts</td><td>Selected residents</td><td>SMS, WhatsApp, email, in-app</td></tr>
+<tr><td>Licence expiry, missed visits, SLA breaches, incidents</td><td>Estate manager, vendor</td><td>WhatsApp, email</td></tr>
+<tr><td>Approval requests, daily finance summary</td><td>Finance, directors</td><td>Email, WhatsApp</td></tr>
+</table>
+</section>
+
+<section id="reporting">
+<h2>Reporting and analytics</h2>
+<table>
+<tr><th>Report</th><th>Audience</th><th>Content</th></tr>
+<tr class="grp"><td colspan="3">Collections</td></tr>
+<tr><td>Collections summary</td><td>Management, finance</td><td>Billed, collected and collection rate by month, charge type and block</td></tr>
+<tr><td>Arrears ageing</td><td>Finance</td><td>Balance per unit in 0 to 30, 31 to 60, 61 to 90 and over 90 day bands, with last payment date</td></tr>
+<tr><td>Payment channel report</td><td>Finance</td><td>Paybill, prompt and bank receipts; unmatched and suspense items</td></tr>
+<tr><td>Owner statement</td><td>Owner, finance</td><td>Invoices, payments and balance per fund</td></tr>
+<tr class="grp"><td colspan="3">Sales</td></tr>
+<tr><td>Sales position</td><td>Directors, sales</td><td>Units by status and type; sold value; collected and outstanding</td></tr>
+<tr><td>Instalment receivables</td><td>Directors, finance</td><td>Expected receipts by month for the next 24 months; overdue instalments; buyers in default</td></tr>
+<tr><td>Purchase statement</td><td>Buyer, sales</td><td>Price, payments with receipts, balance, schedule</td></tr>
+<tr><td>Handover and title tracker</td><td>Sales</td><td>Units awaiting handover, snag items open, title stage per unit</td></tr>
+<tr class="grp"><td colspan="3">Utilities and operations</td></tr>
+<tr><td>Water consumption and balance</td><td>Management</td><td>Consumption by unit and block, estimated readings, unaccounted water percentage trend</td></tr>
+<tr><td>Maintenance performance</td><td>Management</td><td>Work orders by category, time to respond and resolve, SLA breaches, cost by asset</td></tr>
+<tr><td>Vendor scorecard</td><td>Management</td><td>Visits delivered and missed, post coverage, incidents, complaints, service credits</td></tr>
+<tr><td>Security summary</td><td>Management</td><td>Visitors by day and hour, incidents by type, patrol completion</td></tr>
+<tr class="grp"><td colspan="3">Lettings and portfolios (R2)</td></tr>
+<tr><td>Rent roll and occupancy</td><td>Manager, landlord</td><td>Units, lessees, rent, lease dates, vacancy and days vacant per property</td></tr>
+<tr><td>Lease expiry and review schedule</td><td>Manager</td><td>Leases ending or due for review in the next 90 days</td></tr>
+<tr><td>Deposits held</td><td>Finance, landlord</td><td>Deposits by lease, refunds due and settled</td></tr>
+<tr><td>Landlord statement and remittance history</td><td>Landlord, finance</td><td>Collected, fees, expenses, tax, net remitted</td></tr>
+<tr><td>Turnover performance</td><td>Manager</td><td>Days from move-out to ready, cost per turnover</td></tr>
+<tr class="grp"><td colspan="3">Marketplace (R3)</td></tr>
+<tr><td>Listing performance</td><td>Lister</td><td>Views, enquiries, viewings, applications and days to let or sell</td></tr>
+<tr class="grp"><td colspan="3">Platform</td></tr>
+<tr><td>Tenant usage and health</td><td>Codevertex</td><td>Active tenants, units under management, collections volume, plan limits, failed jobs; no access to tenant detail</td></tr>
+<tr class="grp"><td colspan="3">Finance</td></tr>
+<tr><td>Budget against actual</td><td>Management, owners (summary)</td><td>Each cost line, monthly and year to date</td></tr>
+<tr><td>Income and expenditure, sinking fund statement</td><td>AGM</td><td>From the estate fund ledger</td></tr>
+<tr><td>Trial balance, cash book, bank reconciliation</td><td>Finance, auditors</td><td>treasury financial reports for each fund</td></tr>
+</table>
+<p>Reports run on aggregate tables and the read replica, never on the live transaction path. Each figure on a dashboard links to the records behind it, and totals reconcile to the ledger because invoices and payments are read from treasury rather than recalculated.</p>
+</section>
+
+<section id="security">
+<h2>Security</h2>
+<table>
+<tr><th>Threat</th><th>Controls</th></tr>
+<tr><td>Account takeover</td><td>OTP rate limits by number and IP, hashed codes, short expiry, session revocation, MFA for staff, alerts on new device sign-in for finance roles</td></tr>
+<tr><td>One resident seeing another's data</td><td>Every request checked against the caller's unit links on the server; IDs alone never grant access; tests for each role</td></tr>
+<tr><td>Payment misallocation or fraud by staff</td><td>Adjustments and credit notes above a limit need a second approver; every allocation change logged; daily paybill reconciliation</td></tr>
+<tr><td>Vendor payment redirection</td><td>Payout details verified and locked; changes need MFA and director approval; approvals bound to amount and payee</td></tr>
+<tr><td>Duplicate invoices or payments</td><td>Unique run keys, receipt-number deduplication, idempotency keys on every write</td></tr>
+<tr><td>Gate misuse</td><td>Tablets registered to the estate, guard PIN per shift, pass codes hashed and time-bound, one-time passes consumed on entry</td></tr>
+<tr><td>Injection and cross-site scripting</td><td>Parameterised queries, output encoding, Content Security Policy, sanitised input and file type checks on uploads</td></tr>
+<tr><td>Automated abuse</td><td>Rate limiting, STK prompt guard, Cloudflare WAF</td></tr>
+<tr><td>Data exposure</td><td>TLS, encryption at rest, field encryption for identity numbers, least-privilege roles, signed short-lived file links, staff access logging</td></tr>
+</table>
+<h3>Production access</h3>
+<table>
+<tr><th>Control</th><th>Implementation</th></tr>
+<tr><td>Who has access</td><td>A named list of Codevertex platform engineers, provided to tenants on request and updated within 5 working days of any change. No shared accounts.</td></tr>
+<tr><td>Server access</td><td>Key-based SSH only, behind a default-deny firewall</td></tr>
+<tr><td>Changes to production</td><td>Only through version-controlled GitOps deployment (ArgoCD); every change traceable to a reviewed commit</td></tr>
+<tr><td>Secrets</td><td>Sealed secrets; separate database credentials per service; Daraja credentials encrypted in the database</td></tr>
+<tr><td>Network isolation</td><td>Kubernetes network policies around payment, authentication and estate services</td></tr>
+<tr><td>Tenant staff</td><td>Role-based access through single sign-on with MFA; approvals require a one-time password</td></tr>
+<tr><td>Audit</td><td>Logins, approvals, settings and financial changes in tamper-evident audit logs, available to each tenant for its own data</td></tr>
+</table>
+<h3>Codevertex access to estate data</h3>
+<p>Codevertex staff do not access any tenant's personal or financial records in normal operation. Access occurs only to resolve a support request, investigate an incident or perform a restore, is limited to the records concerned, and is logged. These obligations are set out in the data processing agreement, and every engineer with production access signs a confidentiality undertaking.</p>
+<h3>Security incident notification</h3>
+<table>
+<tr><th>Event</th><th>Timeline</th></tr>
+<tr><td>Codevertex notifies the affected tenant of a confirmed personal data breach</td><td>Within 24 hours of confirmation</td></tr>
+<tr><td>The tenant notifies the Data Protection Commissioner (section 43, Data Protection Act)</td><td>Within 72 hours of becoming aware; Codevertex supplies the facts</td></tr>
+<tr><td>Affected people notified where there is a real risk of harm</td><td>Without undue delay, with the tenant's approval of the message</td></tr>
+<tr><td>Written incident report: cause, impact, remediation</td><td>Within 5 working days</td></tr>
+</table>
+<h3>Penetration testing</h3>
+<p>An internal review against the OWASP Application Security Verification Standard is included in week 13. An independent penetration test is recommended before launch and annually, commissioned at the launch tenant's option and cost; Codevertex remediates all high and critical findings at no charge before launch.</p>
+<h3>Data processors</h3>
+<table>
+<tr><th>Processor</th><th>Purpose</th><th>Data received</th><th>Location</th></tr>
+<tr><td>Codevertex Africa Limited</td><td>Software, hosting operation, support</td><td>All platform data</td><td>Kenya (operations); EU (servers)</td></tr>
+<tr><td>Contabo GmbH</td><td>Server infrastructure</td><td>Platform data stored on its servers</td><td>Germany (EU)</td></tr>
+<tr><td>Cloudflare, Inc.</td><td>Edge network, firewall, offsite backups</td><td>Traffic in transit; encrypted backup files</td><td>Global edge; EU and US</td></tr>
+<tr><td>Safaricom PLC</td><td>M-Pesa collections and payouts</td><td>Payer number and name, amount, account number</td><td>Kenya</td></tr>
+<tr><td>Africa's Talking</td><td>SMS delivery</td><td>Recipient number, message text</td><td>Kenya</td></tr>
+<tr><td>Meta Platforms</td><td>WhatsApp messaging</td><td>Recipient number, message text</td><td>Global</td></tr>
+</table>
+</section>
