@@ -3,16 +3,16 @@ from diagrams import *  # noqa: F401,F403
 
 def fig_architecture():
     b = []
-    b.append(lane(10, 8, 740, 72, "People"))
+    b.append(lane(10, 8, 740, 72, ""))
     b.append(box(40, 30, 190, 42, ["Guests", "browser, WhatsApp link, no app"], "user", 10.5))
     b.append(box(285, 30, 190, 42, ["Registry owners", "couples, parents, graduates"], "user", 10.5))
     b.append(box(530, 30, 190, 42, ["Hadia team", "operations and finance"], "user", 10.5))
 
-    b.append(lane(10, 98, 740, 76, "Hadia product (new)", "#FBF6FA"))
+    b.append(lane(10, 98, 740, 76, "", "#FBF6FA"))
     b.append(box(60, 118, 250, 48, ["hadia-ui", "Next.js PWA, guest and owner views"], "new", 10.5))
     b.append(box(400, 118, 250, 48, ["hadia-api", "Go service: registries, items, reservations"], "new", 10.5))
 
-    b.append(lane(10, 222, 740, 84, "Codevertex shared services (reused)", "#F3FAF6"))
+    b.append(lane(10, 222, 740, 84, "", "#F3FAF6"))
     xs = [20, 167, 314, 461, 608]
     labels = [["auth-api", "SSO, phone OTP, API keys"], ["treasury-api", "books, escrow, payouts"],
               ["notifications-api", "SMS, WhatsApp, email"], ["subscriptions-api", "plan and features"],
@@ -20,7 +20,7 @@ def fig_architecture():
     for x, l in zip(xs, labels):
         b.append(box(x, 244, 135, 52, l, "reuse", 10.5))
 
-    b.append(lane(10, 326, 740, 76, "External providers", "#FDF9F1"))
+    b.append(lane(10, 326, 740, 76, "", "#FDF9F1"))
     ext = [["PayHero", "collections, wallet, payouts"], ["M-Pesa, Airtel, card", "payer rails"],
            ["Africa's Talking", "SMS"], ["WhatsApp Cloud API", "messages"], ["Brevo", "email"]]
     for x, l in zip(xs, ext):
@@ -45,7 +45,9 @@ def fig_architecture():
     b.append(arrow([(370, 296), (382, 348)]))
     b.append(arrow([(410, 296), (529, 348)]))
     b.append(arrow([(440, 296), (660, 348)]))
-    b.append(legend(20, 458, [("new", "Built for Hadia"), ("reuse", "Existing Codevertex service"),
+    for y, t in ((8, "Users"), (98, "Hadia applications"), (222, "Codevertex platform services"), (326, "External providers")):
+        b.append(lane_title(10, y, t))
+    b.append(legend(20, 458, [("new", "Built for Hadia"), ("reuse", "Codevertex platform service"),
                               ("ext", "Third party"), ("user", "People")]))
     return svg(760, 476, "".join(b), "Hadia solution architecture")
 
@@ -144,9 +146,9 @@ def fig_payout():
 
 
 def fig_owner_onboarding():
-    steps = [("1", ["Sign up", "phone + OTP"]), ("2", ["Accept terms", "versioned, logged"]),
+    steps = [("1", ["Sign up", "mobile and OTP"]), ("2", ["Accept terms", "versioned"]),
              ("3", ["Create event", "type, date, story"]), ("4", ["Verify payout", "OTP on M-Pesa line"]),
-             ("5", ["Pot opened", "treasury escrow"]), ("6", ["Share link", "WhatsApp preview"])]
+             ("5", ["Escrow opened", "treasury"]), ("6", ["Share link", "WhatsApp preview"])]
     b = []
     w, g = 112, 13
     for i, (n, l) in enumerate(steps):
@@ -156,19 +158,18 @@ def fig_owner_onboarding():
         b.append(f'<circle cx="{x+14}" cy="30" r="11" fill="{BRAND}"/>' + text(x + 14, 34, n, 10, 700, "#FFFFFF"))
         if i < len(steps) - 1:
             b.append(arrow([(x + w, 60), (x + w + g, 60)]))
-    b.append(text(380, 118, "Time to a live, shareable registry: under five minutes. Steps in green reuse existing services.", 10, 500, MUTED))
-    return svg(760, 130, "".join(b), "Registry owner onboarding")
+        return svg(760, 100, "".join(b), "Registry owner onboarding")
 
 
 def fig_tenant_onboarding():
-    steps = [["Company and KYC", "CR12, KRA PIN, director ID"], ["Codevertex tenant", "auth + plan with escrow"],
-             ["PayHero account", "Hadia's own, KYC tier 3"], ["Channels synced", "paybill or till, wallet map"],
-             ["Rules set", "fee rule, limits, policies"], ["Pilot and go-live", "KSh 1 tests, first events"]]
+    steps = [["Company KYC", "documents, KRA PIN"], ["Tenant set-up", "plan with escrow"],
+             ["PayHero Team", "KYC tier 3"], ["Channels", "paybill, wallet"],
+             ["Rules", "fees, limits"], ["Go-live", "KES 1 tests"]]
     b = []
     w, g = 112, 13
     for i, l in enumerate(steps):
         x = 10 + i * (w + g)
-        b.append(box(x, 20, w, 60, l, "ext" if i in (0, 2) else "reuse", 10.3))
+        b.append(box(x, 20, w, 60, l, "ext" if i in (0, 2) else "reuse", 10.5))
         if i < len(steps) - 1:
             b.append(arrow([(x + w, 50), (x + w + g, 50)]))
     return svg(760, 92, "".join(b), "Hadia business onboarding")
@@ -316,20 +317,20 @@ def fig_wireframes():
 
 def fig_gantt():
     rows = [
-        ("Product build", 0, 0, "plain", True),
-        ("Sprint 0: discovery, UX, architecture sign-off", 1, 1, "new"),
-        ("Sprint 1: owner sign-up, registries, items", 2, 3, "new"),
-        ("Sprint 2: guest view, reservations, link fill, sharing", 4, 5, "new"),
+        ("Product delivery", 0, 0, "plain", True),
+        ("Sprint 0: discovery, design, architecture", 1, 1, "new"),
+        ("Sprint 1: onboarding, registries, items", 2, 3, "new"),
+        ("Sprint 2: guest pages, reservations, sharing", 4, 5, "new"),
         ("Sprint 3: contributions, events, notifications", 6, 7, "new"),
-        ("Sprint 4: auto payouts, commission, refunds, premium", 8, 9, "new"),
-        ("Sprint 5: admin, reports, compliance features", 10, 10, "new"),
-        ("Security review, load test, UAT with pilots", 11, 11, "warn"),
-        ("Launch, training, handover, hypercare starts", 12, 12, "reuse"),
-        ("Business and legal track (Hadia with our support)", 0, 0, "plain", True),
+        ("Sprint 4: payouts, commission, refunds, premium", 8, 9, "new"),
+        ("Sprint 5: administration, reports, compliance", 10, 10, "new"),
+        ("Hardening: security, load testing, UAT", 11, 11, "warn"),
+        ("Launch, training and handover", 12, 12, "reuse"),
+        ("Business and regulatory workstream", 0, 0, "plain", True),
         ("Company documents, KRA PIN, bank account", 1, 2, "ext"),
-        ("PayHero account, KYC tier 3, paybill or till", 1, 5, "ext"),
-        ("ODPC registration, DPIA, legal pack review", 2, 8, "ext"),
-        ("Pilot couples and planners recruited", 6, 11, "ext"),
+        ("PayHero Team, KYC tier 3, paybill", 1, 5, "ext"),
+        ("ODPC registration, DPIA, legal review", 2, 8, "ext"),
+        ("Pilot event recruitment", 6, 11, "ext"),
     ]
-    return gantt(rows, milestones=[(1, "Kick-off"), (7, "Demo + M2"), (10, "M3 UAT"), (12, "Go-live")],
-                 title="Twelve week delivery plan")
+    return gantt(rows, milestones=[(0.5, "M1 Kick-off"), (7, "M2 Demo"), (10, "M3 Features", "end"), (12, "M4 Launch")],
+                 title="Implementation schedule")

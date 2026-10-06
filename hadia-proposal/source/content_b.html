@@ -1,133 +1,130 @@
-<section>
+<section id="functional">
 <h2>Functional requirements</h2>
-<p>Priorities use MoSCoW: <b>M</b> must have for launch, <b>S</b> should have for launch, <b>C</b> could have if time allows. Each requirement is traced to a workflow in chapter 10 and to an acceptance test.</p>
+<p>Priority: <b>M</b> must have, <b>S</b> should have, <b>C</b> could have.</p>
 <table class="req">
 <tr><th>ID</th><th>Requirement</th><th>Pri.</th></tr>
 <tr class="grp"><td colspan="3">Accounts and onboarding</td></tr>
-<tr><td>FR-01</td><td>Owners sign up and sign in with a phone number and a one-time code sent by SMS, with WhatsApp as a fallback channel. Codes expire in 5 minutes and sending is rate limited.</td><td>M</td></tr>
-<tr><td>FR-02</td><td>Owners confirm they are 18 or older and accept the terms and privacy notice. The version and time are stored.</td><td>M</td></tr>
-<tr><td>FR-03</td><td>Owners verify the M-Pesa number that will receive payouts with an OTP sent to that number. The registered M-Pesa name returned on the first payout is compared with the owner's name and flagged on mismatch.</td><td>M</td></tr>
-<tr><td>FR-04</td><td>Owners can invite a co-owner by phone. Co-owners cannot change payout details.</td><td>S</td></tr>
+<tr><td>FR-01</td><td>Owners sign up and sign in with a mobile number and a 6-digit one-time password sent by SMS, with WhatsApp as fallback. Codes expire after 5 minutes. Sending is rate limited.</td><td>M</td></tr>
+<tr><td>FR-02</td><td>Owners confirm they are 18 or over and accept the terms and privacy notice. Version and timestamp are recorded.</td><td>M</td></tr>
+<tr><td>FR-03</td><td>Owners verify the payout M-Pesa number by one-time password. The registered M-Pesa name on the first payout is matched against the owner's name; mismatches are flagged.</td><td>M</td></tr>
+<tr><td>FR-04</td><td>Owners invite co-owners by mobile number. Co-owners cannot change payout details.</td><td>S</td></tr>
 <tr class="grp"><td colspan="3">Registries and items</td></tr>
-<tr><td>FR-05</td><td>Create an event registry with type, title, date, location (optional), cover photo and short story. One owner can hold several registries.</td><td>M</td></tr>
-<tr><td>FR-06</td><td>Add items by hand: title, description, price, quantity, photo, shop name, and a mode of reserve, fund or both.</td><td>M</td></tr>
-<tr><td>FR-07</td><td>Add items by pasting a link. The server reads the page's public metadata and prefills the form. The owner confirms before saving.</td><td>S</td></tr>
-<tr><td>FR-08</td><td>Create cash funds (honeymoon fund, baby fund, moving fund) with an optional target.</td><td>M</td></tr>
-<tr><td>FR-09</td><td>Reorder, edit, hide and archive items. Items with gifts against them cannot be deleted, only archived.</td><td>M</td></tr>
-<tr><td>FR-10</td><td>Registry visibility: public link, unlisted (link only, default), or private with a passcode.</td><td>S</td></tr>
+<tr><td>FR-05</td><td>Create a registry with type, title, date, optional location, cover photo and description. An owner may hold multiple registries.</td><td>M</td></tr>
+<tr><td>FR-06</td><td>Add items manually: title, description, price, quantity, photo, store name and mode (reserve, fund or both).</td><td>M</td></tr>
+<tr><td>FR-07</td><td>Add items from a product link. Public page metadata prefills the form for owner confirmation.</td><td>S</td></tr>
+<tr><td>FR-08</td><td>Create cash funds with an optional target.</td><td>M</td></tr>
+<tr><td>FR-09</td><td>Reorder, edit, hide and archive items. Items with gifts can be archived but not deleted.</td><td>M</td></tr>
+<tr><td>FR-10</td><td>Registry visibility: public, unlisted (default) or passcode protected.</td><td>S</td></tr>
 <tr class="grp"><td colspan="3">Sharing and guest experience</td></tr>
-<tr><td>FR-11</td><td>Every registry has a short link with a preview image, title and description that render well in WhatsApp, Facebook and SMS.</td><td>M</td></tr>
-<tr><td>FR-12</td><td>Guests see items, what is taken, progress on funds, and the event story, with no account and no app.</td><td>M</td></tr>
-<tr><td>FR-13</td><td>Guests reserve an item. The reservation is atomic, so two guests can never reserve the last unit.</td><td>M</td></tr>
-<tr><td>FR-14</td><td>Guests can cancel their own reservation from a link sent to them.</td><td>M</td></tr>
-<tr><td>FR-15</td><td>Owners can choose whether guests see who reserved what. The default hides names from other guests.</td><td>S</td></tr>
-<tr class="grp"><td colspan="3">Contributions and money</td></tr>
-<tr><td>FR-16</td><td>Guests contribute any amount within the limits toward an item or a fund using an M-Pesa STK push, with Airtel Money and card on the same checkout where enabled.</td><td>M</td></tr>
-<tr><td>FR-17</td><td>The guest pays exactly the amount entered. Hadia's fee is never added on top for guests.</td><td>M</td></tr>
-<tr><td>FR-18</td><td>When the STK prompt cannot reach the phone, the guest is offered a paybill and account number to pay from the M-Pesa menu.</td><td>S</td></tr>
-<tr><td>FR-19</td><td>Guests receive an SMS or WhatsApp receipt. Owners receive a gift alert.</td><td>M</td></tr>
-<tr><td>FR-20</td><td>Payouts happen automatically by the registry's rules: when the balance reaches a threshold, on a schedule, and always after the event date. Premium registries can pay out on every gift.</td><td>M</td></tr>
-<tr><td>FR-21</td><td>Hadia's commission is deducted automatically at payout and shown on every payout statement.</td><td>M</td></tr>
-<tr><td>FR-22</td><td>Commission is swept automatically to Hadia's own business account on a schedule, above a minimum amount.</td><td>M</td></tr>
-<tr><td>FR-23</td><td>Payouts above a limit set by Hadia wait for a finance approval with OTP. Everything below goes out without anyone touching it.</td><td>M</td></tr>
-<tr><td>FR-24</td><td>A cancelled registry refunds each gift to the phone that paid it. Gifts with no phone on record are listed for manual refund.</td><td>M</td></tr>
-<tr><td>FR-25</td><td>Owners download a statement of gifts and payouts as PDF or spreadsheet.</td><td>S</td></tr>
+<tr><td>FR-11</td><td>Each registry has a short link with a preview image, title and description for WhatsApp, Facebook and SMS.</td><td>M</td></tr>
+<tr><td>FR-12</td><td>Guests view items, reservation status, fund progress and the event description without an account.</td><td>M</td></tr>
+<tr><td>FR-13</td><td>Reservations are atomic; the last unit of an item cannot be reserved twice.</td><td>M</td></tr>
+<tr><td>FR-14</td><td>Guests cancel their reservation from a link sent to them.</td><td>M</td></tr>
+<tr><td>FR-15</td><td>Owners control whether reserving guests' names are visible to other guests. Hidden by default.</td><td>S</td></tr>
+<tr class="grp"><td colspan="3">Contributions and payouts</td></tr>
+<tr><td>FR-16</td><td>Guests contribute toward an item or fund by M-Pesa STK push, within configured limits. Airtel Money and card are available where enabled.</td><td>M</td></tr>
+<tr><td>FR-17</td><td>Guests are charged the amount entered. No fee is added to guest payments.</td><td>M</td></tr>
+<tr><td>FR-18</td><td>Where the STK push cannot be delivered, guests are offered a paybill and account number.</td><td>S</td></tr>
+<tr><td>FR-19</td><td>Guests receive an SMS or WhatsApp receipt. Owners receive a gift notification.</td><td>M</td></tr>
+<tr><td>FR-20</td><td>Payouts run automatically when the balance reaches the threshold and after the event date. Premium registries pay out on each contribution.</td><td>M</td></tr>
+<tr><td>FR-21</td><td>Commission is deducted automatically at payout and itemised on every payout statement.</td><td>M</td></tr>
+<tr><td>FR-22</td><td>Earned commission is transferred automatically to Hadia's business account on a schedule, above a minimum amount.</td><td>M</td></tr>
+<tr><td>FR-23</td><td>Payouts at or above the approval limit require finance approval with OTP. Payouts below the limit run without intervention.</td><td>M</td></tr>
+<tr><td>FR-24</td><td>Cancelling a registry refunds each contribution to the paying number. Contributions without a number are listed for manual refund.</td><td>M</td></tr>
+<tr><td>FR-25</td><td>Owners download a statement of contributions and payouts in PDF or spreadsheet format.</td><td>S</td></tr>
 <tr class="grp"><td colspan="3">Owner tools</td></tr>
-<tr><td>FR-26</td><td>Gift log with guest name, amount, item and message. Thank-you status with a one-tap WhatsApp thank-you.</td><td>M</td></tr>
-<tr><td>FR-27</td><td>Premium upgrade per event: custom link, printable PDF list, instant payouts. Paid through the same checkout.</td><td>M</td></tr>
-<tr><td>FR-28</td><td>Reservation reminders: the owner and the guest are reminded after 14 days if a reserved item is not marked bought. The owner can release it.</td><td>C</td></tr>
-<tr class="grp"><td colspan="3">Hadia administration</td></tr>
-<tr><td>FR-29</td><td>Search registries, owners and gifts. View a registry as a guest sees it.</td><td>M</td></tr>
-<tr><td>FR-30</td><td>Set commission, premium price, contribution limits, payout thresholds, approval limit and sweep schedule.</td><td>M</td></tr>
-<tr><td>FR-31</td><td>Exception queue: failed payouts, name mismatches, refunds needing action, reconciliation differences, reported registries.</td><td>M</td></tr>
-<tr><td>FR-32</td><td>Moderate content: hide a registry or item, record the reason, notify the owner.</td><td>M</td></tr>
-<tr><td>FR-33</td><td>Reports: gifts and value by day, active events, commission earned, premium sales, conversion from view to gift, payout times.</td><td>M</td></tr>
-<tr><td>FR-34</td><td>Handle data subject requests: export, correction and deletion, with deadlines tracked.</td><td>M</td></tr>
+<tr><td>FR-26</td><td>Gift log with guest name, amount, item and message; thank-you status; WhatsApp thank-you message.</td><td>M</td></tr>
+<tr><td>FR-27</td><td>Premium upgrade per registry: custom link, printable list, instant payouts.</td><td>M</td></tr>
+<tr><td>FR-28</td><td>Reminders to guest and owner 14 days after an unpurchased reservation. Owner may release the item.</td><td>C</td></tr>
+<tr class="grp"><td colspan="3">Administration</td></tr>
+<tr><td>FR-29</td><td>Search registries, owners and contributions. View a registry as a guest.</td><td>M</td></tr>
+<tr><td>FR-30</td><td>Configure commission, premium price, contribution limits, payout thresholds, approval limit and sweep schedule.</td><td>M</td></tr>
+<tr><td>FR-31</td><td>Exception queue: failed payouts, name mismatches, manual refunds, reconciliation variances, reported registries.</td><td>M</td></tr>
+<tr><td>FR-32</td><td>Content moderation with recorded reasons and owner notification.</td><td>M</td></tr>
+<tr><td>FR-33</td><td>Reports: contributions and value by period, active registries, commission, premium sales, conversion, payout times.</td><td>M</td></tr>
+<tr><td>FR-34</td><td>Data subject requests (access, correction, deletion) with deadline tracking.</td><td>M</td></tr>
 </table>
 </section>
 
-<section>
+<section id="nonfunctional">
 <h2>Non-functional requirements</h2>
-<table class="req">
-<tr><th>ID</th><th>Quality</th><th>Target</th></tr>
-<tr><td>NFR-01</td><td>Performance on phones</td><td>Guest page under 150 KB of transfer on first load (excluding item photos), Largest Contentful Paint under 2.5 s on a mid-range Android over 3G. Photos served as resized WebP.</td></tr>
-<tr><td>NFR-02</td><td>API speed</td><td>95% of reads under 300 ms and writes under 600 ms at the server, excluding the payment provider's time.</td></tr>
-<tr><td>NFR-03</td><td>Scale</td><td>Designed for 10,000 active registries and 2,000 gifts an hour at peak (a busy Saturday) on the current cluster, with no design change needed to grow ten times. Every list is paginated by keyset, every report reads from daily rollups.</td></tr>
-<tr><td>NFR-04</td><td>Availability</td><td>99.5% monthly for guest pages and checkout. Two replicas of every service, rolling deploys with no downtime.</td></tr>
-<tr><td>NFR-05</td><td>Money correctness</td><td>Every gift credited exactly once, every payout made at most once, books balanced at all times, hourly reconciliation with the PayHero wallet, zero tolerance for an unexplained difference.</td></tr>
-<tr><td>NFR-06</td><td>Security</td><td>OWASP ASVS level 2 controls, TLS everywhere, secrets encrypted, MFA for staff, audit trail on every money and settings change.</td></tr>
-<tr><td>NFR-07</td><td>Privacy</td><td>Data minimisation, consent records, export and deletion within the Data Protection Act's timelines, personal data hosted in Kenya or in a location covered by a lawful transfer basis.</td></tr>
-<tr><td>NFR-08</td><td>Accessibility</td><td>WCAG 2.2 level AA: contrast, keyboard use, focus states, alt text, form labels, screen reader names, text that scales to 200%.</td></tr>
-<tr><td>NFR-09</td><td>Languages</td><td>English at launch. Copy kept in translation files so Kiswahili can be added without code changes.</td></tr>
-<tr><td>NFR-10</td><td>Recoverability</td><td>Daily encrypted backups, point-in-time recovery for the database, recovery point within 24 hours and recovery time within 4 hours.</td></tr>
-<tr><td>NFR-11</td><td>Observability</td><td>Structured logs with request IDs, traces across services, alerts on failed payouts, reconciliation differences, error rates and slow pages.</td></tr>
-<tr><td>NFR-12</td><td>Maintainability</td><td>Same stack and conventions as the rest of the Codevertex fleet, automated tests on every change, documented APIs, no duplicated logic.</td></tr>
+<table class="nfr">
+<tr><th>ID</th><th>Attribute</th><th>Requirement</th></tr>
+<tr><td>NFR-01</td><td>Mobile performance</td><td>Guest page initial transfer under 150 KB excluding photos. Largest Contentful Paint under 2.5 seconds on a mid-range Android device over 3G. Photos served as resized WebP.</td></tr>
+<tr><td>NFR-02</td><td>Response time</td><td>95th percentile under 300 ms for reads and 600 ms for writes, excluding payment provider latency.</td></tr>
+<tr><td>NFR-03</td><td>Capacity</td><td>10,000 active registries and 2,000 contributions per hour at peak, scalable tenfold without redesign. Keyset pagination on all lists; reports served from daily aggregates.</td></tr>
+<tr><td>NFR-04</td><td>Availability</td><td>99.5% monthly for guest pages and checkout. Minimum two replicas per service; zero-downtime deployments.</td></tr>
+<tr><td>NFR-05</td><td>Financial integrity</td><td>Each contribution credited once, each payout executed at most once, balanced ledger, hourly reconciliation with the PayHero wallet.</td></tr>
+<tr><td>NFR-06</td><td>Security</td><td>OWASP ASVS Level 2, TLS throughout, encrypted secrets, MFA for staff, audit trail on all financial and configuration changes.</td></tr>
+<tr><td>NFR-07</td><td>Privacy</td><td>Data minimisation, consent records, data subject requests within statutory timelines, documented hosting location and transfer safeguards.</td></tr>
+<tr><td>NFR-08</td><td>Accessibility</td><td>WCAG 2.2 Level AA.</td></tr>
+<tr><td>NFR-09</td><td>Localisation</td><td>English at launch. Text externalised for Kiswahili.</td></tr>
+<tr><td>NFR-10</td><td>Recovery</td><td>Daily encrypted backups, point-in-time recovery. RPO 24 hours, RTO 4 hours.</td></tr>
+<tr><td>NFR-11</td><td>Observability</td><td>Structured logs, distributed tracing, alerts on failed payouts, reconciliation variances, error rates and latency.</td></tr>
+<tr><td>NFR-12</td><td>Maintainability</td><td>Codevertex platform stack and conventions, automated tests, documented APIs.</td></tr>
 </table>
 </section>
 
-<section>
+<section id="architecture">
 <h2>Solution architecture</h2>
-<p>Hadia adds two small applications to the Codevertex platform and reuses five existing services. The diagram shows who talks to whom.</p>
-<figure>{FIG_ARCH}<figcaption>Figure 1. Hadia on the Codevertex platform</figcaption></figure>
-<h3>What is new and what is reused</h3>
+<figure>{FIG_ARCH}<figcaption>Solution architecture</figcaption></figure>
+<h3>Components</h3>
 <table>
-<tr><th>Component</th><th>Status</th><th>Role for Hadia</th></tr>
-<tr><td>hadia-ui</td><td class="new">New</td><td>Next.js progressive web app: landing site, guest registry pages, owner dashboard, Hadia admin console. Uses the shared UI library for the payment modal, sign-in, data tables, legal links and the cookie notice.</td></tr>
-<tr><td>hadia-api</td><td class="new">New</td><td>Go service owning registries, items, reservations, premium purchases, the gift log projection, daily statistics and consent records. Never moves money.</td></tr>
-<tr><td>auth-api</td><td class="reuse">Reused, one addition</td><td>Hadia tenant, staff SSO with MFA, roles, terms acceptance, sessions, developer API keys. <b>Addition:</b> passwordless phone OTP sign-in for consumers (today OTP exists only for signed-in users).</td></tr>
-<tr><td>treasury-api</td><td class="reuse">Reused, two additions</td><td>Hadia's books, PayHero gateway, the public checkout, escrow pots, approvals, payout dispatcher, reconciliation, statements, eTIMS invoices for Hadia's own fees. <b>Additions:</b> scheduled commission sweep and per-pot contribution limits.</td></tr>
-<tr><td>treasury-ui</td><td class="reuse">Reused</td><td>Hadia finance works here: books, escrow pots, approvals, PayHero wallet, reports.</td></tr>
-<tr><td>notifications-api</td><td class="reuse">Reused, new templates</td><td>SMS through Africa's Talking, WhatsApp, email through Brevo, push. Hadia templates for receipts, alerts, OTPs and reminders.</td></tr>
-<tr><td>subscriptions-api</td><td class="reuse">Reused</td><td>Hadia's platform plan, which switches on the escrow and M-Pesa integration features.</td></tr>
-<tr><td>Shared libraries</td><td class="reuse">Reused</td><td>shared-auth-client (token checks), shared-service-client (calls with retries and circuit breakers), shared-events (outbox and NATS), cache (Redis and job leases), pagination, httpware, shared-ui-lib.</td></tr>
+<tr><th>Component</th><th>Status</th><th>Function</th></tr>
+<tr><td>hadia-ui</td><td class="new">New</td><td>Next.js progressive web app: website, guest pages, owner dashboard, administration console. Uses the Codevertex shared UI library for payments, sign-in, data tables, legal links and cookie consent.</td></tr>
+<tr><td>hadia-api</td><td class="new">New</td><td>Go service for registries, items, reservations, premium purchases, gift log, statistics and consent records. Does not move money.</td></tr>
+<tr><td>auth-api</td><td class="reuse">Existing, extended</td><td>Tenant, staff single sign-on with MFA, roles, terms acceptance, sessions. Extended with passwordless mobile sign-in for consumers.</td></tr>
+<tr><td>treasury-api</td><td class="reuse">Existing, extended</td><td>Ledger, PayHero gateway, checkout, escrow, approvals, payout dispatch, reconciliation, statements, eTIMS invoicing. Extended with scheduled commission sweep and per-registry contribution limits.</td></tr>
+<tr><td>treasury-ui</td><td class="reuse">Existing</td><td>Finance console: ledger, escrow accounts, approvals, wallet, reports.</td></tr>
+<tr><td>notifications-api</td><td class="reuse">Existing</td><td>SMS (Africa's Talking), WhatsApp, email (Brevo), push. Hadia message templates added.</td></tr>
+<tr><td>subscriptions-api</td><td class="reuse">Existing</td><td>Hadia's platform plan and feature entitlements.</td></tr>
+<tr><td>Shared libraries</td><td class="reuse">Existing</td><td>Authentication client, service client with retries and circuit breakers, event outbox, cache and job leases, pagination, HTTP middleware, shared UI library.</td></tr>
 </table>
-<h3>Design rules we hold to</h3>
+<h3>Architecture principles</h3>
 <ul>
-<li><b>One owner per piece of data.</b> hadia-api stores treasury's pot ID, never a copy of the balance as truth. Its gift log is a projection rebuilt from treasury events.</li>
-<li><b>Money moves in one place.</b> Only treasury-api talks to PayHero. hadia-api asks and listens.</li>
-<li><b>Events first.</b> Treasury publishes escrow events through its transactional outbox to NATS. hadia-api consumes them idempotently, keyed on the event ID and the payment intent ID.</li>
-<li><b>Safe with many replicas.</b> Scheduled jobs use the shared cache leases so each runs once per period across the fleet. Workers claim rows with conditional updates.</li>
-<li><b>Same stack as the fleet.</b> Go with Ent and Atlas migrations, Next.js with the shared UI library, Helm and ArgoCD for deploys. Any Codevertex engineer can support Hadia.</li>
+<li><b>Single data owner.</b> hadia-api references treasury records by ID. Balances are read from treasury.</li>
+<li><b>Single payment path.</b> Only treasury-api communicates with PayHero.</li>
+<li><b>Event driven.</b> Treasury publishes escrow events through a transactional outbox to NATS. hadia-api consumes them idempotently.</li>
+<li><b>Replica safe.</b> Scheduled jobs run once per period across all replicas using shared leases.</li>
+<li><b>Standard stack.</b> Go with Ent and Atlas migrations, Next.js, Helm and ArgoCD.</li>
 </ul>
 </section>
 
-<section>
-<h2>Money, escrow and automated payouts</h2>
-<p>This chapter explains where gift money sits, how it is accounted for, and how payouts and Hadia's fee happen without anyone pressing a button. It is the part of the system that most affects trust, so it is described in more detail than the rest.</p>
-<h3>Where the money is</h3>
-<p>Hadia is a tenant on the Codevertex platform. Hadia gets its own PayHero Team account, in Hadia's name and verified to PayHero's KYC tier 3 with Hadia's company documents. The Team has an isolated wallet that no other tenant and not the platform itself can use; treasury never falls back to another account for a Team tenant. Every guest contribution lands in that wallet. Treasury keeps one sub-ledger (a pot wallet) per registry, so the wallet's balance is always split, to the shilling, between the registries that own it and Hadia's commission.</p>
-<p>Codevertex never receives or holds Hadia's or its users' money. PayHero holds it; treasury records it and instructs payouts. Codevertex is paid only for software, through Hadia's subscription.</p>
-<figure>{FIG_MONEY}<figcaption>Figure 2. Money flow and the accounting entries behind it</figcaption></figure>
-<h3>The pot behind every registry</h3>
-<p>When an owner's registry goes live, hadia-api asks treasury to open an escrow pot. The pot carries the registry title, the owner as beneficiary (their verified M-Pesa number), the target, the payout rules and the gift items. Pots are created with an external ID equal to the registry ID, so a retry can never open a second pot.</p>
-<figure>{FIG_STATES}<figcaption>Figure 3. Pot lifecycle in treasury</figcaption></figure>
-<h3>Payout rules Hadia controls</h3>
-<p>The client wants payouts to run by thresholds and limits with as little human action as possible. Treasury's escrow module already supports this through each pot's rules and Hadia's payout policy. Hadia sets defaults once; owners can choose within the limits Hadia allows.</p>
+<section id="funds">
+<h2>Funds management and payouts</h2>
+<h3>Custody</h3>
+<p>Hadia operates as a tenant on the Codevertex platform with its own PayHero Team account, registered in Hadia's name and verified to PayHero KYC tier 3. The Team wallet is isolated and used only by Hadia. All contributions are received into this wallet. Treasury maintains a separate sub-ledger for each registry, so the wallet balance is fully allocated between registries and Hadia's earned commission at all times.</p>
+<p>Codevertex does not receive or hold Hadia funds or customer funds.</p>
+<figure>{FIG_MONEY}<figcaption>Funds flow and accounting entries</figcaption></figure>
+<h3>Registry escrow account</h3>
+<p>Each published registry has an escrow account in treasury. The account holds the registry title, the owner as beneficiary with a verified M-Pesa number, the target, payout rules and gift items. The registry ID is used as the external reference, which prevents duplicate accounts on retry.</p>
+<figure>{FIG_STATES}<figcaption>Escrow account lifecycle</figcaption></figure>
+<h3>Payout configuration</h3>
 <table>
-<tr><th>Setting</th><th>Where it lives</th><th>Suggested default</th><th>Effect</th></tr>
-<tr><td>Auto release</td><td>Pot</td><td>On</td><td>The 5-minute job pays out when a rule is met. No one needs to ask.</td></tr>
-<tr><td>Release threshold</td><td>Pot</td><td>KSh 10,000 standard, KSh 1 premium (pays every gift)</td><td>Pays the whole balance once it reaches this amount. Fewer, larger payouts keep M-Pesa costs down.</td></tr>
-<tr><td>Hold until</td><td>Pot</td><td>Event date plus 2 days</td><td>Whatever is left is paid out after the event even if the threshold was never reached.</td></tr>
-<tr><td>Approval limit</td><td>Hadia's escrow release policy (threshold mode)</td><td>KSh 150,000 per payout</td><td>Payouts at or above it wait for a finance approval with OTP. The approval is bound to the amount and destination, so it cannot be reused for another payout.</td></tr>
-<tr><td>Commission</td><td>Hadia's escrow fee rule, with optional per-pot override</td><td>4%, no minimum, cap optional</td><td>Deducted from each payout and booked as Hadia's income.</td></tr>
-<tr><td>Contribution limits</td><td>Pot (new)</td><td>Minimum KSh 50, maximum KSh 150,000 per gift</td><td>Rejects gifts outside the range before the prompt is sent.</td></tr>
-<tr><td>Maximum pot balance</td><td>Platform cap</td><td>Set with Hadia from its risk appetite</td><td>A gift that would take a pot over the cap is refused, which limits exposure and money laundering risk.</td></tr>
-<tr><td>Longest hold</td><td>Platform cap</td><td>180 days</td><td>Money cannot be held indefinitely.</td></tr>
-<tr><td>Commission handling</td><td>Hadia settings (new)</td><td>Sweep daily above KSh 5,000, keep KSh 2,000 reserve</td><td>Moves Hadia's earned commission to its own paybill, till or bank account automatically.</td></tr>
+<tr><th>Setting</th><th>Level</th><th>Default</th><th>Behaviour</th></tr>
+<tr><td>Automatic payout</td><td>Registry</td><td>On</td><td>Payouts run when a rule is met, checked every 5 minutes</td></tr>
+<tr><td>Payout threshold</td><td>Registry</td><td>KES 10,000 standard; every contribution for premium</td><td>Full balance paid when the threshold is reached</td></tr>
+<tr><td>Hold until</td><td>Registry</td><td>Event date plus 2 days</td><td>Remaining balance paid after this date</td></tr>
+<tr><td>Approval limit</td><td>Hadia</td><td>KES 150,000 per payout</td><td>Payouts at or above the limit require finance approval with OTP, bound to amount and destination</td></tr>
+<tr><td>Commission</td><td>Hadia, with registry override</td><td>4%</td><td>Deducted at payout and recorded as Hadia income</td></tr>
+<tr><td>Contribution limits</td><td>Registry</td><td>KES 50 minimum, KES 150,000 maximum</td><td>Contributions outside the range are rejected before the STK push</td></tr>
+<tr><td>Maximum balance</td><td>Platform</td><td>Agreed with Hadia</td><td>Contributions exceeding the cap are declined</td></tr>
+<tr><td>Maximum hold</td><td>Platform</td><td>180 days</td><td>Funds cannot be held beyond this period</td></tr>
+<tr><td>Commission sweep</td><td>Hadia</td><td>Daily above KES 5,000, KES 2,000 reserve</td><td>Earned commission transferred to Hadia's business account</td></tr>
 </table>
-<h3>Automatic payout, end to end</h3>
-<figure>{FIG_PAYOUT}<figcaption>Figure 4. How a payout is decided and made, every five minutes</figcaption></figure>
-<p>Every safeguard in the figure already exists in treasury today: a payout is claimed under a reference unique to the attempt (ESC-code-1, ESC-code-2 and so on) before PayHero is called, only one release can be in flight per pot, a refused or failed payout returns the money to the pot, and a payout whose callback never arrives is looked up with PayHero after 15 minutes. Callbacks are treated as hints; treasury confirms each result with PayHero before booking it.</p>
-<h3>Hadia's fee: deducted, retained, then swept</h3>
-<p>At each payout the commission is subtracted from the gross and the owner receives the net. The commission stays in Hadia's PayHero wallet and is booked as income in account 4800. A new scheduled sweep moves it out:</p>
-<figure>{FIG_SWEEP}<figcaption>Figure 5. Commission sweep</figcaption></figure>
+<h3>Payout process</h3>
+<figure>{FIG_PAYOUT}<figcaption>Automated payout process</figcaption></figure>
+<p>Each payout attempt is registered under a unique reference before PayHero is called. Only one payout may be active per registry. A failed payout returns the funds to the registry balance. Payouts without a callback after 15 minutes are confirmed by status enquiry. All results are verified with PayHero before posting.</p>
+<h3>Commission</h3>
+<p>Commission is deducted from the gross payout and the net amount is paid to the owner. Commission is recorded in income account 4800 and retained in the Team wallet until swept.</p>
+<figure>{FIG_SWEEP}<figcaption>Commission sweep</figcaption></figure>
 <ol>
-<li>The sweep runs daily (and can also run right after a payout, if Hadia prefers).</li>
-<li>It works out what is free to move: the PayHero wallet balance, less the total of all pot balances, less releases in flight, less a reserve Hadia keeps for PayHero costs. The hourly reconciliation already computes this figure.</li>
-<li>If the free amount is above the sweep floor, treasury pays it to Hadia's own channel through the same payout dispatcher. The destination is locked to one of Hadia's verified channels and changing it needs MFA and resets verification.</li>
-<li>The books record the transfer from the PayHero wallet account to Hadia's bank or paybill account. If the reconciliation shows a shortfall, the sweep does not run and finance is alerted.</li>
+<li>The sweep runs daily, or after each payout if configured.</li>
+<li>Available commission equals the wallet balance less registry balances, payouts in progress and the operating reserve.</li>
+<li>Amounts above the sweep minimum are paid to Hadia's verified business channel. Changing the destination requires MFA and re-verification.</li>
+<li>The transfer is posted from the PayHero wallet account to Hadia's bank or paybill account. The sweep is suspended if reconciliation reports a shortfall.</li>
 </ol>
-<p>Hadia can also choose to retain commission in the wallet and withdraw it by hand, which treasury already supports.</p>
+<p>Manual withdrawal of commission remains available as an alternative.</p>
 <h3>Reconciliation</h3>
-<p>Every hour treasury compares the sum of all pot balances plus payouts in flight with the PayHero wallet balance. The surplus is Hadia's commission and other wallet money less PayHero's costs. A shortfall is logged as an error, raised in the exception queue and blocks the commission sweep until it is explained. Each pot also has its own statement (contributions, payouts, returns) that can be downloaded as PDF, CSV or Excel.</p>
+<p>Treasury compares the total of registry balances and payouts in progress with the PayHero wallet balance every hour. Any shortfall is raised in the exception queue and suspends the commission sweep until resolved. Each registry statement is available in PDF, CSV and Excel.</p>
 </section>

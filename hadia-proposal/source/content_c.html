@@ -1,219 +1,221 @@
-<section>
-<h2>Critical workflows, step by step</h2>
-<p>Each workflow lists the trigger, the steps, what is automated and what happens when something goes wrong. Steps marked <span class="tag auto">auto</span> need no person. The low-fidelity screens below show the three moments that matter most; final visuals follow Hadia's mock-up.</p>
-<figure>{FIG_WIRE}<figcaption>Guest view, owner dashboard and contribution screens</figcaption></figure>
+<section id="workflows">
+<h2>Process workflows</h2>
+<p class="lead">Each workflow defines its trigger, steps, automation and exception handling. Steps marked <span class="tag auto">auto</span> run without user or staff action.</p>
+<figure>{FIG_WIRE}<figcaption>Key screens (low fidelity)</figcaption></figure>
 
-<h3>W1. Hadia business onboarding (once)</h3>
-<figure>{FIG_TENANT}<figcaption>Figure 6. Setting Hadia up as a business on the platform</figcaption></figure>
+<h3 id="wf-tenant">Hadia business onboarding</h3>
+<figure>{FIG_TENANT}<figcaption>Hadia business onboarding</figcaption></figure>
+<table class="steps">
+<tr><th>Step</th><th>Action</th><th>Responsible</th></tr>
+<tr><td>1</td><td>Submit company documents: certificate of incorporation, CR12, KRA PIN, director identification, bank or paybill details.</td><td>Hadia</td></tr>
+<tr><td>2</td><td>Create the Hadia tenant and assign the platform plan with escrow and M-Pesa features.</td><td>Codevertex</td></tr>
+<tr><td>3</td><td>Create or link the Hadia PayHero Team and complete KYC to tier 3.</td><td>Hadia, PayHero</td></tr>
+<tr><td>4</td><td>Synchronise the paybill or till and map the wallet and channels to the chart of accounts.</td><td>Codevertex</td></tr>
+<tr><td>5</td><td>Accept the escrow terms in treasury.</td><td>Hadia</td></tr>
+<tr><td>6</td><td>Configure commission, payout policy, approval limit, contribution limits and sweep schedule.</td><td>Hadia finance</td></tr>
+<tr><td>7</td><td>Execute live KES 1 tests for contribution, payout, refund and sweep, and reconcile each.</td><td>Codevertex, Hadia</td></tr>
+</table>
+
+<h3 id="wf-owner">Registry owner onboarding</h3>
+<figure>{FIG_OWNER}<figcaption>Registry owner onboarding</figcaption></figure>
+<table class="steps">
+<tr><th>Step</th><th>Action</th><th>System behaviour</th></tr>
+<tr><td>1</td><td>Owner enters a mobile number</td><td>One-time password sent by SMS, WhatsApp fallback. Codes hashed, 5-minute expiry, rate limited per number and IP. <span class="tag auto">auto</span></td></tr>
+<tr><td>2</td><td>Owner confirms age and accepts terms</td><td>Version and timestamp recorded</td></tr>
+<tr><td>3</td><td>Owner creates the registry</td><td>Type, title, date, location, cover photo, description</td></tr>
+<tr><td>4</td><td>Owner verifies the payout number</td><td>One-time password sent to the payout number</td></tr>
+<tr><td>5</td><td>Registry published</td><td>Escrow account opened in treasury with default rules <span class="tag auto">auto</span></td></tr>
+<tr><td>6</td><td>Owner shares the registry</td><td>Short link and preview image generated <span class="tag auto">auto</span></td></tr>
+</table>
+<p class="exception"><b>Exception:</b> if the escrow account cannot be opened, the registry is saved as a draft and the request is retried in the background. Item entry continues uninterrupted.</p>
+
+<h3 id="wf-listing">Item listing</h3>
+<figure>{FIG_LISTING}<figcaption>Item listing</figcaption></figure>
 <ol>
-<li>Hadia provides company documents (certificate of incorporation, CR12, KRA PIN, director ID, bank or paybill details).</li>
-<li>Codevertex creates the Hadia tenant in auth-api and the plan with the escrow and M-Pesa features in subscriptions-api.</li>
-<li>Hadia's PayHero Team is created or linked to the tenant. Hadia completes PayHero KYC to tier 3 (national ID plus company KRA PIN), which PayHero requires before a Team wallet can collect from the public.</li>
-<li>Hadia's paybill or till is added as a channel and synced; the Team wallet and channels are mapped to accounts in Hadia's chart of accounts.</li>
-<li>Hadia accepts the escrow terms in treasury (Hadia holds its customers' money for their beneficiaries and is responsible for releasing it).</li>
-<li>Hadia sets the commission rule, payout policy and approval limit, contribution limits and sweep schedule.</li>
-<li>Live KSh 1 tests: a contribution, a payout, a refund and a sweep, each reconciled, before the first real event.</li>
+<li>The owner pastes a product link or selects manual entry.</li>
+<li>For links, the server retrieves public page metadata under strict controls: public addresses only, 3-second timeout, 1 MB limit, no cookies.</li>
+<li>Title, image and price are prefilled for owner confirmation. Where no data is found, the manual form is shown.</li>
+<li>Photos are converted to WebP at 640 and 1280 pixels, stored in object storage and served through the CDN. The source store is credited.</li>
+<li>The owner sets the item mode: reserve, fund, or both.</li>
 </ol>
 
-<h3>W2. Registry owner onboarding</h3>
-<figure>{FIG_OWNER}<figcaption>Figure 7. From sign-up to a shared registry</figcaption></figure>
+<h3 id="wf-share">Sharing</h3>
 <ol>
-<li>The owner enters a phone number. auth-api sends a 6-digit code by SMS (WhatsApp if SMS fails) <span class="tag auto">auto</span>. Codes are hashed, expire in 5 minutes, and sending is capped per phone and per IP.</li>
-<li>The owner confirms age 18 or above and accepts the terms and privacy notice. auth-api stores the version and time.</li>
-<li>The owner creates the event: type, title, date, optional place, cover photo, short story.</li>
-<li>The owner confirms the payout M-Pesa number with an OTP sent to it. This proves control of the line that will receive money.</li>
-<li>hadia-api asks treasury to open the escrow pot with the owner as beneficiary and Hadia's default rules <span class="tag auto">auto</span>.</li>
-<li>The registry gets its short link and preview image, and the owner shares it on WhatsApp.</li>
-</ol>
-<p><b>When it goes wrong:</b> if the pot cannot be opened (for example PayHero is unavailable), the registry is saved as a draft and the pot request is retried by a background job; the owner can keep adding items while it waits.</p>
-
-<h3>W3. Listing items</h3>
-<figure>{FIG_LISTING}<figcaption>Figure 8. Adding an item by link or by hand</figcaption></figure>
-<ol>
-<li>The owner pastes a link or taps "Add by hand".</li>
-<li>For a link, hadia-api fetches the page server-side with strict limits: public internet addresses only (private and internal ranges refused, the same rule treasury uses for webhooks), 3 second timeout, 1 MB size cap, no cookies. It reads Open Graph and product schema tags for title, image and price.</li>
-<li>The form is prefilled and the owner confirms or edits. If nothing useful was found, the form simply stays empty for typing.</li>
-<li>Photos are resized and converted to WebP (640 px and 1280 px versions), stored in object storage, and served through the CDN. The source shop is shown as "from Shop name" with a link.</li>
-<li>The owner chooses the mode: reserve, fund, or both (group gifting).</li>
+<li>Each registry receives a short link; premium registries may set a custom link.</li>
+<li>A 1200 by 630 pixel preview image under 300 KB is generated for WhatsApp and social platforms. <span class="tag auto">auto</span></li>
+<li>Sharing options: WhatsApp, SMS, copy link and QR code.</li>
 </ol>
 
-<h3>W4. Sharing</h3>
+<h3 id="wf-reserve">Item reservation</h3>
+<figure>{FIG_RESERVE}<figcaption>Item reservation</figcaption></figure>
 <ol>
-<li>Each registry has a short link, for example hadia.co.ke/r/achieng-david (premium) or hadia.co.ke/r/K7Q2M9 (standard).</li>
-<li>A preview image is rendered per registry (cover photo, names, date) at 1200 by 630 pixels and kept under 300 KB, so WhatsApp shows it reliably <span class="tag auto">auto</span>.</li>
-<li>The share sheet offers WhatsApp, SMS, copy link and a QR code for printed cards.</li>
+<li>The guest selects Reserve and enters a name and, optionally, a mobile number.</li>
+<li>The reservation is recorded in a single conditional update. Concurrent requests for the last unit result in one reservation; other guests are offered a contribution instead.</li>
+<li>The guest receives a cancellation link. The item is shown as reserved to all guests.</li>
+<li>After 14 days without purchase confirmation, reminders are sent and the owner may release the item. <span class="tag auto">auto</span></li>
 </ol>
 
-<h3>W5. Reserving an item</h3>
-<figure>{FIG_RESERVE}<figcaption>Figure 9. Reservation without duplicates</figcaption></figure>
+<h3 id="wf-contribute">Cash contribution</h3>
+<figure>{FIG_CONTRIB}<figcaption>Cash contribution sequence</figcaption></figure>
 <ol>
-<li>The guest taps Reserve, enters a name and, optionally, a phone number to manage the reservation.</li>
-<li>hadia-api reserves with one conditional update (only if units remain). If two guests tap at the same moment, exactly one wins; the other is told the item was just taken and offered to contribute instead.</li>
-<li>The guest receives a link to cancel. The owner sees the reservation, and other guests see the item as taken.</li>
-<li>After 14 days without "bought", the guest and owner are reminded; the owner may release the item <span class="tag auto">auto</span>.</li>
+<li>The guest selects an item or fund and enters an amount and mobile number. Limits are validated.</li>
+<li>hadia-ui submits the contribution to treasury with an idempotency key.</li>
+<li>Treasury initiates a PayHero collection into the Hadia wallet. The guest authorises the STK push.</li>
+<li>On callback, treasury verifies the transaction with PayHero, credits the registry once and posts the ledger entry. <span class="tag auto">auto</span></li>
+<li>The checkout page confirms payment. Treasury publishes the credit event.</li>
+<li>hadia-api updates item progress and the gift log and triggers the guest receipt and owner notification. <span class="tag auto">auto</span></li>
+</ol>
+<p class="exception"><b>Exceptions:</b> failed or cancelled prompts leave the contribution pending and the paybill option is offered. Repeated failures to one number (five in 24 hours) suspend further prompts to that number. Missing callbacks are resolved by status enquiry.</p>
+
+<h3 id="wf-manage">Registry management</h3>
+<ol>
+<li>The dashboard shows amounts received, paid out, pending and the next payout.</li>
+<li>Owners may change the target, threshold (within Hadia's limits) and event date. The payout number changes only after verification of the new number and never during an active payout.</li>
+<li>Contributions above an item's price remain in the registry balance and are paid out with it.</li>
+<li>After the hold period the registry closes to new contributions. Owners may reopen it.</li>
 </ol>
 
-<h3>W6. Contributing money</h3>
-<figure>{FIG_CONTRIB}<figcaption>Figure 10. A guest gift from tap to receipt</figcaption></figure>
-<ol>
-<li>The guest picks an item or fund, enters an amount and phone number. Limits are checked before anything is sent.</li>
-<li>hadia-ui calls treasury's public escrow contribution endpoint with an idempotency key, so a double tap or a retry can never charge twice.</li>
-<li>Treasury starts a PayHero collection into Hadia's wallet; the guest gets the M-Pesa prompt and enters the PIN.</li>
-<li>PayHero calls back. Treasury looks the payment up with PayHero before trusting it, then credits the pot once and posts the accounting entry <span class="tag auto">auto</span>.</li>
-<li>The checkout page, which polls every 3 seconds, shows success. Treasury publishes escrow.pot_credited.</li>
-<li>hadia-api updates the item's progress and the gift log, and asks notifications-api to send the guest a receipt and the owner an alert <span class="tag auto">auto</span>.</li>
-</ol>
-<p><b>When it goes wrong:</b> a prompt that fails or is cancelled leaves the gift pending and offers the paybill route. Treasury's prompt guard stops repeated prompts to one phone (5 failures in 24 hours) to protect guests from spam prompts. A callback that never arrives is resolved by a status lookup.</p>
+<h3 id="wf-payout">Automated payout</h3>
+<p>Registries meeting a payout rule are paid every 5 minutes to the verified number, net of commission, with approval required only at or above Hadia's limit. The owner receives an SMS showing gross amount, commission and net amount. <span class="tag auto">auto</span> Full process in <a href="#funds">Funds management and payouts</a>.</p>
 
-<h3>W7. Managing the pot</h3>
+<h3 id="wf-commission">Commission and sweep</h3>
+<p>Commission is deducted at payout, recorded as Hadia income and transferred daily to Hadia's business account above the sweep minimum. <span class="tag auto">auto</span> eTIMS invoices for Hadia's fees are issued through treasury's KRA integration.</p>
+
+<h3 id="wf-premium">Premium upgrade</h3>
 <ol>
-<li>The owner sees received, paid out, pending and next payout on the dashboard; numbers come from treasury and the gift log.</li>
-<li>The owner can change the target, the threshold (within Hadia's limits) and the event date. The payout number can be changed only with a fresh OTP on the new number and never while a payout is in flight.</li>
-<li>Items funded beyond their price show as fully funded; extra money stays in the pot and is paid out with the rest.</li>
-<li>After the event, the registry stays open for late gifts for the hold window, then closes to new gifts. The owner can reopen it.</li>
+<li>The owner selects Upgrade and is shown the features and price.</li>
+<li>hadia-api creates a payment intent in treasury and opens the shared payment modal.</li>
+<li>On confirmation, treasury records the sale as Hadia revenue and hadia-api enables the custom link, printable list and instant payouts. <span class="tag auto">auto</span></li>
+<li>A receipt is issued. Refunds follow the refund policy.</li>
 </ol>
 
-<h3>W8. Automatic payouts</h3>
-<p>Described in full in chapter 9 and Figure 4. In short: every 5 minutes, pots whose threshold is reached or whose event hold has passed are paid out to the verified number, less commission, with approval only above Hadia's limit <span class="tag auto">auto</span>. The owner receives an SMS with the gross, the fee and the net.</p>
-
-<h3>W9. Commission and sweep</h3>
-<p>Described in chapter 9 and Figure 5. Commission is deducted at each payout, booked as Hadia's income, and swept daily to Hadia's own account above the floor <span class="tag auto">auto</span>. An eTIMS-compliant invoice for Hadia's fee is available to the owner on request through treasury's existing eTIMS integration.</p>
-
-<h3>W10. Premium upgrade</h3>
+<h3 id="wf-refund">Cancellation and refunds</h3>
+<figure>{FIG_REFUND}<figcaption>Cancellation and refunds</figcaption></figure>
 <ol>
-<li>The owner taps Upgrade on an event and sees exactly what premium adds and the price.</li>
-<li>hadia-api creates a payment intent in treasury (an ordinary sale for Hadia, not escrow) and opens the shared payment modal.</li>
-<li>On confirmation treasury books the sale as Hadia's revenue and publishes payment.succeeded; hadia-api switches on the features: custom link, printable list, instant payouts (pot threshold set to pay every gift) <span class="tag auto">auto</span>.</li>
-<li>A receipt is sent. Refunds of premium follow the refund policy.</li>
+<li>The owner requests cancellation, or Hadia cancels following a fraud or policy finding.</li>
+<li>The refund is authorised under the approval policy, bound to the registry and its balance.</li>
+<li>The registry is closed to new contributions. Each contribution is refunded to the paying number under its own reference. <span class="tag auto">auto</span></li>
+<li>Failed refunds return to the registry balance for retry. Repeated cancellation requests never duplicate a refund. Contributions without a number are listed for manual settlement.</li>
 </ol>
 
-<h3>W11. Cancellation and refunds</h3>
-<figure>{FIG_REFUND}<figcaption>Figure 11. Cancelling a registry that already holds gifts</figcaption></figure>
+<h3 id="wf-exceptions">Exceptions and reconciliation</h3>
 <ol>
-<li>The owner asks to cancel (for example, the event is called off), or Hadia cancels after a fraud or policy finding.</li>
-<li>The refund passes the approval policy, bound to the pot and its balance.</li>
-<li>The pot is closed first so no new gifts arrive, then each gift is paid back to the phone it came from, each with its own reference <span class="tag auto">auto</span>.</li>
-<li>A failed refund returns the money to the pot for retry. A repeated cancel never pays anyone twice. Gifts with no phone on record are listed for Hadia to settle by hand.</li>
+<li>Reconciliation runs hourly. <span class="tag auto">auto</span></li>
+<li>The exception queue lists failed payouts, name mismatches, manual refunds, reconciliation variances, reported registries and pending approvals.</li>
+<li>Each entry records the facts, recommended action and resolver. Finance receives a daily summary.</li>
 </ol>
 
-<h3>W12. Exceptions and reconciliation</h3>
+<h3 id="wf-thanks">Thank-you tracking</h3>
 <ol>
-<li>Hourly reconciliation runs per tenant <span class="tag auto">auto</span>.</li>
-<li>Exceptions go to one queue in the Hadia admin: failed payouts after retry, M-Pesa name mismatches, refunds needing manual action, reconciliation shortfalls, reported registries, approval requests.</li>
-<li>Each item shows the facts, the suggested action and who handled it. Finance gets a daily summary by email or WhatsApp.</li>
+<li>All contributions and reservations appear in the gift log with guest messages.</li>
+<li>The owner sends a prepared WhatsApp thank-you and marks the guest as thanked.</li>
+<li>A reminder listing outstanding thank-yous is sent one week after the event. Owners may disable it.</li>
 </ol>
 
-<h3>W13. Thank-you tracker</h3>
+<h3 id="wf-data">Data subject requests</h3>
 <ol>
-<li>Every gift and reservation appears in the gift log with the guest's message.</li>
-<li>The owner taps Thank to open WhatsApp with a prepared message to that guest, then marks it thanked.</li>
-<li>A gentle reminder lists unthanked guests a week after the event (owner can switch it off).</li>
-</ol>
-
-<h3>W14. Data requests and account deletion</h3>
-<ol>
-<li>An owner or guest asks for a copy of their data, a correction or deletion, from the privacy page or by email.</li>
-<li>Identity is confirmed by OTP. The request is logged with its legal deadline.</li>
-<li>Export: a machine-readable file of profile, registries, items, reservations and gifts.</li>
-<li>Deletion: personal data is erased or anonymised. Financial records required by tax law (contributions, payouts, invoices) are kept for the statutory period with the person's name replaced by a reference, and the person is told what was kept and why.</li>
+<li>An owner or guest submits a request for access, correction or deletion.</li>
+<li>Identity is confirmed by one-time password and the statutory deadline is recorded.</li>
+<li>Access requests produce a machine-readable export.</li>
+<li>Deletion erases or anonymises personal data. Financial records required by law are retained for the statutory period under a reference, and the requester is informed.</li>
 </ol>
 </section>
 
-<section>
+<section id="data">
 <h2>Data design</h2>
-<p>hadia-api owns the registry domain. It holds references to other services' records by ID only: the owner's user ID from auth-api and the pot ID and payment intent IDs from treasury.</p>
-<figure>{FIG_ERD}<figcaption>Figure 12. hadia-api entities</figcaption></figure>
-<h3>Choices that keep it fast as data grows</h3>
-<ul>
-<li>Every table has the tenant ID and the indexes its queries need, created by versioned Atlas migrations reviewed like code.</li>
-<li>Lists use keyset pagination (the shared pagination package), never deep offsets, so page 500 is as fast as page 1.</li>
-<li>The gift log is unique on the payment intent ID, so a redelivered event cannot create a second row.</li>
-<li>Counters such as an item's funded amount are updated with arithmetic in SQL in the same statement, never read then written.</li>
-<li>Reports read from registry_daily_stats, a rollup updated as events arrive, not from raw gifts.</li>
-<li>Guest phone numbers are stored hashed where only matching is needed (reservations) and encrypted where they must be read (receipts), with keys outside the database.</li>
-<li>Photos live in object storage; the database stores keys only.</li>
-</ul>
+<p class="lead">hadia-api owns the registry domain and references other services by ID: the owner's user ID in auth-api and the escrow account and payment intent IDs in treasury.</p>
+<figure>{FIG_ERD}<figcaption>hadia-api data model</figcaption></figure>
+<h3>Scalability measures</h3>
+<table>
+<tr><th>Measure</th><th>Purpose</th></tr>
+<tr><td>Tenant ID and query-specific indexes on every table, managed by versioned Atlas migrations</td><td>Consistent query performance and controlled schema change</td></tr>
+<tr><td>Keyset pagination on all lists</td><td>Constant response time regardless of page depth</td></tr>
+<tr><td>Unique constraint on payment intent ID in the gift log</td><td>No duplicate records from redelivered events</td></tr>
+<tr><td>Counters updated in a single SQL statement</td><td>Correct totals under concurrency</td></tr>
+<tr><td>Daily aggregate table for reporting</td><td>Reports independent of raw data volume</td></tr>
+<tr><td>Guest numbers hashed for matching and encrypted where display is required</td><td>Data protection</td></tr>
+<tr><td>Images in object storage; keys only in the database</td><td>Small, fast database</td></tr>
+</table>
 </section>
 
-<section>
+<section id="interfaces">
 <h2>Interfaces, events and notifications</h2>
-<h3>hadia-api endpoints (summary)</h3>
+<h3>hadia-api endpoints</h3>
 <table>
 <tr><th>Area</th><th>Endpoints</th><th>Access</th></tr>
 <tr><td>Registries</td><td>GET, POST /registries; GET, PATCH /registries/{id}; POST /registries/{id}/publish, /close, /cancel</td><td>Owner</td></tr>
-<tr><td>Items</td><td>GET, POST /registries/{id}/items; PATCH, DELETE /items/{id}; POST /items/preview (link fill); POST /items/reorder</td><td>Owner</td></tr>
-<tr><td>Public</td><td>GET /r/{code}; POST /r/{code}/items/{item}/reserve; POST /reservations/{token}/cancel</td><td>Anyone, rate limited</td></tr>
+<tr><td>Items</td><td>GET, POST /registries/{id}/items; PATCH, DELETE /items/{id}; POST /items/preview; POST /items/reorder</td><td>Owner</td></tr>
+<tr><td>Public</td><td>GET /r/{code}; POST /r/{code}/items/{item}/reserve; POST /reservations/{token}/cancel</td><td>Public, rate limited</td></tr>
 <tr><td>Gifts</td><td>GET /registries/{id}/gifts; POST /gifts/{id}/thanked; GET /registries/{id}/statement</td><td>Owner</td></tr>
-<tr><td>Premium</td><td>POST /registries/{id}/premium (returns the checkout intent)</td><td>Owner</td></tr>
-<tr><td>Privacy</td><td>POST /privacy/export, /privacy/delete; GET /privacy/requests</td><td>Owner, guest by OTP</td></tr>
-<tr><td>Admin</td><td>Search, moderation, exceptions, settings, reports</td><td>Hadia staff by role</td></tr>
+<tr><td>Premium</td><td>POST /registries/{id}/premium</td><td>Owner</td></tr>
+<tr><td>Privacy</td><td>POST /privacy/export, /privacy/delete; GET /privacy/requests</td><td>Owner; guest by OTP</td></tr>
+<tr><td>Administration</td><td>Search, moderation, exceptions, settings, reports</td><td>Staff by role</td></tr>
 </table>
-<h3>Treasury endpoints used (already built)</h3>
+<h3>Treasury endpoints</h3>
 <table>
-<tr><th>Purpose</th><th>Endpoint</th></tr>
-<tr><td>Open, read, update a pot</td><td>POST, GET, PUT /{tenant}/escrow/pots</td></tr>
+<tr><th>Function</th><th>Endpoint</th></tr>
+<tr><td>Escrow account create, read, update</td><td>POST, GET, PUT /{tenant}/escrow/pots</td></tr>
 <tr><td>Guest contribution</td><td>POST /api/v1/pay/{tenant}/escrow/{code}/contributions</td></tr>
-<tr><td>Public pot view</td><td>GET /api/v1/pay/{tenant}/escrow/{code}</td></tr>
-<tr><td>Release, cancel with refunds</td><td>POST /{tenant}/escrow/pots/{pot}/release, /cancel?refund=true</td></tr>
+<tr><td>Public account view</td><td>GET /api/v1/pay/{tenant}/escrow/{code}</td></tr>
+<tr><td>Payout; cancellation with refunds</td><td>POST /{tenant}/escrow/pots/{pot}/release; /cancel?refund=true</td></tr>
 <tr><td>Commission rule, readiness, summary</td><td>GET, PUT /{tenant}/escrow/fee-rule; GET /escrow/readiness; GET /escrow/summary</td></tr>
-<tr><td>Statements</td><td>GET /{tenant}/escrow/pots/{pot}/statement and /statement/document</td></tr>
-<tr><td>Premium sale</td><td>POST /{tenant}/payments/intents, then the shared pay page or payment modal</td></tr>
+<tr><td>Statements</td><td>GET /{tenant}/escrow/pots/{pot}/statement; /statement/document</td></tr>
+<tr><td>Premium sale</td><td>POST /{tenant}/payments/intents</td></tr>
 </table>
 <h3>Events</h3>
 <table>
-<tr><th>Event</th><th>From</th><th>hadia-api reaction</th></tr>
-<tr><td>escrow.pot_created</td><td>treasury</td><td>Mark the registry's pot as ready, publish the registry</td></tr>
-<tr><td>escrow.pot_credited</td><td>treasury</td><td>Add to gift log, update item funding and daily stats, send receipt and alert</td></tr>
-<tr><td>escrow.dispatched</td><td>treasury</td><td>Record payout, send the owner gross, fee and net</td></tr>
-<tr><td>escrow.dispatch_failed</td><td>treasury</td><td>Exception queue, owner told the payout will retry</td></tr>
-<tr><td>escrow.cancelled</td><td>treasury</td><td>Close registry, tell guests their gifts are being returned</td></tr>
-<tr><td>payment.succeeded (premium)</td><td>treasury</td><td>Switch on premium features</td></tr>
+<tr><th>Event</th><th>Publisher</th><th>hadia-api action</th></tr>
+<tr><td>escrow.pot_created</td><td>treasury</td><td>Mark escrow ready; publish registry</td></tr>
+<tr><td>escrow.pot_credited</td><td>treasury</td><td>Update gift log, item funding and statistics; send receipt and notification</td></tr>
+<tr><td>escrow.dispatched</td><td>treasury</td><td>Record payout; notify owner of gross, commission and net</td></tr>
+<tr><td>escrow.dispatch_failed</td><td>treasury</td><td>Raise exception; notify owner of retry</td></tr>
+<tr><td>escrow.cancelled</td><td>treasury</td><td>Close registry; notify guests of refunds</td></tr>
+<tr><td>payment.succeeded</td><td>treasury</td><td>Activate premium features</td></tr>
 <tr><td>hadia.registry_published, hadia.reservation_created</td><td>hadia-api</td><td>Consumed by notifications and analytics</td></tr>
 </table>
-<p>Consumers are idempotent (claim on event ID before acting). If NATS is unavailable, treasury's outbox holds events until it returns; treasury's signed tenant webhooks are available as a second channel for any future external integration.</p>
-<h3>Messages</h3>
+<p>Consumers are idempotent on event ID. Events are retained in the outbox during broker outages.</p>
+<h3>Notifications</h3>
 <table>
-<tr><th>Message</th><th>To</th><th>Channel</th></tr>
-<tr><td>Sign-in code</td><td>Owner, guest</td><td>SMS, WhatsApp fallback</td></tr>
-<tr><td>Gift receipt</td><td>Guest</td><td>SMS or WhatsApp</td></tr>
-<tr><td>New gift, new reservation</td><td>Owner</td><td>WhatsApp or SMS, daily digest option</td></tr>
-<tr><td>Payout made, payout delayed</td><td>Owner</td><td>SMS</td></tr>
-<tr><td>Reservation reminder, thank-you reminder</td><td>Guest, owner</td><td>WhatsApp or SMS</td></tr>
-<tr><td>Refund made</td><td>Guest</td><td>SMS</td></tr>
-<tr><td>Exception summary, approval needed</td><td>Hadia finance</td><td>Email, WhatsApp</td></tr>
-<tr><td>Product news and tips</td><td>Owners who opted in</td><td>Email or WhatsApp, with an unsubscribe in every message</td></tr>
+<tr><th>Message</th><th>Recipient</th><th>Channel</th></tr>
+<tr><td>One-time password</td><td>Owner, guest</td><td>SMS; WhatsApp fallback</td></tr>
+<tr><td>Contribution receipt</td><td>Guest</td><td>SMS or WhatsApp</td></tr>
+<tr><td>New contribution or reservation</td><td>Owner</td><td>WhatsApp or SMS; daily digest option</td></tr>
+<tr><td>Payout completed or delayed</td><td>Owner</td><td>SMS</td></tr>
+<tr><td>Reservation and thank-you reminders</td><td>Guest, owner</td><td>WhatsApp or SMS</td></tr>
+<tr><td>Refund completed</td><td>Guest</td><td>SMS</td></tr>
+<tr><td>Exception summary, approval request</td><td>Hadia finance</td><td>Email, WhatsApp</td></tr>
+<tr><td>Product updates</td><td>Opted-in owners</td><td>Email or WhatsApp with unsubscribe</td></tr>
 </table>
 </section>
 
-<section>
-<h2>Reports and analytics built for growth</h2>
-<p>The brief asks for reports that stay correct and fast as Hadia grows. We applied that to the services Hadia depends on and fixed what we found before writing this proposal (Appendix A lists the changes).</p>
+<section id="reporting">
+<h2>Reporting and analytics</h2>
 <table>
-<tr><th>Report</th><th>For</th><th>Source and method</th></tr>
-<tr><td>Registry dashboard</td><td>Owner</td><td>Treasury pot balance and released totals, hadia-api gift log by keyset page</td></tr>
-<tr><td>Gifts and value by day, week, month</td><td>Hadia</td><td>registry_daily_stats rollup, one row per registry per day</td></tr>
-<tr><td>Active events, new registries, conversion from view to gift</td><td>Hadia</td><td>Daily stats plus page-view counters aggregated in Redis and flushed every minute</td></tr>
-<tr><td>Commission earned, premium sales</td><td>Hadia finance</td><td>Treasury books: account 4800 and premium revenue, trial balance and income statement</td></tr>
-<tr><td>Funds held, in flight, surplus</td><td>Hadia finance</td><td>Treasury escrow summary, now summed in the database by tenant</td></tr>
-<tr><td>Payout speed and failures</td><td>Hadia ops</td><td>Payout records: time from rule met to confirmed, failure reasons</td></tr>
-<tr><td>Pot statement</td><td>Owner, finance</td><td>Treasury statement document (PDF, CSV, Excel)</td></tr>
+<tr><th>Report</th><th>Audience</th><th>Source</th></tr>
+<tr><td>Registry dashboard</td><td>Owner</td><td>Treasury balances and payouts; gift log</td></tr>
+<tr><td>Contributions and value by period</td><td>Hadia</td><td>Daily aggregates</td></tr>
+<tr><td>Active registries, new registries, conversion</td><td>Hadia</td><td>Daily aggregates and page view counters</td></tr>
+<tr><td>Commission and premium revenue</td><td>Hadia finance</td><td>Treasury ledger, trial balance, income statement</td></tr>
+<tr><td>Funds held, in progress and available</td><td>Hadia finance</td><td>Treasury escrow summary</td></tr>
+<tr><td>Payout performance</td><td>Hadia operations</td><td>Payout records: time to completion, failure reasons</td></tr>
+<tr><td>Registry statement</td><td>Owner, finance</td><td>Treasury statement in PDF, CSV, Excel</td></tr>
 </table>
-<p>Heavy, read-only reports can use the platform's read replica, and repeated dashboard reads are cached for 60 seconds with invalidation on the matching event, so a busy weekend of gifts does not slow down the guest pages.</p>
+<p>Analytical queries run on aggregate tables and may use the read replica. Dashboard results are cached for 60 seconds and invalidated by the related event.</p>
 </section>
 
-<section>
-<h2>Security design</h2>
+<section id="security">
+<h2>Security</h2>
 <table>
-<tr><th>Threat</th><th>Control</th></tr>
-<tr><td>Account takeover</td><td>OTP rate limits per phone and IP, hashed codes, short expiry, session revocation, MFA for all staff, re-verification for payout changes</td></tr>
-<tr><td>Payout fraud (changing where money goes)</td><td>Payout number verified by OTP on that line, change blocked while a payout is in flight, approvals bound to amount and destination, name check on first payout, alerts on change</td></tr>
-<tr><td>Double charging or double paying</td><td>Idempotency keys on contributions, unique references per payout attempt, single settlement path, status lookups instead of trusting callbacks</td></tr>
-<tr><td>Fake registries and scams</td><td>Moderation queue, report button on every registry, velocity limits on new pots, cap on pot balance, hold before first payout for new owners</td></tr>
-<tr><td>Money laundering</td><td>Contribution and balance limits, KYC on Hadia (tier 3) and verified owner lines, monitoring for unusual patterns (many large gifts from few phones, rapid open and close), suspicious activity escalated to Hadia's compliance officer</td></tr>
-<tr><td>Server-side request forgery through link fill</td><td>Public addresses only, DNS checked after resolution, no redirects to private ranges, time and size caps</td></tr>
-<tr><td>Injection and cross-site scripting</td><td>Parameterised queries (Ent), output encoding, strict Content Security Policy, sanitised rich text</td></tr>
-<tr><td>Bots and abuse</td><td>Rate limits on public endpoints, prompt guard on STK pushes, Cloudflare WAF in front of all hosts</td></tr>
-<tr><td>Data exposure</td><td>TLS everywhere, encryption at rest for backups and sensitive fields, least-privilege roles, payout details never shown on public pages, audit log of staff access</td></tr>
-<tr><td>Card data</td><td>Card payments run on the provider's hosted checkout, so card numbers never touch Hadia's servers</td></tr>
+<tr><th>Threat</th><th>Controls</th></tr>
+<tr><td>Account takeover</td><td>OTP rate limits by number and IP, hashed codes, short expiry, session revocation, MFA for staff, re-verification for payout changes</td></tr>
+<tr><td>Payout redirection</td><td>Payout number verified by OTP, changes blocked during active payouts, approvals bound to amount and destination, name check on first payout, change alerts</td></tr>
+<tr><td>Duplicate charges or payouts</td><td>Idempotency keys, unique payout references, single settlement path, provider verification of callbacks</td></tr>
+<tr><td>Fraudulent registries</td><td>Moderation, guest reporting, registry creation limits, balance caps, first-payout hold for new owners</td></tr>
+<tr><td>Money laundering</td><td>Contribution and balance limits, KYC, verified payout numbers, pattern monitoring, escalation to Hadia's compliance contact</td></tr>
+<tr><td>Server-side request forgery</td><td>Public address allow-list with post-resolution DNS checks, redirect validation, time and size limits</td></tr>
+<tr><td>Injection and cross-site scripting</td><td>Parameterised queries, output encoding, Content Security Policy, sanitised input</td></tr>
+<tr><td>Automated abuse</td><td>Rate limiting, STK prompt guard, Cloudflare WAF</td></tr>
+<tr><td>Data exposure</td><td>TLS, encryption at rest, least-privilege roles, payout details excluded from public pages, staff access logging</td></tr>
+<tr><td>Card data</td><td>Provider-hosted card checkout; no card data on Hadia systems</td></tr>
 </table>
 </section>

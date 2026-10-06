@@ -1,232 +1,211 @@
-<section>
-<h2>Legal, regulatory and compliance</h2>
-<div class="callout warn">
-<p><b>Please read this first.</b> This chapter maps the laws we know apply to an online gifting and payments business in Kenya and shows how the design meets them. It is a technical compliance plan, not legal advice. Before launch, Hadia's own Kenyan advocate should review the legal pack and confirm the points marked "confirm". Building these protections in from the first sprint is far cheaper than retrofitting them after a complaint.</p>
-</div>
+<section id="compliance">
+<h2>Legal and regulatory compliance</h2>
+<p class="lead">This chapter sets out the legal obligations applicable to Hadia and the controls that address them. It does not constitute legal advice. Items marked <b>Confirm</b> require an opinion from Hadia's advocate before launch.</p>
 
-<h3>Who is responsible for what</h3>
+<h3>Roles and responsibilities</h3>
 <table>
-<tr><th>Party</th><th>Legal role</th><th>Main duties</th></tr>
-<tr><td>Hadia</td><td>Business operating the service; data controller; holds its customers' money for their beneficiaries through its PayHero account</td><td>Terms with users, fees, payouts, complaints, registration with the Data Commissioner, tax on its income, KYC and AML cooperation</td></tr>
-<tr><td>Codevertex Africa Limited</td><td>Software provider and data processor for Hadia</td><td>Build and run the software securely, process data only on Hadia's instructions under a data processing agreement, report breaches to Hadia without delay</td></tr>
-<tr><td>PayHero</td><td>Payment service provider</td><td>Collections, wallet, payouts, its own KYC and AML duties, card handling on hosted checkout</td></tr>
-<tr><td>Messaging providers</td><td>Sub-processors (Africa's Talking, WhatsApp, Brevo)</td><td>Deliver messages under their terms; listed in the privacy notice</td></tr>
+<tr><th>Party</th><th>Role</th><th>Obligations</th></tr>
+<tr><td>Hadia</td><td>Service operator and data controller; holds customer funds for beneficiaries through its PayHero account</td><td>User terms, fees, payouts, complaints, ODPC registration, tax, KYC and AML cooperation</td></tr>
+<tr><td>Codevertex Africa Limited</td><td>Software provider and data processor</td><td>Secure development and operation, processing on Hadia's instructions under a data processing agreement, breach notification to Hadia</td></tr>
+<tr><td>PayHero</td><td>Payment service provider</td><td>Collections, wallet custody, payouts, KYC and AML, card processing</td></tr>
+<tr><td>Africa's Talking, Meta (WhatsApp), Brevo</td><td>Sub-processors</td><td>Message delivery under their terms</td></tr>
 </table>
 
-<h3>Laws that apply and how the platform meets them</h3>
+<h3>Applicable law</h3>
 <table>
-<tr><th>Law</th><th>What it requires of Hadia</th><th>How Hadia meets it</th></tr>
-<tr><td>Constitution of Kenya, Article 31, and the Data Protection Act, 2019, with the Data Protection (General) Regulations, 2021 and the registration regulations</td><td>Lawful, minimal, transparent processing; registration with the Office of the Data Protection Commissioner (ODPC); data protection impact assessment for high-risk processing; data subject rights; breach notice to the ODPC within 72 hours; safeguards for cross-border transfers; consent for direct marketing; parental consent for children's data</td><td>Privacy notice, consent records, minimal data, DPIA drafted in weeks 2 to 6, registration of Hadia as controller (Codevertex as processor), data request workflow with deadlines (W14), breach runbook, documented hosting location and transfer safeguards, marketing only on opt-in</td></tr>
-<tr><td>Consumer Protection Act, 2012</td><td>No false, misleading or unconscionable representations; for internet agreements, clear disclosure before the customer agrees, an express chance to accept or decline and correct errors, and a copy of the agreement</td><td>Fees and payout timing shown before sign-up and before every payment, clickwrap acceptance with the version logged, terms emailed or downloadable, honest marketing copy (see the mock-up review below)</td></tr>
-<tr><td>Competition Act, 2010</td><td>No false or misleading claims about the service, including reviews and testimonials</td><td>Only real, consented testimonials; no invented counts; claims backed by evidence held on file</td></tr>
-<tr><td>National Payment System Act, 2011, and its regulations</td><td>Payment services and holding money for others are regulated by the Central Bank of Kenya</td><td>All money is collected, held and paid out by PayHero in Hadia's account; holding periods are short and capped; per-pot ledgers and hourly reconciliation. <b>Confirm</b> with Hadia's advocate whether Hadia needs its own CBK authorisation or written guidance as volumes grow.</td></tr>
-<tr><td>Proceeds of Crime and Anti-Money Laundering Act, 2009</td><td>Prevent the service being used to launder money; keep records; cooperate with reporting institutions</td><td>KYC tier 3 on Hadia, verified payout lines, contribution and balance caps, pattern monitoring, records kept for the statutory period, a named compliance contact at Hadia</td></tr>
-<tr><td>Computer Misuse and Cybercrimes Act, 2018</td><td>Protect systems and data; handle unlawful content and incidents</td><td>Security controls in chapter 14, audit logs, moderation and reporting tools, incident response plan</td></tr>
-<tr><td>Kenya Information and Communications Act and the Consumer Protection Regulations, 2010</td><td>Electronic records and signatures are valid; no unsolicited commercial messages; an easy opt-out</td><td>Logged clickwrap acceptance; transactional messages only unless opted in; STOP and unsubscribe in every marketing message; sender ID registered through the SMS provider</td></tr>
-<tr><td>Tax Procedures Act, 2015, VAT Act, 2013 and the eTIMS rules</td><td>Keep records for at least five years; issue electronic tax invoices for business income; register for VAT above the threshold</td><td>Hadia's books in treasury, gifts held as a liability (never Hadia's revenue), commission and premium booked as income, eTIMS invoices through treasury's existing KRA integration. <b>Confirm</b> VAT and any excise duty treatment of Hadia's fee with a tax adviser.</td></tr>
-<tr><td>Children Act, 2022 and section 33 of the Data Protection Act</td><td>Children's data only with parental consent and in the child's best interests</td><td>Owners must be 18 or older; baby registries ask the parent to confirm consent before adding a child's name or photo; guidance and defaults avoid a child's full name on public pages; registries are unlisted by default</td></tr>
-<tr><td>Persons with Disabilities Act and Article 54 of the Constitution</td><td>Services offered to the public should be accessible</td><td>WCAG 2.2 AA built and tested (NFR-08)</td></tr>
-<tr><td>Copyright Act, 2001 and Trade Marks Act</td><td>Respect owners of images, text, fonts and marks</td><td>Licensed fonts and images only; shop photos shown as linked thumbnails with credit and removed on request; shop names used only to describe where an item is from, no shop logos without permission</td></tr>
-<tr><td>Business Registration Service Act and company law</td><td>Trade under the registered name and show who the business is</td><td>Registered name, number, address and contacts in the footer of every page and every receipt</td></tr>
-<tr><td>Foreign rules for diaspora users: EU and UK GDPR, US CAN-SPAM and COPPA</td><td>Similar privacy rights; unsubscribe in emails; no collection from children under 13</td><td>The Kenyan controls above meet the core of these; cookie consent before any optional cookie; unsubscribe in every email; service not directed at children</td></tr>
+<tr><th>Law</th><th>Obligation</th><th>Control</th></tr>
+<tr><td>Constitution of Kenya, Article 31; Data Protection Act, 2019 and Regulations, 2021</td><td>Lawful and minimal processing, ODPC registration, DPIA, data subject rights, 72-hour breach notification, transfer safeguards, consent for direct marketing, parental consent for children's data</td><td>Privacy notice, consent records, data minimisation, DPIA, ODPC registration, data request workflow, breach procedure, documented hosting location, opt-in marketing</td></tr>
+<tr><td>Consumer Protection Act, 2012</td><td>No misleading representations; for internet agreements, disclosure before acceptance, express acceptance, error correction and a copy of the agreement</td><td>Fees and payout timing disclosed before sign-up and payment, versioned click-through acceptance, downloadable terms, verified marketing claims</td></tr>
+<tr><td>Competition Act, 2010</td><td>No false or misleading representations, including reviews and testimonials</td><td>Consented testimonials only; claims supported by records</td></tr>
+<tr><td>National Payment System Act, 2011 and Regulations</td><td>Payment services and holding funds for others are regulated by the Central Bank of Kenya</td><td>Funds held and paid by PayHero; capped hold periods and balances; per-registry ledgers; hourly reconciliation. <b>Confirm</b> whether Hadia requires CBK authorisation or guidance.</td></tr>
+<tr><td>Proceeds of Crime and Anti-Money Laundering Act, 2009</td><td>Prevent laundering; maintain records; cooperate with reporting institutions</td><td>KYC tier 3, verified payout numbers, contribution and balance caps, transaction monitoring, record retention, designated compliance contact</td></tr>
+<tr><td>Computer Misuse and Cybercrimes Act, 2018</td><td>System and data protection; handling of unlawful content</td><td>Security controls, audit logging, moderation and reporting, incident response</td></tr>
+<tr><td>Kenya Information and Communications Act; Consumer Protection Regulations, 2010</td><td>Validity of electronic records; no unsolicited messages; opt-out</td><td>Logged acceptance, transactional messaging by default, STOP and unsubscribe on marketing, registered sender ID</td></tr>
+<tr><td>Tax Procedures Act, 2015; VAT Act, 2013; eTIMS</td><td>Record retention of at least five years; electronic tax invoices; VAT registration above threshold</td><td>Ledger in treasury, gifts recorded as liabilities, commission and premium as income, eTIMS invoicing. <b>Confirm</b> VAT and excise treatment of fees.</td></tr>
+<tr><td>Children Act, 2022; Data Protection Act, section 33</td><td>Parental consent and best interests for children's data</td><td>Owners aged 18 or over, parental confirmation before child names or photos, unlisted registries by default</td></tr>
+<tr><td>Persons with Disabilities Act; Constitution, Article 54</td><td>Accessible public services</td><td>WCAG 2.2 AA</td></tr>
+<tr><td>Copyright Act, 2001; Trade Marks Act</td><td>Respect for third-party content and marks</td><td>Licensed fonts and images, credited product thumbnails with takedown, descriptive use of store names only</td></tr>
+<tr><td>Business Registration Service Act; Companies Act, 2015</td><td>Trade under registered name with business identification</td><td>Registered name, number, address and contacts on every page and receipt</td></tr>
+<tr><td>EU and UK GDPR; US CAN-SPAM and COPPA (diaspora users)</td><td>Equivalent privacy rights, email unsubscribe, no data from children under 13</td><td>Kenyan controls applied, prior consent for optional cookies, unsubscribe in every email, service not directed at children</td></tr>
 </table>
 
-<h3>The 20-point "don't get sued" checklist</h3>
-<p>Hadia shared a 20-item checklist for keeping an app out of legal trouble. Every item is covered below, with the law behind it and what we deliver.</p>
+<h3>Compliance checklist</h3>
 <table class="check">
-<tr><th>#</th><th>Item</th><th>What Hadia gets</th><th>Delivered by</th></tr>
-<tr><td>1</td><td>Privacy policy</td><td>Plain-language privacy notice naming Hadia as controller, Codevertex and providers as processors, purposes, lawful bases, retention, rights, transfers and contacts. Linked from every page, form and message footer.</td><td>Draft by Codevertex, sign-off by Hadia's advocate</td></tr>
-<tr><td>2</td><td>Terms of service</td><td>Owner terms, guest terms, escrow and payout terms, acceptable use, fees, liability limits, dispute process, governing law of Kenya. Clickwrap with versioning; changes notified 14 days ahead.</td><td>Draft by Codevertex, sign-off by advocate</td></tr>
-<tr><td>3</td><td>Refund policy</td><td>When gifts are returned (cancelled event, mistaken payment, fraud), timelines, premium refund within 14 days if unused, how fees are treated. The refund flow (W11) enforces it.</td><td>Built in, policy text by Hadia</td></tr>
-<tr><td>4</td><td>Cookie policy</td><td>Lists every cookie by category with purpose and lifetime. Only strictly necessary cookies at launch.</td><td>Built in using the shared legal pages</td></tr>
-<tr><td>5</td><td>Cookie consent banner</td><td>The shared Codevertex cookie notice: nothing optional pre-selected, "Reject optional" and "Accept all" equally prominent, settings reopenable from the footer.</td><td>Reused (shared-ui-lib)</td></tr>
-<tr><td>6</td><td>Check form consents</td><td>Every form states why each field is asked; separate, unticked checkboxes for terms, marketing and child data; consent stored with version and time; withdrawal as easy as giving it.</td><td>Built in</td></tr>
-<tr><td>7</td><td>No unnecessary data</td><td>Guests give only a name and phone for gifts; no ID numbers, no dates of birth, no location tracking; owner KYC limited to the payout line; data map reviewed in the DPIA.</td><td>Built in</td></tr>
-<tr><td>8</td><td>Audit third-party SDKs</td><td>No ad trackers or social pixels at launch. A register of every third party (PayHero, Africa's Talking, WhatsApp, Brevo, Cloudflare, Google sign-in if enabled) with the data each receives; analytics only after consent and self-hosted where possible.</td><td>Built in, register in the handover pack</td></tr>
-<tr><td>9</td><td>Remove dark patterns</td><td>No pre-ticked boxes, no fake urgency or scarcity, no confirm-shaming, cancel premium and delete account in as few steps as sign-up, honest progress bars.</td><td>Built in, checked in UX review</td></tr>
-<tr><td>10</td><td>Remove hidden fees</td><td>Guests pay exactly what they enter. Owners see the commission and payout schedule before creating a registry and on every payout SMS and statement. Premium price shown before checkout.</td><td>Built in</td></tr>
-<tr><td>11</td><td>Remove fake reviews</td><td>The mock-up's testimonial and "400+ families" figure are removed until real. Testimonials published only with written consent and kept on file.</td><td>Content change, see below</td></tr>
-<tr><td>12</td><td>Remove unsupported claims</td><td>Claims such as "funds go straight to you" and "your money, kept safe" rewritten to describe exactly how money is held and when it is paid.</td><td>Content change, see below</td></tr>
-<tr><td>13</td><td>Accessibility alt text</td><td>Alt text required for owner-uploaded photos (suggested from the item title), meaningful alt on all site images, decorative images hidden from screen readers.</td><td>Built in</td></tr>
-<tr><td>14</td><td>Fix colour contrast</td><td>Brand palette checked to 4.5:1 for text and 3:1 for controls; the mock-up's light gold and grey text adjusted where it fails.</td><td>Built in</td></tr>
-<tr><td>15</td><td>Keyboard navigation</td><td>Every action reachable by keyboard, visible focus, logical order, dialogs that trap and return focus, skip-to-content link; automated axe checks in CI plus manual testing.</td><td>Built in</td></tr>
-<tr><td>16</td><td>Add business details</td><td>Registered name, registration number, KRA PIN (optional), physical address, email and phone in the footer and on receipts, using the shared LegalLinks component, which now accepts a tenant's own business details.</td><td>Reused and extended</td></tr>
-<tr><td>17</td><td>Age consent for kids' data</td><td>Owners confirm 18 or above; parental confirmation before any child's name or photo; defaults that keep children off public pages.</td><td>Built in</td></tr>
-<tr><td>18</td><td>Unsubscribe link in emails</td><td>One-click unsubscribe in every marketing email and STOP in every marketing SMS or WhatsApp; preferences page; transactional messages kept separate.</td><td>Reused (notifications-api preferences)</td></tr>
-<tr><td>19</td><td>License fonts and images</td><td>Open-licence fonts (SIL OFL) and owned or licensed photos only; a licence register in the handover pack; the mock-up's illustrations redrawn or licensed.</td><td>Built in, register by Codevertex</td></tr>
-<tr><td>20</td><td>Data deletion request</td><td>Self-service export and deletion with OTP, deadlines tracked, financial records kept anonymised for the tax retention period with an explanation to the person (W14).</td><td>Built in, reusing the platform's data request pattern</td></tr>
+<tr><th>#</th><th>Requirement</th><th>Implementation</th><th>Owner</th></tr>
+<tr><td>1</td><td>Privacy policy</td><td>Controller, processors, purposes, lawful bases, retention, rights, transfers and contacts. Linked from every page, form and message.</td><td>Codevertex draft; advocate approval</td></tr>
+<tr><td>2</td><td>Terms of service</td><td>Owner, guest and escrow terms; acceptable use; fees; liability; disputes; Kenyan law. Versioned acceptance; 14 days' notice of changes.</td><td>Codevertex draft; advocate approval</td></tr>
+<tr><td>3</td><td>Refund policy</td><td>Refund grounds, timelines, premium refunds within 14 days if unused, fee treatment. Enforced by the refund workflow.</td><td>Hadia</td></tr>
+<tr><td>4</td><td>Cookie policy</td><td>All cookies listed by category, purpose and duration. Strictly necessary cookies only at launch.</td><td>Codevertex</td></tr>
+<tr><td>5</td><td>Cookie consent</td><td>No pre-selected options; equal reject and accept controls; settings available from the footer.</td><td>Codevertex</td></tr>
+<tr><td>6</td><td>Form consents</td><td>Purpose stated for each field; separate unticked consents; consent versioned and withdrawable.</td><td>Codevertex</td></tr>
+<tr><td>7</td><td>Data minimisation</td><td>Guests provide name and number only. No identity numbers, dates of birth or location tracking.</td><td>Codevertex</td></tr>
+<tr><td>8</td><td>Third-party audit</td><td>No advertising trackers. Register of third parties and data shared. Analytics only with consent.</td><td>Codevertex</td></tr>
+<tr><td>9</td><td>No dark patterns</td><td>No pre-ticked boxes, false urgency or confirm-shaming. Cancellation and deletion as simple as sign-up.</td><td>Codevertex</td></tr>
+<tr><td>10</td><td>No hidden fees</td><td>Guests pay the amount entered. Commission and payout terms shown before registry creation and on every payout.</td><td>Codevertex</td></tr>
+<tr><td>11</td><td>Genuine reviews</td><td>Testimonials published only with written consent, retained on file.</td><td>Hadia</td></tr>
+<tr><td>12</td><td>Substantiated claims</td><td>Marketing statements reflect actual funds handling and payout terms.</td><td>Hadia</td></tr>
+<tr><td>13</td><td>Alternative text</td><td>Required for uploaded photos; descriptive text on all content images.</td><td>Codevertex</td></tr>
+<tr><td>14</td><td>Colour contrast</td><td>4.5:1 for text and 3:1 for controls.</td><td>Codevertex</td></tr>
+<tr><td>15</td><td>Keyboard navigation</td><td>Full keyboard operation, visible focus, managed dialogs, skip link, automated accessibility testing.</td><td>Codevertex</td></tr>
+<tr><td>16</td><td>Business details</td><td>Registered name, number, address and contacts in the footer and on receipts.</td><td>Codevertex</td></tr>
+<tr><td>17</td><td>Children's data consent</td><td>Owner age confirmation and parental consent before child information.</td><td>Codevertex</td></tr>
+<tr><td>18</td><td>Unsubscribe</td><td>One-click unsubscribe in email; STOP in SMS and WhatsApp marketing.</td><td>Codevertex</td></tr>
+<tr><td>19</td><td>Licensed fonts and images</td><td>Open-licence fonts and licensed imagery, recorded in a licence register.</td><td>Codevertex</td></tr>
+<tr><td>20</td><td>Data deletion</td><td>Self-service export and deletion with deadline tracking and statutory retention.</td><td>Codevertex</td></tr>
 </table>
 
-<h3>Mock-up review: changes before launch</h3>
+<h3>Website content review</h3>
 <table>
-<tr><th>Mock-up text</th><th>Risk</th><th>Suggested replacement</th></tr>
-<tr><td>"Loved by 400+ families"</td><td>Unverified figure; misleading representation</td><td>Remove at launch. Add a real count once it is true and can be shown from data.</td></tr>
-<tr><td>Testimonial from "Achieng and David, married in Naivasha, June 2026"</td><td>Appears to be a placeholder; a fake review</td><td>Replace with real pilot testimonials collected with written consent, or remove.</td></tr>
-<tr><td>"Funds go straight to you" and "land straight with you"</td><td>Inaccurate: funds are held, then paid out by rules, less a fee</td><td>"Cash gifts are held safely and paid to your M-Pesa automatically, less Hadia's 4% fee. You choose when."</td></tr>
-<tr><td>"Your money, kept safe"</td><td>Unsupported without explanation</td><td>Keep with a link to a short page explaining PayHero, separate records per registry and daily reconciliation.</td></tr>
-<tr><td>"Free to create ... You only ever share in what's actually given"</td><td>Must match the premium offer and fee</td><td>"Free to create. Hadia keeps 4% of cash gifts. Optional premium for KSh 300 per event."</td></tr>
-<tr><td>"Add things from Carrefour, Naivas, TikTok Shop"</td><td>Use of third-party marks</td><td>Acceptable as plain text describing where items can come from; do not use their logos or imply partnership.</td></tr>
+<tr><th>Current text</th><th>Issue</th><th>Recommendation</th></tr>
+<tr><td>"Loved by 400+ families"</td><td>Unverified figure</td><td>Remove until supported by platform data</td></tr>
+<tr><td>Achieng and David testimonial</td><td>Not a verified customer statement</td><td>Replace with consented pilot testimonials</td></tr>
+<tr><td>"Funds go straight to you"</td><td>Funds are held and paid out by rule, net of commission</td><td>"Cash gifts are held securely and paid to your M-Pesa automatically, less Hadia's 4% fee."</td></tr>
+<tr><td>"Your money, kept safe"</td><td>Requires substantiation</td><td>Link to a page describing custody, ledgers and reconciliation</td></tr>
+<tr><td>"You only ever share in what's actually given"</td><td>Incomplete fee disclosure</td><td>"Free to create. 4% of cash gifts. Optional premium at KES 300 per event."</td></tr>
+<tr><td>"Carrefour, Naivas, TikTok Shop"</td><td>Third-party marks</td><td>Text references only; no logos or implied partnership</td></tr>
 </table>
 
-<h3>Records and retention</h3>
+<h3>Record retention</h3>
 <table>
-<tr><th>Record</th><th>Kept for</th><th>Reason</th></tr>
-<tr><td>Contributions, payouts, refunds, invoices, books</td><td>At least 5 years after the transaction (7 recommended)</td><td>Tax Procedures Act, AML record keeping</td></tr>
-<tr><td>Owner account and registries</td><td>Until deletion is requested, or 24 months after the last activity, then anonymised</td><td>Data minimisation</td></tr>
-<tr><td>Guest name and phone on reservations without payment</td><td>12 months after the event</td><td>Managing reservations and thank-yous</td></tr>
-<tr><td>OTP codes</td><td>5 minutes, stored hashed</td><td>Security</td></tr>
-<tr><td>Consent and terms acceptance</td><td>Life of the account plus 5 years</td><td>Proof of consent and agreement</td></tr>
-<tr><td>Security and audit logs</td><td>12 months online, longer in archive if an incident is open</td><td>Investigation and accountability</td></tr>
+<tr><th>Record</th><th>Retention</th><th>Basis</th></tr>
+<tr><td>Contributions, payouts, refunds, invoices, ledger</td><td>7 years</td><td>Tax Procedures Act; AML record keeping</td></tr>
+<tr><td>Owner accounts and registries</td><td>Until deletion, or 24 months after last activity, then anonymised</td><td>Data minimisation</td></tr>
+<tr><td>Reservation contact details</td><td>12 months after the event</td><td>Reservation and thank-you management</td></tr>
+<tr><td>One-time passwords</td><td>5 minutes, hashed</td><td>Security</td></tr>
+<tr><td>Consent and terms acceptance</td><td>Account life plus 5 years</td><td>Evidence of consent</td></tr>
+<tr><td>Security and audit logs</td><td>12 months</td><td>Incident investigation</td></tr>
 </table>
 
-<h3>Legal pack in the handover</h3>
+<h3>Legal deliverables</h3>
 <ul>
-<li>Privacy notice, cookie policy, terms of service (owners and guests), refund policy, acceptable use policy.</li>
-<li>Data processing agreement between Hadia and Codevertex, and the sub-processor list.</li>
-<li>Data protection impact assessment and the record of processing activities.</li>
-<li>Breach response and incident runbook, data request procedure.</li>
-<li>Third-party and licence register, accessibility statement, marketing claims evidence file.</li>
+<li>Privacy notice, cookie policy, terms of service, refund policy, acceptable use policy</li>
+<li>Data processing agreement and sub-processor list</li>
+<li>Data protection impact assessment and record of processing activities</li>
+<li>Breach response procedure and data request procedure</li>
+<li>Third-party and licence registers, accessibility statement</li>
 </ul>
 </section>
 
-<section>
-<h2>Delivery methodology</h2>
-<p>We deliver in short Agile sprints with a working demo every week, so Hadia sees real progress early and can change direction while it is cheap to do so.</p>
+<section id="methodology">
+<h2>Project delivery</h2>
+<p class="lead">Delivery follows Agile Scrum with weekly demonstrations on the staging environment.</p>
+<h3>Methodology</h3>
 <table>
-<tr><th>Practice</th><th>How it works on this project</th></tr>
-<tr><td>Sprints</td><td>A one-week Sprint 0, four two-week sprints, a one-week Sprint 5, then a test week and a launch week.</td></tr>
-<tr><td>Weekly demo</td><td>Every Friday, a 30 minute call with Tracey on the staging site. Decisions recorded in the shared backlog.</td></tr>
-<tr><td>Backlog</td><td>User stories traced to the FR and NFR IDs in this document, each with acceptance criteria written before work starts.</td></tr>
-<tr><td>Definition of done</td><td>Code reviewed, automated tests passing, accessibility checks passing, documented, deployed to staging, accepted by the product owner.</td></tr>
-<tr><td>Environments</td><td>Development, staging and production on the Codevertex cluster. Staging uses provider sandboxes where they exist and live KSh 1 tests where they do not.</td></tr>
-<tr><td>Quality</td><td>Unit and database tests for each service, end-to-end browser tests for the guest and owner journeys, contract tests on the treasury and auth calls, load test before launch.</td></tr>
-<tr><td>Release</td><td>GitHub Actions builds and tests every change; ArgoCD deploys from Git, so every release is traceable and reversible.</td></tr>
-<tr><td>Reporting</td><td>A short written status each Friday: done, next, risks, decisions needed.</td></tr>
-<tr><td>Change control</td><td>New ideas go to the backlog. Within the fixed price, Hadia may swap a requirement for one of similar size. Larger changes are estimated in time and cost first, and only proceed with written approval.</td></tr>
+<tr><th>Practice</th><th>Approach</th></tr>
+<tr><td>Iterations</td><td>One-week Sprint 0, four two-week sprints, one-week Sprint 5, hardening week, launch week</td></tr>
+<tr><td>Demonstrations</td><td>Weekly 30-minute review with the product owner; decisions logged in the backlog</td></tr>
+<tr><td>Backlog</td><td>User stories traced to FR and NFR identifiers, with acceptance criteria</td></tr>
+<tr><td>Definition of done</td><td>Code reviewed, tests and accessibility checks passed, documented, deployed to staging, accepted</td></tr>
+<tr><td>Environments</td><td>Development, staging and production on the Codevertex platform</td></tr>
+<tr><td>Quality assurance</td><td>Unit, integration, end-to-end and contract tests; load testing before launch</td></tr>
+<tr><td>Release management</td><td>CI on GitHub Actions; GitOps deployment through ArgoCD</td></tr>
+<tr><td>Reporting</td><td>Weekly written status: progress, next steps, risks, decisions required</td></tr>
+<tr><td>Change control</td><td>Equal-size scope substitutions within the fixed price; other changes estimated and approved in writing</td></tr>
 </table>
-<h3>Team</h3>
+<h3>Project team</h3>
 <table>
 <tr><th>Role</th><th>Allocation</th></tr>
-<tr><td>Project lead and business analyst</td><td>Part time, all 12 weeks</td></tr>
-<tr><td>Full-stack engineers (Go and Next.js)</td><td>Two, weeks 1 to 12</td></tr>
-<tr><td>Product designer</td><td>Part time, weeks 1 to 5 and reviews after</td></tr>
+<tr><td>Project lead and business analyst</td><td>Part time, weeks 1 to 12</td></tr>
+<tr><td>Full-stack engineers (Go, Next.js)</td><td>Two, weeks 1 to 12</td></tr>
+<tr><td>Product designer</td><td>Part time, weeks 1 to 5; reviews thereafter</td></tr>
 <tr><td>QA engineer</td><td>Part time, weeks 3 to 12</td></tr>
-<tr><td>Platform and DevOps engineer</td><td>Shared, as needed for environments, security and launch</td></tr>
+<tr><td>Platform and DevOps engineer</td><td>As required</td></tr>
 </table>
+<h3 id="schedule">Implementation schedule</h3>
+<figure class="wide">{FIG_GANTT}<figcaption>Implementation schedule</figcaption></figure>
+<table class="sched">
+<tr><th class="nw">Week</th><th>Phase</th><th>Deliverables</th></tr>
+<tr><td>1</td><td>Sprint 0</td><td>Kick-off, backlog, UX flows, visual design, architecture approval, environments, legal pack outline</td></tr>
+<tr><td>2 to 3</td><td>Sprint 1</td><td>Mobile sign-in, owner onboarding, registries, manual items, image pipeline, dashboard, tenant configuration</td></tr>
+<tr><td>4 to 5</td><td>Sprint 2</td><td>Guest pages, reservations, link completion, sharing and previews, escrow account creation, payout number verification</td></tr>
+<tr><td>6 to 7</td><td>Sprint 3</td><td>Contributions, event processing, gift log, receipts and notifications, statements. <b>Milestone 2:</b> end-to-end demonstration with a live contribution</td></tr>
+<tr><td>8 to 9</td><td>Sprint 4</td><td>Automated payouts, commission, sweep, contribution limits, approvals, cancellation and refunds, premium</td></tr>
+<tr><td>10</td><td>Sprint 5</td><td>Administration console, exception queue, reports, consent and data requests, accessibility. <b>Milestone 3:</b> feature complete</td></tr>
+<tr><td>11</td><td>Hardening</td><td>Security review, load test, UAT with pilot events, legal pack approval</td></tr>
+<tr><td>12</td><td>Launch</td><td>Production release, training, handover. <b>Milestone 4:</b> launch acceptance</td></tr>
+</table>
+<p>Based on contract signature by 16 October 2026, work begins on 19 October 2026 and launch is scheduled for the week of 4 January 2027. Public holidays are accounted for.</p>
 </section>
 
-<section>
-<h2>Implementation timeline</h2>
-<p>The plan fits in exactly twelve weeks. The business and legal track runs alongside the build from day one, because PayHero onboarding and Data Commissioner registration depend on Hadia's documents rather than on code.</p>
-<figure class="wide">{FIG_GANTT}<figcaption>Figure 13. Twelve week plan with milestones</figcaption></figure>
-<table>
-<tr><th>Weeks</th><th>Sprint</th><th>Deliverables</th></tr>
-<tr><td>1</td><td>Sprint 0</td><td>Kick-off, confirmed backlog, UX flows and visual design from the mock-up, architecture sign-off, environments, accessibility palette check, legal pack outline</td></tr>
-<tr><td>2 to 3</td><td>Sprint 1</td><td>Phone OTP sign-in for consumers in auth-api, owner onboarding, registries and items by hand, photo pipeline, owner dashboard shell, Hadia tenant set up</td></tr>
-<tr><td>4 to 5</td><td>Sprint 2</td><td>Guest registry page, atomic reservations, link auto-fill, share previews and QR codes, escrow pot creation, payout number verification</td></tr>
-<tr><td>6 to 7</td><td>Sprint 3</td><td>Contributions through treasury checkout, escrow event consumer, gift log, receipts and alerts, statements. <b>Milestone 2:</b> end-to-end demo with a live KSh 1 gift</td></tr>
-<tr><td>8 to 9</td><td>Sprint 4</td><td>Automatic payout rules, commission rule, commission sweep, contribution limits, approvals above the limit, cancellation and refunds, premium upgrade</td></tr>
-<tr><td>10</td><td>Sprint 5</td><td>Hadia admin console, exception queue, reports and rollups, consent and data request flows, cookie notice, accessibility pass. <b>Milestone 3:</b> feature complete, UAT starts</td></tr>
-<tr><td>11</td><td>Hardening and UAT</td><td>Security review, load test, user acceptance testing with 3 to 5 pilot couples and planners, fixes, legal pack signed off by Hadia's advocate</td></tr>
-<tr><td>12</td><td>Launch</td><td>Production go-live, staff training, runbooks and handover pack, hypercare begins. <b>Milestone 4:</b> launch accepted</td></tr>
-</table>
-<p>If Hadia signs by Friday 16 October 2026, week 1 starts Monday 19 October and launch falls in the week of 4 January 2027, ready for the year's wedding season. Public holidays on 25 and 26 December and 1 January are already allowed for.</p>
-</section>
-
-<section>
+<section id="testing">
 <h2>Testing and acceptance</h2>
 <table>
-<tr><th>Test</th><th>What it proves</th><th>Exit criteria</th></tr>
-<tr><td>Automated tests</td><td>Business rules and money paths behave as specified</td><td>All passing on every merge; money paths covered by database-backed tests</td></tr>
-<tr><td>End-to-end journeys</td><td>Owner sign-up to payout, guest reserve and contribute, refund, premium</td><td>All journeys pass on staging on Android Chrome, iPhone Safari and desktop</td></tr>
-<tr><td>Live money tests</td><td>Real M-Pesa collection, payout, refund and sweep</td><td>KSh 1 tests reconcile to the cent with PayHero and the books</td></tr>
-<tr><td>Load test</td><td>Peak Saturday traffic</td><td>2,000 gifts an hour and 50 guest page views a second with NFR-02 met</td></tr>
-<tr><td>Security review</td><td>OWASP top risks, auth, payout changes, link fetching</td><td>No open high or critical findings</td></tr>
-<tr><td>Accessibility</td><td>WCAG 2.2 AA</td><td>Automated checks clean, manual keyboard and screen reader pass on key journeys</td></tr>
-<tr><td>UAT</td><td>Hadia and pilot users agree it works for them</td><td>All "must" requirements accepted; no open severity 1 or 2 defects</td></tr>
+<tr><th>Test</th><th>Objective</th><th>Exit criteria</th></tr>
+<tr><td>Automated tests</td><td>Business rules and payment logic</td><td>All tests pass on every merge</td></tr>
+<tr><td>End-to-end tests</td><td>Owner, guest, refund and premium journeys</td><td>Pass on Android Chrome, iOS Safari and desktop</td></tr>
+<tr><td>Live payment tests</td><td>Contribution, payout, refund and sweep</td><td>KES 1 transactions reconcile with PayHero and the ledger</td></tr>
+<tr><td>Load test</td><td>Peak traffic</td><td>2,000 contributions per hour and 50 page views per second within NFR-02</td></tr>
+<tr><td>Security review</td><td>OWASP risks, authentication, payout changes, link retrieval</td><td>No open high or critical findings</td></tr>
+<tr><td>Accessibility</td><td>WCAG 2.2 AA</td><td>Automated and manual checks passed</td></tr>
+<tr><td>User acceptance</td><td>Business acceptance by Hadia and pilot users</td><td>All M requirements accepted; no open severity 1 or 2 defects</td></tr>
 </table>
 </section>
 
-<section>
-<h2>Commercials</h2>
-<h3>Build price</h3>
-<p>The fixed price for the scope in this document is <b>USD 4,750</b>, inclusive of all taxes, within the USD 1,500 to 5,000 range in Hadia's brief. It can be invoiced in Kenya shillings at the Central Bank of Kenya rate on the invoice date.</p>
+<section id="commercials">
+<h2>Commercial terms</h2>
+<h3>Fixed price</h3>
 <table>
-<tr><th>Work package</th><th>USD</th></tr>
-<tr><td>Discovery, UX and visual design, architecture</td><td>450</td></tr>
-<tr><td>Registry service (hadia-api): registries, items, reservations, link fill, gift log, statistics</td><td>1,050</td></tr>
-<tr><td>Web app (hadia-ui): landing site, guest pages, owner dashboard, admin console</td><td>1,100</td></tr>
-<tr><td>Money integration: escrow pots, contributions, automatic payouts, commission sweep, limits, refunds, premium</td><td>900</td></tr>
-<tr><td>Phone OTP sign-in, messaging templates and preferences</td><td>350</td></tr>
-<tr><td>Compliance features and legal pack drafts, accessibility</td><td>400</td></tr>
-<tr><td>Testing, security review, UAT support, launch and handover</td><td>500</td></tr>
-<tr class="total"><td>Total fixed price</td><td>4,750</td></tr>
+<tr><th>Work package</th><th class="num">KES</th></tr>
+<tr><td>Discovery, UX and visual design, architecture</td><td class="num">55,000</td></tr>
+<tr><td>Registry service: registries, items, reservations, link completion, gift log, statistics</td><td class="num">135,000</td></tr>
+<tr><td>Web application: website, guest pages, owner dashboard, administration console</td><td class="num">140,000</td></tr>
+<tr><td>Funds integration: escrow, contributions, automated payouts, commission sweep, limits, refunds, premium</td><td class="num">115,000</td></tr>
+<tr><td>Mobile sign-in, message templates and preferences</td><td class="num">45,000</td></tr>
+<tr><td>Compliance features, legal pack drafts, accessibility</td><td class="num">55,000</td></tr>
+<tr><td>Testing, security review, UAT, launch and handover</td><td class="num">65,000</td></tr>
+<tr class="total"><td>Total (inclusive of taxes)</td><td class="num">610,000</td></tr>
 </table>
 <h3>Payment schedule</h3>
 <table>
-<tr><th>Milestone</th><th>When</th><th>Share</th><th>USD</th></tr>
-<tr><td>M1 Signing</td><td>Week 0</td><td>30%</td><td>1,425</td></tr>
-<tr><td>M2 End-to-end demo with a live gift</td><td>End of week 7</td><td>30%</td><td>1,425</td></tr>
-<tr><td>M3 Feature complete, UAT starts</td><td>End of week 10</td><td>30%</td><td>1,425</td></tr>
-<tr><td>M4 Launch accepted</td><td>End of week 12</td><td>10%</td><td>475</td></tr>
+<tr><th>Milestone</th><th>Due</th><th class="num">Share</th><th class="num">KES</th></tr>
+<tr><td>M1 Contract signature</td><td>Week 0</td><td class="num">30%</td><td class="num">183,000</td></tr>
+<tr><td>M2 End-to-end demonstration</td><td>End of week 7</td><td class="num">30%</td><td class="num">183,000</td></tr>
+<tr><td>M3 Feature complete</td><td>End of week 10</td><td class="num">30%</td><td class="num">183,000</td></tr>
+<tr><td>M4 Launch acceptance</td><td>End of week 12</td><td class="num">10%</td><td class="num">61,000</td></tr>
 </table>
 <h3>Monthly running costs</h3>
-<p>These follow the brief's estimate of USD 100 to 200 a month and are paid by Hadia to the providers or to Codevertex as applicable.</p>
 <table>
-<tr><th>Item</th><th>USD a month</th></tr>
-<tr><td>Hosting, database, storage, backups and the Codevertex platform services Hadia uses (sign-in, books and escrow, messaging engine)</td><td>20 to 50</td></tr>
-<tr><td>Payment costs not covered by commission: PayHero service wallet top-ups, paybill or till upkeep, payout costs</td><td>50 to 100</td></tr>
-<tr><td>SMS and WhatsApp messages at launch volumes</td><td>15 to 40</td></tr>
-<tr class="total"><td>Estimated total</td><td>about 100 to 200</td></tr>
+<tr><th>Item</th><th class="num">KES per month</th></tr>
+<tr><td>Hosting, storage, backups and Codevertex platform services</td><td class="num">3,500 to 7,000</td></tr>
+<tr><td>Payment costs: PayHero service wallet, paybill or till, payout charges</td><td class="num">6,500 to 13,000</td></tr>
+<tr><td>SMS and WhatsApp messaging</td><td class="num">3,000 to 6,000</td></tr>
+<tr class="total"><td>Total</td><td class="num">13,000 to 26,000</td></tr>
 </table>
-<p class="small">Message and payment costs rise with use, and so does commission. Domain names, Hadia's advocate's fees and marketing are not included.</p>
-<h3>Why it pays for itself</h3>
-<p>Using the brief's own illustration, 100 active events a month with an average of USD 200 in cash gifts each gives about USD 800 in commission at 4%, plus about USD 100 to 150 in premium upgrades, roughly USD 900 to 950 a month against USD 100 to 200 in running costs. These figures are illustrative, not a forecast.</p>
+<p class="small">Messaging and payment costs vary with volume. Domain registration, legal fees and marketing are excluded.</p>
 </section>
 
-<section>
+<section id="risks">
 <h2>Risks and mitigations</h2>
 <table>
 <tr><th>Risk</th><th>Impact</th><th>Mitigation</th><th>Owner</th></tr>
-<tr><td>PayHero onboarding or KYC takes longer than five weeks</td><td>No live money for pilots</td><td>Start in week 1; Codevertex helps with the Team set-up; build and test with KSh 1 transactions as soon as the account is live; launch can begin with reservations-only events if needed</td><td>Hadia, Codevertex</td></tr>
-<tr><td>Regulatory view that Hadia needs its own payment authorisation</td><td>Delay or change of model</td><td>Advocate opinion in weeks 2 to 6; short holds and caps; money always with the licensed provider; option to pay out every gift instantly, which minimises holding</td><td>Hadia</td></tr>
-<tr><td>Fraudulent registries used to collect money</td><td>Losses, reputation</td><td>Verified payout lines, limits, first-payout hold for new owners, monitoring, report button, moderation</td><td>Hadia ops</td></tr>
-<tr><td>Payout failures on M-Pesa</td><td>Owner frustration</td><td>Automatic return to pot and retry, status lookups, clear SMS to the owner, exception queue</td><td>Codevertex</td></tr>
-<tr><td>Link auto-fill fails on local shops</td><td>Slower item entry</td><td>Manual entry is the main path and is fast; auto-fill improves over time</td><td>Codevertex</td></tr>
-<tr><td>Scope growth during the build</td><td>Timeline slip</td><td>Change control; swaps of equal size; out-of-scope list agreed up front</td><td>Both</td></tr>
-<tr><td>Festive season availability</td><td>Slower decisions</td><td>Holidays already in the plan; decisions batched at the Friday demo</td><td>Both</td></tr>
-<tr><td>Low adoption of cash gifting</td><td>Revenue below plan</td><td>Pilot with planners and church networks as the brief suggests; analytics on conversion from week 12</td><td>Hadia</td></tr>
+<tr><td>PayHero onboarding exceeds five weeks</td><td>Delayed live payments</td><td>Initiated in week 1; reservation-only launch available as fallback</td><td>Hadia, Codevertex</td></tr>
+<tr><td>Regulatory requirement for payment authorisation</td><td>Delay or model change</td><td>Legal opinion in weeks 2 to 6; capped holds and balances; instant payout option</td><td>Hadia</td></tr>
+<tr><td>Fraudulent registries</td><td>Financial and reputational loss</td><td>Verified payout numbers, limits, first-payout hold, monitoring, moderation</td><td>Hadia operations</td></tr>
+<tr><td>M-Pesa payout failures</td><td>Owner dissatisfaction</td><td>Automatic reversal and retry, status enquiry, owner notification, exception queue</td><td>Codevertex</td></tr>
+<tr><td>Inconsistent retailer data</td><td>Slower item entry</td><td>Manual entry as primary method</td><td>Codevertex</td></tr>
+<tr><td>Scope change</td><td>Schedule slippage</td><td>Change control; agreed exclusions</td><td>Both</td></tr>
+<tr><td>Holiday period availability</td><td>Slower decisions</td><td>Holidays scheduled; weekly decision reviews</td><td>Both</td></tr>
+<tr><td>Low cash gifting adoption</td><td>Revenue below expectation</td><td>Pilots with planners and church networks; conversion analytics</td><td>Hadia</td></tr>
 </table>
 </section>
 
-<section>
-<h2>Assumptions, dependencies and client responsibilities</h2>
-<ul>
-<li>Hadia is, or will be by week 2, a registered Kenyan company with a KRA PIN and a bank account or paybill in its name.</li>
-<li>Hadia completes PayHero KYC promptly and supplies documents within 3 working days of a request.</li>
-<li>Hadia appoints one product owner who can make decisions within 2 working days.</li>
-<li>Hadia provides brand assets, final copy (Codevertex drafts first versions) and real testimonials when available.</li>
-<li>Hadia engages a Kenyan advocate to review the legal pack and the payment regulation question.</li>
-<li>Hadia recruits 3 to 5 pilot events for week 11.</li>
-<li>Hadia subscribes to the Codevertex plan that includes escrow and M-Pesa integration; this is part of the running costs above.</li>
-<li>The domain name (for example hadia.co.ke) is registered by Hadia.</li>
-</ul>
+
+
+<section id="support">
+<h2>Post-launch support</h2>
+<table>
+<tr><th>Service</th><th>Terms</th></tr>
+<tr><td>Hypercare</td><td>30 days after launch; same-day response to payment incidents</td></tr>
+<tr><td>Warranty</td><td>Defects against this specification corrected at no cost for 90 days</td></tr>
+<tr><td>Monitoring</td><td>Alerts on payout failures, reconciliation variances, error rates and latency</td></tr>
+<tr><td>Handover</td><td>Administration guide, finance guide, runbooks, legal pack, registers, architecture documentation</td></tr>
+<tr><td>Enhancements</td><td>Native applications, Kiswahili and referral programmes quoted on request</td></tr>
+</table>
 </section>
 
-<section>
-<h2>Support after launch</h2>
-<ul>
-<li><b>Hypercare:</b> 30 days of close monitoring after launch, with same-day response to payment issues.</li>
-<li><b>Warranty:</b> defects against this specification fixed at no cost for 90 days after launch.</li>
-<li><b>Monitoring:</b> alerts on failed payouts, reconciliation differences, error spikes and slow pages, routed to Codevertex on-call and Hadia's ops contact.</li>
-<li><b>Ongoing support and new features</b> (for example native apps, Kiswahili, planner referral codes) can be agreed separately when Hadia is ready.</li>
-<li><b>Handover pack:</b> admin guide, finance guide, runbooks, legal pack, licence and third-party registers, architecture notes.</li>
-</ul>
-</section>
-
-<section>
-<h2>Acceptance and sign-off</h2>
-<p>By signing, both parties accept this document as the agreed scope, plan and price for the Hadia build. Changes follow the change control process in chapter 16.</p>
+<section id="acceptance">
+<h2>Acceptance</h2>
+<p>Signature below confirms acceptance of the scope, schedule and price in this document. Changes are subject to the change control process in <a href="#methodology">Project delivery</a>.</p>
 <table class="sign">
 <tr><th></th><th>Hadia</th><th>Codevertex Africa Limited</th></tr>
 <tr><td>Name</td><td></td><td></td></tr>
@@ -236,50 +215,4 @@
 </table>
 </section>
 
-<section>
-<h2 class="nonum">Appendix A: ecosystem audit findings</h2>
-<p>Before writing this proposal we audited the Codevertex services Hadia will rely on, so the plan reuses what exists, avoids duplicate logic, and does not inherit problems that would appear as Hadia grows.</p>
-<h3>Already fixed during the audit</h3>
-<table>
-<tr><th>Service</th><th>Finding</th><th>Change</th></tr>
-<tr><td>treasury-api escrow</td><td>The 5-minute payout job read every auto-release pot into memory and checked each wallet balance with its own query.</td><td>The job now reads only pots that can pay out now (rule can fire, money in the wallet), in pages of 200, with balances loaded in one query per page.</td></tr>
-<tr><td>treasury-api escrow</td><td>Escrow totals for the dashboard and the hourly reconciliation loaded every pot and wallet.</td><td>Totals are summed in the database, grouped by tenant; only pots with a payout in flight are read.</td></tr>
-<tr><td>treasury-api escrow</td><td>A refund result scanned all of a tenant's cancelled pots to find its own.</td><td>The pot is found directly from the code in the refund reference.</td></tr>
-<tr><td>treasury-api escrow</td><td>Payout results looked up the pot by its in-flight reference without an index.</td><td>New partial index on the in-flight reference, with a versioned migration.</td></tr>
-<tr><td>shared-ui-lib</td><td>The legal footer always showed Codevertex's business details.</td><td>LegalLinks accepts the tenant's own business details (version 0.1.102), which Hadia's footer uses.</td></tr>
-</table>
-<h3>Built as part of this project</h3>
-<ul>
-<li>auth-api: passwordless phone OTP sign-in for consumers (today OTP is available only to signed-in users).</li>
-<li>treasury-api: scheduled commission sweep with a locked, verified destination; per-pot minimum and maximum contribution.</li>
-<li>notifications-api: Hadia message templates and sender ID.</li>
-<li>hadia-api: consumer for treasury's escrow events.</li>
-</ul>
-<h3>Noted for the platform team</h3>
-<ul>
-<li>The PayHero guide says escrow can run on a tenant's own PayHero account, while the escrow readiness check requires a Team account. Hadia's plan uses a Team, and the guide will be aligned.</li>
-<li>Creating PayHero Teams by API needs PayHero's enterprise plan on the platform organisation; until then a Team created by PayHero is linked to the tenant. This is on Hadia's onboarding track.</li>
-</ul>
-</section>
 
-<section>
-<h2 class="nonum">Appendix B: glossary</h2>
-<table>
-<tr><th>Term</th><th>Meaning</th></tr>
-<tr><td>Registry</td><td>An owner's list of wanted items and funds for one event</td></tr>
-<tr><td>Pot</td><td>The escrow record in treasury that holds a registry's cash gifts</td></tr>
-<tr><td>Release or payout</td><td>Paying a pot's balance, less commission, to the owner</td></tr>
-<tr><td>Commission</td><td>Hadia's percentage fee on cash gifts, taken at payout</td></tr>
-<tr><td>Sweep</td><td>Automatic transfer of earned commission to Hadia's own account</td></tr>
-<tr><td>STK push</td><td>The M-Pesa prompt on the payer's phone asking for a PIN</td></tr>
-<tr><td>PayHero Team</td><td>Hadia's own account at PayHero, with an isolated wallet</td></tr>
-<tr><td>KYC</td><td>Know your customer: identity checks required by payment providers</td></tr>
-<tr><td>ODPC</td><td>Office of the Data Protection Commissioner, Kenya's data regulator</td></tr>
-<tr><td>DPIA</td><td>Data protection impact assessment</td></tr>
-<tr><td>eTIMS</td><td>KRA's electronic tax invoice management system</td></tr>
-<tr><td>PWA</td><td>Progressive web app: a website that installs and behaves like an app</td></tr>
-<tr><td>WCAG</td><td>Web Content Accessibility Guidelines</td></tr>
-<tr><td>Idempotency key</td><td>A unique key that makes a repeated request act only once</td></tr>
-</table>
-<p class="end">Codevertex Africa Limited, Pioneer House, Kisumu, Kenya. info@codevertexafrica.com. www.codevertexafrica.com</p>
-</section>
