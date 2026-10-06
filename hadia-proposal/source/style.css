@@ -1,0 +1,51 @@
+@font-face{font-family:DocSans;src:url('fonts/Inter-Regular.ttf');font-weight:400;font-style:normal;}
+@font-face{font-family:DocSans;src:url('fonts/Inter-Medium.ttf');font-weight:500;font-style:normal;}
+@font-face{font-family:DocSans;src:url('fonts/Inter-SemiBold.ttf');font-weight:600;font-style:normal;}
+@font-face{font-family:DocSans;src:url('fonts/Inter-Bold.ttf');font-weight:700;font-style:normal;}
+@font-face{font-family:DocSans;src:url('fonts/Inter-Italic.ttf');font-weight:400;font-style:italic;}
+:root { --brand:#7A1F63; --brand-soft:#F4E9F1; --gold:#C8902E; --gold-soft:#FBF2E2; --maroon:#8E2B2B;
+  --ink:#1F2430; --muted:#5B6270; --line:#D9DCE3; --green:#2F7D5B; --green-soft:#E6F3EC; }
+@page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin:0; background:#fff; color:var(--ink); font-family: DocSans, sans-serif; font-size:9.6pt; line-height:1.5; counter-reset: chap fig; }
+h1,h2,h3 { font-family: DocSans, sans-serif; line-height:1.25; }
+h2 { font-size:17pt; color:var(--brand); margin:0 0 10px; padding-bottom:6px; border-bottom:2px solid var(--brand-soft); break-after:avoid; }
+section > h2:not(.nonum)::before { counter-increment: chap; content: counter(chap) ". "; color:var(--gold); }
+section { break-before: page; }
+section.cover { break-before: auto; }
+h3 { font-size:11.5pt; color:var(--ink); margin:16px 0 6px; break-after:avoid; }
+p { margin:0 0 8px; } ul,ol { margin:0 0 10px; padding-left:20px; } li { margin:2px 0; }
+table { width:100%; border-collapse:collapse; margin:6px 0 14px; font-size:8.8pt; break-inside:auto; }
+tr { break-inside:avoid; }
+th { background:var(--brand); color:#fff; text-align:left; font-weight:600; padding:5px 7px; }
+td { padding:5px 7px; border-bottom:1px solid var(--line); vertical-align:top; }
+tr:nth-child(even) td { background:#FAFAFC; }
+tr.grp td { background:var(--brand-soft); font-weight:700; color:var(--brand); }
+tr.total td { font-weight:700; background:var(--gold-soft); border-top:2px solid var(--gold); }
+table.req td:first-child, table.check td:first-child { white-space:nowrap; font-weight:600; color:var(--brand); }
+table.req td:last-child { text-align:center; font-weight:700; }
+td.new { color:var(--brand); font-weight:700; } td.reuse { color:var(--green); font-weight:700; }
+table.sign td { height:30px; }
+figure { margin:10px 0 16px; break-inside:avoid; border:1px solid var(--line); border-radius:8px; padding:10px 10px 6px; }
+figcaption { counter-increment: fig; font-size:8.5pt; color:var(--muted); text-align:center; margin-top:4px; }
+figcaption::before { content: "Figure " counter(fig) ". "; font-weight:700; color:var(--ink); }
+.callout { background:var(--brand-soft); border-left:4px solid var(--brand); padding:10px 14px; border-radius:4px; margin:10px 0 14px; break-inside:avoid; }
+.callout.warn { background:var(--gold-soft); border-left-color:var(--gold); }
+.callout ul { margin-bottom:0; }
+.tag { display:inline-block; font-size:7.5pt; font-weight:700; padding:0 6px; border-radius:8px; text-transform:uppercase; letter-spacing:.04em; }
+.tag.auto { background:var(--green-soft); color:var(--green); }
+.small { font-size:8.3pt; color:var(--muted); }
+.end { margin-top:24px; text-align:center; font-size:8.5pt; color:var(--muted); }
+.toc { columns:2; column-gap:28px; font-size:10pt; } .toc li { margin:3px 0; }
+.toc.app { list-style:none; padding-left:0; columns:1; margin-top:-4px; }
+/* Cover */
+.cover { height:255mm; display:flex; flex-direction:column; }
+.cover-logo { width:62mm; margin:6mm 0 0 0; }
+.cover-band { margin:22mm 0 14mm; padding:14mm 12mm 12mm; border-radius:6px; background:linear-gradient(135deg, #7A1F63 0%, #5B1549 100%); color:#fff; }
+.cover-band h1 { font-size:34pt; margin:4px 0 8px; color:#fff; }
+.cover .eyebrow { text-transform:uppercase; letter-spacing:.12em; font-size:9pt; color:#F1C97A; margin:0; font-weight:700; }
+.cover-sub { font-size:11.5pt; max-width:150mm; color:#F7EAF3; margin:0; }
+table.meta th { background:transparent; color:var(--muted); width:42mm; font-weight:600; border-bottom:1px solid var(--line); }
+table.meta td { font-weight:500; }
+table.meta tr:nth-child(even) td { background:transparent; }
