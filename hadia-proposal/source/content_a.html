@@ -1,0 +1,161 @@
+<section class="cover">
+  <img class="cover-logo" src="{LOGO}" alt="Codevertex Africa Limited">
+  <div class="cover-band">
+    <p class="eyebrow">Proposal and Software Requirements and Design Document</p>
+    <h1>Hadia Gifting Registry</h1>
+    <p class="cover-sub">A warmer way to gift. Wishlists, item reservations and M-Pesa cash gifting for weddings, baby showers, new homes and graduations in Kenya and East Africa.</p>
+  </div>
+  <table class="meta">
+    <tr><th>Prepared for</th><td>Tracey, founder, Hadia</td></tr>
+    <tr><th>Prepared by</th><td>Codevertex Africa Limited, www.codevertexafrica.com</td></tr>
+    <tr><th>Document reference</th><td>CVX-HADIA-SRDD-001</td></tr>
+    <tr><th>Version and date</th><td>1.0, 6 October 2026</td></tr>
+    <tr><th>Delivery window</th><td>12 weeks (3 months) from signing</td></tr>
+    <tr><th>Build cost</th><td>USD 4,750 fixed, inside the USD 1,500 to 5,000 range in the brief</td></tr>
+    <tr><th>Classification</th><td>Confidential. Prepared for Hadia's evaluation only.</td></tr>
+  </table>
+</section>
+
+<section class="page">
+<h2 class="nonum">Document control</h2>
+<table>
+<tr><th>Version</th><th>Date</th><th>Author</th><th>Change</th></tr>
+<tr><td>1.0</td><td>6 Oct 2026</td><td>Codevertex Africa Limited</td><td>First issue for client review</td></tr>
+</table>
+<table>
+<tr><th>Role</th><th>Name</th><th>Responsibility</th></tr>
+<tr><td>Client sponsor</td><td>Tracey (Hadia)</td><td>Scope approval, business decisions, legal sign-off, pilot events</td></tr>
+<tr><td>Delivery lead</td><td>Codevertex project lead</td><td>Plan, scope control, weekly reporting, risk log</td></tr>
+<tr><td>Technical lead</td><td>Codevertex engineering</td><td>Architecture, code quality, security, releases</td></tr>
+</table>
+
+<h2 class="nonum">Contents</h2>
+<ol class="toc">
+<li>Executive summary</li>
+<li>What Hadia asked for</li>
+<li>Benchmark: MyRegistry and Zola</li>
+<li>Scope</li>
+<li>Users and roles</li>
+<li>Functional requirements</li>
+<li>Non-functional requirements</li>
+<li>Solution architecture</li>
+<li>Money, escrow and automated payouts</li>
+<li>Critical workflows, step by step</li>
+<li>Data design</li>
+<li>Interfaces, events and notifications</li>
+<li>Reports and analytics built for growth</li>
+<li>Security design</li>
+<li>Legal, regulatory and compliance</li>
+<li>Delivery methodology</li>
+<li>Implementation timeline</li>
+<li>Testing and acceptance</li>
+<li>Commercials</li>
+<li>Risks and mitigations</li>
+<li>Assumptions, dependencies and client responsibilities</li>
+<li>Support after launch</li>
+<li>Acceptance and sign-off</li>
+</ol>
+<ul class="toc app"><li>Appendix A: ecosystem audit findings</li><li>Appendix B: glossary</li></ul>
+</section>
+
+<section>
+<h2>Executive summary</h2>
+<p>Hadia is a gift registry for the way Kenyan families already give. A couple, a parent to be or a graduate builds a list of things they would love, shares one link on WhatsApp, and guests either reserve a physical gift so nobody buys the same blender twice, or send money toward a gift or a general fund straight from M-Pesa. Hadia earns a small percentage of cash gifts and an optional one-time premium fee per event.</p>
+<p>Codevertex proposes to build Hadia on the Codevertex platform that already runs identity, payments, accounting, escrow and messaging for businesses across our ecosystem. Only the parts that are unique to Hadia are new: the registry itself, the guest experience and the owner dashboard. Everything that touches money reuses services that are already in production and already handle M-Pesa collections, held funds, payouts, double entry books and audit trails.</p>
+<div class="callout">
+<p><b>The proposal in five lines</b></p>
+<ul>
+<li>Twelve weeks from signing to a live product with pilot events, including a full week of user acceptance testing.</li>
+<li>USD 4,750 fixed build price, inside the USD 1,500 to 5,000 range in Hadia's brief, paid in four milestones.</li>
+<li>Running costs of about USD 100 to 200 a month, in line with the brief, covered by roughly 100 active events.</li>
+<li>Gift money is held in Hadia's own account with a licensed payment provider (PayHero) and paid out automatically by rules Hadia sets. Codevertex never holds client funds.</li>
+<li>Compliance is designed in from day one: Kenya's Data Protection Act, consumer protection, payments and anti-money laundering rules, accessibility and honest marketing.</li>
+</ul>
+</div>
+<p>The reason a product of this quality fits the budget is reuse. Building phone sign-in, M-Pesa collection, wallet accounting, escrow, approvals, automated payouts, receipts and messaging from scratch would cost several times the brief's upper figure and would take longer than three months. On our platform those pieces exist, are tested with real money, and only need to be configured and connected for Hadia.</p>
+</section>
+
+<section>
+<h2>What Hadia asked for</h2>
+<p>We reviewed the two documents Hadia shared: the Hadia landing page mock-up and the build report prepared for Tracey. The requirements below come straight from them.</p>
+<h3>The product, as described</h3>
+<ul>
+<li>Phone number and OTP sign-in, because it is more natural than email for this market.</li>
+<li>A wishlist tied to an event with a name, date and type: wedding, baby shower, new home, graduation and birthday.</li>
+<li>Items added by hand (title, description, price estimate, photo) or by pasting a link from any shop, with auto-fill where possible. Manual entry has to be a first-class path because most local retailers publish no clean product data.</li>
+<li>A public link that looks good when pasted into WhatsApp.</li>
+<li>Guests browse, reserve an item so it shows as taken for everyone, or contribute any amount toward an item or a general fund through an M-Pesa STK push.</li>
+<li>An owner dashboard showing reservations and contributions, with payouts to the owner's own M-Pesa, less the platform fee.</li>
+</ul>
+<h3>How Hadia makes money</h3>
+<table>
+<tr><th>Stream</th><th>Brief</th><th>How this design delivers it</th></tr>
+<tr><td>Cash gifting fee</td><td>About 3 to 5% of each contribution, deducted before payout</td><td>A commission rule in Hadia's books (default 4%, editable, with optional minimum and cap) applied automatically at every payout. Guests never pay extra.</td></tr>
+<tr><td>Premium per event</td><td>About USD 2 to 3: custom link, printable list, faster or instant payout</td><td>A one-time in-app purchase (suggested KSh 300, set by Hadia) that unlocks a custom link, a branded PDF of the list, and instant payouts in place of the standard schedule.</td></tr>
+</table>
+<h3>What the brief warns about, and our answer</h3>
+<table>
+<tr><th>Concern in the brief</th><th>Our answer</th></tr>
+<tr><td>Holding other people's money brings regulation and trust requirements. Consider a licensed aggregator rather than going direct to Safaricom.</td><td>Money is collected and held by PayHero, a payment aggregator, in Hadia's own account. Our treasury service keeps a separate ledger per registry, reconciles hourly, and pays out by rules. See chapters 9 and 15.</td></tr>
+<tr><td>Daraja approval and business registration take time.</td><td>A business and legal track runs in parallel from week one (chapter 17). PayHero onboarding replaces a direct Daraja application, which removes the slowest dependency.</td></tr>
+<tr><td>Link auto-fill will be unreliable on local sites.</td><td>Auto-fill is a helper only. The manual form is the main path and works on a slow phone (chapter 10).</td></tr>
+<tr><td>Early payment bugs would damage word of mouth.</td><td>The payment core is not new code. It is our production escrow module, with idempotent contributions, one release in flight per pot, automatic return of failed payouts and hourly reconciliation.</td></tr>
+<tr><td>Keep money logic separate from everything else.</td><td>It is a separate service. hadia-api never moves money; it asks treasury-api to, and listens for the result.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Benchmark: MyRegistry and Zola</h2>
+<p>Hadia named MyRegistry and Zola as references. Both are mature US products. We studied their public feature sets and help pages to decide what Hadia should copy, adapt for Kenya, or leave out.</p>
+<table>
+<tr><th>Capability</th><th>MyRegistry</th><th>Zola</th><th>Hadia decision</th></tr>
+<tr><td>Add items from any shop</td><td>Yes, universal registry, browser button and import</td><td>Yes, alongside its own store</td><td><b>Adopt.</b> Paste a link or enter by hand. No browser extension in the MVP.</td></tr>
+<tr><td>Cash funds</td><td>Yes, advertised with 0% fund fees</td><td>Yes, card fee of about 2.5% paid by guest or couple, or a fee-free option through a third-party app</td><td><b>Adapt.</b> M-Pesa first. Guests pay exactly the gift amount. Hadia's fee is taken at payout and shown clearly up front.</td></tr>
+<tr><td>Group gifting on one item</td><td>Yes, on any item</td><td>Yes, on any gift or fund</td><td><b>Adopt.</b> Any item can be reserved, funded in parts, or both.</td></tr>
+<tr><td>Duplicate prevention</td><td>Cross-store purchase marking</td><td>Automatic for Zola store items</td><td><b>Adopt.</b> Atomic reservation; the item shows as taken instantly for everyone.</td></tr>
+<tr><td>Gift tracker and thank-you list</td><td>Yes</td><td>Yes, gift tracker and thank-you manager</td><td><b>Adopt.</b> Gift log with guest messages, thank-you status and one-tap WhatsApp thank-you.</td></tr>
+<tr><td>Wedding website and planning tools</td><td>Checklists</td><td>Full planning suite</td><td><b>Later.</b> A simple event page with story and date is in scope. A full planning suite is not.</td></tr>
+<tr><td>Own store, shipping, completion discounts</td><td>Retailer partnerships</td><td>Own store and shipping</td><td><b>Leave out.</b> Retailer programmes are largely unavailable in Kenya, as the brief notes. A partner referral field is ready for later.</td></tr>
+<tr><td>Payout timing</td><td>Depends on fund provider</td><td>Scheduled transfers</td><td><b>Adapt.</b> Automatic payouts by threshold and event date; instant payouts for premium events.</td></tr>
+</table>
+<p class="small">Sources consulted on 6 October 2026: MyRegistry guides on universal registries and its Wikipedia entry; Zola's registry page and help articles on group gifting and cash fund fees. Competitor features change often and are listed only to guide product decisions.</p>
+<p>Two lessons shape Hadia's positioning. First, fee transparency is a selling point: both benchmarks talk about fees prominently, so Hadia will state its fee in plain words on the guest page and in the owner's settings. Second, the strongest registries make the guest's job effortless. For Hadia that means no account, no app download, and an M-Pesa prompt within two taps of opening the link.</p>
+</section>
+
+<section>
+<h2>Scope</h2>
+<h3>In scope for the 12-week build</h3>
+<table>
+<tr><th>Area</th><th>Included</th></tr>
+<tr><td>Public website</td><td>Landing page based on the mock-up, how it works, occasions, help centre, legal pages, cookie notice</td></tr>
+<tr><td>Owner app (PWA)</td><td>Phone OTP sign-up, events, items, sharing, gift log, thank-you list, payout settings, premium upgrade, data and privacy settings</td></tr>
+<tr><td>Guest experience</td><td>Registry page, reserve, contribute by M-Pesa (Airtel Money and card through the same checkout where enabled), receipts, cancel a reservation</td></tr>
+<tr><td>Money</td><td>One escrow pot per registry, automatic payouts by rules, commission, commission sweep to Hadia's account, refunds, reconciliation, books in treasury</td></tr>
+<tr><td>Hadia admin</td><td>Registries, users, reports, approvals, exceptions, fee and limit settings, content moderation, data requests</td></tr>
+<tr><td>Messaging</td><td>SMS and WhatsApp receipts and alerts, email where an address is given, owner opt-in for marketing</td></tr>
+<tr><td>Compliance</td><td>Privacy, terms, refund and cookie policies (drafts for Hadia's advocate), consent records, data export and deletion, accessibility to WCAG 2.2 AA</td></tr>
+</table>
+<h3>Out of scope (can be quoted separately)</h3>
+<ul>
+<li>Native iOS and Android store apps. The PWA installs to the home screen and covers the MVP.</li>
+<li>A full wedding planning suite, guest RSVP management and seating plans.</li>
+<li>Physical gift delivery, shipping or a Hadia shop.</li>
+<li>Retailer affiliate integrations and price tracking.</li>
+<li>Formal legal opinions. We prepare drafts and a compliance map; Hadia's Kenyan advocate signs them off.</li>
+<li>Paid advertising, video production and influencer campaigns from the go-to-market plan.</li>
+</ul>
+</section>
+
+<section>
+<h2>Users and roles</h2>
+<table>
+<tr><th>Role</th><th>Who</th><th>Can do</th><th>Signs in with</th></tr>
+<tr><td>Guest</td><td>Family, friends, diaspora relatives, colleagues</td><td>View a shared registry, reserve, contribute, leave a message, cancel own reservation</td><td>No account. Phone OTP only when reserving, so the reservation can be managed.</td></tr>
+<tr><td>Registry owner</td><td>Couple, parent, graduate, family host. Must be 18 or older.</td><td>Create and manage events and items, share, see gifts, thank guests, set payout destination, buy premium</td><td>Phone and OTP (auth-api), optional Google sign-in</td></tr>
+<tr><td>Co-owner</td><td>Partner or family member invited by the owner</td><td>Edit items and thank guests. Cannot change the payout destination.</td><td>Phone and OTP</td></tr>
+<tr><td>Hadia support</td><td>Hadia staff</td><td>Help users, moderate content, view registries, handle data requests</td><td>Codevertex SSO with MFA</td></tr>
+<tr><td>Hadia finance</td><td>Hadia staff</td><td>Approve payouts above the limit, view books, run reports, manage fees and limits</td><td>Codevertex SSO with MFA, OTP on each approval</td></tr>
+<tr><td>Hadia administrator</td><td>Tracey and delegates</td><td>Everything above, plus staff roles and settings</td><td>Codevertex SSO with MFA</td></tr>
+</table>
+<p>Staff permissions use the platform's existing role model (JWT claims plus service-level roles), so Hadia's staff get one login for the Hadia admin console and for treasury-ui, where the books, escrow pots and approvals live.</p>
+</section>
