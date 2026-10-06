@@ -174,6 +174,12 @@
 <tr class="total"><td>Total monthly service fee (inclusive of taxes)</td><td class="num">8,000</td></tr>
 </table>
 <p>The monthly service fee is billed from the launch month.</p>
+<table>
+<tr><th>Term</th><th>Position</th></tr>
+<tr><td>Usage limits</td><td>No per-transaction charge from Codevertex. The fee covers up to 20,000 contributions and 10,000 active registries per month under fair use.</td></tr>
+<tr><td>Volume growth</td><td>Above the fair-use level, server capacity is reviewed with Hadia. Any additional capacity is charged as hosting, at cost, with 60 days' written notice and Hadia's agreement.</td></tr>
+<tr><td>Price changes</td><td>Fixed for the first 12 months from launch. Thereafter it may be adjusted once a year by no more than 10%, with 60 days' written notice.</td></tr>
+</table>
 
 <div class="keep">
 <h3>Client-borne costs</h3>
@@ -187,6 +193,44 @@
 <tr><td>Payment provider</td><td>PayHero collection and payout charges, debited from Hadia's PayHero service wallet</td><td class="num">PayHero tariff</td></tr>
 </table>
 </div>
+<h3>Payment provider charges</h3>
+<table>
+<tr><th>Charge</th><th>Basis</th><th>Paid from</th></tr>
+<tr><td>Collection charge</td><td>Flat KES fee per amount band, from KES 0 on payments up to KES 49 rising by band to KES 320 on payments of KES 750,000 to 999,999</td><td>Hadia's PayHero service wallet</td></tr>
+<tr><td>Payout charge</td><td>PayHero withdrawal tariff per payout</td><td>Hadia's PayHero account</td></tr>
+<tr><td>Card processing</td><td>PayHero card tariff, confirmed at onboarding</td><td>Hadia's PayHero account</td></tr>
+</table>
+<p>Treasury synchronises PayHero's published tariff daily and records the charge on every payment, so actual provider costs appear in Hadia's reports. The current schedule for Hadia's account is attached to the service agreement at onboarding.</p>
+
+<h3>Complete fee structure</h3>
+<table>
+<tr><th>Fee</th><th>Payer</th><th>Payee</th><th class="num">Amount</th></tr>
+<tr><td>Gift contribution</td><td>Guest</td><td>Registry (escrow)</td><td class="num">Amount entered; no surcharge</td></tr>
+<tr><td>Commission</td><td>Registry owner</td><td>Hadia</td><td class="num">4% of gross (configurable)</td></tr>
+<tr><td>Premium upgrade</td><td>Registry owner</td><td>Hadia</td><td class="num">KES 300 per registry</td></tr>
+<tr><td>Build price</td><td>Hadia</td><td>Codevertex</td><td class="num">KES 240,000 one-time</td></tr>
+<tr><td>Monthly service fee</td><td>Hadia</td><td>Codevertex</td><td class="num">KES 8,000 per month</td></tr>
+<tr><td>Hosting</td><td>Hadia</td><td>Codevertex</td><td class="num">KES 12,000 per year</td></tr>
+<tr><td>Domain</td><td>Hadia</td><td>Registrar</td><td class="num">Registrar rate per year</td></tr>
+<tr><td>SMS and WhatsApp</td><td>Hadia</td><td>Codevertex notifications</td><td class="num">KES 1.00 per SMS; WhatsApp plan</td></tr>
+<tr><td>PayHero charges</td><td>Hadia</td><td>PayHero</td><td class="num">Per published tariff</td></tr>
+</table>
+
+<h3>Operating cost examples</h3>
+<table>
+<tr><th>Monthly item (KES)</th><th class="num">1,000 contributions</th><th class="num">5,000 contributions</th><th class="num">10,000 contributions</th></tr>
+<tr><td>Monthly service fee</td><td class="num">8,000</td><td class="num">8,000</td><td class="num">8,000</td></tr>
+<tr><td>Hosting (KES 12,000 per year)</td><td class="num">1,000</td><td class="num">1,000</td><td class="num">1,000</td></tr>
+<tr><td>SMS receipts (1 per contribution)</td><td class="num">1,000</td><td class="num">5,000</td><td class="num">10,000</td></tr>
+<tr><td>WhatsApp Pro (owner alerts, thank-yous)</td><td class="num">2,000</td><td class="num">2,000</td><td class="num">2,000</td></tr>
+<tr><td>PayHero charges (assumed KES 12 per contribution)</td><td class="num">12,000</td><td class="num">60,000</td><td class="num">120,000</td></tr>
+<tr class="total"><td>Total operating cost</td><td class="num">24,000</td><td class="num">76,000</td><td class="num">141,000</td></tr>
+<tr><td>Gross contributions (average KES 2,000)</td><td class="num">2,000,000</td><td class="num">10,000,000</td><td class="num">20,000,000</td></tr>
+<tr><td>Commission at 4%</td><td class="num">80,000</td><td class="num">400,000</td><td class="num">800,000</td></tr>
+<tr class="total"><td>Commission after operating cost</td><td class="num">56,000</td><td class="num">324,000</td><td class="num">659,000</td></tr>
+</table>
+<p class="small">Assumptions: average gift KES 2,000; PayHero collection and payout charges averaging KES 12 per contribution, to be replaced with the schedule confirmed for Hadia's account; domain and premium revenue excluded.</p>
+
 <h3>Messaging rates</h3>
 <table>
 <tr><th>Plan or item</th><th>Allowance</th><th class="num">KES</th></tr>
@@ -195,7 +239,7 @@
 <tr><td>WhatsApp Standard</td><td>500 messages per month</td><td class="num">1,000 per month</td></tr>
 <tr><td>WhatsApp Pro</td><td>Unlimited messages</td><td class="num">2,000 per month</td></tr>
 </table>
-<p>Each contribution generates two messages on average (guest receipt and owner notification). At 1,000 contributions per month, SMS charges are approximately KES 2,000 per month. The WhatsApp Standard plan is recommended at launch.</p>
+<p>Guest receipts are sent by SMS, one per contribution. Owner alerts, digests and thank-you messages are sent by WhatsApp. The WhatsApp Pro plan is recommended from launch because it carries no message cap, so WhatsApp cost stays fixed as volume grows.</p>
 
 <h3>Optional services</h3>
 <table>
@@ -203,6 +247,72 @@
 <tr><td>Managed domain</td><td>Registration of the Hadia domain on Hadia's behalf, annual renewal, DNS management and SSL certificates</td><td>Annually, at the registrar's rate</td></tr>
 </table>
 <p class="small">Legal fees and marketing are excluded.</p>
+</section>
+
+<section id="ownership">
+<h2>Ownership, licensing and exit</h2>
+<p class="lead">Hadia owns its product, its data and its money. Codevertex retains the shared platform that Hadia uses under licence.</p>
+<figure>{FIG_OWNERSHIP}<figcaption>Ownership boundaries</figcaption></figure>
+
+<h3>Ownership</h3>
+<table>
+<tr><th>Asset</th><th>Owner</th><th>Terms</th></tr>
+<tr><td>Hadia source code: hadia-ui, hadia-api, Hadia message templates, designs and content</td><td>Hadia</td><td>Intellectual property assigned to Hadia on payment of the build price in full</td></tr>
+<tr><td>Hadia data: users, registries, items, reservations, contributions, payouts, ledger entries, consents</td><td>Hadia</td><td>Owned by Hadia from creation; Codevertex processes it only on Hadia's instructions</td></tr>
+<tr><td>Gift funds and commission</td><td>Hadia (for registry owners)</td><td>Held in Hadia's PayHero account, never by Codevertex</td></tr>
+<tr><td>Hadia brand, domain and accounts with PayHero, Safaricom and Meta</td><td>Hadia</td><td>Registered in Hadia's name</td></tr>
+<tr><td>Codevertex platform: authentication, treasury (ledger, escrow, payouts), notifications, subscriptions, shared libraries, deployment tooling</td><td>Codevertex</td><td>Proprietary; licensed to Hadia as below</td></tr>
+</table>
+
+<h3>Repository access</h3>
+<p>The hadia-ui and hadia-api repositories are created in a GitHub organisation owned by Hadia, with Codevertex as a contributor. Hadia has read access from day one and full administrative control at handover. Codevertex platform repositories remain private to Codevertex.</p>
+
+<h3>Platform licence</h3>
+<p>Hadia receives a non-exclusive, non-transferable licence to use the Codevertex platform services for the duration of the service agreement, included in the monthly service fee. Hadia's own developers, or another vendor appointed by Hadia, may use the documented platform APIs with API keys issued to Hadia.</p>
+
+<h3>Appointing another developer</h3>
+<p>Hadia may appoint another developer at any time to maintain or extend hadia-ui and hadia-api. Codevertex provides API documentation, environment access for Hadia's appointed developer and a handover session. The platform services continue to be operated by Codevertex while the service agreement is in force.</p>
+
+<h3>Exit and migration</h3>
+<table>
+<tr><th>Step</th><th>Commitment</th></tr>
+<tr><td>Notice</td><td>Codevertex gives at least 90 days' written notice before discontinuing any platform service Hadia relies on.</td></tr>
+<tr><td>Data export</td><td>Complete export in open formats: PostgreSQL dump of the Hadia database, ledger and escrow statements (CSV and Excel), user and registry records (JSON), uploaded images</td></tr>
+<tr><td>Funds</td><td>Unaffected. Funds sit in Hadia's PayHero account and continue to be accessible directly through PayHero.</td></tr>
+<tr><td>Transition assistance</td><td>Up to 20 hours of engineering support to move to a replacement payments and ledger service, included; further support at the standard rate</td></tr>
+<tr><td>Source code escrow (optional)</td><td>Platform source code required to run Hadia can be deposited with an independent escrow agent, released to Hadia if Codevertex ceases to trade. Agent fees are borne by Hadia.</td></tr>
+</table>
+
+<h3>Handover on termination</h3>
+<ul>
+<li>Full ownership and administrative control of the hadia-ui and hadia-api repositories</li>
+<li>Final data export and the latest backups, delivered within 10 working days</li>
+<li>Architecture, API and operations documentation, and the legal pack</li>
+<li>Transfer of domain and DNS administration, where managed by Codevertex</li>
+<li>Written confirmation of deletion of Hadia data from Codevertex systems after export, subject to statutory retention</li>
+</ul>
+</section>
+
+<section id="contract">
+<h2>Contract terms</h2>
+<p class="lead">Principal terms of the master services agreement between Hadia and Codevertex. Codevertex's standard terms apply where not varied below.</p>
+<table>
+<tr><th>Term</th><th>Position</th></tr>
+<tr><td>Initial term</td><td>12 months from launch, renewing monthly thereafter</td></tr>
+<tr><td>Termination for convenience</td><td>Either party, after the initial term, with 60 days' written notice</td></tr>
+<tr><td>Termination for cause</td><td>Either party, for a material breach not remedied within 30 days of written notice, or on insolvency</td></tr>
+<tr><td>Monthly fee after termination</td><td>Payable to the end of the notice period only; no fees thereafter. Export and handover are provided at no charge.</td></tr>
+<tr><td>Service level</td><td>99.5% monthly availability for guest pages, checkout and payouts, excluding scheduled maintenance notified 48 hours in advance</td></tr>
+<tr><td>Service credits</td><td>Below 99.5%: 10% of the monthly fee. Below 99.0%: 25%. Below 95.0%: 50%.</td></tr>
+<tr><td>Prolonged downtime</td><td>An outage exceeding 72 continuous hours, or service credits in any 2 consecutive months, entitles Hadia to terminate without notice period and receive full handover.</td></tr>
+<tr><td>Delivery delay by Codevertex</td><td>2% of the build price credited for each full week of delay to launch caused by Codevertex, up to 10%. The final milestone is not due until launch acceptance.</td></tr>
+<tr><td>Delay caused by PayHero onboarding or other client dependencies</td><td>Schedule extends day for day with no penalty to either party. The platform can launch with reservations only, and payments are enabled once PayHero is live.</td></tr>
+<tr><td>Liability cap</td><td>Each party's total liability is limited to the fees paid by Hadia in the 12 months preceding the claim. Indirect and consequential losses are excluded.</td></tr>
+<tr><td>Exclusions from the cap</td><td>Breach of confidentiality, the intellectual property indemnity, and wilful misconduct</td></tr>
+<tr><td>Codevertex indemnity</td><td>Codevertex indemnifies Hadia against third-party claims that the software infringes intellectual property rights, and against regulatory fines arising from Codevertex's breach of the data processing agreement, within the cap.</td></tr>
+<tr><td>Hadia indemnity</td><td>Hadia indemnifies Codevertex against claims arising from Hadia's content, its terms with users, and its handling of funds.</td></tr>
+<tr><td>Governing law</td><td>Laws of Kenya. Disputes are referred to negotiation for 30 days, then to mediation, then to the courts of Kenya.</td></tr>
+</table>
 </section>
 
 <section id="risks">

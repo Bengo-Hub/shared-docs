@@ -334,3 +334,24 @@ def fig_gantt():
     ]
     return gantt(rows, milestones=[(0.5, "M1 Kick-off"), (7, "M2 Demo"), (10, "M3 Features", "end"), (12, "M4 Launch")],
                  title="Implementation schedule")
+
+
+def fig_ownership():
+    b = []
+    cols = [
+        (10, "Owned by Hadia", "new", [["Hadia source code", "hadia-ui, hadia-api"], ["Hadia data", "users, registries, ledger"],
+                                       ["Funds", "Hadia PayHero account"], ["Brand and accounts", "domain, PayHero, Meta"]]),
+        (265, "Licensed from Codevertex", "reuse", [["Authentication", "SSO, OTP, roles"], ["Treasury", "ledger, escrow, payouts"],
+                                                   ["Notifications", "SMS, WhatsApp, email"], ["Platform operations", "hosting, backups, deploys"]]),
+        (520, "Third-party providers", "ext", [["PayHero", "payments and wallet"], ["Safaricom", "M-Pesa"],
+                                              ["Africa's Talking", "SMS delivery"], ["Meta", "WhatsApp delivery"]]),
+    ]
+    for x, title, kind, items in cols:
+        b.append(lane(x, 8, 230, 268, ""))
+        b.append(text(x + 115, 32, title, 12, 700, INK))
+        for i, it in enumerate(items):
+            b.append(box(x + 15, 48 + i * 56, 200, 46, it, kind, 10.5))
+    b.append(arrow([(240, 140), (265, 140)], color=BRAND))
+    b.append(arrow([(495, 140), (520, 140)], color=BRAND))
+    b.append(text(380, 296, "Hadia receives a licence to the platform for the term of the service agreement; data and funds remain Hadia's.", 9.5, 400, MUTED))
+    return svg(760, 306, "".join(b), "Ownership boundaries")

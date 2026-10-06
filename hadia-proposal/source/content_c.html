@@ -75,6 +75,19 @@
 <li>After the hold period the registry closes to new contributions. Owners may reopen it.</li>
 </ol>
 
+<h3 id="wf-lifecycle">Registry lifecycle rules</h3>
+<table>
+<tr><th>Question</th><th>Rule</th></tr>
+<tr><td>Purchase confirmation</td><td>The reservation message contains a link to mark the gift as purchased, with an optional receipt photo. The owner sees "Reserved" or "Purchased" and can confirm receipt. Unconfirmed reservations trigger reminders after 14 days.</td></tr>
+<tr><td>Reserved items view</td><td>The owner dashboard filters items by Available, Reserved, Purchased and Funded, with the reserving guest's name and date.</td></tr>
+<tr><td>Manual release</td><td>The owner can release any reservation. The guest is notified and the item becomes available again.</td></tr>
+<tr><td>Registry transfer</td><td>Ownership can be transferred to another person. The new owner verifies their mobile number and payout number by one-time password. Transfers are blocked while a payout is in progress and are recorded in the audit log.</td></tr>
+<tr><td>Multiple beneficiaries</td><td>Each registry pays out to one verified M-Pesa number. Co-owners can manage the registry but payouts go to the designated beneficiary. Split payouts across several beneficiaries can be added in a later phase.</td></tr>
+<tr><td>Event date change</td><td>Allowed at any time, including after contributions begin. The payout hold date moves with the event date, within the 180-day maximum hold. Guests are not charged again and existing contributions are unaffected.</td></tr>
+<tr><td>Registry expiry</td><td>30 days after the event date the registry closes to new contributions and reservations. Any remaining balance is paid out automatically. The registry stays visible to the owner in read-only mode.</td></tr>
+<tr><td>Reopening</td><td>A closed registry can be reopened by the owner within 90 days, or by Hadia at any time. Cancelled registries cannot be reopened.</td></tr>
+</table>
+
 <h3 id="wf-payout">Automated payout</h3>
 <p>Registries meeting a payout rule are paid every 5 minutes to the verified number, net of commission, with approval required only at or above Hadia's limit. The owner receives an SMS showing gross amount, commission and net amount. <span class="tag auto">auto</span> Full process in <a href="#funds">Funds management and payouts</a>.</p>
 
@@ -218,4 +231,43 @@
 <tr><td>Data exposure</td><td>TLS, encryption at rest, least-privilege roles, payout details excluded from public pages, staff access logging</td></tr>
 <tr><td>Card data</td><td>Provider-hosted card checkout; no card data on Hadia systems</td></tr>
 </table>
+<h3>Production access</h3>
+<table>
+<tr><th>Control</th><th>Implementation</th></tr>
+<tr><td>Who has access</td><td>A named list of Codevertex platform engineers, provided to Hadia and updated within 5 working days of any change. No shared accounts.</td></tr>
+<tr><td>Server access</td><td>Key-based SSH only, restricted by host firewall (default deny; only SSH, HTTP and HTTPS open)</td></tr>
+<tr><td>Changes to production</td><td>Only through version-controlled GitOps deployment (ArgoCD); manual changes are reverted automatically. Every change is attributable to a reviewed commit.</td></tr>
+<tr><td>Secrets</td><td>Encrypted as sealed secrets; separate database credentials per service; payment provider keys encrypted in the database</td></tr>
+<tr><td>Network isolation</td><td>Kubernetes network policies on payment, authentication and notification services; pod security standards enforced</td></tr>
+<tr><td>Hadia staff</td><td>Role-based access through single sign-on with MFA; finance approvals require a one-time password</td></tr>
+<tr><td>Audit</td><td>Staff logins, approvals, settings changes and financial actions recorded in tamper-evident audit logs, available to Hadia</td></tr>
+</table>
+
+<h3>Codevertex access to Hadia data</h3>
+<p>Codevertex staff do not access Hadia's personal or financial records in normal operation. Access occurs only to resolve a support request raised by Hadia, to investigate an incident, or to perform a restore, and is limited to the records concerned. Each such access is logged and reported to Hadia on request. These obligations are set out in the data processing agreement, and every engineer with production access is bound by a confidentiality undertaking.</p>
+
+<h3>Security incident notification</h3>
+<table>
+<tr><th>Event</th><th>Timeline</th></tr>
+<tr><td>Codevertex notifies Hadia of a confirmed personal data breach</td><td>Within 24 hours of confirmation</td></tr>
+<tr><td>Hadia notifies the Data Protection Commissioner (section 43, Data Protection Act)</td><td>Within 72 hours of becoming aware; Codevertex supplies the facts required</td></tr>
+<tr><td>Affected users notified where there is a real risk of harm</td><td>Without undue delay, with Hadia's approval of the message</td></tr>
+<tr><td>Written incident report: cause, impact, remediation</td><td>Within 5 working days</td></tr>
+</table>
+
+<h3>Penetration testing</h3>
+<p>An internal security review against the OWASP Application Security Verification Standard is included in week 11. An independent penetration test by an accredited third party is recommended before launch and annually thereafter. It is commissioned at Hadia's cost at the tester's rate; Codevertex supports the test and remediates all high and critical findings at no charge before launch.</p>
+
+<h3>Data processors</h3>
+<table>
+<tr><th>Processor</th><th>Purpose</th><th>Data received</th><th>Location</th></tr>
+<tr><td>Codevertex Africa Limited</td><td>Software, hosting operation, support</td><td>All platform data</td><td>Kenya (operations); EU (servers)</td></tr>
+<tr><td>Contabo GmbH</td><td>Server infrastructure</td><td>Platform data stored on its servers</td><td>Germany (EU)</td></tr>
+<tr><td>Cloudflare, Inc.</td><td>Edge network, firewall, offsite backups</td><td>Traffic in transit; backup files</td><td>Global edge; EU and US</td></tr>
+<tr><td>PayHero</td><td>Payment collection, wallet, payouts</td><td>Payer number, amount, payout details</td><td>Kenya</td></tr>
+<tr><td>Safaricom PLC</td><td>M-Pesa</td><td>Payer and recipient number, amount</td><td>Kenya</td></tr>
+<tr><td>Africa's Talking</td><td>SMS delivery</td><td>Recipient number, message text</td><td>Kenya</td></tr>
+<tr><td>Meta Platforms</td><td>WhatsApp messaging</td><td>Recipient number, message text</td><td>Global</td></tr>
+</table>
+
 </section>

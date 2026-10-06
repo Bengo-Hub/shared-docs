@@ -83,3 +83,5 @@ table.nfr td:nth-child(2) { width: 22%; font-weight: 700; color: var(--ink); }
 ol { break-inside: avoid; } h3 + ol, h3 + p, h3 + table { break-before: avoid; }
 table.sched td:first-child, th.nw { white-space: nowrap; }
 .keep { break-inside: avoid; }
+table.qi td:last-child { white-space: nowrap; }
+table.qi td:first-child { width: 38%; }
