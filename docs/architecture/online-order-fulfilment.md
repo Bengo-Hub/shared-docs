@@ -5,7 +5,7 @@ kitchen, the counter and the rider, for hospitality, retail and service tenants.
 events between ordering-backend, pos-api, logistics-api, treasury-api and notifications-api,
 the payment options, the acceptance policy, who may act at each stage, and per-tenant app naming.
 
-Last reviewed 2026-09-25.
+Last reviewed 2026-10-06.
 
 ## Services and ownership
 
@@ -52,8 +52,13 @@ Last reviewed 2026-09-25.
    of delivery with the customer's code and, for pay on delivery, the cash or M-Pesa code taken.
    `logistics.task.completed` delivers the order, settles it with the method used and consumes
    stock. An outlet delivering with its own staff marks it delivered from the POS queue instead.
-8. **Cancellation** at any point releases stock, refunds a prepaid order, voids the POS record
-   and its tickets, and cancels the delivery task.
+8. **Cancellation** releases stock, refunds a prepaid order and voids the POS record and its
+   tickets. A customer can cancel only until the kitchen starts; after that the outlet rejects.
+   An open delivery task is not cancelled automatically yet: logistics-api does not consume
+   `ordering.order.cancelled`, so a dispatcher must cancel it in logistics-ui.
+
+Every status change runs its one-time effects (cash settlement, loyalty, stock, refund) only for
+the request whose status write wins, so duplicate or redelivered events never repeat them.
 
 Service bookings (salon, barber, garage) create a POS appointment instead of a takeaway ticket;
 the storefront hides booked slots (public `GET /{tenant}/pos/appointments/booked-slots`).
