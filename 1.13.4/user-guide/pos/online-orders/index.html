@@ -3642,9 +3642,37 @@ preparation time.</p>
 </tbody>
 </table>
 <h2 id="3-prepare">3. Prepare<a class="headerlink" href="#3-prepare" title="Permanent link">&para;</a></h2>
+<p>What happens once an order is accepted depends on your kind of outlet:</p>
+<table>
+<thead>
+<tr>
+<th>Outlet</th>
+<th>Pickup and delivery orders</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Restaurant, café, bar, hotel, quick service</td>
+<td>Tickets go to the KDS station that makes each item and the kitchen and bar chits print.</td>
+</tr>
+<tr>
+<td>Shop (retail)</td>
+<td>No kitchen. The order goes straight to the queue as a pick list ("To pick &amp; pack"); the bill prints as the pick list if your outlet prints orders automatically.</td>
+</tr>
+<tr>
+<td>Service business selling goods (salon products, spare parts)</td>
+<td>Same as a shop. Online bookings for a service go to <strong>Appointments</strong>, not the queue.</td>
+</tr>
+</tbody>
+</table>
 <p>Restaurants: the kitchen presses <strong>Start</strong> and <strong>Ready</strong> on the KDS; the customer sees
 "Preparing" and then "Ready". Printer-only kitchens and shops packing an order press <strong>Ready</strong>
 on the queue card instead.</p>
+<p>Every kitchen and bar chit prints the order type in large letters at the top (<strong>DINE-IN</strong>,
+<strong>TAKEAWAY</strong>, <strong>DELIVERY</strong>, <strong>ROOM SERVICE</strong>, <strong>BAR TAB</strong>, <strong>ONLINE PICKUP</strong>, <strong>ONLINE DELIVERY</strong>)
+and where the order came from (<strong>POS</strong> or <strong>Online store</strong> with its order number), the customer's
+name for takeaway and delivery, the promised time for a scheduled order and the customer's note.
+Chits for items added later keep the order type under the <strong>ADDITIONAL ITEMS</strong> line.</p>
 <h2 id="4-hand-over-a-pickup-order">4. Hand over a pickup order<a class="headerlink" href="#4-hand-over-a-pickup-order" title="Permanent link">&para;</a></h2>
 <p>Press <strong>Hand over</strong> and ask the customer for the <strong>6-digit collection code</strong> from their order
 page or message. The POS checks it (it never shows you the code). If the customer cannot show it
@@ -3664,6 +3692,15 @@ order, choose Cash or M-Pesa (with the code) before releasing it.</p>
 phone alert when a job is assigned to them once notifications are enabled in the rider app.</p>
 <p>If you deliver with your own staff and no rider app, press <strong>Delivered (own staff)</strong> on the queue
 card.</p>
+<p>The <strong>Delivery</strong> tab groups orders by where they are: waiting for a rider, ready for the rider,
+<strong>Out for delivery</strong> and <strong>Delivered, to settle or close</strong>. Each card shows the rider's name and
+phone once a rider has the job. A delivery taken at the till (not online) works the same way:
+press <strong>Assign rider</strong> and the rider is told how much to collect at the door. When the rider
+delivers it, the card shows how the customer paid (cash, or M-Pesa with its code); press
+<strong>Settle</strong> to take that money into the till and the order closes. If a delivery fails or is
+cancelled the card says so and you can assign a rider again.</p>
+<p>A till takeaway or delivery order cannot be handed over before it is paid. Till orders already
+paid at the till leave the queue after a day even if nobody pressed <strong>Hand over</strong>.</p>
 <h2 id="6-rider-cash-hand-in">6. Rider cash hand-in<a class="headerlink" href="#6-rider-cash-hand-in" title="Permanent link">&para;</a></h2>
 <p>Cash riders collect on delivery is tracked per rider. In the logistics console, <strong>Finance &gt;
 Rider Cash</strong> lists every rider still holding cash, with each delivery. When a rider hands the
@@ -3700,7 +3737,7 @@ browser tab, on the sign-in page and on their home screen when they install the 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 25, 2026 20:42:38 UTC">September 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 6, 2026 20:27:34 UTC">October 6, 2026</span>
   </span>
 
     
