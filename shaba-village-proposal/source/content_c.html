@@ -1,0 +1,149 @@
+<section id="sales">
+<h2>Unit sales and instalments</h2>
+<p class="lead">Every unit sale, from reservation to title, is tracked against the unit, with the buyer able to see exactly what has been paid and what is next.</p>
+<figure>{FIG_SALE}<figcaption>Unit sale lifecycle</figcaption></figure>
+<h3>Payment options</h3>
+<table>
+<tr><th>Option</th><th>How it is recorded</th></tr>
+<tr><td>Outright purchase</td><td>One invoice for the balance after the reservation fee, due on the agreed date. Part payments are accepted and shown on the statement.</td></tr>
+<tr><td>Deposit and monthly instalments</td><td>Deposit invoice, then a schedule of equal instalments over the agreed term. The last instalment absorbs rounding.</td></tr>
+<tr><td>Milestone instalments</td><td>For units bought before completion: instalments fall due on agreed construction milestones, each released by the sales officer with evidence.</td></tr>
+<tr><td>Mortgage or SACCO financing</td><td>Deposit from the buyer; the financier's payment recorded on release, referenced to the financier's letter of offer.</td></tr>
+</table>
+<h3>Worked example</h3>
+<table>
+<tr><th>Item</th><th class="num">KES</th></tr>
+<tr><td>Three bedroom apartment, price</td><td class="num">7,500,000</td></tr>
+<tr><td>Reservation fee, credited to deposit</td><td class="num">100,000</td></tr>
+<tr><td>Deposit at 20%, including the reservation fee</td><td class="num">1,500,000</td></tr>
+<tr><td>Balance over 24 monthly instalments</td><td class="num">250,000 each</td></tr>
+<tr class="total"><td>Total</td><td class="num">7,500,000</td></tr>
+</table>
+<p class="small">Figures are illustrative. Prices, deposits, terms and any interest are set by Shaba Village in each sale agreement.</p>
+<h3>Rules</h3>
+<table>
+<tr><th>Situation</th><th>Rule</th></tr>
+<tr><td>Payment received</td><td>Applied to the oldest due instalment, then the next. An overpayment reduces the following instalment unless the buyer asks for early completion.</td></tr>
+<tr><td>Missed instalment</td><td>Reminders at 3 days before, on the due date, and 7 and 14 days after. A late charge applies only if the agreement provides one, at the agreed rate, never compounded.</td></tr>
+<tr><td>Default</td><td>After the grace period in the agreement, the contract moves to default and the sales officer is alerted with the full history. Notices and any termination are issued by the advocate under the agreement; the platform records each step.</td></tr>
+<tr><td>Restructuring</td><td>A new schedule may be agreed. It needs approval, keeps the original schedule on record and is shown to the buyer for acceptance.</td></tr>
+<tr><td>Termination and refund</td><td>Refund amounts follow the agreement and are paid through treasury under approval. The unit returns to available only after the refund is recorded.</td></tr>
+<tr><td>Fully paid</td><td>A completion statement and receipt are issued, and the handover checklist opens.</td></tr>
+<tr><td>Handover</td><td>Meter readings, keys, snag list and signatures recorded. Estate billing starts from that date, prorated for the first month.</td></tr>
+<tr><td>Title</td><td>Each title stage is logged with date and document until the title is released to the owner.</td></tr>
+</table>
+<p>Buyer identity documents and KRA PINs are needed for the sale agreement and title transfer. They are encrypted, visible only to the sales role, and kept for the statutory retention period.</p>
+</section>
+
+<section id="billing">
+<h2>Billing, utilities and collections</h2>
+<h3>Monthly cycle</h3>
+<figure>{FIG_BILLING}<figcaption>Monthly billing cycle</figcaption></figure>
+<p>Dates are configurable. The billing run asks treasury to create one invoice per unit and fund with the month's line items. Each invoice carries the unit code as its payment reference and a link to pay. Owners receive a short message with the amount, due date and paybill details, and the full bill in the portal.</p>
+<h3>Meter readings</h3>
+<ol>
+<li>The caretaker opens the reading round on a phone. Units are listed in walking order by block.</li>
+<li>Each reading is typed and photographed. The photo is stored with the reading and shown on the bill.</li>
+<li>The platform flags readings lower than the previous one, zero consumption for an occupied unit, and consumption above three times the unit's 3-month average.</li>
+<li>Flagged readings are re-checked. A meter that cannot be read is billed at the 3-month average, marked estimated, and corrected on the next actual reading.</li>
+<li>A meter replacement records the closing reading of the old meter and the opening reading of the new one, so no consumption is lost or billed twice.</li>
+</ol>
+<h3>Water balance</h3>
+<figure>{FIG_WATER}<figcaption>Water balance</figcaption></figure>
+<p>Bulk readings from the Mavoko connection and each borehole meter are entered monthly. The report compares total water supplied with water billed to units and estimated common area use. The difference is unaccounted water, shown as a percentage and trended by month. Above the set threshold, for example 15%, the estate manager is alerted to check for leaks.</p>
+<h3>Payment matching and allocation</h3>
+<figure>{FIG_PAYMENT}<figcaption>Paybill payment sequence</figcaption></figure>
+<ul>
+<li>Each M-Pesa confirmation is stored once under its receipt number, so a repeated callback never creates a second payment.</li>
+<li>The account number is normalised (case, spaces, dashes) and matched to the unit. Close misses, such as b 07 or B7, are matched; anything else goes to the suspense queue.</li>
+<li>Allocation follows the configured order: oldest invoice first by default, or charge type priority if the by-laws require it. Late charges are settled last.</li>
+<li>Daily, treasury compares the paybill statement with recorded payments. Differences are listed for finance.</li>
+</ul>
+<h3>Arrears</h3>
+<table>
+<tr><th>Days after due date</th><th>Action</th></tr>
+<tr><td>1</td><td>Friendly reminder with balance and pay link <span class="tag auto">auto</span></td></tr>
+<tr><td>7</td><td>Second reminder <span class="tag auto">auto</span></td></tr>
+<tr><td>14</td><td>Firm reminder; late charge applied if the by-laws provide <span class="tag auto">auto</span></td></tr>
+<tr><td>30</td><td>Call list for the finance officer; offer of a payment plan</td></tr>
+<tr><td>45</td><td>Demand letter generated for review and sending</td></tr>
+<tr><td>60 and above</td><td>Escalation to management; any measures permitted by the by-laws, such as withholding a clearance certificate</td></tr>
+</table>
+<p class="exception"><b>Not automated:</b> disconnection of water or any other supply, locking of gates or denial of entry to a resident for arrears. These require due process and are excluded from the platform by design.</p>
+<h3>Budget and transparency</h3>
+<p>The annual service charge budget is entered in treasury by cost line: security, cleaning, garbage, landscaping, water production, common power, repairs, management, insurance and the sinking fund. Each vendor bill and payroll cost is posted to the matching line. Owners can see a monthly summary of budget against actual, and the income and expenditure statement is produced for the AGM directly from the ledger.</p>
+</section>
+
+<section id="providers">
+<h2>Service providers and estate operations</h2>
+<p class="lead">Security, garbage, cleaning and maintenance are bought from outside providers. The platform makes each contract measurable and pays only for service delivered.</p>
+<figure>{FIG_VENDOR}<figcaption>Service provider cycle</figcaption></figure>
+<h3>Provider types</h3>
+<table>
+<tr><th>Provider</th><th>Required documents</th><th>Schedule and evidence</th><th>Typical SLA</th></tr>
+<tr><td>Security agency</td><td>PSRA licence, business permit, KRA PIN, insurance</td><td>Posts and shifts, roster, guard sign-on, patrol scans, incidents</td><td>Every post manned 24 hours; patrol rounds hourly at night; incident report within 1 hour</td></tr>
+<tr><td>Garbage collector</td><td>NEMA waste transport licence, county permit, KRA PIN</td><td>Collection days, check-in photo at each collection point</td><td>Collection on scheduled days by 10:00; segregated collection</td></tr>
+<tr><td>Cleaning agency</td><td>Business permit, KRA PIN, insurance</td><td>Daily or weekly rosters by block, checklist with photos</td><td>Checklist complete by 09:00; complaints resolved within 24 hours</td></tr>
+<tr><td>Landscaping</td><td>Business permit, KRA PIN</td><td>Weekly visits by zone</td><td>Visit completed in its week</td></tr>
+<tr><td>Borehole and pump service</td><td>Business permit, KRA PIN; WRA driller registration for borehole works</td><td>Quarterly service, call-outs as work orders</td><td>Breakdown response within 4 hours</td></tr>
+<tr><td>Plumbing, electrical, fence, gate</td><td>NCA or EPRA licence as applicable, KRA PIN</td><td>Work orders</td><td>By work order priority</td></tr>
+<tr><td>Pest control</td><td>PCPB licence, KRA PIN</td><td>Quarterly treatment</td><td>Visit completed in its month</td></tr>
+<tr><td>Tank and reservoir cleaning, water testing</td><td>Business permit, accredited laboratory for tests</td><td>Twice yearly cleaning; test results uploaded</td><td>Results within limits</td></tr>
+</table>
+<h3>Security agency operations</h3>
+<ol>
+<li>Posts are defined with the number of guards per shift, for example main gate two by day and two by night, and a night patrol.</li>
+<li>The agency supervisor uploads the weekly roster through the vendor portal. Only guards registered for the estate can be rostered.</li>
+<li>Guards sign on and off at the gate tablet with their badge and PIN. The platform compares sign-ons with the roster and contract and reports unmanned post time.</li>
+<li>Patrol rounds are scheduled; guards scan QR tags at each checkpoint. Missed checkpoints are reported in the morning summary.</li>
+<li>Incidents and handover notes are written in the digital occurrence book, visible to the estate manager in real time.</li>
+<li>At month end, the coverage report is attached to the agency's invoice with any service credit due under the contract.</li>
+</ol>
+<h3>Agency personnel</h3>
+<p>The agency is the employer of its guards and cleaners and remains responsible for their vetting, pay and statutory obligations. Shaba Village records only what it needs to control access: name, agency, role, phone number and badge. A photo is stored only if the agency provides it for identification at the gate. When a person leaves the estate deployment, the badge is deactivated the same day.</p>
+<h3>Maintenance work orders</h3>
+<figure>{FIG_WORKORDER}<figcaption>Work order flow</figcaption></figure>
+<table>
+<tr><th>Priority</th><th>Examples</th><th>Response</th><th>Resolution</th></tr>
+<tr><td>Emergency</td><td>Burst main, sewer overflow, gate or fence down, no water estate-wide</td><td>1 hour</td><td>4 hours</td></tr>
+<tr><td>High</td><td>Pump failure, block without water, security light failure</td><td>4 hours</td><td>24 hours</td></tr>
+<tr><td>Normal</td><td>Leaking common tap, drainage blockage</td><td>24 hours</td><td>72 hours</td></tr>
+<tr><td>Low</td><td>Painting, minor landscaping</td><td>3 days</td><td>14 days</td></tr>
+</table>
+<p>Repairs inside a unit are the owner's responsibility under most by-laws. Where the estate carries one out at the owner's request, or to stop damage to other units, the cost is recharged to the unit with the work order as evidence.</p>
+<h3>Vendor invoices and payment</h3>
+<ol>
+<li>The vendor submits the monthly invoice in the vendor portal with its eTIMS invoice number and document.</li>
+<li>The platform places the invoice beside the contract fee, completed and missed visits, post coverage and resulting service credit.</li>
+<li>The estate manager confirms the service; treasury records the vendor bill against the budget line.</li>
+<li>Approval follows the payout policy: below the limit it is approved by finance, above it by a director with OTP, bound to amount and payee.</li>
+<li>Treasury pays from the estate account by bank transfer or M-Pesa, deducts withholding tax where it applies, and sends the remittance advice.</li>
+</ol>
+<h3>Estate staff</h3>
+<p>Shaba Village's own regular and casual staff, such as the caretaker, plumber, gardeners and day labourers, are managed in the ERP. Regular staff are paid through monthly payroll with PAYE, NSSF, SHIF and the affordable housing levy. Casual workers are paid per day or per task from the casual payments module, by M-Pesa, with the payment recorded against the work order's cost line. Payroll and casual payments post to the estate fund ledger in treasury. estates-api only stores the ERP employee ID on work orders and service checks.</p>
+</section>
+
+<section id="access">
+<h2>Security, access and visitors</h2>
+<figure>{FIG_GATE}<figcaption>Visitor entry</figcaption></figure>
+<h3>Pass types</h3>
+<table>
+<tr><th>Pass</th><th>Created by</th><th>Validity</th></tr>
+<tr><td>Guest, single visit</td><td>Resident</td><td>One entry within the chosen window, default 12 hours</td></tr>
+<tr><td>Guest, recurring</td><td>Resident</td><td>Set days and hours, up to 90 days</td></tr>
+<tr><td>Domestic staff</td><td>Owner</td><td>Set days and hours, renewable, cancellable at any time</td></tr>
+<tr><td>Delivery</td><td>Resident, or guard with host approval</td><td>Single entry, 2 hours</td></tr>
+<tr><td>Contractor</td><td>Estate manager from a work order</td><td>Until the work order closes</td></tr>
+<tr><td>Agency personnel</td><td>Estate manager</td><td>While deployed</td></tr>
+</table>
+<h3>Data collected at the gate</h3>
+<p>The gate collects the minimum needed for security: the visitor's name, phone number, host unit, time in and out, and vehicle plate if driving. Identity cards are not photographed, copied or retained. Where the by-laws require an identity check, the guard views the card and records only that it was seen. A privacy notice is displayed at each gate and linked in every pass message. Gate events are kept for 90 days and incident records for the period set in the retention schedule.</p>
+<h3>Offline operation</h3>
+<p>Each gate tablet keeps a cache of passes valid for the next 24 hours and of active badges. During a network outage, passes are verified from the cache and new entries are queued on the device, encrypted, and sent when the connection returns. A tablet offline for more than 15 minutes raises an alert to the estate manager.</p>
+<h3>Incidents and emergencies</h3>
+<ul>
+<li>Incidents are categorised (intrusion, theft, fire, medical, dispute, damage, other) and timed, with photos.</li>
+<li>Serious incidents notify the estate manager and the agency supervisor at once by WhatsApp and SMS.</li>
+<li>Emergency broadcasts reach all residents in a block or the whole estate in one action.</li>
+</ul>
+</section>
