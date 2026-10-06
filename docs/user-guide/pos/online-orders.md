@@ -61,6 +61,17 @@ phone alert when a job is assigned to them once notifications are enabled in the
 If you deliver with your own staff and no rider app, press **Delivered (own staff)** on the queue
 card.
 
+The **Delivery** tab groups orders by where they are: waiting for a rider, ready for the rider,
+**Out for delivery** and **Delivered, to settle or close**. Each card shows the rider's name and
+phone once a rider has the job. A delivery taken at the till (not online) works the same way:
+press **Assign rider** and the rider is told how much to collect at the door. When the rider
+delivers it, the card shows how the customer paid (cash, or M-Pesa with its code); press
+**Settle** to take that money into the till and the order closes. If a delivery fails or is
+cancelled the card says so and you can assign a rider again.
+
+A till takeaway or delivery order cannot be handed over before it is paid. Till orders already
+paid at the till leave the queue after a day even if nobody pressed **Hand over**.
+
 ## 6. Rider cash hand-in
 
 Cash riders collect on delivery is tracked per rider. In the logistics console, **Finance >

@@ -149,6 +149,14 @@ bar station and an expo/all-stations view) gets its own ticket queue:
 2. **Bar Display** — the bar's own queue, filtered to drink categories. Any other configured
    station (e.g. a combined Restaurant/expo view that sees everything) appears as a further tab.
 
+Below the station tabs, one row of order-type chips narrows the station's queue: **All**,
+**Dine-in**, **Takeaway**, **Online pickup**, **Delivery**, **Online delivery**, **Room service**
+and **Bar tab** (only the types with tickets appear). The number on each chip is exactly the number
+of tickets that chip shows at the station you are viewing, and the number on each station tab
+follows the order type you picked. Finished tickets are never counted. Each ticket shows its order
+type, where it goes (table, room, or the online channel with any promised time) and, for takeaway,
+delivery and online orders, the customer's name to call out.
+
 A ticket moves **Start → Ready → Served** as kitchen/bar staff work through it, with a running
 timer that changes color the longer a ticket sits unstarted or unfinished — a quick visual cue for
 what's falling behind. An admin/manager tool on this page can mark every active ticket served at
