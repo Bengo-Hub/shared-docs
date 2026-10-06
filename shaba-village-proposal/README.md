@@ -1,7 +1,7 @@
-# Codevertex Makazi: SRDD and Shaba Village launch proposal
+# Lintel by Codevertex: SRDD and Shaba Village launch proposal
 
-`Codevertex-Makazi-SRDD-Shaba-Village.pdf` is the client document. It specifies Makazi, the
-multi-tenant property SaaS (public marketplace: Makazi Market) across four releases (R1 estate management and Shaba launch, R2 rental and
+`Lintel-SRDD-Shaba-Village-Codevertex.pdf` is the client document. It specifies Lintel, the
+multi-tenant property SaaS (public marketplace: Keybazaar) across four releases (R1 estate management and Shaba launch, R2 rental and
 portfolio management, R3 public marketplace, R4 extensions), with tenant-configurable modules, use case
 presets, a seeded charge catalogue and layered configuration, plus the Release 1 commercials for Shaba Village. It uses the
 same build, typeface (TeX Gyre Heros), page design and diagram style as the Hadia SRDD, with a
