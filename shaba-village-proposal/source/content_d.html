@@ -78,11 +78,11 @@
 
 <section id="data">
 <h2>Data design</h2>
-<p class="lead">property-api owns the multi-tenant property domain and references other services by ID: tenants, branches and users in auth-api; accounts, invoices, plans and vendors in treasury-api; employees and assets in erp-api; leads in marketflow-api.</p>
-<figure>{FIG_ERD}<figcaption>property-api data model</figcaption></figure>
+<p class="lead">maskani-api owns the multi-tenant property domain and references other services by ID: tenants, branches and users in auth-api; accounts, invoices, plans and vendors in treasury-api; employees and assets in erp-api; leads in marketflow-api.</p>
+<figure>{FIG_ERD}<figcaption>maskani-api data model</figcaption></figure>
 <h3>Data owned elsewhere</h3>
 <table>
-<tr><th>Data</th><th>Owner</th><th>Held in property-api</th></tr>
+<tr><th>Data</th><th>Owner</th><th>Held in maskani-api</th></tr>
 <tr><td>Login identity, sessions, roles</td><td>auth-api</td><td>User ID</td></tr>
 <tr><td>Invoices, payments, balances, statements, instalment plans, vendor bills, ledger</td><td>treasury-api</td><td>Account, invoice, plan and vendor IDs</td></tr>
 <tr><td>Staff records, attendance, payroll, casual payments, assets</td><td>erp-api</td><td>Employee and asset IDs</td></tr>
@@ -105,7 +105,7 @@
 
 <section id="interfaces">
 <h2>Interfaces, events and notifications</h2>
-<h3>property-api endpoints</h3>
+<h3>maskani-api endpoints</h3>
 <table>
 <tr><th>Area</th><th>Endpoints</th><th>Access</th></tr>
 <tr><td>Register</td><td>GET, POST /units; GET, PATCH /units/{id}; /units/{id}/ownerships, /occupancies, /vehicles; POST /imports</td><td>Staff; owners for own unit</td></tr>
@@ -138,19 +138,19 @@
 <h3>Events</h3>
 <table>
 <tr><th>Event</th><th>Publisher</th><th>Consumer action</th></tr>
-<tr><td>treasury.payment.succeeded</td><td>treasury</td><td>property-api refreshes the unit balance view, updates purchase progress and requests a receipt</td></tr>
-<tr><td>treasury.invoice.created</td><td>treasury</td><td>property-api marks the run line as issued; notifications sends the bill</td></tr>
-<tr><td>treasury.dunning.reminder_sent</td><td>treasury</td><td>notifications delivers the reminder; property-api records it on the unit timeline</td></tr>
-<tr><td>treasury.payout.completed</td><td>treasury</td><td>property-api marks the vendor invoice as paid and notifies the vendor</td></tr>
-<tr><td>property.billing_run.completed</td><td>property-api</td><td>Finance summary; dashboard refresh</td></tr>
-<tr><td>property.work_order.created, assigned, completed</td><td>property-api</td><td>Notifications to resident, assignee and manager</td></tr>
-<tr><td>property.visitor.arrived</td><td>property-api</td><td>Host notification</td></tr>
-<tr><td>property.incident.reported</td><td>property-api</td><td>Alert to manager and agency supervisor</td></tr>
-<tr><td>property.vendor.document_expiring</td><td>property-api</td><td>Alert to manager and vendor</td></tr>
-<tr><td>property.lease.activated, renewed, ended (R2)</td><td>property-api</td><td>Billing schedule starts or stops; listing closes or reopens; notifications</td></tr>
-<tr><td>property.listing.published, enquiry.created (R3)</td><td>property-api</td><td>Search projection refresh; lead created in marketflow; lister notified</td></tr>
-<tr><td>property.document.executed</td><td>property-api</td><td>Key-date reminders scheduled; parties notified</td></tr>
-<tr><td>property.unit.handed_over</td><td>property-api</td><td>Estate billing starts; welcome message to the owner</td></tr>
+<tr><td>treasury.payment.succeeded</td><td>treasury</td><td>maskani-api refreshes the unit balance view, updates purchase progress and requests a receipt</td></tr>
+<tr><td>treasury.invoice.created</td><td>treasury</td><td>maskani-api marks the run line as issued; notifications sends the bill</td></tr>
+<tr><td>treasury.dunning.reminder_sent</td><td>treasury</td><td>notifications delivers the reminder; maskani-api records it on the unit timeline</td></tr>
+<tr><td>treasury.payout.completed</td><td>treasury</td><td>maskani-api marks the vendor invoice as paid and notifies the vendor</td></tr>
+<tr><td>maskani.billing_run.completed</td><td>maskani-api</td><td>Finance summary; dashboard refresh</td></tr>
+<tr><td>maskani.work_order.created, assigned, completed</td><td>maskani-api</td><td>Notifications to resident, assignee and manager</td></tr>
+<tr><td>maskani.visitor.arrived</td><td>maskani-api</td><td>Host notification</td></tr>
+<tr><td>maskani.incident.reported</td><td>maskani-api</td><td>Alert to manager and agency supervisor</td></tr>
+<tr><td>maskani.vendor.document_expiring</td><td>maskani-api</td><td>Alert to manager and vendor</td></tr>
+<tr><td>maskani.lease.activated, renewed, ended (R2)</td><td>maskani-api</td><td>Billing schedule starts or stops; listing closes or reopens; notifications</td></tr>
+<tr><td>maskani.listing.published, enquiry.created (R3)</td><td>maskani-api</td><td>Search projection refresh; lead created in marketflow; lister notified</td></tr>
+<tr><td>maskani.document.executed</td><td>maskani-api</td><td>Key-date reminders scheduled; parties notified</td></tr>
+<tr><td>maskani.unit.handed_over</td><td>maskani-api</td><td>Estate billing starts; welcome message to the owner</td></tr>
 </table>
 <p>Consumers are idempotent on event ID. Events are held in the outbox during broker outages and delivered on recovery.</p>
 <h3>Notifications</h3>

@@ -6,10 +6,10 @@
 <table>
 <tr><th>Level</th><th>Owned by</th><th>Description</th></tr>
 <tr><td>Tenant</td><td>auth-api</td><td>The organisation: legal name, KRA PIN, branding, contacts, staff, roles and plan. The same tenant record is used by treasury, ERP, notifications and subscriptions, so a property tenant gets accounting, payroll and messaging with no second sign-up.</td></tr>
-<tr><td>Portfolio</td><td>property-api</td><td>A group of properties. An estate operator has one; a property manager has one per landlord client, carrying the management mandate, fee rules and remittance account.</td></tr>
-<tr><td>Property</td><td>property-api, registered as a branch in auth-api</td><td>An estate, building, plot or complex. Each property is also an auth-api branch, so the platform's existing branch-scoped roles assign staff to specific properties.</td></tr>
-<tr><td>Block, unit</td><td>property-api</td><td>Physical structure and the lettable or saleable spaces, each with use (residential, office, retail, industrial, parking, land), size and status.</td></tr>
-<tr><td>Parties</td><td>property-api, with auth-api user IDs</td><td>Owners, buyers, landlords, lessees and occupants linked to units by dated relationships.</td></tr>
+<tr><td>Portfolio</td><td>maskani-api</td><td>A group of properties. An estate operator has one; a property manager has one per landlord client, carrying the management mandate, fee rules and remittance account.</td></tr>
+<tr><td>Property</td><td>maskani-api, registered as a branch in auth-api</td><td>An estate, building, plot or complex. Each property is also an auth-api branch, so the platform's existing branch-scoped roles assign staff to specific properties.</td></tr>
+<tr><td>Block, unit</td><td>maskani-api</td><td>Physical structure and the lettable or saleable spaces, each with use (residential, office, retail, industrial, parking, land), size and status.</td></tr>
+<tr><td>Parties</td><td>maskani-api, with auth-api user IDs</td><td>Owners, buyers, landlords, lessees and occupants linked to units by dated relationships.</td></tr>
 </table>
 <h3>Isolation</h3>
 <table>
@@ -258,9 +258,9 @@
 <h3>Components</h3>
 <table>
 <tr><th>Component</th><th>Status</th><th>Function</th></tr>
-<tr><td>property-ui</td><td class="new">New (R1)</td><td>Next.js progressive web application with tenant-branded surfaces: owner, lessee and landlord portals, management console, gate tablet and vendor portal. Uses the shared UI library for sign-in, the payment modal, data tables with export, document preview, legal links and cookie consent.</td></tr>
-<tr><td>property-api</td><td class="new">New (R1)</td><td>Go service for the multi-tenant property domain: portfolios, properties, units, parties, charge rules, meters, billing runs, sale contracts, leases, inspections, documents and templates, work orders, vendor contracts and visits, posts, passes, gate events, incidents, listings and statistics. Does not move money.</td></tr>
-<tr><td>marketplace-ui</td><td class="new">New (R3)</td><td>Maskani Marketplace: the public, server-rendered site for search, listing pages, map, enquiries, viewings and applications, reading a published listing projection from property-api.</td></tr>
+<tr><td>maskani-ui</td><td class="new">New (R1)</td><td>Next.js progressive web application with tenant-branded surfaces: owner, lessee and landlord portals, management console, gate tablet and vendor portal. Uses the shared UI library for sign-in, the payment modal, data tables with export, document preview, legal links and cookie consent.</td></tr>
+<tr><td>maskani-api</td><td class="new">New (R1)</td><td>Go service for the multi-tenant property domain: portfolios, properties, units, parties, charge rules, meters, billing runs, sale contracts, leases, inspections, documents and templates, work orders, vendor contracts and visits, posts, passes, gate events, incidents, listings and statistics. Does not move money.</td></tr>
+<tr><td>maskani-marketplace</td><td class="new">New (R3)</td><td>Maskani Marketplace: the public, server-rendered site for search, listing pages, map, enquiries, viewings and applications, reading a published listing projection from maskani-api.</td></tr>
 <tr><td>auth-api</td><td class="reuse">Existing, extended</td><td>Tenants, branches, staff single sign-on with MFA, roles, sessions, terms acceptance, API keys. Extended with mobile one-time password sign-in for customers.</td></tr>
 <tr><td>treasury-api</td><td class="reuse">Existing, extended</td><td>Customer accounts, invoices, credit notes, recurring billing, payment intents, M-Pesa prompt and paybill, allocation, dunning, statements, vendor bills, approvals, payouts, withholding tax and rental tax PRNs, eTIMS, budgets, ledger. Extended with paybill matching by unit code, instalment plans linked to sale contracts, deposit liability handling and landlord remittance runs.</td></tr>
 <tr><td>erp-api</td><td class="reuse">Existing</td><td>Staff records, contracts, attendance, leave, payroll with statutory deductions, casual worker payments, asset register.</td></tr>
@@ -273,9 +273,9 @@
 <h3>Architecture principles</h3>
 <ul>
 <li><b>Tenant first.</b> Tenant ID on every table, row, event, cache key, file path and job; isolation tested on every release.</li>
-<li><b>Single data owner.</b> property-api stores treasury account, invoice, plan and vendor IDs, ERP employee IDs and auth user IDs, and reads balances from treasury.</li>
+<li><b>Single data owner.</b> maskani-api stores treasury account, invoice, plan and vendor IDs, ERP employee IDs and auth user IDs, and reads balances from treasury.</li>
 <li><b>Single payment path.</b> Only treasury-api talks to M-Pesa and banks.</li>
-<li><b>Event driven.</b> Payment, invoice and payout events reach property-api through the transactional outbox and NATS; consumers are idempotent by event ID.</li>
+<li><b>Event driven.</b> Payment, invoice and payout events reach maskani-api through the transactional outbox and NATS; consumers are idempotent by event ID.</li>
 <li><b>Replica safe.</b> Billing runs, reminders, SLA timers, remittances and purges run once per period across replicas using shared leases.</li>
 <li><b>Public and private separated.</b> The marketplace reads a published projection of listings; it has no route to tenant operational data.</li>
 <li><b>Standard stack.</b> Go with Ent and Atlas migrations, Next.js, Helm and ArgoCD.</li>

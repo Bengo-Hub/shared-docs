@@ -10,9 +10,9 @@ def fig_architecture():
         b.append(box(22 + i * 182, 30, 168, 42, l, "user", 10))
 
     b.append(lane(10, 98, 740, 76, "", "#FBF6FA"))
-    b.append(box(24, 118, 190, 48, ["marketplace-ui (R3)", "Maskani Marketplace"], "new", 10, dashed=True))
-    b.append(box(232, 118, 230, 48, ["property-ui", "portals, console, gate, vendors"], "new", 10))
-    b.append(box(500, 118, 236, 48, ["property-api", "multi-tenant property domain"], "new", 10))
+    b.append(box(24, 118, 190, 48, ["maskani-marketplace (R3)", "Maskani Marketplace"], "new", 10, dashed=True))
+    b.append(box(232, 118, 230, 48, ["maskani-ui", "portals, console, gate, vendors"], "new", 10))
+    b.append(box(500, 118, 236, 48, ["maskani-api", "multi-tenant property domain"], "new", 10))
 
     b.append(lane(10, 222, 740, 84, "", "#F3FAF6"))
     labels = [["auth-api", "tenants, SSO, OTP"], ["treasury-api", "billing, M-Pesa, GL"],
@@ -146,7 +146,7 @@ def fig_water():
 
 def fig_payment():
     actors = [("o", "Owner|phone", "user"), ("mp", "M-Pesa", "ext"), ("tr", "treasury-api", "reuse"),
-              ("es", "property-api", "new"), ("nt", "notifications|api", "reuse")]
+              ("es", "maskani-api", "new"), ("nt", "notifications|api", "reuse")]
     msgs = [
         ("o", "mp", "Paybill, account B07, KES 6,450", "call"),
         ("mp", "tr", "C2B confirmation", "call"),
@@ -195,7 +195,7 @@ def fig_vendor():
         b.append(box(x, 20, w, 60, l, kinds[i], 10))
         if i < len(steps) - 1:
             b.append(arrow([(x + w, 50), (x + w + g, 50)]))
-    b.append(text(10, 104, "property-api runs the first four steps. treasury-api holds the vendor bill, the approval and the payment.", 9.5, 400, MUTED, "start"))
+    b.append(text(10, 104, "maskani-api runs the first four steps. treasury-api holds the vendor bill, the approval and the payment.", 9.5, 400, MUTED, "start"))
     return svg(760, 112, "".join(b), "Service provider cycle")
 
 
@@ -261,7 +261,7 @@ def fig_erd():
     b.append(arrow([(560, 75), (200, 150)], "1 : n", lx=330, ly=112))
     b.append(arrow([(600, 95), (475, 150)], "1 : n", lx=548, ly=128))
     b.append(text(380, 482, "Every table carries tenant_id; row-level security enforces it in the database.", 9.5, 500, MUTED))
-    return svg(760, 490, "".join(b), "property-api data model")
+    return svg(760, 490, "".join(b), "maskani-api data model")
 
 
 def fig_wireframes():
@@ -332,7 +332,7 @@ def fig_ownership():
     cols = [
         (10, "Owned by each tenant", "new", [["Estate data", "owners, units, ledgers"], ["Money", "own paybills and banks"],
                                                 ["Documents", "agreements, by-laws"], ["Brand and accounts", "domain, paybills, Meta"]]),
-        (265, "Licensed from Codevertex", "reuse", [["Property platform", "property-api, property-ui"], ["Treasury and ERP", "books, payroll"],
+        (265, "Licensed from Codevertex", "reuse", [["Property platform", "maskani-api, maskani-ui"], ["Treasury and ERP", "books, payroll"],
                                                    ["Notifications", "SMS, WhatsApp, email"], ["Platform operations", "hosting, backups, deploys"]]),
         (520, "Third-party providers", "ext", [["Safaricom", "M-Pesa paybills"], ["Banks", "tenant accounts"],
                                               ["Africa's Talking", "SMS delivery"], ["Meta", "WhatsApp delivery"]]),
