@@ -41,7 +41,7 @@
 <tr><td>7</td><td>Data minimisation</td><td>Guests provide name and number only. No identity numbers, dates of birth or location tracking.</td><td>Codevertex</td></tr>
 <tr><td>8</td><td>Third-party audit</td><td>No advertising trackers. Register of third parties and data shared. Analytics only with consent.</td><td>Codevertex</td></tr>
 <tr><td>9</td><td>No dark patterns</td><td>No pre-ticked boxes, false urgency or confirm-shaming. Cancellation and deletion as simple as sign-up.</td><td>Codevertex</td></tr>
-<tr><td>10</td><td>No hidden fees</td><td>Guests pay the amount entered. Commission and payout terms shown before registry creation and on every payout.</td><td>Codevertex</td></tr>
+<tr><td>10</td><td>No hidden fees</td><td>Guests see the processing fee and total before paying. Owners see commission and payout terms before creating a registry and on every payout.</td><td>Codevertex</td></tr>
 <tr><td>11</td><td>Genuine reviews</td><td>Testimonials published only with written consent, retained on file.</td><td>Hadia</td></tr>
 <tr><td>12</td><td>Substantiated claims</td><td>Marketing statements reflect actual funds handling and payout terms.</td><td>Hadia</td></tr>
 <tr><td>13</td><td>Alternative text</td><td>Required for uploaded photos; descriptive text on all content images.</td><td>Codevertex</td></tr>
@@ -190,22 +190,24 @@
 <tr><td>Domain</td><td>Registration and annual renewal of the Hadia domain</td><td class="num">Registrar rate</td></tr>
 <tr><td>SMS</td><td>One-time passwords, receipts, alerts and reminders; prepaid credit, minimum top-up KES 500</td><td class="num">1.00 per SMS</td></tr>
 <tr><td>WhatsApp</td><td>Receipts, alerts, thank-you messages and fallback one-time passwords; monthly plan</td><td class="num">500 to 2,000 per month</td></tr>
-<tr><td>Payment provider</td><td>PayHero collection and payout charges, debited from Hadia's PayHero service wallet</td><td class="num">PayHero tariff</td></tr>
+<tr><td>Payment provider</td><td>PayHero payout fees, and processing fees if Hadia absorbs them</td><td class="num">PayHero rates</td></tr>
 </table>
 </div>
 <h3>Payment provider charges</h3>
 <table>
-<tr><th>Charge</th><th>Basis</th><th>Paid from</th></tr>
-<tr><td>Collection charge</td><td>Flat KES fee per amount band, from KES 0 on payments up to KES 49 rising by band to KES 320 on payments of KES 750,000 to 999,999</td><td>Hadia's PayHero service wallet</td></tr>
-<tr><td>Payout charge</td><td>PayHero withdrawal tariff per payout</td><td>Hadia's PayHero account</td></tr>
-<tr><td>Card processing</td><td>PayHero card tariff, confirmed at onboarding</td><td>Hadia's PayHero account</td></tr>
+<tr><th>Charge</th><th>Rate</th><th>Paid by</th></tr>
+<tr><td>Gift contribution (into the wallet)</td><td>2.9% of the amount</td><td>Guest by default, or Hadia</td></tr>
+<tr><td>Payout to an owner or to Hadia</td><td>PayHero payout band; KES 1.16 on a KES 20 payout</td><td>Hadia, from the wallet</td></tr>
+<tr><td>Premium purchase (into Hadia's paybill or till)</td><td>PayHero band fee; KES 6 on KES 50, KES 0 up to KES 10</td><td>Guest by default; drawn from Hadia's service wallet</td></tr>
+<tr><td>Card payments</td><td>PayHero card rate, confirmed at onboarding</td><td>As for gifts</td></tr>
 </table>
-<p>Treasury synchronises PayHero's published tariff daily and records the charge on every payment, so actual provider costs appear in Hadia's reports. The current schedule for Hadia's account is attached to the service agreement at onboarding.</p>
+<p>Rates were measured on live PayHero transactions in October 2026. Treasury records the actual fee on every payment, so Hadia's reports show real costs. For premium purchases, treasury picks the cheaper of the two PayHero routes automatically, and Hadia tops up the service wallet from the treasury console.</p>
 
 <h3>Complete fee structure</h3>
 <table>
 <tr><th>Fee</th><th>Payer</th><th>Payee</th><th class="num">Amount</th></tr>
-<tr><td>Gift contribution</td><td>Guest</td><td>Registry (escrow)</td><td class="num">Amount entered; no surcharge</td></tr>
+<tr><td>Gift contribution</td><td>Guest</td><td>Registry (escrow)</td><td class="num">Gift amount</td></tr>
+<tr><td>Processing fee</td><td>Guest (default) or Hadia</td><td>PayHero</td><td class="num">2.9% of the gift</td></tr>
 <tr><td>Commission</td><td>Registry owner</td><td>Hadia</td><td class="num">4% of gross (configurable)</td></tr>
 <tr><td>Premium upgrade</td><td>Registry owner</td><td>Hadia</td><td class="num">KES 300 per registry</td></tr>
 <tr><td>Build price</td><td>Hadia</td><td>Codevertex</td><td class="num">KES 240,000 one-time</td></tr>
@@ -213,23 +215,23 @@
 <tr><td>Hosting</td><td>Hadia</td><td>Codevertex</td><td class="num">KES 12,000 per year</td></tr>
 <tr><td>Domain</td><td>Hadia</td><td>Registrar</td><td class="num">Registrar rate per year</td></tr>
 <tr><td>SMS and WhatsApp</td><td>Hadia</td><td>Codevertex notifications</td><td class="num">KES 1.00 per SMS; WhatsApp plan</td></tr>
-<tr><td>PayHero charges</td><td>Hadia</td><td>PayHero</td><td class="num">Per published tariff</td></tr>
+<tr><td>Payout fees</td><td>Hadia</td><td>PayHero</td><td class="num">PayHero payout band</td></tr>
 </table>
 
 <h3>Operating cost examples</h3>
 <table>
-<tr><th>Monthly item (KES)</th><th class="num">1,000 contributions</th><th class="num">5,000 contributions</th><th class="num">10,000 contributions</th></tr>
+<tr><th>Monthly item (KES)</th><th class="num">1,000 gifts</th><th class="num">5,000 gifts</th><th class="num">10,000 gifts</th></tr>
 <tr><td>Monthly service fee</td><td class="num">8,000</td><td class="num">8,000</td><td class="num">8,000</td></tr>
 <tr><td>Hosting (KES 12,000 per year)</td><td class="num">1,000</td><td class="num">1,000</td><td class="num">1,000</td></tr>
-<tr><td>SMS receipts (1 per contribution)</td><td class="num">1,000</td><td class="num">5,000</td><td class="num">10,000</td></tr>
-<tr><td>WhatsApp Pro (owner alerts, thank-yous)</td><td class="num">2,000</td><td class="num">2,000</td><td class="num">2,000</td></tr>
-<tr><td>PayHero charges (assumed KES 12 per contribution)</td><td class="num">12,000</td><td class="num">60,000</td><td class="num">120,000</td></tr>
-<tr class="total"><td>Total operating cost</td><td class="num">24,000</td><td class="num">76,000</td><td class="num">141,000</td></tr>
-<tr><td>Gross contributions (average KES 2,000)</td><td class="num">2,000,000</td><td class="num">10,000,000</td><td class="num">20,000,000</td></tr>
-<tr><td>Commission at 4%</td><td class="num">80,000</td><td class="num">400,000</td><td class="num">800,000</td></tr>
-<tr class="total"><td>Commission after operating cost</td><td class="num">56,000</td><td class="num">324,000</td><td class="num">659,000</td></tr>
+<tr><td>SMS receipts (1 per gift)</td><td class="num">1,000</td><td class="num">5,000</td><td class="num">10,000</td></tr>
+<tr><td>WhatsApp Pro</td><td class="num">2,000</td><td class="num">2,000</td><td class="num">2,000</td></tr>
+<tr><td>Payout fees (1 payout per 10 gifts, about KES 25 each)</td><td class="num">2,500</td><td class="num">12,500</td><td class="num">25,000</td></tr>
+<tr class="total"><td>Operating cost, guests pay the processing fee</td><td class="num">14,500</td><td class="num">28,500</td><td class="num">46,000</td></tr>
+<tr><td>Commission at 4% (average gift KES 2,000)</td><td class="num">80,000</td><td class="num">400,000</td><td class="num">800,000</td></tr>
+<tr class="total"><td>Commission after costs</td><td class="num">65,500</td><td class="num">371,500</td><td class="num">754,000</td></tr>
+<tr><td>Commission after costs, if Hadia absorbs the 2.9% fee</td><td class="num">7,500</td><td class="num">81,500</td><td class="num">174,000</td></tr>
 </table>
-<p class="small">Assumptions: average gift KES 2,000; PayHero collection and payout charges averaging KES 12 per contribution, to be replaced with the schedule confirmed for Hadia's account; domain and premium revenue excluded.</p>
+<p class="small">Average gift KES 2,000. The payout fee per payout will be confirmed with PayHero for Hadia's account. Premium revenue is excluded.</p>
 
 <h3>Messaging rates</h3>
 <table>

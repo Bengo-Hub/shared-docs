@@ -23,7 +23,7 @@
 <tr><td>FR-15</td><td>Owners control whether reserving guests' names are visible to other guests. Hidden by default.</td><td>S</td></tr>
 <tr class="grp"><td colspan="3">Contributions and payouts</td></tr>
 <tr><td>FR-16</td><td>Guests contribute toward an item or fund by M-Pesa STK push, within configured limits. Airtel Money and card are available where enabled.</td><td>M</td></tr>
-<tr><td>FR-17</td><td>Guests are charged the amount entered. No fee is added to guest payments.</td><td>M</td></tr>
+<tr><td>FR-17</td><td>The registry receives the full gift. PayHero's 2.9% processing fee is shown before payment and added to the guest's total by default; Hadia can choose to absorb it instead.</td><td>M</td></tr>
 <tr><td>FR-18</td><td>Where the STK push cannot be delivered, guests are offered a paybill and account number.</td><td>S</td></tr>
 <tr><td>FR-19</td><td>Guests receive an SMS or WhatsApp receipt. Owners receive a gift notification.</td><td>M</td></tr>
 <tr><td>FR-20</td><td>Payouts run automatically when the balance reaches the threshold and after the event date. Premium registries pay out on each contribution.</td><td>M</td></tr>
@@ -136,8 +136,10 @@
 <h3>Commission basis and configuration</h3>
 <table>
 <tr><th>Question</th><th>Position</th></tr>
-<tr><td>Basis of calculation</td><td>Commission is calculated on gross contributions. Each registry is credited with the full amount the guest paid; PayHero's collection charge is paid separately from Hadia's PayHero service wallet and is never deducted from the registry.</td></tr>
-<tr><td>Worked example</td><td>A guest gives KES 2,000. The registry is credited KES 2,000. At payout, 4% commission (KES 80) is deducted and the owner receives KES 1,920. PayHero's collection charge for the KES 2,000 payment is debited from Hadia's service wallet.</td></tr>
+<tr><td>Basis of calculation</td><td>Commission is charged on the full gift. PayHero's processing fee never reduces the registry balance.</td></tr>
+<tr><td>Worked example</td><td>A guest gives KES 2,000 and pays KES 2,060, including PayHero's 2.9% processing fee. The registry is credited KES 2,000. At payout, 4% commission (KES 80) is deducted and the owner receives KES 1,920.</td></tr>
+<tr><td>Processing fee</td><td>Added to the guest's total by default and shown before payment. If Hadia chooses to absorb it, the guest pays KES 2,000 and Hadia covers the KES 58 fee from its commission.</td></tr>
+<tr><td>Payout fee</td><td>PayHero's payout fee is taken from the wallet and paid from Hadia's commission. The owner receives the full net amount.</td></tr>
 <tr><td>Changing the rate</td><td>Hadia finance changes the commission rule (percentage, fixed amount, minimum and maximum fee) at any time from the administration console. Changes apply to payouts made after the change and are recorded in the audit log.</td></tr>
 <tr><td>Per-registry rates</td><td>A different rate, including 0%, can be set on individual registries, for example for partner planners or VIP clients.</td></tr>
 <tr><td>Promotional periods</td><td>Hadia can schedule a promotion with a start date, end date and rate, including 0%. Registries created within the window keep the promotional rate for their lifetime.</td></tr>

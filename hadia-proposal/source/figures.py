@@ -68,17 +68,18 @@ def fig_money():
     b.append(arrow([(455, 100), (520, 75)], "auto release, net", lx=490, ly=80))
     b.append(arrow([(455, 210), (520, 195)], "commission sweep", lx=488, ly=222))
 
-    b.append(lane(10, 245, 740, 150, "Treasury books (double entry, per pot sub-ledger)", "#F3FAF6"))
+    b.append(lane(10, 245, 740, 179, "Treasury books (double entry, per pot sub-ledger)", "#F3FAF6"))
     rows = [("Contribution confirmed", "DR 1215 PayHero Wallet", "CR 2015 Escrow Funds Held"),
             ("Release confirmed", "DR 2015 Escrow Funds Held (gross)", "CR 1215 (net) and CR 4800 Commission"),
             ("Refund confirmed", "DR 2015 Escrow Funds Held", "CR 1215 PayHero Wallet"),
-            ("Commission sweep", "DR bank or paybill account", "CR 1215 PayHero Wallet")]
+            ("Commission sweep", "DR bank or paybill account", "CR 1215 PayHero Wallet"),
+            ("PayHero fees", "DR 5100 Payment processing", "CR 1215 PayHero Wallet")]
     for i, (a, d, c) in enumerate(rows):
         y = 272 + i * 29
         b.append(text(24, y + 12, a, 10, 600, INK, "start"))
         b.append(box(200, y, 260, 22, [d], "plain", 9.5, bold_first=False))
         b.append(box(475, y, 265, 22, [c], "plain", 9.5, bold_first=False))
-    return svg(760, 402, "".join(b), "Money flow and accounting")
+    return svg(760, 431, "".join(b), "Money flow and accounting")
 
 
 def fig_pot_states():
@@ -294,8 +295,8 @@ def fig_wireframes():
          card(22, 140, "6-piece cookware set", "KSh 8,500, Sunrise Home", "Reserve"),
          card(22, 210, "Honeymoon fund", "KSh 42,000 of 100,000", "Give", 0.42),
          card(22, 280, "Baby stroller", "Reserved by a guest", "Taken"),
-         text(120, 368, "Fees: none for guests. Hadia keeps 4%", 8.6, 500, MUTED),
-         text(120, 381, "of cash gifts when they are paid out.", 8.6, 500, MUTED)]
+         text(120, 368, "A 2.9% processing fee is shown", 8.6, 500, MUTED),
+         text(120, 381, "before you pay.", 8.6, 500, MUTED)]
     o = [f'<rect x="282" y="60" width="196" height="64" rx="10" fill="{BRAND_SOFT}"/>',
          text(380, 84, "KSh 57,200 received", 12, 700, INK), text(380, 100, "KSh 42,000 paid out, 3 payouts", 9.5, 400, MUTED),
          text(380, 114, "Next payout at KSh 10,000", 9.5, 400, MUTED),
@@ -307,10 +308,10 @@ def fig_wireframes():
          text(640, 82, "Give to: Honeymoon fund", 10.5, 700, INK),
          f'<rect x="556" y="94" width="168" height="26" rx="6" fill="{GREY_SOFT}"/>', text(640, 112, "KSh 2,000", 11, 600, INK),
          f'<rect x="556" y="128" width="168" height="26" rx="6" fill="{GREY_SOFT}"/>', text(640, 146, "0712 345 678", 11, 500, INK),
-         f'<rect x="556" y="164" width="168" height="30" rx="15" fill="{MAROON}"/>', text(640, 184, "Pay KSh 2,000 with M-Pesa", 10, 700, "#fff"),
+         f'<rect x="556" y="164" width="168" height="30" rx="15" fill="{MAROON}"/>', text(640, 184, "Pay KSh 2,060 with M-Pesa", 10, 700, "#fff"),
          text(640, 236, "Check your phone for the", 10, 500, MUTED), text(640, 250, "M-Pesa prompt", 10, 500, MUTED),
          f'<circle cx="640" cy="290" r="18" fill="none" stroke="{GOLD}" stroke-width="3" stroke-dasharray="80 40"/>',
-         text(640, 340, "Amount charged is exactly", 9, 500, MUTED), text(640, 353, "what you entered.", 9, 500, MUTED)]
+         text(640, 340, "Gift KES 2,000 + fee KES 60", 9, 500, MUTED), text(640, 353, "Total KES 2,060", 9, 500, MUTED)]
     body = phone(10, "Guest view", g) + phone(270, "Owner dashboard", o) + phone(530, "Contribution", m)
     return svg(760, 420, body, "Key screens, low fidelity")
 

@@ -9,7 +9,7 @@
 <tr><th>Step</th><th>Action</th><th>Responsible</th></tr>
 <tr><td>1</td><td>Submit company documents: certificate of incorporation, CR12, KRA PIN, director identification, bank or paybill details.</td><td>Hadia</td></tr>
 <tr><td>2</td><td>Create the Hadia tenant and assign the platform plan with escrow and M-Pesa features.</td><td>Codevertex</td></tr>
-<tr><td>3</td><td>Create or link the Hadia PayHero Team and complete KYC to tier 3.</td><td>Hadia, PayHero</td></tr>
+<tr><td>3</td><td>Set up Hadia's PayHero Team, complete KYC to tier 3 and save the Team's API key in treasury.</td><td>Hadia, PayHero</td></tr>
 <tr><td>4</td><td>Synchronise the paybill or till and map the wallet and channels to the chart of accounts.</td><td>Codevertex</td></tr>
 <tr><td>5</td><td>Accept the escrow terms in treasury.</td><td>Hadia</td></tr>
 <tr><td>6</td><td>Configure commission, payout policy, approval limit, contribution limits and sweep schedule.</td><td>Hadia finance</td></tr>
@@ -58,7 +58,7 @@
 <h3 id="wf-contribute">Cash contribution</h3>
 <figure>{FIG_CONTRIB}<figcaption>Cash contribution sequence</figcaption></figure>
 <ol>
-<li>The guest selects an item or fund and enters an amount and mobile number. Limits are validated.</li>
+<li>The guest selects an item or fund and enters an amount and mobile number. Limits are validated and the total, including any processing fee, is shown.</li>
 <li>hadia-ui submits the contribution to treasury with an idempotency key.</li>
 <li>Treasury initiates a PayHero collection into the Hadia wallet. The guest authorises the STK push.</li>
 <li>On callback, treasury verifies the transaction with PayHero, credits the registry once and posts the ledger entry. <span class="tag auto">auto</span></li>
