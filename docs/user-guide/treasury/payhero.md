@@ -80,8 +80,9 @@ In **Settings, Payments, Gateways**, make sure PayHero is switched on. PayHero s
 payment option, like Paystack, everywhere your customers pay:
 
 - The **payment page** has a **PayHero** option. It opens PayHero's checkout, with the methods
-  PayHero offers for the payment's currency down the side (M-PESA, Airtel Money, MTN MoMo, card
-  and others, depending on the country) and the chosen method's form beside them.
+  PayHero offers for the payment's currency down the side and the chosen method's form beside
+  them. Today that is M-PESA in Kenya. Airtel Money, MTN MoMo, card, bank and other countries
+  appear once Codevertex has confirmed them with a live payment.
 - The **POS** has one **PayHero** button (with PayHero's logo) that opens the same checkout.
 - **STK Push** and **C2B** on the POS, and **M-Pesa** on the payment page, are your own M-Pesa
   paybill or till connected directly through Safaricom (Daraja). They only appear when that is
@@ -178,7 +179,8 @@ show in the same withdrawal history.
 |---|---|---|
 | The POS or payment page shows no PayHero option | PayHero is on, but your PayHero account has not been created or linked yet | Finish Step 1, or ask Codevertex to link your account |
 | The POS shows PayHero but no STK Push or C2B | STK Push and C2B are for an M-Pesa paybill or till connected directly through Safaricom | Use the PayHero button for M-Pesa |
-| "Merchant has insufficient balance" | Payments go straight to your account and your PayHero service wallet is empty | Top it up on the PayHero dashboard, or choose "Let the system decide" or "Always relay" |
+| "Merchant has insufficient balance" | Payments go straight to your account and your PayHero service wallet is empty | Top it up in **Settings, Payments, PayHero, Wallet** (Top up the service wallet sends an M-Pesa prompt; the balance moves once it is paid) or on the PayHero dashboard, or choose "Let the system decide" or "Always relay" |
+| The customer sees no Airtel Money option | Only M-PESA is offered until other methods are confirmed live | Take M-PESA, or another gateway |
 | Payments arrive in the wrong till | Routing sends that payment type or outlet elsewhere | Check Channels and routing |
 | A new paybill is missing | Channels have not synced yet | Click Sync channels, or wait up to 15 minutes |
 | The customer did not receive the prompt | Network or phone issue | Check the number and send it again, or take another payment method |
