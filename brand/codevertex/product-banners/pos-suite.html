@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Codevertex POS Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Caveat:wght@500;700&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#24071F;--plum:#4E1245;--brand:#A3376A;--soft:#FBF3F7;--ink:#1F0A1B;--body:#3B2A37;--acc:#F59E0B;--accd:#B45309;--accs:#FEF3C7;--x:#E11D48}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1600px;font-family:Montserrat,sans-serif;color:var(--ink);background:#fff;overflow:hidden}
+.b{position:relative;width:1080px;height:1600px;overflow:hidden;background:#fff}
+.ico{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* header */
+.hd{position:absolute;left:0;top:0;width:100%;height:150px;display:flex;align-items:center;justify-content:space-between;padding:0 50px;background:#fff;border-bottom:1px solid #F0E3EA}
+.hd img{height:96px}
+.pl{text-align:right}
+.pl .n{font-size:50px;font-weight:900;color:var(--deep);line-height:1;letter-spacing:-.5px}
+.pl .n span{color:var(--acc)}
+.pl .s{font-size:18px;font-weight:700;color:var(--brand);letter-spacing:.18em;margin-top:8px}
+
+/* problem */
+.pr{position:absolute;left:0;top:150px;width:100%;height:520px;background:linear-gradient(180deg,var(--soft),#fff)}
+.h{position:absolute;left:50px;font-weight:900;line-height:1;letter-spacing:-1px;color:var(--deep)}
+.h.a{top:190px;font-size:58px}.h.b{top:252px;font-size:58px}
+.h.c{top:316px;font-size:92px;color:var(--brand)}
+.h.c u{text-decoration:none;padding:0 4px;background:linear-gradient(transparent 84%,var(--acc) 84%)}
+.pains{position:absolute;left:50px;top:424px;list-style:none}
+.pains li{display:flex;align-items:center;gap:16px;font-size:27px;font-weight:600;color:var(--ink);margin-bottom:13px}
+.pains li i{flex:none;width:36px;height:36px;border-radius:50%;background:var(--x);color:#fff;display:grid;place-items:center;font-style:normal;font-size:20px;font-weight:800}
+
+.before{position:absolute;right:50px;top:200px;width:410px;background:#FFFDF5;border-radius:14px;box-shadow:0 18px 40px rgba(36,7,31,.18);transform:rotate(3deg);padding:22px 26px 20px;font-family:'Caveat',cursive;color:#334}
+.before:before{content:"";position:absolute;inset:0;border-radius:14px;background:repeating-linear-gradient(transparent 0 37px,#D5E3F3 37px 38px);opacity:.8;pointer-events:none}
+.before .tt{font-size:34px;font-weight:700;color:#1E3A8A;border-bottom:2px solid #F3B4B4;padding-bottom:4px;margin-bottom:6px}
+.before .r{display:flex;justify-content:space-between;font-size:30px;line-height:38px}
+.before .r b{color:#B91C1C;font-weight:700}
+.before .t{display:flex;justify-content:space-between;font-size:32px;font-weight:700;margin-top:4px;border-top:2px solid #334;padding-top:2px}
+.before .t b{color:#B91C1C}
+.stamp{position:absolute;right:70px;top:540px;transform:rotate(-8deg);border:4px solid var(--x);color:var(--x);font-weight:900;font-size:26px;letter-spacing:.12em;padding:6px 16px;border-radius:10px;background:rgba(255,255,255,.85)}
+
+/* ribbon */
+.rb{position:absolute;left:-20px;top:722px;width:860px;height:146px;background:linear-gradient(100deg,var(--deep),var(--plum) 60%,var(--brand));border-radius:0 90px 90px 0;transform:rotate(-2deg);transform-origin:left;box-shadow:0 18px 40px rgba(36,7,31,.3);color:#fff;padding:18px 0 0 70px}
+.rb .r1{font-size:60px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.rb .r2{font-size:34px;font-weight:800;margin-top:10px;line-height:1}
+.rb .r2:after{content:"";display:block;width:420px;height:6px;border-radius:3px;background:var(--acc);margin-top:12px}
+.arrow{position:absolute;right:70px;top:660px;width:200px;height:150px}
+
+/* demo */
+.dm{position:absolute;left:50px;top:900px;width:400px}
+.dm .l{font-size:32px;font-weight:800;color:var(--brand);line-height:1.15}
+.dm p{font-size:24px;line-height:1.45;color:var(--body);margin-top:10px;font-weight:500}
+.dm .l2{font-size:30px;font-weight:800;color:var(--accd);margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chips span{font-size:17px;font-weight:700;color:var(--deep);background:var(--accs);border:2px solid var(--acc);padding:6px 14px;border-radius:30px}
+
+.lap{position:absolute;left:470px;top:898px;width:540px}
+.scr{background:#1A1220;border-radius:18px 18px 0 0;padding:12px;height:310px}
+.base{height:22px;background:linear-gradient(#D9D3DC,#A9A1AD);border-radius:0 0 30px 30px;width:600px;margin-left:-30px}
+.app{display:flex;height:100%;background:#fff;border-radius:6px;overflow:hidden;font-size:11px}
+.side{width:46px;background:var(--deep);padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.side .brand{color:#fff;font-weight:900;font-size:10px;background:var(--brand);border-radius:6px;padding:4px 5px}
+.side i{width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,.18)} .side i.on{background:var(--acc)}
+.main{flex:1;padding:10px;background:#F8F5F8}
+.top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.top b{font-size:15px;color:var(--deep)} .top span{color:#7A6B76;font-size:10px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tile{background:#fff;border-radius:8px;padding:8px 6px;font-weight:700;color:var(--deep);box-shadow:0 1px 3px rgba(0,0,0,.08);font-size:11px}
+.tile small{display:block;font-weight:600;color:var(--brand);font-size:10px;margin-top:2px}
+.tile i{display:block;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--accs),#F3E2EC);margin-bottom:5px}
+.cart{width:170px;padding:10px;border-left:1px solid #EEE}
+.ct{font-weight:800;color:var(--deep);font-size:12px;margin-bottom:6px}
+.ln{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #E6DDE3;color:#444}
+.tot{display:flex;justify-content:space-between;margin:10px 0;font-size:13px;color:var(--deep)} .tot b{color:var(--brand)}
+.pay{display:flex;gap:6px}.pay span{flex:1;text-align:center;padding:8px 0;border-radius:6px;font-weight:800;font-size:11px;color:#fff}
+.mp{background:#16A34A}.cd{background:var(--plum)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.kpi{background:#fff;border-radius:8px;padding:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kpi span{display:block;color:#7A6B76;font-size:9.5px}.kpi b{font-size:15px;color:var(--deep)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.panel{background:#fff;border-radius:8px;padding:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);height:172px}
+.pt{font-weight:800;color:var(--deep);font-size:11px;margin-bottom:8px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:124px;border-bottom:1px solid #DDD;padding:0 6px}
+.bars i{flex:1;background:linear-gradient(var(--acc),var(--accd));border-radius:4px 4px 0 0}
+.ap{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0E8ED;color:#333;font-size:10.5px}
+.ap em{font-style:normal;background:var(--brand);color:#fff;border-radius:4px;padding:3px 6px;font-weight:700;font-size:9.5px}
+
+.ph{position:absolute;left:900px;top:960px;width:160px;height:285px;background:#111;border-radius:28px;padding:10px;box-shadow:0 18px 40px rgba(0,0,0,.3)}
+.notch{position:absolute;left:55px;top:12px;width:50px;height:12px;border-radius:8px;background:#000;z-index:2}
+.pc{height:100%;background:#fff;border-radius:20px;text-align:center;padding:28px 8px 8px;color:var(--deep)}
+.pc .ok{width:56px;height:56px;margin:0 auto 10px;border-radius:50%;background:#16A34A;color:#fff;font-size:32px;line-height:56px;font-weight:900}
+.pc b{font-size:14px;line-height:1.2}.pc .amt{font-size:22px;font-weight:900;color:var(--brand);margin:10px 0 4px}
+.pc small{font-size:11px;color:#666}.pc .rcpt{margin-top:12px;background:var(--accs);border-radius:10px;padding:8px;font-size:12px;font-weight:700;color:var(--accd)}
+
+/* features */
+.ft{position:absolute;left:0;top:1262px;width:100%;display:flex;justify-content:center;gap:0;padding:0 30px}
+.f{width:255px;text-align:center;border-right:2px solid #EADCE4}
+.f:last-child{border-right:none}
+.f .c{width:84px;height:84px;margin:0 auto 10px;border-radius:50%;background:var(--accs);color:var(--accd);display:grid;place-items:center;border:3px solid var(--acc)}
+.f .c svg{width:44px;height:44px}
+.f b{display:block;font-size:22px;font-weight:800;color:var(--deep);line-height:1.2}
+
+/* cta */
+.cta{position:absolute;left:30px;top:1420px;width:1020px;height:110px;border-radius:24px;background:var(--soft);border:2px solid #EAD3E0}
+.cta .tr{position:absolute;left:0;top:0;width:470px;height:110px;border-radius:24px 60px 60px 24px;background:linear-gradient(100deg,var(--deep),var(--brand));color:#fff;display:flex;align-items:center;gap:18px;padding-left:28px}
+.cta .tr svg{width:58px;height:58px;color:var(--acc)}
+.cta .tr div{font-size:30px;font-weight:600;line-height:1.1}
+.cta .tr b{color:var(--acc);font-weight:900;font-size:36px}
+.cta ul{position:absolute;left:500px;top:10px;list-style:none}
+.cta li{font-size:18.5px;font-weight:600;color:var(--ink);line-height:22.5px}
+.cta li:before{content:"✓";color:#16A34A;font-weight:900;margin-right:10px}
+
+/* footer */
+.fo{position:absolute;left:0;bottom:0;width:100%;height:62px;background:var(--deep);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 40px;font-size:19px;font-weight:600}
+.fo span{display:flex;align-items:center;gap:10px}.fo svg{width:24px;height:24px;color:var(--acc)}
+</style></head>
+<body><div class="b">
+  <div class="hd"><img src="assets/codevertex-logo.png" alt="Codevertex Africa Limited">
+    <div class="pl"><div class="n">POS <span>Suite</span></div><div class="s">SELL · TRACK · GROW</div></div></div>
+  <div class="pr"></div>
+  <div class="h a">STILL RUNNING</div><div class="h b">YOUR SHOP ON</div><div class="h c"><u>PAPER?</u></div>
+  <ul class="pains"><li><i>✕</i>Long queues at the till</li><li><i>✕</i>Cash &amp; M-Pesa that never balance</li><li><i>✕</i>Stock running out unnoticed</li><li><i>✕</i>No idea what actually sells</li><li><i>✕</i>Shift handovers full of gaps</li></ul>
+  <div class="before"><div class="tt">Daily sales book</div><div class="r"><span>Sugar 2kg x3</span><b>720?</b></div><div class="r"><span>Bread</span><b>60</b></div><div class="r"><span>M-Pesa — Wanjiku</span><b>??</b></div><div class="r"><span>Soap (on credit)</span><b>—</b></div><div class="r"><span>Cash in drawer</span><b>4,150</b></div>
+    <div class="t"><span>TOTAL</span><b>doesn't add up!</b></div></div>
+  <div class="stamp">SOUND FAMILIAR?</div>
+  <div class="rb"><div class="r1">CODEVERTEX POS</div><div class="r2">SELLS, COUNTS &amp; BALANCES FOR YOU!</div></div>
+  <div class="dm"><div class="l">Sell faster at the till</div><p>Checkout, M-Pesa, receipts, stock, shifts and reports, synced live across every outlet,</p><div class="l2">all in one system.</div>
+    <div class="chips"><span>Hospitality</span><span>Retail (Duka)</span><span>Pharmacy (Dawa)</span></div></div>
+  <div class="lap"><div class="scr">
+    <div class="app">
+      <div class="side"><div class="brand">POS</div><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+      <div class="main">
+        <div class="top"><b>New Sale</b><span>Till 2 · Shift A</span></div>
+        <div class="tiles"><div class="tile"><i></i>Chapati<small>KES 30</small></div><div class="tile"><i></i>Pilau<small>KES 250</small></div><div class="tile"><i></i>Beef stew<small>KES 350</small></div><div class="tile"><i></i>Tea<small>KES 50</small></div><div class="tile"><i></i>Soda<small>KES 80</small></div><div class="tile"><i></i>Mandazi<small>KES 20</small></div><div class="tile"><i></i>Fries<small>KES 150</small></div><div class="tile"><i></i>Juice<small>KES 120</small></div><div class="tile"><i></i>Samosa<small>KES 40</small></div></div>
+      </div>
+      <div class="cart">
+        <div class="ct">Order #00124</div><div class="ln"><span>Chapati x4</span><b>120</b></div><div class="ln"><span>Beef stew</span><b>350</b></div><div class="ln"><span>Soda 500ml x2</span><b>160</b></div><div class="ln"><span>Tea</span><b>50</b></div>
+        <div class="tot"><span>TOTAL</span><b>KES 680</b></div>
+        <div class="pay"><span class="mp">M-PESA</span><span class="cd">CASH</span></div>
+      </div>
+    </div></div><div class="base"></div></div>
+  <div class="ph"><div class="notch"></div>
+          <div class="pc"><div class="ok">✓</div><b>M-PESA PAYMENT<br>RECEIVED</b>
+          <div class="amt">KES 680</div><small>Ref QJK7H2XM4P</small>
+          <div class="rcpt">Receipt sent</div></div></div>
+  <div class="ft"><div class="f"><div class="c"><svg class="ico" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/></svg></div><b>M-Pesa at<br>the till</b></div><div class="f"><div class="c"><svg class="ico" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M5 12.5a10 10 0 0 1 5.2-2.7M16.8 11a10 10 0 0 1 2.2 1.5M8.5 16a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"/></svg></div><b>Keeps selling<br>offline</b></div><div class="f"><div class="c"><svg class="ico" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg></div><b>Live stock<br>&amp; alerts</b></div><div class="f"><div class="c"><svg class="ico" viewBox="0 0 24 24"><path d="M3 20h18M6 16v-4M10 16V9M14 16v-6M18 16V5"/></svg></div><b>Shift &amp; sales<br>reports</b></div></div>
+  <div class="cta"><div class="tr"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7 14h3M14 14h3M7 17.5h3"/></svg><div>Try it <b>FREE</b><br>for <b>14 days!</b></div></div><ul><li>Plans from <b>KES 1,500/month</b></li><li>Receipt printing &amp; barcode scanning</li><li>Multi-cashier &amp; multi-outlet</li><li>Kitchen display &amp; table management</li></ul></div>
+  <div class="fo"><span><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>pos.codevertexafrica.com</span><span><svg class="ico" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/></svg>+254 742 201 368</span><span><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@codevertexafrica.com</span></div>
+</div></body></html>
