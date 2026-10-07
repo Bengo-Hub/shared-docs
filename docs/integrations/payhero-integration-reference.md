@@ -157,11 +157,17 @@ lists `payhero` only when the tenant's account can take a payment (it has a Team
 account), with its rails in `payhero_methods`:
 
 ```json
-{"gateways":["paystack","payhero","cod"],"payhero_methods":["mpesa","airtel_money","payhero_card"],"providers":{}}
+{"gateways":["paystack","payhero","cod"],"payhero_methods":["mpesa"],"providers":{}}
 ```
 
 - The rails come from PayHero's discovery for the payment's country (M-Pesa, Airtel, MTN, other
   networks, card, bank). If discovery is unavailable, M-Pesa alone is offered.
+- Only Kenyan M-Pesa is offered until the platform service config `payhero.global_rails_verified`
+  is `true`. Every other rail runs on `POST /api/global/payments`, which has not been seen to settle:
+  live discovery (2026-10-07) lists deposit networks only, no withdraw network in any country, and
+  an empty `merchant_id` that its provider (bitpay) requires. Kenyan M-Pesa collections and M-Pesa,
+  paybill and till payouts use the V1 endpoints and are proven live. Bank, Airtel and cross-border
+  payouts are refused before PayHero is called.
 - `mpesa` in `gateways` means Daraja only (the business's own paybill or till).
 - The offline paybill (`payhero_offline`) is offered only when the business switched it on and the
   platform has confirmed it with a live payment (`payhero.offline_paybill_verified`).

@@ -2,6 +2,15 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.6] - 2026-10-07
+
+### Changed
+- **Accepting payments with PayHero**: only M-PESA is offered in Kenya until Airtel Money, MTN,
+  card, bank and other countries are confirmed live; the service wallet can be topped up from
+  Treasury (Settings, Payments, PayHero, Wallet).
+- **PayHero Reference**: the `payhero.global_rails_verified` switch, what live discovery showed
+  (deposit networks only, no withdraw network, empty merchant id), and which rails are proven.
+
 ## [1.13.5] - 2026-10-07
 
 ### Changed
