@@ -2382,6 +2382,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#maskani-api-jetstream-stream-maskani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        maskani-api (JetStream, stream: maskani)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#isp-billing-backend-jetstream-stream-isp" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3868,6 +3879,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#maskani-api-jetstream-stream-maskani" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        maskani-api (JetStream, stream: maskani)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#isp-billing-backend-jetstream-stream-isp" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4509,6 +4531,61 @@ currently published in code.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="maskani-api-jetstream-stream-maskani">maskani-api (JetStream, stream: <code>maskani</code>)<a class="headerlink" href="#maskani-api-jetstream-stream-maskani" title="Permanent link">&para;</a></h3>
+<p>Maskani property management. Owns properties, units, parties, billing runs, meters, unit sales,
+works, vendors (operational side), gate and notices. Money moves only through treasury-api. Full
+list in <code>propery-management-service/maskani-api/docs/events.md</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Subject</th>
+<th>Trigger</th>
+<th>Key Payload Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maskani.bill.issued</code></td>
+<td>Billing run line issued in treasury</td>
+<td>account_ref, amount, due_date, invoice_number, phone, paybill</td>
+</tr>
+<tr>
+<td><code>maskani.payment.applied</code></td>
+<td>Payment reflected on a unit account</td>
+<td>account_ref, amount, receipt, balance</td>
+</tr>
+<tr>
+<td><code>maskani.billing_run.completed</code></td>
+<td>Run finished</td>
+<td>run_id, property_id, period, fund, issued, failed</td>
+</tr>
+<tr>
+<td><code>maskani.instalment.due</code></td>
+<td>Reminder offset reached</td>
+<td>contract_id, seq, amount, due_date</td>
+</tr>
+<tr>
+<td><code>maskani.work_order.created</code> / <code>.assigned</code> / <code>.completed</code> / <code>.sla_breached</code></td>
+<td>Works lifecycle</td>
+<td>number, priority, unit, assignee</td>
+</tr>
+<tr>
+<td><code>maskani.visitor.arrived</code>, <code>maskani.walk_in.requested</code></td>
+<td>Gate</td>
+<td>pass_id, host, unit, visitor_name</td>
+</tr>
+<tr>
+<td><code>maskani.incident.reported</code></td>
+<td>Incident recorded</td>
+<td>number, category, severity</td>
+</tr>
+<tr>
+<td><code>maskani.notice.published</code></td>
+<td>Notice sent</td>
+<td>notice_id, audience_size, priority</td>
+</tr>
+</tbody>
+</table>
 <h3 id="isp-billing-backend-jetstream-stream-isp">isp-billing-backend (JetStream, stream: <code>isp</code>)<a class="headerlink" href="#isp-billing-backend-jetstream-stream-isp" title="Permanent link">&para;</a></h3>
 <p>Notifications + messaging-credit billing are centralized in notifications-api; isp-billing only PUBLISHES these domain events (transactional outbox → NATS). notifications-api consumes them and renders <code>ispbilling/*</code> templates, gating SMS on the tenant's SMS-credit balance and WhatsApp on an active subscription.</p>
 <table>
@@ -4602,6 +4679,12 @@ currently published in code.</p>
 <td><code>hospital</code></td>
 <td><code>hospital.&gt;</code></td>
 <td>appointment_reminder, lab_result_ready, prescription_ready (not yet implemented)</td>
+</tr>
+<tr>
+<td>Maskani (property)</td>
+<td><code>maskani</code></td>
+<td><code>maskani.&gt;</code></td>
+<td>bill_issued, payment_receipt, instalment_due, visitor_arrived, walk_in_request, work_order_update, incident_alert, notice (in progress, 2026-10)</td>
 </tr>
 <tr>
 <td>ISP Billing</td>
@@ -5001,7 +5084,7 @@ currently published in code.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 15:56:54 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 7, 2026 12:05:35 UTC">October 7, 2026</span>
   </span>
 
     
