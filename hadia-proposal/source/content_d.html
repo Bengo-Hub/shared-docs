@@ -198,10 +198,17 @@
 <tr><th>Charge</th><th>Rate</th><th>Paid by</th></tr>
 <tr><td>Gift contribution (into the wallet)</td><td>2.9% of the amount</td><td>Guest by default, or Hadia</td></tr>
 <tr><td>Payout to an owner or to Hadia</td><td>PayHero payout band; KES 1.16 on a KES 20 payout</td><td>Hadia, from the wallet</td></tr>
-<tr><td>Premium purchase (into Hadia's paybill or till)</td><td>PayHero band fee; KES 6 on KES 50, KES 0 up to KES 10</td><td>Guest by default; drawn from Hadia's service wallet</td></tr>
+<tr><td>Premium purchase</td><td>The cheaper of the paybill band fee (from the service wallet) and the wallet route; see below</td><td>Guest by default</td></tr>
 <tr><td>Card payments</td><td>PayHero card rate, confirmed at onboarding</td><td>As for gifts</td></tr>
 </table>
-<p>Rates were measured on live PayHero transactions in October 2026. Treasury records the actual fee on every payment, so Hadia's reports show real costs. For premium purchases, treasury picks the cheaper of the two PayHero routes automatically, and Hadia tops up the service wallet from the treasury console.</p>
+<table>
+<tr><th class="num">Payment (KES)</th><th class="num">Paybill or till route</th><th class="num">Wallet route</th><th>Cheaper</th></tr>
+<tr><td class="num">50</td><td class="num">6.00</td><td class="num">2.61</td><td>Wallet</td></tr>
+<tr><td class="num">200</td><td class="num">6.00</td><td class="num">6.96</td><td>Paybill or till</td></tr>
+<tr><td class="num">1,000</td><td class="num">15.00</td><td class="num">30.16</td><td>Paybill or till</td></tr>
+<tr><td class="num">10,000</td><td class="num">50.00</td><td class="num">291.16</td><td>Paybill or till</td></tr>
+</table>
+<p>Rates measured on live PayHero transactions, October 2026. Treasury prices both routes for every payment and uses the cheaper one that can run. Gifts always use the wallet route because escrow payouts are made from the wallet. Every fee is recorded on its payment, so Hadia's reports show real costs. Hadia tops up the service wallet from the treasury console.</p>
 
 <h3>Complete fee structure</h3>
 <table>
