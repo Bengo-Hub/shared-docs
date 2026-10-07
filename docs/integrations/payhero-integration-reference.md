@@ -46,8 +46,10 @@ the PayHero dashboard.
 
 PayHero has no API to create channels or wallets. A Team gets its wallet (and a service wallet
 that pays PayHero's own costs) when it is created. Paybills, tills and bank accounts are added on
-the PayHero dashboard by someone invited into the Team, then synced into treasury. Collections
-need credit in the service wallet; with an empty one PayHero refuses the payment.
+the PayHero dashboard by someone invited into the Team, then synced into treasury. A collection
+straight to a channel needs credit in the service wallet (with an empty one PayHero refuses it);
+wallet deposits and payouts take PayHero's charge from the money instead (see Fees and collection
+routes).
 
 ### Who sets what
 
@@ -73,8 +75,9 @@ channel. Each collection is routed to a channel in this order:
 The routing screen only lists payment types the tenant can actually receive: those of the
 products it subscribes to, those it received in the last 180 days, and those already routed.
 
-A Kenyan M-Pesa pay-in settles straight into the routed channel. Escrow contributions and wallet
-top-ups carry no channel and land in the Team wallet.
+A Kenyan M-Pesa pay-in reaches the routed channel straight, or relayed through a payments wallet
+(see Fees and collection routes). Escrow contributions and wallet top-ups carry no channel and
+land in the Team wallet.
 
 ### Payments to the platform
 
@@ -103,16 +106,49 @@ A tenant in `platform_root` mode collects into its own paybill or till added on 
 PayHero account. The platform owner assigns the channel to it
 (`POST /platform/gateways/payhero/channels/{id}/assign`); tenants cannot claim channels. The
 platform never lists, routes to or maps an assigned channel, and the tenant's collections are its
-own (its intent, its ledger, never platform revenue or a payout owed).
+own (its intent, its ledger, never platform revenue or a payout owed). Its payments are always
+relayed through the platform's wallet and paid on to its channel, so PayHero's charge comes out of
+each payment and nothing is billed to the tenant later.
 
-### Fees
+### Fees and collection routes
 
-PayHero takes its cost from the account's prepaid service wallet. Treasury prices it from the
-platform fee rules for gateway `payhero` (amount bands), records it on every collection
-(`gateway_fee` metadata, `transaction_cost`) and, when the platform setting `fee_bearer` is
-`payer`, adds it to the tenant's prompt (quote: `GET /pay/{tenant}/fees/payhero`) and books it in
-the tenant's ledger as a recovered charge (4600). Payments to the platform, escrow and personal
-collections are never surcharged.
+PayHero charges in two places:
+
+- **Channel collections** (straight into a paybill, till or bank): a flat fee per amount band from
+  PayHero's published tariff (`/api/transaction_fees`, mirrored daily into the platform fee rules
+  for gateway `payhero`), taken from the account's service wallet.
+- **Wallet deposits and payouts**: a charge kept out of the money itself; the service wallet is
+  never used. PayHero does not publish these charges. It reports them on each line of the
+  account's ledger (`GET /api/v2/transactions`, field `cost`).
+
+Each tenant picks a **collection route** (`collection_route` on `PUT /{tenant}/gateways/payhero`):
+
+| Route | Behaviour |
+|---|---|
+| `auto` (default) | The channel while the service wallet covers the band fee, unless a relay is measured to be cheaper at this amount; a relay when the service wallet is short. |
+| `relay` | Always collect into a payments wallet and pay the channel on. |
+| `channel` | Always straight to the channel; refused while the service wallet is empty. |
+
+A shared-account tenant always relays. The relay is carried by the tenant's own wallet when
+PayHero lets it prompt customers into it (own PayHero account, or a Team at KYC tier 3), otherwise
+by the platform's root wallet (platform setting `payhero.relay_platform_carrier`, on by default),
+which pays the tenant's channel straight on. Escrow, platform billing, personal and offline
+payments are never relayed.
+
+Relays are priced from a table of charges PayHero really made, read back from the carrier's
+ledger after every relay (job "payhero relay costs", every 15 minutes) and stored once per fact:
+a charge already stated by the table (the same amount, or an amount inside a range whose ends
+already predict it) is not stored again. `auto` treats a relay as cheaper only when its charges
+were measured near the amount.
+
+Who pays: the tenant's `fee_bearer` (default `payer`). With `payer` the fee is added to the prompt
+(quote: `GET /pay/{tenant}/fees/payhero`, which runs the same route choice) and booked as a
+recovered charge (4600); on a relay the surcharge is the relay's, and the channel receives exactly
+the price. With `merchant` the payer is prompted for the price; on a relay the channel receives
+the price less PayHero's charge. A relay's charge is booked Dr 5100 M-Pesa Transaction Fees / Cr
+the account the payment settled into, and corrected to PayHero's real charge once it is read when
+the tenant's own wallet carried it. Nothing is billed to a tenant afterwards. Payments to the
+platform, escrow and personal collections are never surcharged.
 
 ## What customers are offered
 
@@ -186,14 +222,14 @@ and Hosted Checkout URLs in treasury to share them.
 ## Payouts and wallet withdrawals
 
 Kenyan phones, paybills and tills are paid out through V1 withdraw; everything else through the
-global withdrawal endpoint. Payouts always come from the tenant's own account and follow the
-tenant's payout approval policy.
+global withdrawal endpoint. Payouts come from the tenant's own account and follow the tenant's
+payout approval policy; the one exception is a relay the platform's wallet carried, which the
+platform pays on to the tenant's channel (it shows in the tenant's withdrawal history).
 
 A tenant moves money out of its Team wallet with `POST .../wallet/withdraw` to one of its own
 channels or a phone. The disbursement approval policy applies (the request returns
 `409 approval_required` until approved). When the payout succeeds, the amount moves between the
-mapped accounts in the books. PayHero's costs come out of the service wallet, which is topped up
-on the PayHero dashboard.
+mapped accounts in the books. PayHero takes the withdrawal charge from the wallet itself.
 
 ## KYC
 

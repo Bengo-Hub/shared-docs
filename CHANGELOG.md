@@ -2,6 +2,18 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.5] - 2026-10-07
+
+### Changed
+- **Accepting payments with PayHero**: a new "How payments reach your account" section: straight
+  to your account (service wallet pays the fee) or relayed through a PayHero wallet (the charge
+  comes out of the payment), and the choice between "Let the system decide", "Always relay" and
+  "Always straight to my account". The shared platform account always relays and is no longer
+  invoiced monthly. A relay the customer pays for leaves your account exactly the price.
+- **PayHero Reference**: fees and collection routes (`collection_route`), relay carriers (own
+  wallet from KYC tier 3, else the platform's), relay charges learnt from PayHero's ledger and
+  stored once per fact, the 5100 booking, and the platform-carried relay payout exception.
+
 ## [1.13.4] - 2026-10-05
 
 ### Changed
