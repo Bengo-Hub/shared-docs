@@ -197,16 +197,16 @@
 <table>
 <tr><th>Charge</th><th>Rate</th><th>Paid by</th></tr>
 <tr><td>Gift contribution (into the wallet)</td><td>2.9% of the amount</td><td>Guest by default, or Hadia</td></tr>
-<tr><td>Payout to an owner or to Hadia</td><td>PayHero payout band; KES 1.16 on a KES 20 payout</td><td>Hadia, from the wallet</td></tr>
+<tr><td>Payout to an owner or to Hadia</td><td>About KES 3 per payout</td><td>Hadia, from the wallet</td></tr>
 <tr><td>Premium purchase</td><td>The cheaper of the paybill band fee (from the service wallet) and the wallet route; see below</td><td>Guest by default</td></tr>
 <tr><td>Card payments</td><td>PayHero card rate, confirmed at onboarding</td><td>As for gifts</td></tr>
 </table>
 <table>
-<tr><th class="num">Payment (KES)</th><th class="num">Paybill or till route</th><th class="num">Wallet route</th><th>Cheaper</th></tr>
-<tr><td class="num">50</td><td class="num">6.00</td><td class="num">2.61</td><td>Wallet</td></tr>
-<tr><td class="num">200</td><td class="num">6.00</td><td class="num">6.96</td><td>Paybill or till</td></tr>
-<tr><td class="num">1,000</td><td class="num">15.00</td><td class="num">30.16</td><td>Paybill or till</td></tr>
-<tr><td class="num">10,000</td><td class="num">50.00</td><td class="num">291.16</td><td>Paybill or till</td></tr>
+<tr><th class="num">Payment (KES)</th><th class="num">Paybill or till fee</th><th class="num">Wallet fee (2.9% + KES 3)</th><th>Cheaper</th></tr>
+<tr><td class="num">50</td><td class="num">6</td><td class="num">5</td><td>Wallet</td></tr>
+<tr><td class="num">100</td><td class="num">6</td><td class="num">7</td><td>Paybill or till</td></tr>
+<tr><td class="num">1,000</td><td class="num">15</td><td class="num">33</td><td>Paybill or till</td></tr>
+<tr><td class="num">10,000</td><td class="num">50</td><td class="num">302</td><td>Paybill or till</td></tr>
 </table>
 <p>Rates measured on live PayHero transactions, October 2026. Treasury prices both routes for every payment and uses the cheaper one that can run. Gifts always use the wallet route because escrow payouts are made from the wallet. Every fee is recorded on its payment, so Hadia's reports show real costs. Hadia tops up the service wallet from the treasury console.</p>
 
@@ -222,7 +222,7 @@
 <tr><td>Hosting</td><td>Hadia</td><td>Codevertex</td><td class="num">KES 12,000 per year</td></tr>
 <tr><td>Domain</td><td>Hadia</td><td>Registrar</td><td class="num">Registrar rate per year</td></tr>
 <tr><td>SMS and WhatsApp</td><td>Hadia</td><td>Codevertex notifications</td><td class="num">KES 1.00 per SMS; WhatsApp plan</td></tr>
-<tr><td>Payout fees</td><td>Hadia</td><td>PayHero</td><td class="num">PayHero payout band</td></tr>
+<tr><td>Payout fees</td><td>Hadia</td><td>PayHero</td><td class="num">About KES 3 per payout</td></tr>
 </table>
 
 <h3>Operating cost examples</h3>
@@ -232,13 +232,13 @@
 <tr><td>Hosting (KES 12,000 per year)</td><td class="num">1,000</td><td class="num">1,000</td><td class="num">1,000</td></tr>
 <tr><td>SMS receipts (1 per gift)</td><td class="num">1,000</td><td class="num">5,000</td><td class="num">10,000</td></tr>
 <tr><td>WhatsApp Pro</td><td class="num">2,000</td><td class="num">2,000</td><td class="num">2,000</td></tr>
-<tr><td>Payout fees (1 payout per 10 gifts, about KES 25 each)</td><td class="num">2,500</td><td class="num">12,500</td><td class="num">25,000</td></tr>
-<tr class="total"><td>Operating cost, guests pay the processing fee</td><td class="num">14,500</td><td class="num">28,500</td><td class="num">46,000</td></tr>
+<tr><td>Payout fees (1 payout per 10 gifts, about KES 3 each)</td><td class="num">300</td><td class="num">1,500</td><td class="num">3,000</td></tr>
+<tr class="total"><td>Operating cost, guests pay the processing fee</td><td class="num">12,300</td><td class="num">17,500</td><td class="num">24,000</td></tr>
 <tr><td>Commission at 4% (average gift KES 2,000)</td><td class="num">80,000</td><td class="num">400,000</td><td class="num">800,000</td></tr>
-<tr class="total"><td>Commission after costs</td><td class="num">65,500</td><td class="num">371,500</td><td class="num">754,000</td></tr>
-<tr><td>Commission after costs, if Hadia absorbs the 2.9% fee</td><td class="num">7,500</td><td class="num">81,500</td><td class="num">174,000</td></tr>
+<tr class="total"><td>Commission after costs</td><td class="num">67,700</td><td class="num">382,500</td><td class="num">776,000</td></tr>
+<tr><td>Commission after costs, if Hadia absorbs the 2.9% fee</td><td class="num">9,700</td><td class="num">92,500</td><td class="num">196,000</td></tr>
 </table>
-<p class="small">Average gift KES 2,000. The payout fee per payout will be confirmed with PayHero for Hadia's account. Premium revenue is excluded.</p>
+<p class="small">Average gift KES 2,000. Payout fee from live relay payments: about KES 3 per payout. Premium revenue is excluded.</p>
 
 <h3>Messaging rates</h3>
 <table>
