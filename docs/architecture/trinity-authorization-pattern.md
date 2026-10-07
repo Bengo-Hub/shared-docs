@@ -570,6 +570,7 @@ Products represent the bridge between RBAC (who can access) and Feature Licensin
 | auth | auth-service | auth-ui |
 | inventory | inventory-service | inventory-frontend |
 | hospital | hospital-service (Codevertex Afya — all three Trinity layers implemented: JWKS auth, subscription gating, local RBAC/JIT/auth-me; no clinical domain schemas yet) | hospital-ui (live, `afya.codevertexafrica.com`) |
+| maskani | maskani-api (property management; JWKS auth, subscription and module gating, local RBAC/JIT/auth-me, Ent tenant guard; in build 2026-10) | maskani-ui (`maskaniapp.codevertexafrica.com`), maskani-commerce (`maskani.codevertexafrica.com`) |
 
 ### Bundle-Based Activation
 
