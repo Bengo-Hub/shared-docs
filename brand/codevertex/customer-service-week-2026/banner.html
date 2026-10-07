@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Customer Service Week 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#2B0A28; --plum:#4E1245; --brand:#A3376A; --bright:#C2408A; --soft:#F6EAF1; --ink:#2B0A28; --muted:#5D4A58;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:1536px;height:1024px;background:#fff;font-family:Montserrat,sans-serif;color:var(--ink);overflow:hidden}
+  .banner{position:relative;width:1536px;height:1024px;background:linear-gradient(135deg,#fff 0%,#fff 55%,var(--soft) 100%);overflow:hidden}
+
+  /* photo on the right, clipped by a swooping curve */
+  .photo{position:absolute;right:0;top:0;width:820px;height:640px;
+    background:url(assets/team.jpg) 150px 0/auto 100% no-repeat var(--plum);
+    clip-path:path('M260 0 L820 0 L820 640 L250 640 C120 600 120 470 210 380 C300 290 330 170 260 0 Z')}
+  .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.25),transparent 40%,rgba(43,10,40,.15))}
+  .swoosh{position:absolute;right:0;top:0;width:820px;height:660px;pointer-events:none}
+
+  .logo{position:absolute;left:66px;top:30px;height:122px}
+  .tag{position:absolute;left:72px;top:162px;font-size:13px;letter-spacing:.42em;font-weight:600;color:var(--muted)}
+
+  .happy{position:absolute;left:70px;top:186px;font-family:'Great Vibes',cursive;font-size:80px;color:var(--brand);transform:rotate(-6deg);line-height:1}
+  .t1{position:absolute;left:62px;top:250px;font-size:110px;font-weight:900;line-height:1;letter-spacing:-1px;color:var(--deep)}
+  .t2{position:absolute;left:62px;top:350px;font-size:118px;font-weight:900;line-height:1;letter-spacing:-1px;
+      background:linear-gradient(90deg,var(--brand),var(--bright));-webkit-background-clip:text;color:transparent}
+  .week{position:absolute;left:555px;top:388px;font-family:'Great Vibes',cursive;font-size:132px;color:var(--brand);transform:rotate(-8deg);line-height:1}
+  .underline{position:absolute;left:590px;top:486px;width:300px;height:40px}
+
+  .date{position:absolute;left:66px;top:470px;display:flex;align-items:center;gap:18px;font-size:30px;font-weight:700;letter-spacing:.2em;color:var(--deep)}
+  .date::before{content:"";position:absolute;left:0;top:-14px;width:520px;height:2px;background:var(--brand);opacity:.6}
+
+  .theme{position:absolute;left:58px;top:530px;width:900px;height:120px;border-radius:28px;
+    background:linear-gradient(90deg,var(--deep),var(--plum) 60%,var(--brand));display:flex;align-items:center;padding:0 34px;gap:26px;color:#fff;
+    box-shadow:0 14px 30px rgba(43,10,40,.25)}
+  .pill{background:var(--bright);padding:10px 20px;border-radius:12px;font-weight:800;letter-spacing:.15em;font-size:20px}
+  .quote{font-size:36px;font-weight:700;white-space:nowrap}
+  .vr{width:2px;height:70px;background:rgba(255,255,255,.55)}
+  .sub{white-space:nowrap;font-size:19px;font-weight:500;line-height:1.35;opacity:.95}
+
+  .pillars{position:absolute;left:40px;top:675px;display:flex}
+  .pillar{width:232px;text-align:center;border-right:2px solid #E3CBD8;padding:0 10px}
+  .pillar:last-child{border-right:none}
+  .ic{width:112px;height:112px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center}
+  .ic.d{background:var(--plum)} .ic.b{background:linear-gradient(135deg,var(--brand),var(--bright))}
+  .ic svg{width:58px;height:58px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .pillar h4{white-space:nowrap;font-size:19.5px;font-weight:800;color:var(--deep);line-height:1.15}
+  .pillar p{font-size:19px;color:var(--muted);margin-top:4px;line-height:1.25}
+
+  .thanks{position:absolute;left:1000px;top:655px;width:500px;padding-left:40px;border-left:2px solid var(--brand)}
+  .thanks .script{font-family:'Great Vibes',cursive;font-size:96px;color:var(--brand);line-height:1;transform:rotate(-4deg);margin-left:-6px}
+  .thanks p{font-size:21px;line-height:1.38;color:var(--ink);margin-top:14px}
+  .thanks b{color:var(--brand)}
+
+  .footer{position:absolute;left:0;bottom:0;width:100%;height:112px;background:linear-gradient(90deg,var(--deep),var(--plum));display:flex;align-items:center;padding:0 30px;color:#fff;gap:0}
+  .footer .lbl{background:var(--bright);padding:12px 24px;border-radius:30px;font-weight:800;letter-spacing:.12em;font-size:20px}
+  .fi{display:flex;align-items:center;gap:14px;padding:0 24px;border-left:2px solid rgba(255,255,255,.3);font-size:16.5px;line-height:1.4;height:62px;white-space:nowrap}
+  .fi:first-of-type{border-left:none}
+  .fi .c{flex:none;width:44px;height:44px;border-radius:50%;background:var(--bright);display:grid;place-items:center}
+  .fi svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="photo"></div>
+  <svg class="swoosh" viewBox="0 0 820 660">
+    <path d="M250 640 C120 600 120 470 210 380 C300 290 330 170 260 0" fill="none" stroke="#A3376A" stroke-width="10"/>
+    <path d="M232 652 C95 610 98 470 190 375 C280 285 305 165 236 0" fill="none" stroke="#2B0A28" stroke-width="4" opacity=".7"/>
+  </svg>
+
+  <img class="logo" src="assets/codevertex-logo.png" alt="Codevertex Africa Limited">
+  <div class="tag">ARCHITECTING AFRICA'S DIGITAL RENAISSANCE</div>
+
+  <div class="happy">Happy</div>
+  <div class="t1">CUSTOMER</div>
+  <div class="t2">SERVICE</div>
+  <div class="week">Week</div>
+  <svg class="underline" viewBox="0 0 330 40"><path d="M5 30 C110 8 220 4 325 12" fill="none" stroke="#A3376A" stroke-width="5" stroke-linecap="round"/></svg>
+
+  <div class="date">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4E1245" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7 14h2M11 14h2M15 14h2M7 17h2M11 17h2"/></svg>
+    OCTOBER 5 – 11, 2026
+  </div>
+
+  <div class="theme">
+    <div class="pill">THEME:</div>
+    <div class="quote">“Built Around You”</div>
+    <div class="vr"></div>
+    <div class="sub">Technology that listens,<br>serves and grows with<br>every customer.</div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="ic d"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5" cy="10" r="2.2"/><circle cx="19" cy="10" r="2.2"/><path d="M6.5 20v-1.5a5.5 5.5 0 0 1 11 0V20M1.5 19v-.8a3.5 3.5 0 0 1 4-3.4M22.5 19v-.8a3.5 3.5 0 0 0-4-3.4"/></svg></div>
+      <h4>OUR CUSTOMERS</h4><p>Inspire us</p>
+    </div>
+    <div class="pillar">
+      <div class="ic b"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4M7.5 10.5l2 2 4-4.5"/></svg></div>
+      <h4>OUR SOLUTIONS</h4><p>Empower you</p>
+    </div>
+    <div class="pillar">
+      <div class="ic d"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+      <h4>OUR COMMITMENT</h4><p>Secure, reliable &amp; always on</p>
+    </div>
+    <div class="pillar">
+      <div class="ic b"><svg viewBox="0 0 24 24"><path d="M3 20h18M6 16v-3M10 16V10M14 16v-5M18 16V7M5 11l5-5 4 3 6-5"/><path d="M16 4h4v4"/></svg></div>
+      <h4>OUR PARTNERSHIP</h4><p>Builds Africa's<br>digital future</p>
+    </div>
+  </div>
+
+  <div class="thanks">
+    <div class="script">Thank You</div>
+    <p>To all our valued customers and partners, for your trust, feedback and loyalty. <b>You are at the heart of every line of code we write.</b></p>
+  </div>
+
+  <div class="footer">
+    <div class="lbl">CONTACTS</div>
+    <div class="fi" style="border-left:none;margin-left:10px"><span class="c"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span>Pioneer House, Oginga-Odinga Rd<br>Kisumu CBD, Kenya</div>
+    <div class="fi"><span class="c"><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/></svg></span>+254 742 201 368<br>+254 743 793 901</div>
+    <div class="fi"><span class="c"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>info@codevertexafrica.com</div>
+    <div class="fi"><span class="c"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>codevertexafrica.com</div>
+  </div>
+</div>
+</body>
+</html>
