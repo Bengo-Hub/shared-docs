@@ -6,7 +6,8 @@ Social / print banner for Customer Service Week (October 5–11, 2026).
 - `codevertex-customer-service-week-2026.png` / `.jpg` — rendered at 2x (3072×2048).
 - `assets/codevertex-logo.png` — logo cropped from `codevertex-website/public/images/logo.png`.
 - `assets/agent-source.jpg` — original customer-care agent photo.
-- `assets/codevertex-agent.jpg` — the same photo with the Codevertex mark and wordmark printed on the shirt (multiply blend, so the fabric folds show through), widened to the 820×640 photo slot.
+- `assets/codevertex-agent.jpg` — the same photo with the full Codevertex logo embroidered on the left chest (satin-stitch texture, bevel, cast shadow, fabric shading), widened to landscape.
+- `embroider_logo.py` — regenerates the photo: `python3 embroider_logo.py <scratch-dir> 150 576 800` (logo width, x, y on the 2x-upscaled source).
 
 Contact details come from `codevertex-website/src/lib/constants.ts` (`SITE`).
 
