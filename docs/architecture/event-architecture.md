@@ -160,6 +160,23 @@ currently published in code.
 | `hospital.prescription.dispensed` | Prescription dispensed at pharmacy | prescription_id, patient_visit_id, dispensed_by |
 | `hospital.appointment.reminder_due` | Scheduled reminder job fires | appointment_id, patient_id, outlet_id, appointment_at |
 
+### maskani-api (JetStream, stream: `maskani`)
+
+Maskani property management. Owns properties, units, parties, billing runs, meters, unit sales,
+works, vendors (operational side), gate and notices. Money moves only through treasury-api. Full
+list in `propery-management-service/maskani-api/docs/events.md`.
+
+| Subject | Trigger | Key Payload Fields |
+|---------|---------|-------------------|
+| `maskani.bill.issued` | Billing run line issued in treasury | account_ref, amount, due_date, invoice_number, phone, paybill |
+| `maskani.payment.applied` | Payment reflected on a unit account | account_ref, amount, receipt, balance |
+| `maskani.billing_run.completed` | Run finished | run_id, property_id, period, fund, issued, failed |
+| `maskani.instalment.due` | Reminder offset reached | contract_id, seq, amount, due_date |
+| `maskani.work_order.created` / `.assigned` / `.completed` / `.sla_breached` | Works lifecycle | number, priority, unit, assignee |
+| `maskani.visitor.arrived`, `maskani.walk_in.requested` | Gate | pass_id, host, unit, visitor_name |
+| `maskani.incident.reported` | Incident recorded | number, category, severity |
+| `maskani.notice.published` | Notice sent | notice_id, audience_size, priority |
+
 ### isp-billing-backend (JetStream, stream: `isp`)
 
 Notifications + messaging-credit billing are centralized in notifications-api; isp-billing only PUBLISHES these domain events (transactional outbox → NATS). notifications-api consumes them and renders `ispbilling/*` templates, gating SMS on the tenant's SMS-credit balance and WhatsApp on an active subscription.
@@ -187,6 +204,7 @@ Notifications + messaging-credit billing are centralized in notifications-api; i
 | Delivery Tasks | `logistics` | `logistics.task.>` | delivery_assigned, delivery_completed, delivery_failed |
 | POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt, kds_ticket_ready, appointment_created, appointment_completed |
 | Hospital (Codevertex Afya) | `hospital` | `hospital.>` | appointment_reminder, lab_result_ready, prescription_ready (not yet implemented) |
+| Maskani (property) | `maskani` | `maskani.>` | bill_issued, payment_receipt, instalment_due, visitor_arrived, walk_in_request, work_order_update, incident_alert, notice (in progress, 2026-10) |
 | ISP Billing | `isp` | `isp.>` | subscription_credentials (sms+whatsapp; gated on SMS credits / WhatsApp subscription), payment_received, subscription_renewal, subscription_expiring |
 | Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
 | Projects | `projects` | `project.>` | project_milestone_reached |
