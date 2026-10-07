@@ -15,8 +15,9 @@ read the [PayHero Integration Reference](../../integrations/payhero-integration-
 - You need to be an admin with permission to manage payment gateways in Treasury.
 - Have your paybill, till or bank account details ready. PayHero adds these on its own dashboard,
   not in Treasury.
-- For M-Pesa prompts to go through, your PayHero **service wallet** must have some credit. PayHero
-  charges its fees from it, and with an empty wallet it refuses payments.
+- If you choose to have payments go **straight to your account** (see How payments reach your
+  account), your PayHero **service wallet** needs some credit: PayHero takes its fee from it and,
+  with an empty wallet, refuses those payments. The other choices never need it.
 
 ## Step 1: Turn PayHero on and get your account
 
@@ -26,7 +27,7 @@ to use it:
 | Option | When to choose it |
 |---|---|
 | **Your own PayHero account under Codevertex** (recommended) | You get your own PayHero wallet, kept separate from every other business. Needed for escrow and wallet payments. |
-| **Shared platform account** | You only want payments to go into your own paybill or till. Codevertex adds it on its PayHero account and attaches it to you; the money still goes straight to you. No wallet of your own. |
+| **Shared platform account** | You only want payments to go into your own paybill or till. Codevertex adds it on its PayHero account and attaches it to you. Each payment passes through Codevertex's PayHero wallet and is paid on to your paybill or till at once; PayHero's charge comes out of the payment, so you are never billed later. No wallet of your own. |
 | **Your existing PayHero account** | You already have a PayHero account and API key. Your key is stored encrypted. |
 
 With the recommended option, click **Create account**. Your business name, email and phone are
@@ -43,8 +44,8 @@ M-Pesa in Kenya, MTN and Airtel in Uganda) and how phone numbers are read.
 
 On the **shared platform account**, send your paybill or till details to the Codevertex team.
 They add it on the PayHero account and attach it to your business; it then appears under
-**Channels and routing** and your customers' payments settle straight into it. Skip the rest of
-this step.
+**Channels and routing** and your customers' payments are paid into it. Skip the rest of this
+step.
 
 PayHero channels (paybills, tills, bank accounts) are added on the PayHero dashboard. From the
 Account tab, use **Invite admin** to send a dashboard invitation to the person who will add them.
@@ -94,23 +95,52 @@ payment option, like Paystack, everywhere your customers pay:
    **Check your phone** and waits.
 3. M-Pesa sends a prompt to their phone. For a bank paybill it names the bank's paybill and your
    account number there; they enter their PIN.
-4. The money goes straight into the channel you routed that payment to. PayHero tells treasury,
-   treasury confirms the payment with PayHero, and the invoice or sale is marked paid. The page
-   updates on its own.
+4. The money reaches the channel you routed that payment to, either straight away or relayed
+   through a PayHero wallet (see below). PayHero tells treasury, treasury confirms the payment
+   with PayHero, and the invoice or sale is marked paid. The page updates on its own.
+
+## How payments reach your account
+
+An M-Pesa payment can reach your paybill, till or bank in two ways:
+
+- **Straight to your account.** PayHero takes its fee (a small flat amount from its published
+  schedule, which Codevertex keeps up to date daily) from your PayHero **service wallet**.
+- **Relayed through a PayHero wallet.** The payment goes into a PayHero wallet first, PayHero
+  takes its charge out of the payment itself, and the rest is paid on to your account straight
+  away. No service wallet is needed.
+
+Choose on the PayHero **Account** tab:
+
+| Choice | What happens |
+|---|---|
+| **Let the system decide** (recommended) | Straight to your account while your service wallet covers the fee. Relayed when that has been measured to be cheaper for the amount, or when your service wallet runs short, so no payment is refused. |
+| **Always relay** | Every payment is relayed; you never top up a service wallet. |
+| **Always straight to my account** | You keep the service wallet topped up; payments are refused while it is empty. |
+
+On the shared platform account every payment is relayed, whatever you choose.
+
+Relayed payments pass through your own PayHero wallet once your account reaches PayHero's KYC
+tier 3 (PayHero lets a wallet take customers' payments only from that tier); until then they pass
+through Codevertex's PayHero wallet and are paid on to you the same way.
+
+PayHero does not publish its wallet charges, so Treasury learns them from the charges PayHero
+reports on real relayed payments and prices later payments from them. Until a charge has been
+seen for a similar amount, "Let the system decide" relays only when your service wallet is short.
 
 ## The PayHero fee
 
-PayHero charges a small flat fee per payment, from its published fee schedule (Codevertex keeps
-a copy up to date every day). You choose who pays it on the PayHero Account tab:
+You choose who pays PayHero's fee on the PayHero Account tab:
 
 - **Customer pays** (the default): the fee is added to the amount. The payment page shows the fee
   and the total before the prompt is sent, and the fee is recorded in your books as a recovered
-  charge.
-- **I pay**: the customer is prompted for the amount only and you carry the fee.
+  charge. On a relayed payment the customer pays the relay's charge instead, and your account
+  receives exactly the price.
+- **I pay**: the customer is prompted for the amount only and you carry the fee. On a relayed
+  payment your account receives the price less PayHero's charge.
 
-Every payment's fee is shown with the transaction. On the shared platform account PayHero takes
-its fees from Codevertex's PayHero wallet, so Codevertex invoices you once a month for the fees
-recorded on your payments that month.
+Every payment's fee is shown with the transaction, and PayHero's charge on a relayed payment is
+booked as a transaction fee against the account it landed in. Nothing is billed to you afterwards:
+the fee is always recovered from the payment itself or from your own service wallet.
 
 ## Offline paybill for customers who cannot get a prompt
 
@@ -138,8 +168,9 @@ available, the payment is refused instead of charging the wrong amount.
 
 Wallet balances (for example escrow commission or wallet payments) can be withdrawn from
 **PayHero, Account, Withdraw**: choose the amount and one of your own channels or a phone number.
-Your payout approval rules apply, so a withdrawal may need approval before it is sent. PayHero's
-own fees come from the service wallet, which you top up on the PayHero dashboard.
+Your payout approval rules apply, so a withdrawal may need approval before it is sent. PayHero
+takes its withdrawal charge from the wallet itself, not from the service wallet. Relayed payments
+show in the same withdrawal history.
 
 ## Common issues
 
@@ -147,7 +178,7 @@ own fees come from the service wallet, which you top up on the PayHero dashboard
 |---|---|---|
 | The POS or payment page shows no PayHero option | PayHero is on, but your PayHero account has not been created or linked yet | Finish Step 1, or ask Codevertex to link your account |
 | The POS shows PayHero but no STK Push or C2B | STK Push and C2B are for an M-Pesa paybill or till connected directly through Safaricom | Use the PayHero button for M-Pesa |
-| "Merchant has insufficient balance" | Your PayHero service wallet is empty | Top it up on the PayHero dashboard |
+| "Merchant has insufficient balance" | Payments go straight to your account and your PayHero service wallet is empty | Top it up on the PayHero dashboard, or choose "Let the system decide" or "Always relay" |
 | Payments arrive in the wrong till | Routing sends that payment type or outlet elsewhere | Check Channels and routing |
 | A new paybill is missing | Channels have not synced yet | Click Sync channels, or wait up to 15 minutes |
 | The customer did not receive the prompt | Network or phone issue | Check the number and send it again, or take another payment method |
