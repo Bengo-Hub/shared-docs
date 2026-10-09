@@ -111,10 +111,16 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `treasury.payment.created` | Payment intent created | intent_id, reference_id, reference_type, amount, currency, payment_method, status |
 | `treasury.payment.succeeded` | Gateway callback success | intent_id, reference_id, amount, currency, provider, provider_reference, fee, customer_email |
 | `treasury.payment.failed` | Gateway callback failure | intent_id, reference_id, amount, currency, provider, customer_email |
-| `treasury.payout.completed` | Payout settlement processed | reference, gross_amount, fee, net_amount, currency, transfer_code, transaction_count |
+| `treasury.payout.completed` | Scheduled merchant settlement transfer confirmed (`SETTLE-` references only; on-demand and bulk payouts do not emit it) | tenant_id, reference, gross_amount, net_amount, currency, status, transfer_code, transaction_count, period_start, period_end |
 | `treasury.refund.completed` | Refund processed | intent_id, transaction_id, reference_id, amount, currency, source_service, reason, notification{target=customer} |
 | `treasury.settlement.completed` | Merchant settlement batch processed | settlement_id, tenant_id, total_amount, currency, line_count, settled_at |
 | `treasury.installment.due` | Installment payment due date approaching | installment_plan_id, installment_id, customer_id, amount, currency, due_date, notification{target=customer} |
+| `treasury.escrow.pot_created` | Escrow pot opened | pot_id, pot_code, external_id, currency |
+| `treasury.escrow.pot_credited` | Contribution confirmed into a pot | pot_id, pot_code, external_id, currency, intent_id, amount, payer_name, message, item_sku |
+| `treasury.escrow.release_started` | Pot release requested (after approval when the `escrow_release` policy applies) | pot_id, pot_code, external_id, currency, reference, gross, fee, net |
+| `treasury.escrow.dispatched` | Release payout dispatched to the beneficiary | pot_id, pot_code, external_id, currency, reference, gross, fee, net |
+| `treasury.escrow.dispatch_failed` | Release payout failed | pot_id, pot_code, external_id, currency, reference, reason |
+| `treasury.escrow.cancelled` | Pot cancelled, with or without refunds | pot_id, pot_code, external_id, currency, refunds (when refunded) |
 
 ### subscriptions-api (JetStream, stream: `subscription`)
 

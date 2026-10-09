@@ -20,9 +20,8 @@ PayHero. For the tenant-facing setup steps, see the
 |---|---|
 | `https://api.payhero.africa` | Payments, rail discovery, status, balance, beneficiaries, payment channels |
 | `https://auth.payhero.africa` | Teams (accounts), invites, KYC |
-| `https://connect.payhero.africa` | Identity verification checks (billed per check) |
 
-All three use HTTP Basic auth with the API username and password. The platform's key is stored
+Both use HTTP Basic auth with the API username and password. The platform's key is stored
 encrypted in treasury's gateway configuration and is never exposed to tenants.
 
 ## Account modes
@@ -32,9 +31,9 @@ in one of three modes:
 
 | Mode | Account used | Own wallet | Notes |
 |---|---|---|---|
-| `platform_team` (default) | The tenant's own **Team** inside the platform's PayHero organization | Yes, isolated per Team | Required for escrow and wallet collections |
-| `platform_root` | The platform's root account; the tenant claims specific channels | No | Channel collections only |
-| `own_account` | The tenant's own PayHero API key (stored encrypted) | Its own | The account is detected from the key's channels on the first sync |
+| `platform_team` (default) | The tenant's own **Team** inside the platform's PayHero organization | Yes, isolated per Team | The only mode that supports escrow; needed for wallet collections |
+| `platform_root` | The platform's root account; the platform owner assigns specific channels to the tenant | No | Channel collections only |
+| `own_account` | The tenant's own PayHero API key (stored encrypted) | Its own | The account is detected from the key's channels on the first sync; no escrow |
 
 A `platform_team` tenant without a Team has no account at all. It never falls back to the
 platform's account, so its collections and payouts can never touch the platform's wallet.
@@ -60,7 +59,7 @@ routes).
 | PayHero on, mode, country, offline paybill | Tenant | Settings, Payments, PayHero, Account |
 | Team (create or link) | Tenant, or the platform owner on their behalf | Settings, Payments, PayHero, Account |
 | Channels on or off, routing, payment links | Tenant | Settings, Payments, PayHero, Channels and routing |
-| KYC checks and tier | Tenant | Settings, Payments, PayHero, Verification |
+| KYC verification | Tenant | PayHero dashboard (the Team, Management, Verification); treasury reads the tier back |
 | Which gateways customers see, tenant primary | Tenant | Settings, Payments, Gateways |
 
 ## Channels and routing
@@ -239,10 +238,10 @@ mapped accounts in the books. PayHero takes the withdrawal charge from the walle
 
 ## KYC
 
-Collecting from the public into a Team wallet needs KYC tier 3 (national ID plus the company's KRA
-PIN). Verification checks are billed by PayHero, so a check only runs when the request confirms
-the charge (`confirm: true`; otherwise `428`). Treasury stores each check's lookup token, verified
-name and status, never the numbers entered. Tiers are refreshed daily.
+PayHero's tiers are 1 Personal, 2 Business Lite, 3 Company and 4 Cross-border. Collecting from
+the public into a Team wallet, and escrow, need tier 3. Verification is done on the PayHero
+dashboard (the Team, Management, Verification). Treasury only reads the tier and status back with
+the platform organization key, on demand (`POST .../kyc/refresh`) and daily for every Team.
 
 ## API routes
 
@@ -251,21 +250,33 @@ writes `treasury.gateways.manage`):
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `` | Status: mode, Team, KYC, channels, routing, links, verifications |
+| GET | `` | Status: mode, Team, KYC, channels, routing, links, escrow terms, reconciliation |
 | PUT / DELETE | `` | Enable or change mode / disable |
 | POST | `/team`, `/team/link`, `/team/invite` | Create the Team; link an existing Team; invite an admin |
-| POST | `/channels/sync`, `/channels/{id}/claim` | Sync channels; claim a root-account channel (`platform_root`) |
+| POST | `/channels/sync` | Sync channels (`platform_root` tenants keep only their assigned channels) |
 | PATCH | `/channels/{id}` | Switch a channel on or off |
+| PUT | `/channels/{id}/personal` | Mark a channel personal or business (platform tenant only) |
 | PUT | `/channels/{id}/account`, `/wallet-account` | Map a channel or the wallet to a financial account |
 | PUT | `/routing`, `/payment-links` | Channel routing; saved Payment Links |
 | GET | `/routing/options` | Payment types this tenant can route |
 | GET | `/balance`, `/discovery?country=` | Team wallet balance; rails for a country |
 | POST / GET | `/wallet/withdraw`, `/wallet/withdrawals` | Withdraw from the Team wallet; recent withdrawals |
-| GET / POST | `/kyc/pricing`, `/kyc/checks`, `/kyc/verify/{check}`, `/kyc`, `/kyc/refresh` | KYC and verification |
+| POST | `/kyc/refresh` | Read the Team's KYC tier back from PayHero |
+| POST | `/service-wallet/topup` | M-Pesa prompt that tops up the account's service wallet |
 
-Platform routes: `GET/PUT /platform/gateways/payhero/settings`,
-`POST /platform/gateways/payhero/settings/detect`, `GET /platform/gateways/payhero/teams`,
-`POST /platform/gateways/payhero/teams/{tenantID}/link`.
+Platform routes, under `/platform/gateways/payhero`:
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET / PUT | `/settings` | Organization, root account and fee bearer |
+| POST | `/settings/detect` | Fill the organization and root account ids from the key |
+| POST | `/service-wallet/topup` | Top up the root account's service wallet |
+| GET | `/teams` | Every tenant's Team (`?balances=true` adds wallet balances) |
+| POST | `/teams/{tenantID}`, `/teams/{tenantID}/link` | Create or link a Team for a tenant |
+| GET | `/channels` | Root-account channels and the tenant each is assigned to |
+| POST / DELETE | `/channels/{channelID}/assign` | Assign a root-account channel to a `platform_root` tenant, or take it back |
+| GET | `/tariff` | PayHero's published channel tariff |
+| POST | `/tariff/sync` | Mirror the tariff into the fee rules |
 
 ## Background jobs
 
@@ -273,5 +284,6 @@ Platform routes: `GET/PUT /platform/gateways/payhero/settings`,
 |---|---|---|
 | Channel sync | 15 minutes | Keep every tenant's channels current |
 | KYC sync | 24 hours | Refresh Team KYC tiers |
+| Tariff sync | 24 hours | Mirror PayHero's channel tariff into the fee rules |
 
 Each runs once per period across all treasury replicas.

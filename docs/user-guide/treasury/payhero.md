@@ -26,7 +26,7 @@ to use it:
 
 | Option | When to choose it |
 |---|---|
-| **Your own PayHero account under Codevertex** (recommended) | You get your own PayHero wallet, kept separate from every other business. Needed for escrow and wallet payments. |
+| **Your own PayHero account under Codevertex** (recommended) | You get your own PayHero wallet, kept separate from every other business. This is the only option that supports escrow, and it is needed for wallet payments. |
 | **Shared platform account** | You only want payments to go into your own paybill or till. Codevertex adds it on its PayHero account and attaches it to you. Each payment passes through Codevertex's PayHero wallet and is paid on to your paybill or till at once; PayHero's charge comes out of the payment, so you are never billed later. No wallet of your own. |
 | **Your existing PayHero account** | You already have a PayHero account and API key. Your key is stored encrypted. |
 
@@ -69,10 +69,10 @@ can change the match at any time.
 
 ## Step 4: Verify your business (KYC)
 
-To collect money from the public into your PayHero wallet, PayHero requires verification: your
-national ID and your company's KRA PIN. Open **Verification**, check the price of each check (PayHero
-charges per check) and confirm to run it. Treasury keeps only the result, never the numbers you
-enter. Your verification level is refreshed daily.
+To collect money from the public into your PayHero wallet, and to use escrow, PayHero requires
+the Company verification level (tier 3). Complete verification on the PayHero dashboard (your
+Team, Management, Verification). Then open **Verification** in Treasury and click **Refresh KYC**
+to read your level back. Treasury also refreshes it daily.
 
 ## Step 5: Choose what your customers see
 
