@@ -2,6 +2,22 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.7] - 2026-10-09
+
+### Changed
+- **PayHero Reference**: escrow needs `platform_team` (not `own_account`); the platform owner
+  assigns root-account channels; KYC is done on the PayHero dashboard and treasury only reads the
+  tier back (`/kyc/refresh`); the tenant and platform route tables match the current API.
+- **Accepting payments with PayHero**: escrow is available only with the recommended option; the
+  verification step is now "Refresh KYC".
+- **Event Architecture**: the `treasury.escrow.*` events and their payloads;
+  `treasury.payout.completed` is scheduled settlement only, with its actual payload.
+- **Notifications REST API**: the send path is `/api/v1/notifications/messages` with the tenant
+  in the body; `queued` and `duplicate` responses, `cc`, attachments and correlation metadata.
+
+### Removed
+- `hadia-proposal/`: client documents moved to the private documents repository.
+
 ## [1.13.6] - 2026-10-07
 
 ### Changed
