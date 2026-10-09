@@ -176,6 +176,9 @@ list in `propery-management-service/maskani-api/docs/events.md`.
 | `maskani.visitor.arrived`, `maskani.walk_in.requested` | Gate | pass_id, host, unit, visitor_name |
 | `maskani.incident.reported` | Incident recorded | number, category, severity |
 | `maskani.notice.published` | Notice sent | notice_id, audience_size, priority |
+| `maskani.vendor_invoice.approved` | Manager confirms a vendor invoice (planned) | invoice_id, treasury_vendor_id, amount, etims_number, cost_center, fund. treasury-api raises the vendor bill from it, the same way it consumes `inventory.service_delivery.created` |
+| `maskani.arrears.step` | Arrears ladder step reached (planned) | account_ref, step, balance, days_overdue |
+| `maskani.link.ended` | Occupancy or ownership link ended (planned) | unit, party, role, end_date |
 
 ### isp-billing-backend (JetStream, stream: `isp`)
 
