@@ -427,6 +427,7 @@ The following entities belong to a single owner. **No other service may store th
 | Room/RoomGuest/RoomBooking/RoomFolioItem, Facility/FacilityBooking, EventBooking, MealEntitlement, HousekeepingTask (hotel **operations**) | **pos-api** | inventory-api, ordering-backend (only refs e.g. `room_guest_id`, `event_booking_id`) |
 | Room-type/facility/amenity masters & **rates**, conference/event **package** definitions (room/facility pricing must NOT be authored in pos-api) | **inventory-api** | pos-api stores only `inventory_item_id`/`inventory_bundle_id` refs + synced price snapshot |
 | PricingRule, RiderShift | **logistics-api** | ordering-backend, pos-api, treasury-api |
+| Delivery areas (GeoFence), delivery quote policy, delivery fees and geocoding (see [delivery-zones-and-quotes.md](delivery-zones-and-quotes.md)) | **logistics-api** | ordering-backend, pos-api, any service that delivers (no zones, distance maths or fee rules of their own) |
 | Rider/fleet member profiles, KYC, vehicles, shifts | **logistics-api** | ordering-backend (only `rider_id`, `logistics_task_id` refs in order_assignments) |
 | Tenant and user identity (full profile, sessions, MFA, OAuth) | **auth-api** | ordering-backend, pos-api (only `tenant_id`, `user_id` refs; minimal JIT cache allowed for FK only) |
 | Quotations, quotation lines | **treasury-api** | erp (remove after migration), ordering-backend, pos-api |
