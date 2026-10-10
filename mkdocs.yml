@@ -121,6 +121,7 @@ nav:
           - Go Backend — Ent + Atlas Migrations: architecture/go-backend-ent-atlas-migrations.md
           - DevOps-K8s Ingress & CORS: architecture/devops-k8s-ingress-cors.md
           - Online Order Fulfilment: architecture/online-order-fulfilment.md
+          - Delivery Areas and Quotes: architecture/delivery-zones-and-quotes.md
       - Platform Engineering Standards:
           - platform-standards/index.md
           - Engineering Principles: platform-standards/engineering-principles.md
