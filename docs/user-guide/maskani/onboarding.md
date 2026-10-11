@@ -112,6 +112,12 @@ account in the estate fund. You can also add units and link people one at a time
 Invite staff under **Settings, Users** and give each a role. Staff limited to some properties only
 see those.
 
+!!! note "Plan limits"
+    Your subscription sets how many units and staff users the estate can have. Adding a unit,
+    committing an import or inviting staff past that number is stopped with a message showing the
+    limit and how many you already use. Upgrade the plan to go further. Owners, occupants, guards
+    and vendor supervisors never count as staff users.
+
 | Role | Typical person | What they do |
 |---|---|---|
 | Tenant administrator | Estate manager, director | Everything, including settings, roles and approvals |
