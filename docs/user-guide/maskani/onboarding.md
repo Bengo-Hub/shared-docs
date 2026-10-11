@@ -123,6 +123,11 @@ see those.
 | Viewer | Board member, auditor | Read only |
 | Guard | Gate guard | The gate tablet only |
 
+Every change to who has access is kept in **Settings, Audit trail**, which administrators can read:
+roles, invites, suspensions and property assignments, along with changes to settings, funds and
+paybills, money decisions such as verified payments and credits, and transfers of ownership.
+Day-to-day work is not recorded there, so the trail stays short enough to read.
+
 ## 9. Meters
 
 If the property has water meters, add them (unit meters, the bulk supply and any borehole), with the
