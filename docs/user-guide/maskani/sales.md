@@ -83,8 +83,9 @@ under **Payment plan changes**:
 1. Give the reason, then choose instalments (monthly or quarterly, over a number of months) or one
    balance payment, and the date of the first payment.
 2. The new plan covers only what has not been billed yet. Bills already sent stay as they are.
-3. It goes to **Approvals**. Someone who manages sales approves it by default; your estate can add
-   steps by amount under Settings, Approval rules. The person who proposed it never approves it.
+3. It goes to **Approvals**. By default another sales officer or an administrator approves it; your
+   estate can add steps by amount under Settings, Approval rules. The person who proposed it never
+   approves it.
 4. Once approved, the buyer gets it by email and accepts it in the portal. If they are at
    the office, press **Send the buyer a code** and type in the code they read back (it lasts five
    minutes).
@@ -115,10 +116,12 @@ Once a contract is **fully paid**, the contract page shows **Handover**:
 2. On the day, walk the unit with the buyer. Tick the checklist (doors and keys, windows, plumbing,
    electrics, finishes, kitchen, bathroom, meter seals; add your own items), record the keys and
    other items handed over, and note any **snags** with where they are.
-3. **Complete the handover** with the date and a reading on each meter in the unit.
+3. **Complete the handover** with the date and a reading on each meter in the unit. The form shows
+   each meter's last reading; a handover reading cannot be lower.
 
 On completion the buyer becomes the owner of the unit, estate charges start from that date (the
-first month is prorated), and their water is billed from the handover reading. Snags stay on the page after completion; mark each one **Fixed** as the
+first month is prorated), and their water is billed from the handover reading. The new owner gets a
+welcome email naming any snags still open. Snags stay on the page after completion; mark each one **Fixed** as the
 contractor closes it, and the buyer sees how many are still open.
 
 ## Title
@@ -146,4 +149,4 @@ and notes.
 |---|---|
 | See the board, contracts, reservations, price lists and sales reports | Sales: view |
 | Reserve, write and activate contracts, release milestones, propose new plans, run handovers and title stages, add price lists | Sales: manage |
-| Approve a new payment plan | Sales: manage, or the role your approval rule names |
+| Approve a new payment plan | Sales: manage (sales officers and administrators), or the role your approval rule names |

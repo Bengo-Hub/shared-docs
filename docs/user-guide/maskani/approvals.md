@@ -44,7 +44,7 @@ each naming the role that approves it.
 | Waivers | One approval by someone who approves credits | Any amount: administrator |
 | Manual payments | One verification by a property manager, caretaker or administrator | From KES 500,000: property manager, then finance officer |
 | Work order quotes | One approval by someone who manages works | From KES 100,000: property manager, then administrator |
-| New payment plans (sales) | One approval by someone who manages sales | From KES 2,000,000 still to bill: sales manager, then administrator |
+| New payment plans (sales) | One approval by another sales officer or an administrator | From KES 2,000,000 still to bill: sales officer, then administrator |
 
 Bands for one workflow cannot overlap, so every amount has exactly one rule or the default. Changing
 a rule does not change requests already waiting; they finish with the steps they started with.
