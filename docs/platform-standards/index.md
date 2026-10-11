@@ -18,5 +18,6 @@ The conventions every Codevertex service is expected to follow, and the shared G
 | [Observability](observability.md) | `shared/httpware` (logging), `shared/service-client` (tracing) |
 | [AI Integrations & pgvector](ai-and-pgvector.md) | `shared/infrastructure/{pgvector,ollama,onnx}` |
 | [N+1 Queries & Preloading](n-plus-one-queries.md) | Ent's generated `.IDIn()`/eager-load |
+| [Approvals](approvals.md) | `internal/modules/approvals` in treasury-api, inventory-api and maskani-api |
 
 Each page below describes the pattern as it exists today, grounded in the actual code and infrastructure rather than aspirational design docs.
