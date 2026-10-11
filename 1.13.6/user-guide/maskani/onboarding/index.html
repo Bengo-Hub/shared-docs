@@ -1709,6 +1709,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="8. Staff and roles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#staff-on-payroll" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Staff on payroll
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4114,6 +4131,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="8. Staff and roles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#staff-on-payroll" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Staff on payroll
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4183,18 +4217,24 @@
 <h1 id="getting-started-with-maskani">Getting started with Maskani<a class="headerlink" href="#getting-started-with-maskani" title="Permanent link">&para;</a></h1>
 <p>This page takes a new estate from sign-up to its first bill. Do the steps in order; each one leans
 on the one before it.</p>
-<pre class="mermaid"><code>flowchart TD
-  A[1. Create your organisation&lt;br/&gt;and subscribe to Maskani] --&gt; B[2. Choose how the property is run]
-  B --&gt; C[3. Office settings and branding]
-  C --&gt; D[4. Funds and paybills]
-  D --&gt; E[5. Charges and rates]
-  E --&gt; F[6. Property, blocks and photos]
-  F --&gt; G[7. Units and owners&lt;br/&gt;from a spreadsheet]
-  G --&gt; H[8. Staff and roles]
-  H --&gt; I[9. Meters]
-  I --&gt; J[10. Collections rules&lt;br/&gt;ladder, late charge, approvals]
-  J --&gt; K[11. Invite owners to the portal]
-  K --&gt; L[First billing run]</code></pre>
+<pre class="mermaid"><code>flowchart LR
+  subgraph S1[Organisation]
+    direction TB
+    A[1. Create your organisation&lt;br/&gt;and subscribe to Maskani] --&gt; B[2. Choose how the&lt;br/&gt;property is run] --&gt; C[3. Office settings&lt;br/&gt;and branding]
+  end
+  subgraph S2[Money]
+    direction TB
+    D[4. Funds and paybills] --&gt; E[5. Charges and rates]
+  end
+  subgraph S3[Estate and people]
+    direction TB
+    F[6. Property, blocks&lt;br/&gt;and photos] --&gt; G[7. Units and owners&lt;br/&gt;from a spreadsheet] --&gt; H[8. Staff and roles]
+  end
+  subgraph S4[Go live]
+    direction TB
+    I[9. Meters] --&gt; J[10. Collections rules&lt;br/&gt;ladder, late charge, approvals] --&gt; K[11. Invite owners&lt;br/&gt;to the portal] --&gt; L([First billing run])
+  end
+  S1 --&gt; S2 --&gt; S3 --&gt; S4</code></pre>
 <h2 id="1-create-your-organisation">1. Create your organisation<a class="headerlink" href="#1-create-your-organisation" title="Permanent link">&para;</a></h2>
 <p>Sign up as described in <a href="../../getting-started/">Getting Started</a> and pick a Maskani plan under
 <a href="../../subscriptions-and-billing/">Subscriptions &amp; Billing</a>. Your organisation's short name becomes
@@ -4310,6 +4350,16 @@ account in the estate fund. You can also add units and link people one at a time
 <h2 id="8-staff-and-roles">8. Staff and roles<a class="headerlink" href="#8-staff-and-roles" title="Permanent link">&para;</a></h2>
 <p>Invite staff under <strong>Settings, Users</strong> and give each a role. Staff limited to some properties only
 see those.</p>
+<h3 id="staff-on-payroll">Staff on payroll<a class="headerlink" href="#staff-on-payroll" title="Permanent link">&para;</a></h3>
+<p>A Maskani user is someone who signs in. Estate employees who are paid by the estate (caretakers,
+cleaners, gardeners, in-house guards) are managed in <strong>ERP (HR, Payroll)</strong> from the app switcher:
+employee records and documents, salaries, monthly payroll and casual worker payments. Maskani does not
+read ERP employees yet. Until it does, give a caretaker who uses Maskani a user account here, and
+keep their pay in ERP. Linking the two (picking an ERP employee when assigning property staff or a
+work order, and paying a casual worker for a job from ERP) is planned.</p>
+<pre class="mermaid"><code>flowchart LR
+  ERP[ERP: HR and payroll&lt;br/&gt;employees, salaries, payroll runs,&lt;br/&gt;casual payments] -. planned: staff picker .-&gt; MS[Maskani&lt;br/&gt;property staff, work orders]
+  U[Settings, Users&lt;br/&gt;people who sign in] --&gt; MS</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Plan limits</p>
 <p>Your subscription sets how many units and staff users the estate can have. Adding a unit,
@@ -4417,7 +4467,7 @@ for missing meter readings and reminds the caretaker.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 13:38:50 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 13:55:28 UTC">October 11, 2026</span>
   </span>
 
     
