@@ -24,7 +24,7 @@ estate contact gets an email when a request arrives.
 ## How a request moves
 
 ```mermaid
-flowchart TD
+flowchart LR
   A[Resident asks in the portal] --> V[Identity confirmed]
   B[Office records a phone, letter or walk-in request] --> C{Confirm who they are}
   C -->|Code to the phone on record| V

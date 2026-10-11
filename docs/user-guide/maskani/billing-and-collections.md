@@ -37,7 +37,7 @@ shows how to pay this account, including the bank account and reference for bank
 ## How residents pay
 
 ```mermaid
-flowchart TD
+flowchart LR
   P{How much?}
   P -- up to KES 250,000 --> M[Pay now<br/>M-Pesa prompt on their phone]
   P -- more than M-Pesa allows --> B[Bank transfer or cheque<br/>they enter the reference]

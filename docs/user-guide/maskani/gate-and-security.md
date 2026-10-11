@@ -19,7 +19,7 @@ the start of the shift. The guard:
 The tablet keeps working when the internet drops and catches up when it is back.
 
 ```mermaid
-flowchart TD
+flowchart LR
   V[Visitor at the gate] --> P{Has a pass?}
   P -- yes --> C[Guard checks the code] --> IN[Entry recorded]
   P -- no --> W[Guard records a walk-in]

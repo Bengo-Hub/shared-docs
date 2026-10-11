@@ -47,7 +47,7 @@ active until that day. When the link ends, Maskani:
 **Transfer ownership** on the unit page hands the unit to a buyer in one step.
 
 ```mermaid
-flowchart TD
+flowchart LR
   A[Clear every account<br/>and issue the clearance certificate] --> B[Transfer ownership:<br/>pick the buyer, date, handover reading]
   B --> C[Buyer becomes primary owner]
   B --> D[Seller's ownership ends on the date]

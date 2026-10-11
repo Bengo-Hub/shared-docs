@@ -4,18 +4,24 @@ This page takes a new estate from sign-up to its first bill. Do the steps in ord
 on the one before it.
 
 ```mermaid
-flowchart TD
-  A[1. Create your organisation<br/>and subscribe to Maskani] --> B[2. Choose how the property is run]
-  B --> C[3. Office settings and branding]
-  C --> D[4. Funds and paybills]
-  D --> E[5. Charges and rates]
-  E --> F[6. Property, blocks and photos]
-  F --> G[7. Units and owners<br/>from a spreadsheet]
-  G --> H[8. Staff and roles]
-  H --> I[9. Meters]
-  I --> J[10. Collections rules<br/>ladder, late charge, approvals]
-  J --> K[11. Invite owners to the portal]
-  K --> L[First billing run]
+flowchart LR
+  subgraph S1[Organisation]
+    direction TB
+    A[1. Create your organisation<br/>and subscribe to Maskani] --> B[2. Choose how the<br/>property is run] --> C[3. Office settings<br/>and branding]
+  end
+  subgraph S2[Money]
+    direction TB
+    D[4. Funds and paybills] --> E[5. Charges and rates]
+  end
+  subgraph S3[Estate and people]
+    direction TB
+    F[6. Property, blocks<br/>and photos] --> G[7. Units and owners<br/>from a spreadsheet] --> H[8. Staff and roles]
+  end
+  subgraph S4[Go live]
+    direction TB
+    I[9. Meters] --> J[10. Collections rules<br/>ladder, late charge, approvals] --> K[11. Invite owners<br/>to the portal] --> L([First billing run])
+  end
+  S1 --> S2 --> S3 --> S4
 ```
 
 ## 1. Create your organisation
@@ -116,6 +122,21 @@ account in the estate fund. You can also add units and link people one at a time
 
 Invite staff under **Settings, Users** and give each a role. Staff limited to some properties only
 see those.
+
+### Staff on payroll
+
+A Maskani user is someone who signs in. Estate employees who are paid by the estate (caretakers,
+cleaners, gardeners, in-house guards) are managed in **ERP (HR, Payroll)** from the app switcher:
+employee records and documents, salaries, monthly payroll and casual worker payments. Maskani does not
+read ERP employees yet. Until it does, give a caretaker who uses Maskani a user account here, and
+keep their pay in ERP. Linking the two (picking an ERP employee when assigning property staff or a
+work order, and paying a casual worker for a job from ERP) is planned.
+
+```mermaid
+flowchart LR
+  ERP[ERP: HR and payroll<br/>employees, salaries, payroll runs,<br/>casual payments] -. planned: staff picker .-> MS[Maskani<br/>property staff, work orders]
+  U[Settings, Users<br/>people who sign in] --> MS
+```
 
 !!! note "Plan limits"
     Your subscription sets how many units and staff users the estate can have. Adding a unit,

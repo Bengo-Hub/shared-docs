@@ -17,7 +17,15 @@ flowchart LR
   NATS --> NOTIF[notifications-api<br/>WhatsApp, email, push]
   API -->|members, outlets| AUTH[auth-api]
   API -->|feature codes maskani_*| SUBS[subscriptions-api]
+  ERP[erp-api<br/>HR and payroll] -. planned: employee list, casual payments .-> API
 ```
+
+**ERP (HR, Payroll) status.** Estate payroll staff live in erp-api. Maskani stores an optional
+`erp_employee_id` on property staff assignments and work orders but has no ERP client yet
+(`ERP_SERVICE_URL` is configured and unused). erp-api's employee list resolves the tenant only from a
+user's token (`reqctx.go` `scopeFromRequest`), so the link needs it to accept a service call naming
+the tenant, as pos-api's staff purchase route already does, then a Maskani client, a staff picker and
+casual payments on the work order cost line (wave 2.8, `maskani-api/docs/integrations.md`).
 
 Ownership follows [Cross-Service Data Ownership](cross-service-data-ownership.md): Maskani owns the
 register, billing runs, meters, works, gate, notices, documents and its own approvals; it never moves

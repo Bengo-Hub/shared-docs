@@ -21,6 +21,7 @@ flowchart LR
   T[(Treasury<br/>bills, payments, ledger)]
   N[(Notifications<br/>WhatsApp, email, push)]
   A[(Accounts<br/>sign in, roles)]
+  E[(ERP<br/>HR and payroll)]
   O --> M
   S --> M
   G --> M
@@ -29,7 +30,13 @@ flowchart LR
   T -- payment received --> M
   M -- reminders, receipts, alerts --> N
   A -- who you are --> M
+  E -. planned: estate staff<br/>for work orders .-> M
 ```
+
+Estate employees on payroll (caretakers, cleaners, gardeners, in-house guards) are kept in **ERP (HR,
+Payroll)**, opened from the app switcher: their records, salaries, payroll runs and casual worker
+payments. Maskani does not read them yet; picking ERP employees for property staff and work orders is
+planned (the dotted line). See [Staff and payroll](onboarding.md#8-staff-and-roles).
 
 ## Where things are
 
