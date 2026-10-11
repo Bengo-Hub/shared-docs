@@ -1486,6 +1486,8 @@
       
         
       
+        
+      
     
     
     
@@ -1779,6 +1781,34 @@
     
   
     The Resident Portal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/maskani/privacy-and-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Privacy and Personal Data
   
 
     
@@ -2872,6 +2902,17 @@
     <span class="md-ellipsis">
       
         Reports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audit-limits-and-privacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit, limits and privacy
       
     </span>
   </a>
@@ -3983,6 +4024,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#audit-limits-and-privacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audit, limits and privacy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#background-jobs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4104,6 +4156,29 @@ place:</p>
 <p>Downloads all go through the docs module's <code>Export</code>, the same branded engine as statements and
 letters; the older arrears, performance and water balance download URLs are aliases of it. This is
 the TruLoad report catalog pattern.</p>
+<h2 id="audit-limits-and-privacy">Audit, limits and privacy<a class="headerlink" href="#audit-limits-and-privacy" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Audit trail.</strong> One middleware records an allowlist of critical security workflows (access,
+  configuration, money decisions, ownership, personal data) after they succeed. Routine work is never
+  logged. A router test fails if an allowlisted route stops existing.</li>
+<li><strong>Plan limits.</strong> Units and staff users are checked against the token's <code>max_units</code> and
+  <code>max_users</code>, answering 402 <code>usage_limit_exceeded</code> as pos-api does; exempt tenants pass.</li>
+<li><strong>Privacy.</strong> Residents and owners are Maskani's own data subjects, so their requests live here,
+  not in the auth consent ledger (platform users only). <code>internal/modules/privacy</code> holds requests
+  (access, correction, erasure with 7 and 14 day deadlines), identity by a one-time code through
+  notifications' shared auth OTP templates or in person, an export zip built on demand (never
+  stored), anonymisation that keeps financial records, and the single retention schedule.</li>
+<li><strong>Terms history.</strong> Each acceptance is appended to the party's <code>consents.terms_history</code> with the
+  privacy notice version, time and address.</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+  P[Portal request] --&gt; V[verified]
+  O[Office request] --&gt; R[received] --&gt;|code to phone on record, or in person| V
+  V --&gt;|access| X[export zip on demand] --&gt; C[completed]
+  V --&gt;|correction| C
+  V --&gt;|erasure, no active unit link| A[anonymise party, keep finance] --&gt; C
+  R --&gt; J[rejected]
+  V --&gt; J</code></pre>
 <h2 id="background-jobs">Background jobs<a class="headerlink" href="#background-jobs" title="Permanent link">&para;</a></h2>
 <p>Every job runs once per period across pods (<code>sharedcache.ClaimPeriod</code>), per the
 <a href="../../platform-standards/multi-replica-jobs/">multi-replica jobs</a> standard.</p>
@@ -4167,9 +4242,14 @@ the TruLoad report catalog pattern.</p>
 <td>Warns before vendor documents expire</td>
 </tr>
 <tr>
-<td><code>maskani:gate-offline</code>, <code>gate-retention</code></td>
-<td>minute, hour</td>
-<td>Gate tablet health; purges old gate data</td>
+<td><code>maskani:gate-offline</code></td>
+<td>minute</td>
+<td>Gate tablet health</td>
+</tr>
+<tr>
+<td><code>maskani:retention</code></td>
+<td>day</td>
+<td>The retention schedule: gate data, finished passes, lapsed visitors, document access logs, audit trail</td>
 </tr>
 <tr>
 <td><code>maskani:scheduled-notices</code></td>
@@ -4218,7 +4298,7 @@ from <code>POST /media/sign</code>.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 07:26:33 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 12:02:29 UTC">October 11, 2026</span>
   </span>
 
     
