@@ -57,6 +57,7 @@ flowchart LR
   documents.
 - **[Gate and security](gate-and-security.md)**: passes, the guard tablet, walk-ins and who is
   inside.
+- **[Reports](reports.md)**: every report in one place, on screen or as PDF, Excel or CSV.
 - **[The resident portal](resident-portal.md)**: what owners and residents can do, written so you
   can share it with them.
 

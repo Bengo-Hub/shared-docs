@@ -104,6 +104,7 @@ nav:
               - Water Meters: user-guide/maskani/meters-and-water.md
               - Repairs and Vendors: user-guide/maskani/works-and-vendors.md
               - Gate and Security: user-guide/maskani/gate-and-security.md
+              - Reports: user-guide/maskani/reports.md
               - The Resident Portal: user-guide/maskani/resident-portal.md
           - POS:
               - user-guide/pos/index.md

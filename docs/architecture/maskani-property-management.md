@@ -65,6 +65,26 @@ One engine, `internal/modules/approvals`, shaped like treasury's and inventory's
 standard [Approvals](../platform-standards/approvals.md). Modules on it: `credit_note`,
 `adjustment`, `manual_payment`, `work_order_quote`. Inbox `GET /approvals`, rules `/approvals/rules`.
 
+## Reports
+
+One registry (`internal/modules/reports/registry.go`) defines every report once: name, module,
+filters and, for table reports, columns and SQL. Three things read it, so a report is added in one
+place:
+
+```mermaid
+flowchart LR
+  REG[(Report registry)] --> CAT[GET /reports/catalog<br/>by module, filtered by modules and rights]
+  REG --> TAB[GET /reports/id/table<br/>grouped SQL on the replica, cached]
+  REG --> EXP[GET /reports/id/export<br/>docs.Export, branded PDF, Excel, CSV]
+  CAT --> UI[Reports page]
+  TAB --> UI
+  EXP --> UI
+```
+
+Downloads all go through the docs module's `Export`, the same branded engine as statements and
+letters; the older arrears, performance and water balance download URLs are aliases of it. This is
+the TruLoad report catalog pattern.
+
 ## Background jobs
 
 Every job runs once per period across pods (`sharedcache.ClaimPeriod`), per the
