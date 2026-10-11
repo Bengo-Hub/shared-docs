@@ -101,6 +101,11 @@ Add the property (name, code, type, how it is run, location), then its blocks or
 real photos on the property page; the first is the cover on cards and on the public marketplace if
 you publish the estate.
 
+The property picker at the top of the console opens on your **default property**: the one linked to
+your head office branch in your organisation settings, otherwise the first by name. Every page,
+including reports such as the water trend, follows the property picked there. With more than one
+property you can also choose **All properties**; Maskani remembers your choice on that device.
+
 ## 7. Units and owners
 
 **Units, Import CSV** loads units and owners from a spreadsheet. Maskani checks every row first and
