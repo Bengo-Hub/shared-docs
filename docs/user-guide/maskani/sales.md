@@ -28,7 +28,9 @@ percentage and the longest payment term allowed. The list **in force** prices th
 and every new reservation and contract.
 
 To change prices, press **New price list**. It starts from the prices in force, so you change only
-what has changed, then choose **Put it in force now**. The old list is retired with the date the new
+what has changed, then choose **Put it in force now**. Pick each line's unit type from your list of
+unit types (the same list your units use, under Settings, Lists); a type appears once per list, and
+someone allowed to manage units can add a missing type from the dropdown. The old list is retired with the date the new
 one starts. Lists are never edited in place: every price a buyer was quoted stays on record, and
 signed contracts keep their own price.
 
