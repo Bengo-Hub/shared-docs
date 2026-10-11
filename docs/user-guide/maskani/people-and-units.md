@@ -14,6 +14,10 @@ and a start date. One person can own several units, and a unit can have several 
 
 An occupant never sees the owner's purchase account.
 
+Owners and occupants add their own household members, domestic staff and cars from the portal's
+**Household** page, so the office does not have to. Those entries show on the unit page like any
+other link.
+
 ## Inviting someone to the portal
 
 On the person's page, **Invite to portal** sends a WhatsApp and an email with the link. They sign in

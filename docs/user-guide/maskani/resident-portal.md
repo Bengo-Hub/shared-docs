@@ -26,6 +26,9 @@ There is no password.
   or decline. Allow notifications the first time the portal asks; on an iPhone, add the portal to the
   Home Screen first (Share, then Add to Home Screen).
 - **Read notices** from the estate office.
+- **Manage your household** (owners and the person renting the unit). Under **Household**, add family
+  members and domestic staff, then create gate passes for your staff from Visitors. Add your cars so
+  the guards recognise them. Remove anyone who leaves; their passes stop at once.
 
 ## Install it on your phone
 
