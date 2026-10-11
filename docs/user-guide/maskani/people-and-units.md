@@ -12,7 +12,8 @@ and a start date. One person can own several units, and a unit can have several 
 | Household member, domestic staff | Their own passes and the estate's notices |
 | Emergency contact | Nothing; kept for the office |
 
-An occupant never sees the owner's purchase account.
+An occupant never sees the owner's purchase account. When an owner agrees that their tenant pays some charges (water, say), issue
+the **Bill-to consent** document from the account so the arrangement is on record.
 
 Owners and occupants add their own household members, domestic staff and cars from the portal's
 **Household** page, so the office does not have to. Those entries show on the unit page like any
