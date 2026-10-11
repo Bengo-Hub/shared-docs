@@ -37,3 +37,17 @@ flowchart LR
 
 Figures refresh as payments arrive and billing runs finish, so the same report run twice a few
 minutes apart can differ if money came in between.
+
+## The dashboard's performance section
+
+Under the day-to-day tiles, **Performance and outlook** follows the filters at the top of the
+dashboard. Choose up to twelve months, and optionally a block or a fund:
+
+- **Collection rate, collected and billed** cover the months you chose, set against the same number
+  of months just before (last month, when you chose one) and the same months a year earlier.
+- **Revenue by charge**, **Blocks compared** and **Maintenance** cover the same months.
+- A block narrows every figure to its units; a fund narrows billing, collections and balances, and
+  leaves repairs and sales as they are.
+- **Owing now**, occupancy and the forecast are always as of today.
+
+**Report PDF** and **Excel** download exactly what the section shows, with the same filters.
