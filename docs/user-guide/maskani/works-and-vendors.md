@@ -43,4 +43,6 @@ to their unit.
 
 Under **Vendors** keep each contractor with its category and documents. Each category lists the
 documents it must hold (a security agency needs its PSRA licence, a garbage collector its NEMA
-licence, and so on). Maskani warns before a document expires.
+licence, and so on). Maskani warns before a document expires. When a vendor renews, add the new
+document of the same type: it replaces the old one, which stays on record marked **Replaced** and
+no longer counts as expired anywhere.
