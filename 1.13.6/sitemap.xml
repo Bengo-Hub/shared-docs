@@ -37,6 +37,10 @@
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/architecture/maskani-property-management/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
          <loc>https://bengo-hub.github.io/shared-docs/1.13.6/architecture/microservice-architecture/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
@@ -206,6 +210,42 @@
     </url>
     <url>
          <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/inventory/warehouses-and-stock/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/approvals/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/billing-and-collections/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/gate-and-security/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/meters-and-water/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/onboarding/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/people-and-units/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/resident-portal/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://bengo-hub.github.io/shared-docs/1.13.6/user-guide/maskani/works-and-vendors/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
