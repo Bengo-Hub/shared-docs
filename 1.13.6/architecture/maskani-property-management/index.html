@@ -1488,6 +1488,8 @@
       
         
       
+        
+      
     
     
     
@@ -1725,6 +1727,34 @@
     
   
     Gate and Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/maskani/sales/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Selling Units
   
 
     
@@ -2898,6 +2928,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sales-after-signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sales after signing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reports" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4013,6 +4054,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sales-after-signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sales after signing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reports" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4141,7 +4193,26 @@ money. Treasury's account ledger (by <code>account_ref</code>) is the balance of
 <h2 id="approvals">Approvals<a class="headerlink" href="#approvals" title="Permanent link">&para;</a></h2>
 <p>One engine, <code>internal/modules/approvals</code>, shaped like treasury's and inventory's. See the platform
 standard <a href="../../platform-standards/approvals/">Approvals</a>. Modules on it: <code>credit_note</code>,
-<code>adjustment</code>, <code>manual_payment</code>, <code>work_order_quote</code>. Inbox <code>GET /approvals</code>, rules <code>/approvals/rules</code>.</p>
+<code>adjustment</code>, <code>manual_payment</code>, <code>work_order_quote</code>, <code>restructure</code>. Inbox <code>GET /approvals</code>, rules
+<code>/approvals/rules</code>.</p>
+<h2 id="sales-after-signing">Sales after signing<a class="headerlink" href="#sales-after-signing" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Plan versions.</strong> A contract's payment plan is a versioned <code>instalment_schedules</code> row. A
+  restructure writes the next version as <code>proposed</code> for the lines not yet invoiced and submits it
+  to the approvals engine (<code>restructure</code>). Once approved the buyer accepts it in the portal
+  (<code>POST /me/plans/{id}/accept</code>) or reads back a one-time code at the office (<code>internal/shared/otp</code>,
+  the same code store the privacy module uses). Acceptance supersedes the old version; lines already
+  invoiced stay and keep syncing with Treasury, and a contract in default is cured.</li>
+<li><strong>Overpayment.</strong> Treasury pays a newly sent account bill from credit the account holds, and
+  instalment invoicing syncs progress for the accounts it issued on, so an overpayment reduces the
+  next instalment without a separate path.</li>
+<li><strong>Handover.</strong> One <code>handovers</code> row per contract (keys, checklist and snags as JSON). Completion
+  writes a <code>handover</code> meter reading per unit meter (not billed; the next round measures from it),
+  marks the unit and contract handed over, publishes <code>maskani.unit.handed_over</code> and links the buyer
+  as owner through the register's link path, which starts estate billing prorated.</li>
+<li><strong>Title.</strong> Stages come from the estate's <code>title_stage</code> catalogue; the <code>title_released</code> stage done
+  marks the contract and unit titled.</li>
+</ul>
 <h2 id="reports">Reports<a class="headerlink" href="#reports" title="Permanent link">&para;</a></h2>
 <p>One registry (<code>internal/modules/reports/registry.go</code>) defines every report once: name, module,
 filters and, for table reports, columns and SQL. Three things read it, so a report is added in one
@@ -4298,7 +4369,7 @@ from <code>POST /media/sign</code>.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 12:02:29 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 13:02:49 UTC">October 11, 2026</span>
   </span>
 
     
