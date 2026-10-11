@@ -85,6 +85,32 @@ Downloads all go through the docs module's `Export`, the same branded engine as 
 letters; the older arrears, performance and water balance download URLs are aliases of it. This is
 the TruLoad report catalog pattern.
 
+## Audit, limits and privacy
+
+- **Audit trail.** One middleware records an allowlist of critical security workflows (access,
+  configuration, money decisions, ownership, personal data) after they succeed. Routine work is never
+  logged. A router test fails if an allowlisted route stops existing.
+- **Plan limits.** Units and staff users are checked against the token's `max_units` and
+  `max_users`, answering 402 `usage_limit_exceeded` as pos-api does; exempt tenants pass.
+- **Privacy.** Residents and owners are Maskani's own data subjects, so their requests live here,
+  not in the auth consent ledger (platform users only). `internal/modules/privacy` holds requests
+  (access, correction, erasure with 7 and 14 day deadlines), identity by a one-time code through
+  notifications' shared auth OTP templates or in person, an export zip built on demand (never
+  stored), anonymisation that keeps financial records, and the single retention schedule.
+- **Terms history.** Each acceptance is appended to the party's `consents.terms_history` with the
+  privacy notice version, time and address.
+
+```mermaid
+flowchart LR
+  P[Portal request] --> V[verified]
+  O[Office request] --> R[received] -->|code to phone on record, or in person| V
+  V -->|access| X[export zip on demand] --> C[completed]
+  V -->|correction| C
+  V -->|erasure, no active unit link| A[anonymise party, keep finance] --> C
+  R --> J[rejected]
+  V --> J
+```
+
 ## Background jobs
 
 Every job runs once per period across pods (`sharedcache.ClaimPeriod`), per the
@@ -102,7 +128,8 @@ Every job runs once per period across pods (`sharedcache.ClaimPeriod`), per the
 | `maskani:collections-backfill` | hour | Per-account collections from Treasury ledgers for history |
 | `maskani:sla-breaches` | minute | Flags work orders past their fix time |
 | `maskani:vendor-doc-expiry` | hour | Warns before vendor documents expire |
-| `maskani:gate-offline`, `gate-retention` | minute, hour | Gate tablet health; purges old gate data |
+| `maskani:gate-offline` | minute | Gate tablet health |
+| `maskani:retention` | day | The retention schedule: gate data, finished passes, lapsed visitors, document access logs, audit trail |
 | `maskani:scheduled-notices` | minute | Sends notices on their schedule |
 | `maskani:daily-stats-rebuild` | hour | Rebuilds dashboard figures |
 | `maskani:reservation-expiry` | minute | Releases unpaid reservations |

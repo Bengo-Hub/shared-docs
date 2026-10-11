@@ -29,6 +29,10 @@ There is no password.
 - **Manage your household** (owners and the person renting the unit). Under **Household**, add family
   members and domestic staff, then create gate passes for your staff from Visitors. Add your cars so
   the guards recognise them. Remove anyone who leaves; their passes stop at once.
+- **Look after your data.** Under the account menu, **Your data and privacy** shows what the estate
+  keeps and the terms you accepted. Ask there for a copy of your data, a correction, or to have your
+  details erased; the estate answers within 7 or 14 days. See
+  [Privacy and personal data](privacy-and-data.md).
 
 ## Install it on your phone
 
