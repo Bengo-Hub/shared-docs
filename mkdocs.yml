@@ -95,6 +95,16 @@ nav:
               - Invoicing & Payments: user-guide/treasury/invoicing-and-payments.md
               - Accepting payments with PayHero: user-guide/treasury/payhero.md
               - Reports: user-guide/treasury/reports.md
+          - Maskani (Property Management):
+              - user-guide/maskani/index.md
+              - Getting Started: user-guide/maskani/onboarding.md
+              - People, Units and Transfers: user-guide/maskani/people-and-units.md
+              - Billing and Collections: user-guide/maskani/billing-and-collections.md
+              - Approvals: user-guide/maskani/approvals.md
+              - Water Meters: user-guide/maskani/meters-and-water.md
+              - Repairs and Vendors: user-guide/maskani/works-and-vendors.md
+              - Gate and Security: user-guide/maskani/gate-and-security.md
+              - The Resident Portal: user-guide/maskani/resident-portal.md
           - POS:
               - user-guide/pos/index.md
               - Staff Operations:
@@ -122,6 +132,7 @@ nav:
           - DevOps-K8s Ingress & CORS: architecture/devops-k8s-ingress-cors.md
           - Online Order Fulfilment: architecture/online-order-fulfilment.md
           - Delivery Areas and Quotes: architecture/delivery-zones-and-quotes.md
+          - Maskani Architecture: architecture/maskani-property-management.md
       - Platform Engineering Standards:
           - platform-standards/index.md
           - Engineering Principles: platform-standards/engineering-principles.md

@@ -16,7 +16,9 @@ Step-by-step, screenshot-led guides for using each product day to day: [Inventor
 connecting your own Email/SMS/WhatsApp sender and what each type of message actually looks like;
 [Treasury](treasury/index.md) — invoicing, payments, and financial reports; and
 [POS](pos/index.md) — selling and checkout, manager approvals, receipts and printing, and
-day-to-day POS administration. Guides for the rest of the platform will be added here the same way
+day-to-day POS administration. [Maskani](maskani/index.md) covers property and estate
+management: setting up an estate, billing and collections, approvals, water meters, repairs, the
+gate and the resident portal. Guides for the rest of the platform will be added here the same way
 as they're written.
 
 Each product also has its own in-app help and onboarding for anything not yet covered here.
