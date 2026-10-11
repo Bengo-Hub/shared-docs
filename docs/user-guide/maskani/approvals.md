@@ -1,8 +1,8 @@
 # Approvals
 
 Anything that changes money or commits the estate to spending waits for sign-off in one place:
-**Approvals** in the menu. Today that covers credit notes, waivers, manual payments and work order
-quotes; more workflows join the same inbox as they arrive.
+**Approvals** in the menu. Today that covers credit notes, waivers, manual payments, work order
+quotes and new payment plans on sales; more workflows join the same inbox as they arrive.
 
 ## The inbox
 
@@ -10,7 +10,7 @@ quotes; more workflows join the same inbox as they arrive.
 - **All waiting** shows every open approval you can see, with its steps.
 - **Decided** keeps the history.
 
-Each row links to the account or work order behind it, so you can check before deciding. Approve
+Each row links to the account, work order or sale contract behind it, so you can check before deciding. Approve
 with an optional comment; reject needs a reason, which the sender sees.
 
 Two rules always hold. The person who sent something never approves it. And on a request with
@@ -44,6 +44,7 @@ each naming the role that approves it.
 | Waivers | One approval by someone who approves credits | Any amount: administrator |
 | Manual payments | One verification by a property manager, caretaker or administrator | From KES 500,000: property manager, then finance officer |
 | Work order quotes | One approval by someone who manages works | From KES 100,000: property manager, then administrator |
+| New payment plans (sales) | One approval by someone who manages sales | From KES 2,000,000 still to bill: sales manager, then administrator |
 
 Bands for one workflow cannot overlap, so every amount has exactly one rule or the default. Changing
 a rule does not change requests already waiting; they finish with the steps they started with.

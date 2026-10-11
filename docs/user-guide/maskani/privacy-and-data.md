@@ -98,8 +98,8 @@ A daily job removes personal data once it has done its job:
 | Gate entries, exits and guard patrol scans | 90 days |
 | Visitor passes (visitor names, phones, number plates) | 90 days after the pass ends |
 | Returning visitors | One year after their last visit, unless banned or expected on a current pass |
-| Who opened a document, and from where | 2 years |
-| The audit trail | 2 years |
+| Who opened a document, and from where | 1 year |
+| The audit trail | 1 year |
 | Bills, payments, contracts, statements | Kept, as the law requires |
 
 ## Terms and privacy notice

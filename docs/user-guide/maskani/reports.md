@@ -20,6 +20,9 @@ property picked at the top of the console, or all your properties when none is p
 | Maintenance | Maintenance performance | Are repairs answered and fixed on time? |
 | Vendors | Vendor scorecard | Which vendors deliver on time, at what cost, with valid papers? |
 | Security | Security summary | How busy is the gate, and how many incidents? |
+| Sales | Sales position | Which buyers are behind, and by how much? |
+| | Instalment receivables | What will buyers owe each month, and what came in? |
+| | Handover and title | Which paid-up units wait for handover, and where is each title? |
 
 ## Opening and downloading
 

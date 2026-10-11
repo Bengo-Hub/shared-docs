@@ -25,6 +25,10 @@ There is no password.
 - **Answer the gate.** When a guard rings you about a walk-in, you get a notification to let them in
   or decline. Allow notifications the first time the portal asks; on an iPhone, add the portal to the
   Home Screen first (Share, then Add to Home Screen).
+- **Follow your purchase** if you are buying a unit. **Purchase plan** shows what you have paid, the
+  balance and every instalment. When the developer agrees a new payment plan with you, it appears
+  there with the reason; press **Accept the new plan** to put it in force. After full payment you
+  see your handover date and, after handover, whether any snags are still being fixed.
 - **Read notices** from the estate office.
 - **Manage your household** (owners and the person renting the unit). Under **Household**, add family
   members and domestic staff, then create gate passes for your staff from Visitors. Add your cars so

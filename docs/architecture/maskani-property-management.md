@@ -63,7 +63,26 @@ sequenceDiagram
 
 One engine, `internal/modules/approvals`, shaped like treasury's and inventory's. See the platform
 standard [Approvals](../platform-standards/approvals.md). Modules on it: `credit_note`,
-`adjustment`, `manual_payment`, `work_order_quote`. Inbox `GET /approvals`, rules `/approvals/rules`.
+`adjustment`, `manual_payment`, `work_order_quote`, `restructure`. Inbox `GET /approvals`, rules
+`/approvals/rules`.
+
+## Sales after signing
+
+- **Plan versions.** A contract's payment plan is a versioned `instalment_schedules` row. A
+  restructure writes the next version as `proposed` for the lines not yet invoiced and submits it
+  to the approvals engine (`restructure`). Once approved the buyer accepts it in the portal
+  (`POST /me/plans/{id}/accept`) or reads back a one-time code at the office (`internal/shared/otp`,
+  the same code store the privacy module uses). Acceptance supersedes the old version; lines already
+  invoiced stay and keep syncing with Treasury, and a contract in default is cured.
+- **Overpayment.** Treasury pays a newly sent account bill from credit the account holds, and
+  instalment invoicing syncs progress for the accounts it issued on, so an overpayment reduces the
+  next instalment without a separate path.
+- **Handover.** One `handovers` row per contract (keys, checklist and snags as JSON). Completion
+  writes a `handover` meter reading per unit meter (not billed; the next round measures from it),
+  marks the unit and contract handed over, publishes `maskani.unit.handed_over` and links the buyer
+  as owner through the register's link path, which starts estate billing prorated.
+- **Title.** Stages come from the estate's `title_stage` catalogue; the `title_released` stage done
+  marks the contract and unit titled.
 
 ## Reports
 
