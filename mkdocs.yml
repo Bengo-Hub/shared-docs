@@ -94,6 +94,7 @@ nav:
               - user-guide/treasury/index.md
               - Invoicing & Payments: user-guide/treasury/invoicing-and-payments.md
               - Accepting payments with PayHero: user-guide/treasury/payhero.md
+              - Vouchers & Approvals: user-guide/treasury/vouchers-and-approvals.md
               - Reports: user-guide/treasury/reports.md
           - Maskani (Property Management):
               - user-guide/maskani/index.md

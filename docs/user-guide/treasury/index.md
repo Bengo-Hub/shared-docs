@@ -14,6 +14,9 @@ admin or finance user. If you're building against the API directly, see the
 - **[Accepting payments with PayHero](payhero.md)**: setting up PayHero so customers pay by
   M-Pesa (and mobile money, card or bank outside Kenya) straight into your own paybills, tills
   and bank accounts, plus the offline paybill, verification and wallet withdrawals.
+- **[Vouchers & Approvals](vouchers-and-approvals.md)**: payment, receipt and contra vouchers
+  for money that moves without an invoice or bill (casual wages, repairs, cash banked), paying
+  staff with or without payroll, and how approval rules decide expenses, journals and vouchers.
 - **[Reports](reports.md)**: Profit & Loss (full statement and summary), Cash Flow, and Tax
   Summary, and how to pick the period or date range each one covers.
 
