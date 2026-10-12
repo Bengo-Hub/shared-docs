@@ -55,6 +55,32 @@ reorder point. Clicking any row opens a detail panel with the item's available/r
 numbers, and — if you have permission — quick "Adjust" and "Breakdown" actions right there,
 shortcuts to the same adjustment flow covered below.
 
+### End of Life
+
+The **End of Life** tab next to Stock Levels lists items you have retired. They are hidden from
+the POS, the catalog and ordering, and are deleted for good after the retention window unless you
+restore them first. Use the search box at the top of the tab to find an item by name, SKU or
+barcode; the tab badge always shows the total number of retired items. **Restore** brings an item
+back into the catalog and the POS.
+
+## Stock Transfers
+
+**Transfers** moves stock from one warehouse to another. A transfer starts as **Pending** (created,
+not yet shipped), becomes **In Transit** when it is shipped, and **Completed** when the receiving
+warehouse receives it.
+
+Use the status filter beside the search box to narrow the list:
+
+| Filter | Shows |
+| --- | --- |
+| Pending + In Transit | every transfer not yet received, so nothing is forgotten on the road |
+| Pending | created but not shipped yet |
+| In Transit | shipped and waiting to be received |
+| Completed | received at the destination |
+| Cancelled | cancelled transfers |
+
+The filter works together with the search box and the date range, and paging covers every match.
+
 ## Stock Adjustments
 
 This is where you fix a stock number that's wrong — whether that's a brand new item that was

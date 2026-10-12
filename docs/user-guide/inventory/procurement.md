@@ -76,10 +76,25 @@ draft. For each line item, the form shows what's outstanding and lets you enter:
   optional section.
 - **Serial numbers** — for serial-tracked items, one serial per accepted unit.
 
+- **New selling price** — pre-filled from the purchase order when the buyer set one there.
+
 Creating the receipt saves it as a **draft** — it does **not** touch your stock yet. Open it and
 click **Post — update stock** as a deliberate second step once you're happy the numbers are right.
 This two-step design (create, then post) gives you a chance to double-check quantities before
 they hit your stock levels.
+
+### What receiving does to your prices
+
+Posting a receipt (or clicking **Mark Received**) updates the product from what you actually paid:
+
+- **Buying price (cost).** The product's cost moves to the price on this receipt, so the product
+  form, the catalog cost column and the next purchase order all show what you last paid. Stock
+  you already had keeps the cost it was bought at for profit and stock value, so an old batch is
+  never revalued. Tenants on weighted average costing see the average across the stock on hand.
+- **Selling price.** It changes only when you enter a new selling price on the purchase order or
+  the receipt. **All stock** applies it at once everywhere, including the POS. **New stock only**
+  keeps the current price until the older stock is sold through, then switches. Mark Received
+  applies the price set on the purchase order the same way.
 
 ## Purchase Returns
 
