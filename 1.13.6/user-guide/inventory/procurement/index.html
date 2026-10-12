@@ -1041,6 +1041,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Goods Receipts — receiving with detail">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-receiving-does-to-your-prices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What receiving does to your prices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3984,6 +4001,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Goods Receipts — receiving with detail">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-receiving-does-to-your-prices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What receiving does to your prices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4091,12 +4125,29 @@ draft. For each line item, the form shows what's outstanding and lets you enter:
 <li><strong>Lot / batch number and expiry date</strong> — shown up front for items you've marked as
   lot-tracked or perishable (see <a href="../adding-products/">Adding Products</a>), otherwise available as an
   optional section.</li>
-<li><strong>Serial numbers</strong> — for serial-tracked items, one serial per accepted unit.</li>
+<li>
+<p><strong>Serial numbers</strong> — for serial-tracked items, one serial per accepted unit.</p>
+</li>
+<li>
+<p><strong>New selling price</strong> — pre-filled from the purchase order when the buyer set one there.</p>
+</li>
 </ul>
 <p>Creating the receipt saves it as a <strong>draft</strong> — it does <strong>not</strong> touch your stock yet. Open it and
 click <strong>Post — update stock</strong> as a deliberate second step once you're happy the numbers are right.
 This two-step design (create, then post) gives you a chance to double-check quantities before
 they hit your stock levels.</p>
+<h3 id="what-receiving-does-to-your-prices">What receiving does to your prices<a class="headerlink" href="#what-receiving-does-to-your-prices" title="Permanent link">&para;</a></h3>
+<p>Posting a receipt (or clicking <strong>Mark Received</strong>) updates the product from what you actually paid:</p>
+<ul>
+<li><strong>Buying price (cost).</strong> The product's cost moves to the price on this receipt, so the product
+  form, the catalog cost column and the next purchase order all show what you last paid. Stock
+  you already had keeps the cost it was bought at for profit and stock value, so an old batch is
+  never revalued. Tenants on weighted average costing see the average across the stock on hand.</li>
+<li><strong>Selling price.</strong> It changes only when you enter a new selling price on the purchase order or
+  the receipt. <strong>All stock</strong> applies it at once everywhere, including the POS. <strong>New stock only</strong>
+  keeps the current price until the older stock is sold through, then switches. Mark Received
+  applies the price set on the purchase order the same way.</li>
+</ul>
 <h2 id="purchase-returns">Purchase Returns<a class="headerlink" href="#purchase-returns" title="Permanent link">&para;</a></h2>
 <p>A Purchase Return records stock going back <strong>to your supplier</strong> — damaged goods, an over-delivery,
 anything you're sending back for a credit or refund. (This is different from a customer returning
@@ -4151,7 +4202,7 @@ there's no "type a new name to auto-create it" shortcut here. Add the item to yo
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 2, 2026 14:56:44 UTC">September 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 12, 2026 07:20:48 UTC">October 12, 2026</span>
   </span>
 
     
