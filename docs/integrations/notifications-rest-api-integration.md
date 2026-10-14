@@ -1,6 +1,6 @@
 # Notifications REST API Integration Guide
 
-**Last Updated:** March 2026
+**Last Updated:** October 2026
 
 ## Overview
 
@@ -13,8 +13,10 @@ Services that don't participate in the NATS event bus can send notifications via
 ## Endpoint
 
 ```
-POST https://notificationsapi.codevertexafrica.com/{tenantId}/notifications/messages
+POST https://notificationsapi.codevertexafrica.com/api/v1/notifications/messages
 ```
+
+The tenant is named in the body (`tenant`, its ID or slug).
 
 ### Authentication
 
@@ -27,6 +29,7 @@ Either:
 ```json
 {
   "channel": "email",
+  "tenant": "<tenant-id-or-slug>",
   "template": "truload/weight_ticket",
   "to": ["recipient@example.com"],
   "data": {
@@ -43,21 +46,24 @@ Either:
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `channel` | string | Yes | `email`, `sms`, `push`, `whatsapp` |
+| `tenant` | string | Yes | Tenant ID or slug |
 | `template` | string | Yes | Template path (e.g. `truload/weight_ticket`) — without channel prefix |
 | `to` | string[] | Yes | Recipients (emails, phone numbers, or device tokens) |
 | `data` | object | Yes | Template variables |
-| `metadata` | object | No | `subject` for emails, `provider` override, `push_title` for push |
+| `cc` | string[] | No | Copy recipients (email) |
+| `metadata` | object | No | `subject` for emails, `provider` override, `push_title` for push; `source_service`, `reference_type` and `reference_id` link delivery status events back to the sender |
+| `attachments` | object[] | No | Email attachments: `filename`, `contentType`, base64 `content` |
 
 ### Response
 
 ```json
 {
-  "status": "accepted",
+  "status": "queued",
   "requestId": "uuid-string"
 }
 ```
 
-**Status code:** `202 Accepted`
+**Status code:** `202 Accepted`. A repeat of an earlier request with the same idempotency key returns `"status": "duplicate"` with the original `requestId`.
 
 ### Idempotency
 
@@ -132,9 +138,10 @@ import requests
 
 def send_notification(tenant_id: str, template: str, to: list, data: dict, subject: str, api_key: str):
     resp = requests.post(
-        f"https://notificationsapi.codevertexafrica.com/{tenant_id}/notifications/messages",
+        "https://notificationsapi.codevertexafrica.com/api/v1/notifications/messages",
         json={
             "channel": "email",
+            "tenant": tenant_id,
             "template": template,
             "to": to,
             "data": data,
@@ -191,6 +198,7 @@ public class NotificationClient
         var payload = new
         {
             channel = "email",
+            tenant = tenantId,
             template,
             to,
             data,
@@ -198,7 +206,7 @@ public class NotificationClient
         };
 
         var resp = await _http.PostAsJsonAsync(
-            $"{_baseUrl}/{tenantId}/notifications/messages", payload);
+            $"{_baseUrl}/api/v1/notifications/messages", payload);
         resp.EnsureSuccessStatusCode();
     }
 }
