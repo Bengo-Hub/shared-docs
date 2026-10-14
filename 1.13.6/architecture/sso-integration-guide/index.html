@@ -5777,7 +5777,7 @@ GET  https://sso.codevertexafrica.com/.well-known/openid-configuration
 </table>
 <p><strong>The seed uses upsert</strong> — re-running it fixes misconfigured redirect URIs automatically. For tenant-aware apps, seed includes both <code>/{tenant}/auth/callback</code> and <code>/auth/callback</code> so either pattern works.</p>
 <p><strong>CORS and X-Tenant-ID:</strong> auth-api (and any backend that accepts <code>X-Tenant-ID</code>) must include <code>X-Tenant-ID</code> in <code>Access-Control-Allow-Headers</code> (app CORS and ingress annotations). Otherwise frontends that send the tenant UUID header (e.g. after loading profile from <code>/me</code>) will get a CORS preflight failure. See <a href="../devops-k8s-ingress-cors/">devops-k8s-ingress-cors.md</a>.</p>
-<p><strong>Production domains (from devops-k8s/apps/*/values.yaml ingress host):</strong> Only these domains are configured; CORS and OAuth use this list only (no alternate domains).</p>
+<p>*<em>Production domains (from devops-k8s/apps/<em>/values.yaml ingress host):</em></em> Only these domains are configured; CORS and OAuth use this list only (no alternate domains).</p>
 <table>
 <thead>
 <tr>
