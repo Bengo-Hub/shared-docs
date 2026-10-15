@@ -48,7 +48,8 @@ flowchart LR
 ```
 
 - **Pay now** on the portal or a bill link sends an M-Pesa prompt. A payment always settles the
-  oldest unpaid bill first; anything extra is held as credit.
+  oldest unpaid bill first; anything extra is held as credit, and the next bill (or the next sale
+  instalment) is paid from that credit the moment it is issued.
 - **Paybill.** Owners can pay straight to the fund's paybill with their account number. A payment
   with a wrong or missing account number lands in **Collections, Unmatched payments**, where you
   assign it to the right account.
