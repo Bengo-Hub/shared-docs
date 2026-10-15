@@ -114,3 +114,27 @@ email and on the portal.
 
 When an account owes nothing, issue the **Clearance certificate** from the account's documents.
 Maskani refuses it while anything is owed. A unit transfer needs every account clear first.
+
+## Documents and agreements
+
+Every document is numbered and carries a verification code anyone can check on the verify page.
+Notices (a clearance certificate, a demand letter) are simply issued. Agreements (a payment plan, a
+bill-to consent, a letter of offer) also need the signature of everyone named on them:
+
+```mermaid
+flowchart LR
+  I[Issue the agreement] --> P{How do they sign?}
+  P -->|Portal| A[They press Accept<br/>and type the code sent to them]
+  P -->|At the office| C[Send code, they read it back,<br/>you type it in Signatures]
+  P -->|On paper| W[Photograph the signed pages,<br/>Record signed copy]
+  A --> S[Signed once everyone named has accepted]
+  C --> S
+  W --> S
+```
+
+- The code goes to the phone and email already on the person's record, never to a number given on
+  the spot, and lasts five minutes.
+- Each acceptance keeps the document's fingerprint, the time and where it came from, so it can be
+  shown later that this exact document was agreed.
+- The panel shows **Waiting for signatures**, **Partly signed** or **Signed**. Acceptances and
+  signed copies appear in **Settings, Audit trail**.
