@@ -19,9 +19,6 @@ reports need the sales view right, because they name buyers and balances.
 | | Arrears | Who owes, and how old is each debt? |
 | | Estate performance | The chosen months' headline pack for the board |
 | Water | Water trend | Are we losing water between the bulk meter and the units? |
-| Sales | Sales position | Who has paid what, who is behind, and when is the next payment? |
-| | Instalment receivables | How much instalment money falls due each month, and how much is still owed? |
-| | Handover and title | Which paid-up units still wait for handover, snags or title? |
 | Maintenance | Maintenance performance | Are repairs answered and fixed on time? |
 | Vendors | Vendor scorecard | Which vendors deliver on time, at what cost, with valid papers? |
 | Security | Security summary | How busy is the gate, and how many incidents? |
