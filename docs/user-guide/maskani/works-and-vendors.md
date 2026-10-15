@@ -3,7 +3,13 @@
 ## A work order's life
 
 Residents raise requests from the portal with photos; staff raise work orders from the console or a
-phone. Every work order carries a priority with response and fix times.
+phone; the guard books one at the gate when a service provider comes in (see
+[Gate and security](gate-and-security.md#service-providers-at-the-gate)). Every work order carries a
+priority with response and fix times. A quote or cost is optional: routine jobs and walk-in
+providers often have neither.
+
+To follow up on providers who came through the gate, filter **Work orders** by **At the gate**. Each
+one shows who was let in, their phone and when they arrived.
 
 | Priority | Respond within | Fix within |
 |---|---|---|

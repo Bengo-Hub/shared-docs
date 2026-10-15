@@ -31,6 +31,25 @@ flowchart LR
   IN --> EX[Exit recorded later]
 ```
 
+## Service providers at the gate
+
+Most plumbers, technicians and contractors come in through the gate, so the gate is where the job is
+recorded. On the walk-in form the guard ticks **Here to do a job** and adds:
+
+- the **kind of work** (General service when unsure),
+- the **company**, picked from your vendors, or left as not listed for a one-off provider (their name
+  and phone are kept),
+- **what they will do**, in a few words,
+- the **unit** for a resident's repair, or for estate work no unit and **where on the estate**, such
+  as the pump house.
+
+No quote or cost is asked. Once the provider is let in, Maskani books a work order marked **Booked at
+the gate**, with the arrival time, so the office can follow up if the provider has questions to
+answer later. If the walk-in waits for the host, the job is booked only when the host or the guard
+lets them in; a refusal books nothing. A contractor with a pass made for an existing work order is
+linked to that work order instead of a new one. This works offline too: the job is booked when the
+tablet catches up.
+
 ## Walk-in policy
 
 Under **Settings, General** choose whether the guard decides walk-ins (the host is told who came in)
