@@ -69,6 +69,8 @@ planned (the dotted line). See [Staff and payroll](onboarding.md#8-staff-and-rol
 - **[Reports](reports.md)**: every report in one place, on screen or as PDF, Excel or CSV.
 - **[The resident portal](resident-portal.md)**: what owners and residents can do, written so you
   can share it with them.
+- **[Privacy and personal data](privacy-and-data.md)**: requests for a copy of someone's data, a
+  correction or erasure, with their legal deadlines, and how long each kind of data is kept.
 
 The technical side (data, jobs, events, how it connects to other services) is in
 [Maskani architecture](../../architecture/maskani-property-management.md).
