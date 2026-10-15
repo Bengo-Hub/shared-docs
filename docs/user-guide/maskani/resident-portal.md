@@ -30,6 +30,9 @@ There is no password.
   there with the reason; press **Accept the new plan** to put it in force. After full payment you
   see your handover date and, after handover, whether any snags are still being fixed.
 - **Read notices** from the estate office.
+- **Read and accept documents.** **Documents** holds the letters and certificates the estate issues
+  you. An agreement (a payment plan, a bill-to consent, a letter of offer) shows **Accept**: read it,
+  press Accept and type the code sent to your phone or email.
 - **Manage your household** (owners and the person renting the unit). Under **Household**, add family
   members and domestic staff, then create gate passes for your staff from Visitors. Add your cars so
   the guards recognise them. Remove anyone who leaves; their passes stop at once.
