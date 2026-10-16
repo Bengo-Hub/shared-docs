@@ -24,16 +24,24 @@ lines on these two types; moving money between them is a contra voucher.
 
 Hover the **i** next to Account, Amount, Debit, Credit and Memo for what each one expects.
 
-### Example: paying a casual worker and a CCTV installation
+### Example: paying five casual workers and a supplier in one voucher
+
+Each line of a payment or receipt has its own **Paid to** (or **Received from**), so one voucher
+can cover several people.
 
 1. **New Voucher**, type **Payment Voucher**.
 2. **Paid from**: the bank or M-Pesa account the money left.
-3. **Paid to**: choose **Not in system** and type the worker's name. Use **Supplier**,
-   **Customer** or **Staff** to pick someone already on record instead.
-4. Lines: *Salaries and Wages* 5,000 (memo "casual payment"), *Repairs and Maintenance* 19,350
-   ("office CCTV installation"), *Transport* 3,000.
-5. **Reference**: the M-Pesa or bank code. The voucher number (PV-000123) is given for you.
-6. **Save and submit**. The bank account is credited with 27,350.
+3. Lines, one per person or cost:
+   - *Salaries and Wages* 1,000, **Paid to** set to **Not in system** with the worker's name. Add a
+     line for each of the five workers; a new line keeps the type of the one above it.
+   - *Repairs and Maintenance* 4,500, **Paid to** set to **Supplier** and the supplier picked from
+     the list.
+4. **Reference**: the M-Pesa or bank code. The voucher number (PV-000123) is given for you.
+5. **Save and submit**. The bank account is credited once with the total, 9,500.
+
+The voucher book shows the names on the voucher with how many people it paid, and searching for
+any of them finds it. Use **Supplier**, **Customer** or **Staff** to pick someone already on record,
+or leave **Paid to** empty on a line that paid no one in particular.
 
 ### Paying staff
 
@@ -55,7 +63,9 @@ Hover the **i** next to Account, Amount, Debit, Credit and Memo for what each on
 | Posted | in the ledger and the reports | **Reverse** if it was wrong |
 
 A rejected voucher goes back to draft so it can be corrected and submitted again. A posted voucher
-is never edited: reversing it books an opposite entry and keeps both on record.
+is never edited: reversing it books an opposite entry and keeps both on record. If two people
+approve, post or reverse the same voucher at the same moment, only the first counts; the other is
+told it has already moved on, so nothing is posted or reversed twice.
 
 ## Approval rules
 
@@ -79,3 +89,7 @@ When eTIMS is activated, the **Submit** dialog for an expense has a **Transmit t
 switch, like the invoice Send dialog. When it is on, the expense is recorded on eTIMS as a
 purchase once it is paid, so the input VAT can be claimed. That needs the supplier's KRA PIN on
 the expense. Turn it off for expenses that should not go to KRA.
+
+Vouchers are not sent to KRA. When a supplier gives you a tax invoice you want to claim input VAT
+on, record it as a supplier bill or an expense (which eTIMS receives as a purchase) and pay it from
+there or with a payment voucher against the supplier's balance.
