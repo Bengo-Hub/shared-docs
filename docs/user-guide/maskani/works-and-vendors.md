@@ -91,3 +91,24 @@ are what the contract's service credit is applied to.
 generators, fire equipment. Each plan has how often, the next due date and the vendor that does it.
 A week before a plan falls due Maskani raises a work order for it, assigned to that vendor, and
 moves the plan on to its next date. Pause a plan to stop it raising work orders.
+
+## Vendor invoices
+
+On a vendor's page, **Invoices** keeps what the vendor bills you. The vendor must first be linked
+under **Paid in treasury as**.
+
+1. **Record invoice**: pick the contract and enter the invoice exactly as the vendor issued it:
+   its number, the eTIMS invoice number printed on it, the date, the period it covers, the total
+   with VAT and the VAT in it, and a photo. The same invoice number is never accepted twice.
+2. Open the invoice to check it. Maskani shows the contract fee for the period, the visits done
+   and missed, the credit for missed visits, and what is due. When the invoice is more than that,
+   it says so.
+3. Someone who manages vendors (not the person who recorded it) **Approves** it, or **Sends it
+   back** with a note. Estates can set approval rules for larger invoices under **Approvals**.
+4. Once approved, the invoice becomes a supplier bill in Books, where it is paid. When Books
+   records the payment, Maskani marks the invoice **Paid** within the hour.
+
+A credit for missed visits is never taken off the bill in Maskani, because KRA matches the bill
+to the vendor's own eTIMS invoice. When a credit is due, send the invoice back and ask the vendor
+for one that already reflects it. **Cancel invoice** withdraws one that is not paid yet; if it was
+approved, Books cancels its bill too.
