@@ -105,9 +105,16 @@ RabbitMQ previously ran alongside NATS as the Celery broker for the original Dja
 
 #### 4. **Object Storage**
 
-**MinIO** (S3-compatible):
-- Usage: Treasury service for settlement artifacts, receipts
-- Bucket: `treasury-artifacts`
+**Cloudflare R2** (S3-compatible, free tier), shared by every service through
+`github.com/Bengo-Hub/httpware/objectstore`:
+- `codevertex-media-public`, served at `https://media.codevertexafrica.com` (item and menu images, logos,
+  avatars, covers, estate photos).
+- `codevertex-media-private`, reached only through short-lived presigned links (KYC, patient photos,
+  signatures, issued documents, HR files, e-books, attachments).
+- Keys are `<service>/<tenant_id>/<media_type>/...` (user media `<service>/users/<user_id>/...`); rows keep
+  the key. Config comes from the `object-storage` Secret in each namespace (`OBJECT_STORAGE_*`), written by
+  the devops-k8s workflow `object-storage.yml`. No service has a media volume (devops-k8s
+  `docs/object-storage.md`). The platform Postgres backups go to the separate `codevertex-platform-backups` bucket.
 
 #### 5. **Observability**
 
@@ -392,7 +399,7 @@ All services communicate via Kubernetes DNS service names following the pattern:
 ```
 
 **Internal Service Communication** (Backend-to-Backend):
-Every backend service and shared infrastructure component (Redis, NATS, MinIO) is reachable inside the cluster via its Kubernetes Service DNS name, per the pattern above — never a hardcoded IP. Internal hostnames/ports aren't reachable from outside the cluster and aren't listed here; the public hostnames below are what any external integrator actually needs.
+Every backend service and shared infrastructure component (Redis, NATS) is reachable inside the cluster via its Kubernetes Service DNS name, per the pattern above — never a hardcoded IP. Internal hostnames/ports aren't reachable from outside the cluster and aren't listed here; the public hostnames below are what any external integrator actually needs.
 
 **External Service Communication** (Frontend-to-Backend):
 - Auth API: `https://sso.codevertexafrica.com`
@@ -1228,7 +1235,7 @@ flowchart TB
         PG["PostgreSQL<br/>(one DB per service)"]
         Redis["Redis<br/>(cache/sessions, single instance)"]
         NATS["NATS JetStream<br/>(async events, fleet-wide)"]
-        MinIO["MinIO<br/>(object storage)"]
+        MinIO["Cloudflare R2<br/>(object storage)"]
     end
     Backends --> Infra
 ```
@@ -1305,7 +1312,7 @@ Frontend → WebSocket → Backend Service → Redis Pub/Sub → WebSocket → F
 #### **Data Layer**
 - **Databases**: PostgreSQL (per-service), PostGIS (logistics)
 - **Cache**: Redis (sessions, query cache, pub/sub)
-- **Object Storage**: MinIO (S3-compatible)
+- **Object Storage**: Cloudflare R2 (S3-compatible), one public and one private bucket for all services
 
 #### **Observability Layer**
 - **Metrics**: Prometheus + Grafana
