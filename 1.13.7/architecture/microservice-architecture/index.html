@@ -7144,9 +7144,16 @@
 - Connection credentials are provisioned per service via Kubernetes Secrets, never hardcoded.</p>
 <p><strong>Services with dedicated databases</strong>: auth, treasury, subscriptions, logistics (PostGIS for geo-queries), ordering, notifications, inventory, POS, ERP.</p>
 <h4 id="4-object-storage">4. <strong>Object Storage</strong><a class="headerlink" href="#4-object-storage" title="Permanent link">&para;</a></h4>
-<p><strong>MinIO</strong> (S3-compatible):
-- Usage: Treasury service for settlement artifacts, receipts
-- Bucket: <code>treasury-artifacts</code></p>
+<p><strong>Cloudflare R2</strong> (S3-compatible, free tier), shared by every service through
+<code>github.com/Bengo-Hub/httpware/objectstore</code>:
+- <code>codevertex-media-public</code>, served at <code>https://media.codevertexafrica.com</code> (item and menu images, logos,
+  avatars, covers, estate photos).
+- <code>codevertex-media-private</code>, reached only through short-lived presigned links (KYC, patient photos,
+  signatures, issued documents, HR files, e-books, attachments).
+- Keys are <code>&lt;service&gt;/&lt;tenant_id&gt;/&lt;media_type&gt;/...</code> (user media <code>&lt;service&gt;/users/&lt;user_id&gt;/...</code>); rows keep
+  the key. Config comes from the <code>object-storage</code> Secret in each namespace (<code>OBJECT_STORAGE_*</code>), written by
+  the devops-k8s workflow <code>object-storage.yml</code>. No service has a media volume (devops-k8s
+  <code>docs/object-storage.md</code>). The platform Postgres backups go to the separate <code>codevertex-platform-backups</code> bucket.</p>
 <h4 id="5-observability">5. <strong>Observability</strong><a class="headerlink" href="#5-observability" title="Permanent link">&para;</a></h4>
 <p><strong>OpenTelemetry Collector</strong>:
 - Usage: Centralized trace/metric collection
@@ -7476,7 +7483,7 @@
 <div class="highlight"><pre><span></span><code>{service-name}.{namespace}.svc.cluster.local:{port}
 </code></pre></div></p>
 <p><strong>Internal Service Communication</strong> (Backend-to-Backend):
-Every backend service and shared infrastructure component (Redis, NATS, MinIO) is reachable inside the cluster via its Kubernetes Service DNS name, per the pattern above — never a hardcoded IP. Internal hostnames/ports aren't reachable from outside the cluster and aren't listed here; the public hostnames below are what any external integrator actually needs.</p>
+Every backend service and shared infrastructure component (Redis, NATS) is reachable inside the cluster via its Kubernetes Service DNS name, per the pattern above — never a hardcoded IP. Internal hostnames/ports aren't reachable from outside the cluster and aren't listed here; the public hostnames below are what any external integrator actually needs.</p>
 <p><strong>External Service Communication</strong> (Frontend-to-Backend):
 - Auth API: <code>https://sso.codevertexafrica.com</code>
 - Auth UI: <code>https://accounts.codevertexafrica.com</code>
@@ -8523,7 +8530,7 @@ If cart/hold expires without checkout:
         PG["PostgreSQL&lt;br/&gt;(one DB per service)"]
         Redis["Redis&lt;br/&gt;(cache/sessions, single instance)"]
         NATS["NATS JetStream&lt;br/&gt;(async events, fleet-wide)"]
-        MinIO["MinIO&lt;br/&gt;(object storage)"]
+        MinIO["Cloudflare R2&lt;br/&gt;(object storage)"]
     end
     Backends --&gt; Infra</code></pre>
 <p>Every backend service talks to its own PostgreSQL database, shares one Redis instance for caching, and publishes/consumes events through a single NATS JetStream cluster — there's no per-service message broker split. (An earlier version of the platform ran the original Django-based ERP service on RabbitMQ/Celery; that service was fully rebuilt on Go, and RabbitMQ was decommissioned along with it.) See <a href="../../platform-standards/observability/">Observability</a> for the logging and tracing tooling in place today.</p>
@@ -8643,7 +8650,7 @@ If cart/hold expires without checkout:
 <ul>
 <li><strong>Databases</strong>: PostgreSQL (per-service), PostGIS (logistics)</li>
 <li><strong>Cache</strong>: Redis (sessions, query cache, pub/sub)</li>
-<li><strong>Object Storage</strong>: MinIO (S3-compatible)</li>
+<li><strong>Object Storage</strong>: Cloudflare R2 (S3-compatible), one public and one private bucket for all services</li>
 </ul>
 <h4 id="observability-layer"><strong>Observability Layer</strong><a class="headerlink" href="#observability-layer" title="Permanent link">&para;</a></h4>
 <ul>
@@ -8832,7 +8839,7 @@ If cart/hold expires without checkout:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 14:48:28 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 18, 2026 09:47:40 UTC">October 18, 2026</span>
   </span>
 
     
