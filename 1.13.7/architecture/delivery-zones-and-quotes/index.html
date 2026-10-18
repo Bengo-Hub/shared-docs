@@ -4055,7 +4055,7 @@
 <td>nothing</td>
 </tr>
 <tr>
-<td>Distance pricing and geofence policy (per-km rate, minimum, rounding, buffer around the areas, maximum distance)</td>
+<td>Distance pricing and geofence policy (per-km rate, minimum, rounding, coverage rule, buffer, maximum distance, customer confirmation)</td>
 <td>logistics-api <code>logistics.delivery_quote_policy</code></td>
 <td>nothing</td>
 </tr>
@@ -4083,7 +4083,7 @@
 X-API-Key: &lt;INTERNAL_SERVICE_KEY&gt;
 {"lat": 0.47, "lng": 34.16, "outlet_id": "&lt;optional&gt;", "order_total": 800}
 </code></pre></div>
-<p>The response says whether the pin is deliverable, the fee, the matched area or the nearest one, the distance and the ETA. Charge the returned fee (after any of your own adjustments) and store the quote with the order. Never fall back to a guessed fee: if logistics cannot be reached, refuse delivery and keep pickup working. Quotes may be cached for <code>cache_seconds</code> per tenant, outlet and pin.</p>
+<p>The response says whether the pin is deliverable, the fee, the matched area or the nearest one, the distance and the ETA. A pin outside every named area is still delivered (priced by distance, <code>method = per_km</code>) when it lies on the way to a delivery area: within the policy's <code>corridor_km</code> (default 5) of the straight route from the outlet to that area's far edge, or just past it. Direction counts, so a place in the opposite direction is refused however near it is; the tenant can switch to "near an area only" in the policy. A refusal carries <code>direction</code>, <code>outlet_km</code>, <code>route_area</code> and <code>route_off_km</code> so the customer sees which way the pin lies and how far off the delivery routes it is. The distance price is held to the published area fees on the same route: never above the furthest area's fee on that route and never below the fee of a nearer area already passed (<code>breakdown.adjusted</code>). A distance-priced quote also carries <code>needs_confirmation</code> when the tenant wants the customer to check it: ordering passes it on and the order confirmation email states the area, distance and fee. Charge the returned fee (after any of your own adjustments) and store the quote with the order. Never fall back to a guessed fee: if logistics cannot be reached, refuse delivery and keep pickup working. Quotes may be cached for <code>cache_seconds</code> per tenant, outlet and pin.</p>
 <p>Browser side (public, throttled per IP):</p>
 <table>
 <thead>
@@ -4113,7 +4113,7 @@ X-API-Key: &lt;INTERNAL_SERVICE_KEY&gt;
 </table>
 <p>Use <code>@bengo-hub/maps</code> v0.3.0 or later for the UI: <code>LocationPicker</code> for a single pin, <code>ZoneLayer</code> to draw areas, <code>ZoneEditor</code> for admin editing.</p>
 <h2 id="where-admins-configure-it">Where admins configure it<a class="headerlink" href="#where-admins-configure-it" title="Permanent link">&para;</a></h2>
-<p>logistics-ui, Delivery areas (<code>/{tenant}/zones</code>): add or edit areas on the map or by typed coordinates, set the distance rate and geofence, test any location, and see deliveries by area. Shifts can list the areas a rider covers, which auto-dispatch prefers. Other UIs link there instead of copying the screens.</p>
+<p>logistics-ui, Delivery areas (<code>/{tenant}/zones</code>): add or edit areas on the map or by typed coordinates, set the distance rate, coverage rule and geofence, test any location, and see deliveries by area. Everything follows the branch chosen in the header switcher (the main outlet is preselected), and a new area's fee is suggested from the distance between that outlet and the area using the tenant's own distance rates. The Outlets tab sets each outlet's map pin (stored in auth-api, which owns outlets), so every outlet that delivers has its own origin and its own areas. Shifts can list the areas a rider covers, which auto-dispatch prefers. Other UIs link there instead of copying the screens.</p>
 <h2 id="current-consumers">Current consumers<a class="headerlink" href="#current-consumers" title="Permanent link">&para;</a></h2>
 <ul>
 <li>ordering-backend and ordering-frontend (checkout, header location, saved addresses, outlet listing).</li>
@@ -4143,7 +4143,7 @@ X-API-Key: &lt;INTERNAL_SERVICE_KEY&gt;
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2026 06:35:41 UTC">October 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 18, 2026 16:36:30 UTC">October 18, 2026</span>
   </span>
 
     
