@@ -7,7 +7,7 @@ logistics-api is the only service that knows where a tenant delivers and what a 
 | Data | Owner | Others keep |
 |---|---|---|
 | Delivery areas (circles and polygons, fee or free, minimum order, ETA, priority, outlet scope, no-delivery areas) | logistics-api `geo_fences` | nothing |
-| Distance pricing and geofence policy (per-km rate, minimum, rounding, buffer around the areas, maximum distance) | logistics-api `logistics.delivery_quote_policy` | nothing |
+| Distance pricing and geofence policy (per-km rate, minimum, rounding, coverage rule, buffer, maximum distance, customer confirmation) | logistics-api `logistics.delivery_quote_policy` | nothing |
 | Outlet map pin | auth-api outlet metadata (`latitude`, `longitude`), published on `auth.outlet.*` | mirrors in logistics and ordering |
 | The fee charged on an order | ordering-backend `orders.delivery_fee` plus `metadata.delivery_quote` snapshot | logistics task metadata (`zone_id`, `zone_name`, `distance_km`, `delivery_fee`) |
 | Ordering's own fees (service, packaging, small order, delivery discount, free delivery minimum) | ordering-backend `service_configs.fee_config` | nothing |
@@ -24,7 +24,7 @@ X-API-Key: <INTERNAL_SERVICE_KEY>
 {"lat": 0.47, "lng": 34.16, "outlet_id": "<optional>", "order_total": 800}
 ```
 
-The response says whether the pin is deliverable, the fee, the matched area or the nearest one, the distance and the ETA. Charge the returned fee (after any of your own adjustments) and store the quote with the order. Never fall back to a guessed fee: if logistics cannot be reached, refuse delivery and keep pickup working. Quotes may be cached for `cache_seconds` per tenant, outlet and pin.
+The response says whether the pin is deliverable, the fee, the matched area or the nearest one, the distance and the ETA. A pin outside every named area is still delivered (priced by distance, `method = per_km`) while it is no further from the outlet than the furthest area reaches; the tenant can switch this to "near an area only" in the policy. A refusal carries `furthest_area_km` and `outlet_km` so the customer sees how far out of range the pin is. A distance-priced quote also carries `needs_confirmation` when the tenant wants the customer to check it: ordering passes it on and the order confirmation email states the area, distance and fee. Charge the returned fee (after any of your own adjustments) and store the quote with the order. Never fall back to a guessed fee: if logistics cannot be reached, refuse delivery and keep pickup working. Quotes may be cached for `cache_seconds` per tenant, outlet and pin.
 
 Browser side (public, throttled per IP):
 
@@ -39,7 +39,7 @@ Use `@bengo-hub/maps` v0.3.0 or later for the UI: `LocationPicker` for a single 
 
 ## Where admins configure it
 
-logistics-ui, Delivery areas (`/{tenant}/zones`): add or edit areas on the map or by typed coordinates, set the distance rate and geofence, test any location, and see deliveries by area. Shifts can list the areas a rider covers, which auto-dispatch prefers. Other UIs link there instead of copying the screens.
+logistics-ui, Delivery areas (`/{tenant}/zones`): add or edit areas on the map or by typed coordinates, set the distance rate, coverage rule and geofence, test any location, and see deliveries by area. Everything follows the branch chosen in the header switcher (the main outlet is preselected), and a new area's fee is suggested from the distance between that outlet and the area using the tenant's own distance rates. The Outlets tab sets each outlet's map pin (stored in auth-api, which owns outlets), so every outlet that delivers has its own origin and its own areas. Shifts can list the areas a rider covers, which auto-dispatch prefers. Other UIs link there instead of copying the screens.
 
 ## Current consumers
 
