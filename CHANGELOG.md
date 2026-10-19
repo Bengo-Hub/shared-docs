@@ -2,6 +2,15 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.13.8] - 2026-10-19
+
+### Changed
+- **SMS and WhatsApp Billing** (notifications user guide): bundles of 100, 500, 1,000 and 5,000 at KES 1 each, WhatsApp
+  Tier 1 (KES 500, 400 messages), Tier 2 (KES 1,000, 800) and Pro (KES 2,000, unlimited), KES 1 per message beyond them
+  billed on the next invoice with a pause limit, buying with a plan or later, and the new refusal reasons. Replaces the old
+  WhatsApp-only subscription page.
+- **Event Architecture**: ISP credential messages are charged to the sender's bundle or plan in subscriptions-api.
+
 ## [1.13.7] - 2026-10-09
 
 ### Changed

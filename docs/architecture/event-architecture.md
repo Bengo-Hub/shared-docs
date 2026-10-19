@@ -214,7 +214,7 @@ Notifications + messaging-credit billing are centralized in notifications-api; i
 | POS Orders | `pos` | `pos.>` | pos_order_ready, pos_payment_receipt, kds_ticket_ready, appointment_created, appointment_completed |
 | Hospital (Codevertex Afya) | `hospital` | `hospital.>` | appointment_reminder, lab_result_ready, prescription_ready (not yet implemented) |
 | Maskani (property) | `maskani` | `maskani.>` | bill_issued, payment_receipt, instalment_due, visitor_arrived, walk_in_request, work_order_update, incident_alert, notice (in progress, 2026-10) |
-| ISP Billing | `isp` | `isp.>` | subscription_credentials (sms+whatsapp; gated on SMS credits / WhatsApp subscription), payment_received, subscription_renewal, subscription_expiring |
+| ISP Billing | `isp` | `isp.>` | subscription_credentials (sms+whatsapp; charged to the sender's SMS or WhatsApp bundle or plan in subscriptions-api), payment_received, subscription_renewal, subscription_expiring |
 | Ticketing | `ticketing` | `ticketing.>` | ticket_assigned, ticket_resolved |
 | Projects | `projects` | `project.>` | project_milestone_reached |
 | Auth Welcome | plain NATS | `auth.user.created` | welcome email |

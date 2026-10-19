@@ -59,7 +59,7 @@ different levels of trust:
 
 Both are granted per role from **My Organization → Team**; see
 [Managing Your Organisation](../organisation/managing-your-organisation.md#team). Your account
-also needs an active [WhatsApp subscription](whatsapp-subscription-billing.md) and a connected
+also needs an active [WhatsApp bundle or plan](whatsapp-subscription-billing.md) and a connected
 WhatsApp number, same as any other WhatsApp send; see
 [Channels & Providers](configuring-channels.md#why-whatsapp-has-no-shared-fallback).
 

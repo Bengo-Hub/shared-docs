@@ -19,8 +19,8 @@ Technical Guide instead. This page is for the Settings screens.
   automatically.
 - **[WhatsApp Inbox](whatsapp-inbox.md)** — the shared inbox for two-way WhatsApp conversations
   with customers, separate from one-way automated notifications.
-- **[WhatsApp Subscription & Billing](whatsapp-subscription-billing.md)** — plans, message quotas,
-  and subscribing or changing plans.
+- **[SMS and WhatsApp Billing](whatsapp-subscription-billing.md)** — bundles, WhatsApp monthly plans,
+  the KES 1 price for extra messages, and buying with your plan or later.
 - **[Monitoring](monitoring.md)** — a live view of every notification your own organisation has
   sent, for confirming a specific message went out or spotting a failing channel.
 
@@ -37,8 +37,8 @@ Technical Guide instead. This page is for the Settings screens.
 
 You'll need **billing:manage** permission on your organisation to change provider settings (your
 account admin has this by default; see [Managing Your Organisation](../organisation/managing-your-organisation.md)
-if you need it granted). WhatsApp additionally requires an active
-[WhatsApp subscription](whatsapp-subscription-billing.md) on your account, on top of a connected
+if you need it granted). SMS and WhatsApp additionally need an active subscription with a
+[bundle or plan](whatsapp-subscription-billing.md) bought, and WhatsApp needs a connected
 number. See [Channels & Providers](configuring-channels.md). Replying in the
 [WhatsApp Inbox](whatsapp-inbox.md) and viewing [Monitoring](monitoring.md) each need their own
 separate permission; see those pages.
