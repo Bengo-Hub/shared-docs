@@ -77,7 +77,7 @@ confusion; keep them separate.
 | **One-time license** | Perpetual access fee | Once | `billing_cycle = ONE_TIME`, `IsPerpetual` |
 | **Implementation / setup** | One-off onboarding | Once at start | `subscription_plan.setup_fee` / `cmd/seed/setup_fees.go` |
 | **PAYG service charge** | **% commission on their own sales** | Per transaction | `service_charge_plan` (PERCENTAGE), `billing_mode = service_charge` |
-| **Prepaid credit bundles** | **Consumable top-ups** (SMS / WhatsApp / AI) | Bought upfront, drawn down per unit | notifications `TenantCredit` ledger (TOPUP/DEDUCTION); `ai_credits_monthly` |
+| **Prepaid credit bundles** | **Consumable top-ups** (SMS / WhatsApp / AI) | Bought upfront, drawn down per unit | subscriptions-api credits ledger (`api_token_wallets`); `ai_credits_monthly` |
 | **Overage** | Pay-as-you-go on metered throughput over a subscription cap | At renewal | `allow_overage` + `overage_charge` |
 
 ### PAYG vs Prepaid credit bundles — the critical distinction
@@ -92,8 +92,8 @@ confusion; keep them separate.
 
 > **Cleanup item:** `SC_MARKETFLOW_AI_CREDIT` is currently modelled as a `service_charge_plan` but
 > behaves as a consumable credit. It should be presented and sold as a **prepaid AI-credit pack**
-> (consistent with the notifications `TenantCredit` SMS/WhatsApp model and the `ai_credits_monthly`
-> catalog limit), not as a PAYG commission. See §8.
+> (consistent with the credits ledger used for SMS and WhatsApp and the `ai_credits_monthly`
+> catalog limit), not as a PAYG commission. See section 8.
 
 ---
 
@@ -215,7 +215,7 @@ transaction/fee stream exists.
 > subscriber/month** (always, threshold-independent). _Example:_ 12,000 hotspot sales → 500 + 3%×12,000 =
 > **KES 860** (+ PPPoE subscriber fees). Unlimited MikroTiks/users/customers/vouchers; captive portal,
 > remote WinBox, payment gateways, automated invoicing, real-time notifications; 14-day free trial.
-> SMS/WhatsApp are prepaid credit bundles (§8), not plan limits. The billing engine reads
+> SMS/WhatsApp are prepaid credit bundles (section 8), not plan limits. The billing engine reads
 > `service_charge_percentage` / `service_charge_threshold` / `pppoe_per_subscriber_fee` from the plan's
 > `tier_limits`. Seed: `ISP_BILLING_STARTER` (`cmd/seed/plans_isp_billing.go`) + `max_pppoe_subscribers`
 > (`cmd/seed/feature_catalog.go`). The earlier flat tiers + `SC_ISP_BILLING` service charge are retired and
@@ -287,14 +287,16 @@ batch/expiry + NHIF claims. Lead with these in Professional/Enterprise sales.
 
 Consumables, available to **any** tenant regardless of billing mode:
 
-| Bundle | Unit price | Ledger |
+| Product | Price | Ledger |
 |---|---|---|
-| SMS | ~KES 1 / SMS (provider cost + platform margin) | notifications `TenantCredit` (type=SMS) |
-| WhatsApp | per-message | notifications `TenantCredit` (type=WHATSAPP) |
-| AI chat credits | KES 10 / credit | `ai_credits_monthly` allowance + prepaid top-up pack |
+| SMS | bundles of 100, 500, 1000, 5000 at KES 1 per SMS; KES 1 per SMS beyond them, billed on the next invoice | subscriptions-api credits ledger, `sms` |
+| WhatsApp | Tier 1 KES 500 a month for 400 messages, Tier 2 KES 1000 for 800, Pro KES 2000 unlimited; bundles as for SMS; KES 1 per message beyond plan and bundles | credits ledger, `whatsapp` and `whatsapp_quota` |
+| AI chat credits | 100 for KES 1000, 500 for KES 4000, plus the plan's `ai_credits_monthly`; prepaid only | credits ledger, `ai_credits` and `ai_credits_quota` |
 
-Sold as **TOPUP** transactions and drawn down via **DEDUCTION** as messages/credits are consumed. These
-must **not** be modelled as PAYG service charges.
+Bundles are bought as **topup** movements and drawn down as messages or credits are consumed. Every ordinary tenant
+needs an active subscription with the service activated; the platform tenant, the demo tenant and exempt tenants are
+never charged. Sending pauses when unpaid overage reaches the platform cap (default KES 500). These must **not** be
+modelled as PAYG service charges. Rules and endpoints are in subscriptions-api `docs/messaging-credits.md`.
 
 ---
 
