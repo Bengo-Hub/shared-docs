@@ -181,7 +181,7 @@ curl -s -X POST http://localhost:8080/jmap/ -H "Authorization: Basic $AUTH" -H "
 kubectl rollout restart statefulset/stalwart-mail -n email
 ```
 
-**No permanent fix has been found yet.** Confirmed via Stalwart's own published docs (`stalw.art/docs/server/auto-ban/`) that **there is no allowlist/exemption mechanism** for this feature at all — it applies its rate thresholds uniformly to every source IP, with no way to mark the node's own IP as trusted. The real config keys are `scanBanRate` (default: 30 attempts/day), `scanBanPeriod` (ban duration), `scanBanPaths` (glob patterns for instant-ban HTTP paths) — raising `scanBanRate` is the only real lever (widens the margin, doesn't eliminate the risk). These keys were **not found reachable via the JMAP API** (every `x:` vendor object name tried — `x:Settings`, `x:AntiAbuse`, `x:SecuritySettings`, `x:FailBan`, `x:Config` — returned `unknownMethod`, and plain REST guesses like `/api/settings` 404'd). They're most likely only reachable via the WebUI's own session-cookie-authenticated settings page (`mail-admin.codevertexafrica.com` → Settings → Security, after a real interactive login — the WebUI login is NOT the same auth mechanism as the JMAP Basic-Auth calls used everywhere else in this doc, see "Login" above) — **not yet pursued**. Whoever picks this up next: log into the WebUI directly, find the Security settings page, and raise `scanBanRate` there.
+**Superseded 2026-10-20: an allow-list exists (`x:AllowedIp`), see the last section.** Older note: confirmed via Stalwart's own published docs (`stalw.art/docs/server/auto-ban/`) that **there is no allowlist/exemption mechanism** for this feature at all — it applies its rate thresholds uniformly to every source IP, with no way to mark the node's own IP as trusted. The real config keys are `scanBanRate` (default: 30 attempts/day), `scanBanPeriod` (ban duration), `scanBanPaths` (glob patterns for instant-ban HTTP paths) — raising `scanBanRate` is the only real lever (widens the margin, doesn't eliminate the risk). These keys were **not found reachable via the JMAP API** (every `x:` vendor object name tried — `x:Settings`, `x:AntiAbuse`, `x:SecuritySettings`, `x:FailBan`, `x:Config` — returned `unknownMethod`, and plain REST guesses like `/api/settings` 404'd). They're most likely only reachable via the WebUI's own session-cookie-authenticated settings page (`mail-admin.codevertexafrica.com` → Settings → Security, after a real interactive login — the WebUI login is NOT the same auth mechanism as the JMAP Basic-Auth calls used everywhere else in this doc, see "Login" above) — **not yet pursued**. Whoever picks this up next: log into the WebUI directly, find the Security settings page, and raise `scanBanRate` there.
 
 ## Open items (as of this writing)
 
@@ -190,3 +190,49 @@ kubectl rollout restart statefulset/stalwart-mail -n email
 - ~~Whether the domain principal + mailboxes created under the old v0.11.8 instance survived~~ — **Resolved 2026-08-11: no.** The DB wipes during the setup saga (see plan) cleared everything. Domain (`codevertexafrica.com`) and all 7 role mailboxes were recreated fresh via the JMAP API above. DKIM keys were regenerated in the process (new selectors dated 2026-08-11) — **Cloudflare's published DKIM TXT records must be re-synced against the new `dnsZoneFile` output before DKIM will validate anywhere.**
 - **Stalwart Enterprise paywall.** Dashboard, tenant list, mailbox/inbox view, and delivery-trace all require a paid Enterprise license (confirmed live 2026-08-11, and against `stalw.art/compare`/`stalw.art/pricing`). Decision: skip it, stay Community-tier — see plan Part 8 for the full reasoning (tenant isolation was never designed to depend on Stalwart's own multi-tenancy feature). Build homegrown observability (queue-depth checks, our own delivery logging) instead, as and when actually needed.
 - **File-based logging never actually wrote anything.** The wizard's Step 4 "Log file" destination (`/var/lib/stalwart/logs/`) hit the same missing-directory bug as `etc/config.toml` earlier — fixed in the StatefulSet's init container 2026-08-11, but not yet re-verified that logs are actually landing there post-fix.
+
+## 2026-10-20: inbound mail, real sender addresses, malware scanning (supersedes the notes above on the ban and port 587)
+
+State after this day's work, all verified live:
+
+- **mail-admin 502.** Cause was a permanent `portScanning` ban on the node IP `77.237.232.66`, created 2026-08-20.
+  The ban was destroyed and Stalwart restarted. The earlier note that no allow-list exists is wrong on v0.16.16:
+  the `x:AllowedIp` object exists and now holds the node IP, the pod network `192.168.0.0/16` and the service
+  network `10.96.0.0/12`.
+- **Real sender addresses.** The six mail ports in the ingress `tcp-services` ConfigMap now use the `::PROXY` suffix
+  and Stalwart trusts `77.237.232.66` for PROXY headers on the `smtp`, `submissions`, `imaps`, `pop3s` and `sieve`
+  listeners (`overrideProxyTrustedNetworks`). A test message shows the sender's real address in its `Received`
+  header and an `iprev` result. A trusted address that sends no header is refused, so the two sides must be changed
+  together; see `devops-k8s/docs/mail-ingress-proxy-protocol.md`.
+- **Port 587.** A `submission` listener (explicit TLS, same trust list) now exists. Authenticated submission on
+  587 and 465 works. Creating a listener needs a pod restart; most other settings apply with the
+  `x:Action` `ReloadSettings` action and no restart.
+- **Inbound MX.** The apex MX is `10 mx1.codevertexafrica.com` (changed through the `Sync Cloudflare DNS` GitHub
+  workflow, which uses the stored `CF_API_TOKEN`; zone id for codevertexafrica.com is in that workflow's input
+  description). Google Workspace no longer receives mail for the domain. Reverse DNS of `77.237.232.66` is
+  `mx1.codevertexafrica.com`. SPF stays as it was (7 lookups, under the limit of 10).
+- **Role addresses.** `support`, `careers`, `security`, `notifications`, `hello`, `contact`, `billing` and
+  `sales` are aliases of the `info` mailbox (`x:Account` `aliases`, an object list of `name`, `domainId`,
+  `enabled`).
+- **Malware scanning.** ClamAV and clamav-milter run as `stalwart-clamav` in the `email` namespace
+  (`devops-k8s/manifests/email/stalwart-clamav.yaml`, ArgoCD app `stalwart-mail`). An `x:MtaMilter` at the `data`
+  stage points at `stalwart-clamav.email.svc.cluster.local:7357` with `tempFailOnError` on. The milter rejects an
+  infected message at SMTP time (Stalwart has no quarantine store, so a quarantine verdict would still deliver
+  it) and defers when the scanner is down, so nothing is accepted unscanned. EICAR is rejected on port 25 and on
+  authenticated submission.
+- **Spam.** `x:SpamSettings` `scoreReject` is 15 (it was 0, meaning never reject), `scoreSpam` stays 5.
+
+Findings worth keeping:
+
+- Outbound failures arrive as bounce messages in the `no-reply@` mailbox. The only recurring ones are for a tenant
+  address on a Zoho-hosted domain that no longer accepts the mailbox (`553 5.1.2 Relaying disallowed`). The
+  queue held one message, for a Gmail recipient whose inbox was full (`452 4.2.2`). Nothing in the queue or the
+  bounces explained Sarah's missing Digitika email: Stalwart handed it to Gmail and Gmail answered 250.
+- The notifications delivery log marks an email `sent` when Stalwart accepts it, not when the recipient's server
+  does. Feeding Stalwart's `delivery.failed` webhook events back into `delivery_logs` is still to be built.
+- The `stalwart-config` ConfigMap in `devops-k8s` is not used by v0.16 (settings live in Postgres and the `x:`
+  objects).
+
+Still open: DMARC to `p=reject` after clean aggregate reports, MTA-STS policy file, Google Postmaster Tools and
+Microsoft SNDS registration, per-tier inbound throttles (`x:MtaInboundThrottle`), the delivery webhook above,
+monitoring and alerts for the queue and the scanner, rotating the Stalwart admin and Postgres role passwords.
