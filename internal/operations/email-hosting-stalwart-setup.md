@@ -229,10 +229,16 @@ Findings worth keeping:
   queue held one message, for a Gmail recipient whose inbox was full (`452 4.2.2`). Nothing in the queue or the
   bounces explained Sarah's missing Digitika email: Stalwart handed it to Gmail and Gmail answered 250.
 - The notifications delivery log marks an email `sent` when Stalwart accepts it, not when the recipient's server
-  does. Feeding Stalwart's `delivery.failed` webhook events back into `delivery_logs` is still to be built.
+  does. Delivery feedback now exists (2026-10-20): a Stalwart webhook posts `delivery.failed` events, signed
+  with a shared key, to `POST /api/v1/webhooks/stalwart/delivery` in notifications-api, which marks the log row
+  `bounced` and suppresses addresses that do not exist. The key is rotated from notifications-ui, Settings,
+  Security; email-provisioner (`PUT /internal/delivery-webhook`) creates or updates the Stalwart `x:WebHook`.
+  First setup: click "Rotate key" once after deploying notifications-api and email-provisioner.
 - The `stalwart-config` ConfigMap in `devops-k8s` is not used by v0.16 (settings live in Postgres and the `x:`
   objects).
 
-Still open: DMARC to `p=reject` after clean aggregate reports, MTA-STS policy file, Google Postmaster Tools and
-Microsoft SNDS registration, per-tier inbound throttles (`x:MtaInboundThrottle`), the delivery webhook above,
-monitoring and alerts for the queue and the scanner, rotating the Stalwart admin and Postgres role passwords.
+Still open: DMARC to `p=reject` after clean aggregate reports (the `dmarc@` mailbox was empty on 2026-10-20
+because reports used to go to Google; check it after a day). MTA-STS is published in testing mode (the policy is
+served and the `_mta-sts` TXT record was added) and moves to enforce after clean TLS-RPT reports. Also open: Google
+Postmaster Tools and Microsoft SNDS registration, per-tier inbound throttles (`x:MtaInboundThrottle`), monitoring
+and alerts for the queue and the scanner, rotating the Stalwart admin and Postgres role passwords.
