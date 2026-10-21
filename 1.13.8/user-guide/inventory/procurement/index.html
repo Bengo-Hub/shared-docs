@@ -1072,6 +1072,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sending-items-for-repair-or-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending items for repair or service
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sending items for repair or service">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-the-items-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving the items back
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keeping-track-of-what-is-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keeping track of what is away
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-issues" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4062,6 +4101,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sending-items-for-repair-or-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending items for repair or service
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sending items for repair or service">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#receiving-the-items-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiving the items back
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keeping-track-of-what-is-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keeping track of what is away
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-issues" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4094,7 +4172,9 @@
 
 <h1 id="purchasing-receiving">Purchasing &amp; Receiving<a class="headerlink" href="#purchasing-receiving" title="Permanent link">&para;</a></h1>
 <p>How to order stock from a supplier, receive it in, and record a return — the three steps of the
-purchasing cycle, in order.</p>
+purchasing cycle, in order. A faulty item does not always go back to the supplier: you can also
+send it for repair and receive it back (see
+<a href="#sending-items-for-repair-or-service">Sending items for repair or service</a>).</p>
 <pre class="mermaid"><code>flowchart LR
     A[Draft] --&gt;|Send to Supplier| B[Sent]
     B --&gt;|Receive| C{Fully received?}
@@ -4193,7 +4273,59 @@ Return" instead — see <a href="../warehouses-and-stock/#stock-adjustments">War
 <p>Pick the supplier, a reason, and add the item(s) being returned with quantity and unit cost. Once
 created, an admin or manager needs to <strong>Approve</strong> the return before it affects your stock — it's
 only decremented once approved, not at the moment you create it.</p>
+<p>If approving fails for any item (for example an item that cannot be stock-adjusted), nothing is
+changed: the items already taken out are put back and the return stays pending, so a return is
+never left half approved.</p>
+<h2 id="sending-items-for-repair-or-service">Sending items for repair or service<a class="headerlink" href="#sending-items-for-repair-or-service" title="Permanent link">&para;</a></h2>
+<p>Not every faulty item goes back to the supplier. A phone with a swollen battery, a laptop with a
+dead screen or a device that develops a fault while it is still in stock is often sent to a
+technician, a service centre or a care centre you trust. Those items leave your stock for a while,
+but they stay yours and are expected back once repaired. Nothing is credited, because no supplier
+is involved.</p>
+<p>Use the same <strong>Returns</strong> page for this. Click <strong>New Return</strong> and choose <strong>Send for repair</strong> at the
+top of the form:</p>
+<ol>
+<li><strong>Sent to</strong> is the technician, service centre or care centre. Type the name once and it is
+   offered as a suggestion next time. <strong>Contact</strong> is optional.</li>
+<li><strong>Sending from</strong> is the location the items leave from, and <strong>Date sent</strong> is the day they left.</li>
+<li><strong>What is wrong</strong> and <strong>Expected back</strong> are optional, but an expected day lets the page warn you
+   when an order is overdue.</li>
+<li>Add the items and quantities. The cost value of each item is filled in from its cost price. It
+   is only recorded so the items come back into stock at the cost they left with.</li>
+</ol>
+<p>The order starts as <strong>Pending approval</strong>. An admin or manager clicks <strong>Send out</strong> to confirm. That
+is the moment the items leave your stock. In the stock history of each item the movement reads
+<strong>Sent for Repair</strong> with the order number and the name of the provider.</p>
+<p>You can print the <strong>Service / Repair Order</strong> from the order's <strong>Print / Export</strong> menu and hand it
+over with the items.</p>
+<h3 id="receiving-the-items-back">Receiving the items back<a class="headerlink" href="#receiving-the-items-back" title="Permanent link">&para;</a></h3>
+<p>When the items return, open the order (or use <strong>Receive back</strong> on its row) and enter, for each
+item:</p>
+<ul>
+<li><strong>Came back</strong>: units that were repaired. They go back into stock at the cost they left with, and
+  the stock history shows <strong>Returned from Repair</strong>.</li>
+<li><strong>Not repairable</strong>: units the provider could not fix. They come back into stock only to be
+  written off straight away as damaged, so the loss appears in your reports like any other
+  write-off.</li>
+</ul>
+<p>Anything you leave blank stays out for repair, so you can receive an order in several deliveries.
+The order moves from <strong>Out for repair</strong> to <strong>Partly back</strong> and finally to <strong>Returned</strong> (or
+<strong>Written off</strong> when nothing could be repaired). You cannot receive more units than are still out.</p>
+<h3 id="keeping-track-of-what-is-away">Keeping track of what is away<a class="headerlink" href="#keeping-track-of-what-is-away" title="Permanent link">&para;</a></h3>
+<p>When at least one order is out for repair, the top of the Returns page shows how many units are
+away, what they cost, how many orders are overdue and which provider holds the most. Click the
+<strong>Overdue</strong> tile to see only the late orders. Use the <strong>Sent for repair</strong> filter to look at repair
+orders only.</p>
+<p>Items that are away are not counted in your stock quantity or stock value, so they cannot be sold
+while they are out. They also do not count as a supplier return or as an adjustment in your
+reports and the KRA stock position.</p>
 <h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
+<p><strong>A repair order was approved but the items still show in stock.</strong> They do not, once the order is
+approved. If the order still says <strong>Pending approval</strong>, an admin or manager has to click <strong>Send
+out</strong> first.</p>
+<p><strong>You cannot choose "Sent for repair" as a stock adjustment reason.</strong> Repair movements are created
+only from a repair order, so the provider, expected day and cost are always recorded. Use
+<strong>New Return</strong>, then <strong>Send for repair</strong>.</p>
 <p><strong>A purchase order won't let you click Send to Supplier.</strong> Check whether your organisation
 requires approval first (Settings → Stock &amp; Thresholds → "Purchase Order Approval Required," see
 <a href="../administration/#settings-stock-thresholds">Inventory Administration</a>) — if it does, <strong>Submit
@@ -4232,7 +4364,7 @@ there's no "type a new name to auto-create it" shortcut here. Add the item to yo
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 12, 2026 07:20:48 UTC">October 12, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 21, 2026 14:35:10 UTC">October 21, 2026</span>
   </span>
 
     
