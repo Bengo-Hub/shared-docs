@@ -1,7 +1,9 @@
 # Purchasing & Receiving
 
 How to order stock from a supplier, receive it in, and record a return — the three steps of the
-purchasing cycle, in order.
+purchasing cycle, in order. A faulty item does not always go back to the supplier: you can also
+send it for repair and receive it back (see
+[Sending items for repair or service](#sending-items-for-repair-or-service)).
 
 ```mermaid
 flowchart LR
@@ -116,7 +118,71 @@ Pick the supplier, a reason, and add the item(s) being returned with quantity an
 created, an admin or manager needs to **Approve** the return before it affects your stock — it's
 only decremented once approved, not at the moment you create it.
 
+If approving fails for any item (for example an item that cannot be stock-adjusted), nothing is
+changed: the items already taken out are put back and the return stays pending, so a return is
+never left half approved.
+
+## Sending items for repair or service
+
+Not every faulty item goes back to the supplier. A phone with a swollen battery, a laptop with a
+dead screen or a device that develops a fault while it is still in stock is often sent to a
+technician, a service centre or a care centre you trust. Those items leave your stock for a while,
+but they stay yours and are expected back once repaired. Nothing is credited, because no supplier
+is involved.
+
+Use the same **Returns** page for this. Click **New Return** and choose **Send for repair** at the
+top of the form:
+
+1. **Sent to** is the technician, service centre or care centre. Type the name once and it is
+   offered as a suggestion next time. **Contact** is optional.
+2. **Sending from** is the location the items leave from, and **Date sent** is the day they left.
+3. **What is wrong** and **Expected back** are optional, but an expected day lets the page warn you
+   when an order is overdue.
+4. Add the items and quantities. The cost value of each item is filled in from its cost price. It
+   is only recorded so the items come back into stock at the cost they left with.
+
+The order starts as **Pending approval**. An admin or manager clicks **Send out** to confirm. That
+is the moment the items leave your stock. In the stock history of each item the movement reads
+**Sent for Repair** with the order number and the name of the provider.
+
+You can print the **Service / Repair Order** from the order's **Print / Export** menu and hand it
+over with the items.
+
+### Receiving the items back
+
+When the items return, open the order (or use **Receive back** on its row) and enter, for each
+item:
+
+- **Came back**: units that were repaired. They go back into stock at the cost they left with, and
+  the stock history shows **Returned from Repair**.
+- **Not repairable**: units the provider could not fix. They come back into stock only to be
+  written off straight away as damaged, so the loss appears in your reports like any other
+  write-off.
+
+Anything you leave blank stays out for repair, so you can receive an order in several deliveries.
+The order moves from **Out for repair** to **Partly back** and finally to **Returned** (or
+**Written off** when nothing could be repaired). You cannot receive more units than are still out.
+
+### Keeping track of what is away
+
+When at least one order is out for repair, the top of the Returns page shows how many units are
+away, what they cost, how many orders are overdue and which provider holds the most. Click the
+**Overdue** tile to see only the late orders. Use the **Sent for repair** filter to look at repair
+orders only.
+
+Items that are away are not counted in your stock quantity or stock value, so they cannot be sold
+while they are out. They also do not count as a supplier return or as an adjustment in your
+reports and the KRA stock position.
+
 ## Common Issues
+
+**A repair order was approved but the items still show in stock.** They do not, once the order is
+approved. If the order still says **Pending approval**, an admin or manager has to click **Send
+out** first.
+
+**You cannot choose "Sent for repair" as a stock adjustment reason.** Repair movements are created
+only from a repair order, so the provider, expected day and cost are always recorded. Use
+**New Return**, then **Send for repair**.
 
 **A purchase order won't let you click Send to Supplier.** Check whether your organisation
 requires approval first (Settings → Stock & Thresholds → "Purchase Order Approval Required," see

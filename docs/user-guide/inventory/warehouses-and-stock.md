@@ -124,6 +124,11 @@ later in your stock history and reports:
 | **Customer Return** | Stock coming back from a customer |
 | **Other** | Anything else — a Notes field becomes required so you can explain it |
 
+Items that are faulty but worth repairing are not written off here. Send them to a technician or
+service centre from the Returns page instead, so you can follow them and receive them back (see
+[Sending items for repair or service](procurement.md#sending-items-for-repair-or-service)). Only
+the units that cannot be repaired end up as a damaged write-off.
+
 **6. Submit.** The button reads "Record Addition" or "Record Removal" depending on the toggle from
 step 1. Large adjustments may be routed to a manager for approval first, depending on your
 organisation's settings — you'll see a message if that happens, and the adjustment posts once
