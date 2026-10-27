@@ -17,7 +17,7 @@ It builds on these treasury-api documents and does not repeat them:
 | Item | State |
 |---|---|
 | Certification | 23 of 23 passed on 2026-10-16, app `etims-oscu-cert-app-ts01`, device `CV-P052543168K-TS01`, branch 00 |
-| Go-live copies | Invoice INV-261016-000102 (invcNo 209) and credit note CN-000030 (invcNo 210), PDFs in `d:\tmp\etims-go-live` |
+| Go-live copies | Invoice INV-261016-000102 (invcNo 209) and credit note CN-000030 (invcNo 210); download the PDFs from each document in treasury |
 | Taxpayer | Codevertex Africa Limited, PIN P052543168K, branches 00 and 01 |
 | Demo tenant | `codevertex-demo` on books.codevertexafrica.com (treasury) and pos.codevertexafrica.com (POS) |
 | Test buyer | CRM contact "Test Customer", PIN P318295670X |
@@ -111,8 +111,9 @@ copies before. Use branch 01 for live sales so branch 00 keeps the clean go-live
 
 1. **Activation (2 min).** Open eTIMS Devices and walk through the activation card (PIN, device,
    CMC key, entitlement). Point out that the CMC key is masked. Do not press Initialise again.
-2. **Code lists (1 min).** On the same tab, show the last refresh time and open the item class
-   dropdown in the item form.
+2. **Code lists (1 min).** On the same tab, press **View Code Lists** to show the lists pulled from
+   KRA, then open the item class dropdown in the Register item form on eTIMS Items. (The screen
+   does not show when the lists were last refreshed; **Refresh Code Lists** pulls them again.)
 3. **Register an item (3 min).**
    - Go to eTIMS Items and choose Register item.
    - Leave the code blank so the server mints it.
@@ -133,8 +134,10 @@ copies before. Use branch 01 for live sales so branch 00 keeps the clean go-live
    - From the invoice, choose Credit Note, then Pick items to credit, and credit one line.
    - Transmit it and show `rcptTyCd R` with the original invcNo.
    - Show that crediting more than the remainder is refused.
-7. **Transmissions and audit trail (2 min).** Show the status of each document, KRA's response,
-   the retry count, and the Retry and Requeue actions.
+7. **Transmissions and audit trail (2 min).** On the Transmissions tab, open a row to show its
+   status, eTIMS invoice number, KRA receipt number, CU number, signature, retry count and any
+   error, plus the Retry and Requeue actions. KRA's full reply is shown on the invoice itself, in
+   the window that opens after **Transmit to eTIMS**.
 8. **Reconciliation (1 min).** Show eTIMS Sync comparing KRA's sales list with our records.
 
 Purchases and stock are slower to show live. Describe them from the stock mapping table in the
@@ -193,9 +196,8 @@ it from the Transmissions screen, inside KRA's 48-hour offline window. Nothing i
 resend that KRA already holds is matched to KRA's copy rather than signed twice.
 
 **How do you store the CMC key?** It is encrypted with AES-256-GCM using a key held in a Kubernetes
-secret, never in code. API responses show it masked, and only a signed-in user with treasury
-permissions on that business can reveal it. (A release that limits revealing it to treasury
-admins is committed and waiting on the deploy pipeline; see section 8.)
+secret, never in code. API responses show it masked, and revealing it needs the treasury
+configuration permission.
 
 **How is one taxpayer kept from another?** Each tenant's data carries its tenant id, and every
 query filters on it. A device belongs to one tenant and one PIN. Users sign in through our identity
@@ -230,9 +232,10 @@ sent to KRA. Once an invoice is issued, corrections go through a credit note and
 **What about offline tills?** POS keeps sales offline and syncs them when back online with an
 idempotency key, so a resent sale is not created twice. Treasury fiscalises it once it arrives.
 
-**Do you support VSCU?** Yes, as a second channel next to OSCU. A business picks the channel on its
-tax profile: OSCU only, VSCU only, or automatic, which uses OSCU and moves a sale to the branch's
-VSCU unit only when OSCU could not be reached at all. Both channels take invoice numbers from the
+**Do you support VSCU?** Yes, as a second channel next to OSCU. In the next release a business
+picks the channel on its tax profile: OSCU only, VSCU only, or automatic, which uses OSCU and moves
+a sale to the branch's VSCU unit only when OSCU could not be reached at all. That setting is not on
+the live screens yet, so describe it rather than open it. Both channels take invoice numbers from the
 same branch counter under the same lock, so they never reuse a number, and a slow OSCU answer is
 retried rather than signed again on VSCU. No customer runs a VSCU unit yet. If asked whether one
 branch may run both an OSCU and a VSCU device, say we will follow KRA's ruling; we have asked.
@@ -281,8 +284,16 @@ eTIMS, with per-plan rate limits and usage billing. It goes through the same fis
 
 ## 6. Evidence to have ready
 
-- The certification result screen and the 23 step results (wizard history).
-- The go-live invoice and credit note PDFs (`d:\tmp\etims-go-live`).
+- The certification history on the demo tenant: Tax & Compliance, eTIMS Devices tab, the
+  **Certification Wizard** button, then the **Certification history** card at the top of that page.
+  Click a run to open its 23 cases.
+  The 2026-10-16 run shows 23 of 23 with each step's result. That session ran through scripts
+  rather than the wizard, so the run was recorded afterwards from the session record and is labelled
+  "recorded from the scripted session of 2026-10-16". Say so if asked. The two earlier runs on
+  2026-09-22 (1 and 12 of 23) are older attempts.
+- The go-live invoice and credit note: open INV-261016-000102 and CN-000030 in treasury and
+  download the PDFs. `d:\tmp\etims-go-live` holds the later mixed band copies (INV-261016-000103 and
+  000105, CN-000031 and 000033), not 209 and 210.
 - The architecture PDF, `Codevertex-TIS-eTIMS-Technology-Architecture.pdf`.
 - The submission pack in `finance-service/treasury-api/docs/kra-submission` (registration, CR12,
   TCC, staff, declaration of solvency, bio-data form).
@@ -295,14 +306,19 @@ eTIMS, with per-plan rate limits and usage billing. It goes through the same fis
 | "Invalid invcNo" or "already exists" | Expected after a gap. Press Retry once; the counter heals itself. Explain the duplicate handling from section 5 |
 | 902 on initialise | Normal, the device is already installed. Do not repeat |
 | Receipt has no KRA block | The send has not finished. Wait for the page to refresh, or open the invoice from Transmissions |
-| The sandbox is down entirely | Use the go-live PDFs, scan their QR, and walk through the stored request and response on Transmissions |
+| The sandbox is down entirely | Show the 23/23 certification history, open the go-live invoice and credit note, scan their QR, and open their rows on Transmissions to show the CU number, signature and receipt KRA returned |
 
 ## 8. State of production on demo day
 
-GitHub Actions has refused to start any job since early on 2026-10-27 (account billing or spending
-limit), so production still runs treasury-api `f6f9fe43`. Everything below is committed but not
-live: the security fixes in `6f2bc953` and the signing channel work on branch `etims-channels`.
-None of it changes what the demo shows. Do not describe these as live; say they are released next.
+Live since 12:20 on 2026-10-27:
+- treasury-api `6f2bc953`: VSCU address checks, CMC key no longer stored twice, KRA replies cut in
+  errors, and revealing a CMC key needs config manage.
+- treasury-ui `e20ec43`: the certification history on the wizard page (Tax & Compliance,
+  eTIMS Devices, Certification Wizard).
+
+Not live: the signing channel work (OSCU, VSCU or automatic, the device Channel action, the
+"Signed via" field) is on branch `etims-channels` and ships after the demo. Do not open or promise
+those screens; describe them as the next release.
 
 ## 9. Do not do during the demo
 
