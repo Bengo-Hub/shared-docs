@@ -232,10 +232,10 @@ sent to KRA. Once an invoice is issued, corrections go through a credit note and
 **What about offline tills?** POS keeps sales offline and syncs them when back online with an
 idempotency key, so a resent sale is not created twice. Treasury fiscalises it once it arrives.
 
-**Do you support VSCU?** Yes, as a second channel next to OSCU. In the next release a business
-picks the channel on its tax profile: OSCU only, VSCU only, or automatic, which uses OSCU and moves
-a sale to the branch's VSCU unit only when OSCU could not be reached at all. That setting is not on
-the live screens yet, so describe it rather than open it. Both channels take invoice numbers from the
+**Do you support VSCU?** Yes, as a second channel next to OSCU. A business picks the channel on its
+tax profile: OSCU only, VSCU only, or automatic, which uses OSCU and moves a sale to the branch's
+VSCU unit only when OSCU could not be reached at all. VSCU calls follow KRA's VSCU Specification
+v2.0 path names. Both channels take invoice numbers from the
 same branch counter under the same lock, so they never reuse a number, and a slow OSCU answer is
 retried rather than signed again on VSCU. No customer runs a VSCU unit yet. If asked whether one
 branch may run both an OSCU and a VSCU device, say we will follow KRA's ruling; we have asked.
@@ -316,9 +316,10 @@ Live since 12:20 on 2026-10-27:
 - treasury-ui `e20ec43`: the certification history on the wizard page (Tax & Compliance,
   eTIMS Devices, Certification Wizard).
 
-Not live: the signing channel work (OSCU, VSCU or automatic, the device Channel action, the
-"Signed via" field) is on branch `etims-channels` and ships after the demo. Do not open or promise
-those screens; describe them as the next release.
+Live since 2026-10-28 (after the demo): treasury-api `83158a68` and treasury-ui `86f867ee`. The
+signing channel is on the Tax Profile tab (automatic by default), each device has a Channel action
+on the eTIMS Devices tab, and Transmissions shows "Signed via". The full list of fixes is in the
+treasury-api runbook, section 3.38.
 
 ## 9. Do not do during the demo
 
