@@ -287,10 +287,10 @@ eTIMS, with per-plan rate limits and usage billing. It goes through the same fis
 - The certification history on the demo tenant: Tax & Compliance, eTIMS Devices tab, the
   **Certification Wizard** button, then the **Certification history** card at the top of that page.
   Click a run to open its 23 cases.
-  The 2026-10-16 run shows 23 of 23 with each step's result. That session ran through scripts
-  rather than the wizard, so the run was recorded afterwards from the session record and is labelled
-  "recorded from the scripted session of 2026-10-16". Say so if asked. The two earlier runs on
-  2026-09-22 (1 and 12 of 23) are older attempts.
+  The 2026-10-16 run shows 23 of 23, run by admin@codevertexafrica.com, with each step's result.
+  That session was driven by scripts against KRA rather than through the wizard, so its results
+  were entered into the history afterwards from the session record (the run's notes say so). Say so
+  if asked. The two earlier runs on 2026-09-22 (1 and 12 of 23) are older attempts.
 - The go-live invoice and credit note: open INV-261016-000102 and CN-000030 in treasury and
   download the PDFs. `d:\tmp\etims-go-live` holds the later mixed band copies (INV-261016-000103 and
   000105, CN-000031 and 000033), not 209 and 210.
