@@ -193,8 +193,9 @@ it from the Transmissions screen, inside KRA's 48-hour offline window. Nothing i
 resend that KRA already holds is matched to KRA's copy rather than signed twice.
 
 **How do you store the CMC key?** It is encrypted with AES-256-GCM using a key held in a Kubernetes
-secret, never in code. API responses show it masked. Viewing it needs a treasury admin
-permission.
+secret, never in code. API responses show it masked, and only a signed-in user with treasury
+permissions on that business can reveal it. (A release that limits revealing it to treasury
+admins is committed and waiting on the deploy pipeline; see section 8.)
 
 **How is one taxpayer kept from another?** Each tenant's data carries its tenant id, and every
 query filters on it. A device belongs to one tenant and one PIN. Users sign in through our identity
@@ -227,9 +228,14 @@ a movement is sent once. The stock master quantity follows the running stocked-i
 sent to KRA. Once an invoice is issued, corrections go through a credit note and a new invoice.
 
 **What about offline tills?** POS keeps sales offline and syncs them when back online with an
-idempotency key, so a resent sale is not created twice. Treasury fiscalises it once it arrives. For
-sites that must sign offline, the VSCU route signs on a local KRA unit. It is built, but not yet
-provisioned for any customer.
+idempotency key, so a resent sale is not created twice. Treasury fiscalises it once it arrives.
+
+**Do you support VSCU?** Yes, as a second channel next to OSCU. A business picks the channel on its
+tax profile: OSCU only, VSCU only, or automatic, which uses OSCU and moves a sale to the branch's
+VSCU unit only when OSCU could not be reached at all. Both channels take invoice numbers from the
+same branch counter under the same lock, so they never reuse a number, and a slow OSCU answer is
+retried rather than signed again on VSCU. No customer runs a VSCU unit yet. If asked whether one
+branch may run both an OSCU and a VSCU device, say we will follow KRA's ruling; we have asked.
 
 **Which tech stack?**
 - Go services with the Ent ORM and Atlas versioned migrations.
@@ -291,7 +297,14 @@ eTIMS, with per-plan rate limits and usage billing. It goes through the same fis
 | Receipt has no KRA block | The send has not finished. Wait for the page to refresh, or open the invoice from Transmissions |
 | The sandbox is down entirely | Use the go-live PDFs, scan their QR, and walk through the stored request and response on Transmissions |
 
-## 8. Do not do during the demo
+## 8. State of production on demo day
+
+GitHub Actions has refused to start any job since early on 2026-10-27 (account billing or spending
+limit), so production still runs treasury-api `f6f9fe43`. Everything below is committed but not
+live: the security fixes in `6f2bc953` and the signing channel work on branch `etims-channels`.
+None of it changes what the demo shows. Do not describe these as live; say they are released next.
+
+## 9. Do not do during the demo
 
 - Do not initialise the device again or change the invoice counter.
 - Do not switch the platform or tenant eTIMS switch off.
