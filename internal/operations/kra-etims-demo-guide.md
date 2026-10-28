@@ -314,7 +314,7 @@ Live since 12:20 on 2026-10-27:
 - treasury-ui `e20ec43`: the certification history on the wizard page (Tax & Compliance,
   eTIMS Devices, Certification Wizard).
 
-Live since 2026-10-28 (after the demo): treasury-api `83158a68` and treasury-ui `86f867ee`. The
+Live since 2026-10-28 (after the demo): treasury-api `a9db7a18` and treasury-ui `86f867ee`. The
 signing channel is on the Tax Profile tab (automatic by default), each device has a Channel action
 on the eTIMS Devices tab, and Transmissions shows "Signed via". The full list of fixes is in the
 treasury-api runbook, section 3.38.
