@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
       
 
@@ -4083,7 +4083,7 @@
 X-API-Key: &lt;INTERNAL_SERVICE_KEY&gt;
 {"lat": 0.47, "lng": 34.16, "outlet_id": "&lt;optional&gt;", "order_total": 800}
 </code></pre></div>
-<p>The response says whether the pin is deliverable, the fee, the matched area or the nearest one, the distance and the ETA. A pin outside every named area is still delivered (priced by distance, <code>method = per_km</code>) when it lies on the way to a delivery area: within the policy's <code>corridor_km</code> (default 5) of the straight route from the outlet to that area's far edge, or just past it. Direction counts, so a place in the opposite direction is refused however near it is; the tenant can switch to "near an area only" in the policy. A refusal carries <code>direction</code>, <code>outlet_km</code>, <code>route_area</code> and <code>route_off_km</code> so the customer sees which way the pin lies and how far off the delivery routes it is. The distance price is held to the published area fees on the same route: never above the furthest area's fee on that route and never below the fee of a nearer area already passed (<code>breakdown.adjusted</code>). A distance-priced quote also carries <code>needs_confirmation</code> when the tenant wants the customer to check it: ordering passes it on and the order confirmation email states the area, distance and fee. Charge the returned fee (after any of your own adjustments) and store the quote with the order. Never fall back to a guessed fee: if logistics cannot be reached, refuse delivery and keep pickup working. Quotes may be cached for <code>cache_seconds</code> per tenant, outlet and pin.</p>
+<p>The response says whether the pin is deliverable, the fee, the matched area or the nearest one, the distance and the ETA. A pin outside every named area is still delivered (priced by distance, <code>method = per_km</code>) when it lies on the way to a delivery area: within the policy's <code>corridor_km</code> (default 5) of the straight route from the outlet to that area's far edge, or just past it. Direction counts, so a place in the opposite direction is refused however near it is; the tenant can switch to "near an area only" in the policy. A refusal carries <code>direction</code>, <code>outlet_km</code>, <code>route_area</code> and <code>route_off_km</code> so the customer sees which way the pin lies and how far off the delivery routes it is. The distance price is held to the published area fees on the same route: never above the furthest area's fee on that route and never below the fee of a nearer area already passed (<code>breakdown.adjusted</code>). A distance-priced quote also carries <code>needs_confirmation</code> when the tenant wants the customer to check it: ordering passes it on and the order confirmation email states the area, distance and fee. A pin at the outlet itself (within the policy's <code>pickup_only_radius_m</code>, default 200 m) is refused with <code>reason = at_outlet</code> and the <code>outlet</code> it was measured from, even inside a free area: the customer is standing in the outlet, so offer pickup (or a takeaway at the till) instead of a delivery. Charge the returned fee (after any of your own adjustments) and store the quote with the order. Never fall back to a guessed fee: if logistics cannot be reached, refuse delivery and keep pickup working. Quotes may be cached for <code>cache_seconds</code> per tenant, outlet and pin.</p>
 <p>Browser side (public, throttled per IP):</p>
 <table>
 <thead>
@@ -4143,7 +4143,7 @@ X-API-Key: &lt;INTERNAL_SERVICE_KEY&gt;
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 18, 2026 16:36:30 UTC">October 18, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 30, 2026 21:09:08 UTC">October 30, 2026</span>
   </span>
 
     
@@ -4208,10 +4208,10 @@ X-API-Key: &lt;INTERNAL_SERVICE_KEY&gt;
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>
