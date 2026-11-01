@@ -5,7 +5,7 @@ kitchen, the counter and the rider, for hospitality, retail and service tenants.
 events between ordering-backend, pos-api, logistics-api, treasury-api and notifications-api,
 the payment options, the acceptance policy, who may act at each stage, and per-tenant app naming.
 
-Last reviewed 2026-10-06.
+Last reviewed 2026-11-01.
 
 ## Services and ownership
 
@@ -56,14 +56,20 @@ Last reviewed 2026-10-06.
    `preparing` and the customer sees it. All tickets ready (or the counter's **Ready** for
    printer-only kitchens and retail packing) publishes `pos.kds.order.ready`; ordering moves it to
    `ready` and either tells a pickup customer, or for delivery creates the logistics task.
+   Kitchen tickets of an online order close as served when the counter hands it over
+   (`AutoClearKDSTicketsForOrder`), when the rider picks it up (ordering's `out_for_delivery`,
+   mirrored by pos-api) or when it is delivered or completed, and are voided on cancellation.
+   Assigning a rider does not close them, since the food may still be cooking. Printer-only
+   kitchens never depend on the KDS: the counter's Ready plus the hand-over or pickup closes any
+   ticket left on a screen.
 6. **Pickup hand-over.** The counter asks for the collection code (POS keeps only a salted hash;
    a missing code needs a recorded reason), takes any money due, and marks it collected:
    `pos.online_order.collected`, ordering completes the order, settles cash on collection and
    consumes the stock reservation.
 7. **Delivery.** The task is auto-assigned to the nearest rider (`logistics.auto_assign_enabled`),
    assigned by a dispatcher, or taken by a rider from **Open jobs**
-   (`logistics.rider_self_claim_enabled`, default on; one conditional update so only one rider
-   wins). `logistics.task.picked_up` moves the order to `out_for_delivery`; the rider submits proof
+   (`logistics.rider_self_claim_enabled`, default on, switch in logistics-ui Settings; one
+   conditional update so only one rider wins). `logistics.task.picked_up` moves the order to `out_for_delivery`; the rider submits proof
    of delivery with the customer's code and, for pay on delivery, the cash or M-Pesa code taken.
    `logistics.task.completed` delivers the order, settles it with the method used and consumes
    stock. An outlet delivering with its own staff marks it delivered from the POS queue instead.
@@ -93,7 +99,10 @@ Last reviewed 2026-10-06.
      Tasks the POS dispatches for till delivery orders carry `source_service = pos`; pos-api follows
      them itself and shows the rider's progress on the POS delivery queue.
 8. **Cancellation** releases stock, refunds a prepaid order and voids the POS record and its
-   tickets. A customer can cancel only until the kitchen starts; after that the outlet rejects.
+   tickets. A customer can cancel only until the kitchen starts (`CustomerMayCancel`, enforced
+   server side); after that the outlet rejects. Signed-in customers use
+   `POST /orders/{id}/cancel`; guests use `POST /orders/guest/{id}/cancel?session_id=...`, which
+   requires the checkout session stamped on the order.
    logistics-api consumes `ordering.order.cancelled` and cancels the open delivery task (the
    rider is freed; if the order was already picked up the dispatch board is told to get it back).
 
@@ -122,7 +131,21 @@ note. The KDS board groups and counts tickets by the same order type.
 Online dine-in (table QR) is not offered: checkout refuses `dine_in` with a 400 asking for pickup
 or delivery, since such an order would never reach the outlet.
 
+## Tenant resolution
+
+On every `/api/v1/{tenant}/...` route the URL names the tenant. Client `X-Tenant-ID` and
+`X-Tenant-Slug` headers are dropped before tenant resolution, the auth middleware runs first so
+`httpware.TenantV2` sees the caller's claims, and a token issued for another tenant is refused
+with 403 (platform owners excepted). Guest and public routes take the tenant from the URL alone.
+
 ## Payment options
+
+The checkout reads its options from `GET /{tenant}/payment-methods?fulfillment_type=&outlet_id=`,
+which is public with optional sign-in: guests get the store's gateways, signed-in customers also
+get their wallet and saved cards. Gateways themselves are managed in treasury; the ordering
+dashboard links there rather than keeping its own gateway screen. The cash option is labelled by
+fulfilment ("Pay at the counter" or "Pay on delivery"), never by the gateway's name.
+
 
 | Option | Offered when | Confirmed by | Settled |
 |---|---|---|---|

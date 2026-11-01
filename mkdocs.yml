@@ -109,6 +109,13 @@ nav:
               - Reports: user-guide/maskani/reports.md
               - The Resident Portal: user-guide/maskani/resident-portal.md
               - Privacy and Personal Data: user-guide/maskani/privacy-and-data.md
+          - Online Ordering:
+              - user-guide/ordering/index.md
+              - Setting Up: user-guide/ordering/setting-up.md
+              - Ordering as a Customer: user-guide/ordering/ordering-as-a-customer.md
+              - Pickup Orders: user-guide/ordering/pickup-orders.md
+              - Delivery Orders: user-guide/ordering/delivery-orders.md
+              - When Things Go Wrong: user-guide/ordering/when-things-go-wrong.md
           - POS:
               - user-guide/pos/index.md
               - Staff Operations:

@@ -6,6 +6,9 @@ them, for restaurants, shops and service businesses.
 
 > **Direct link:** `https://pos.codevertexafrica.com/{your-tenant-slug}/online-orders`
 
+The whole journey of an online order, from the customer's checkout to the rider's door, with
+screenshots of every app it passes through, is in the [Online Ordering guide](../ordering/index.md).
+
 Who can use the queue: cashiers, waiters, floor supervisors, receptionists and managers (the
 **Online orders** permission). The kitchen works from the KDS and never needs the queue.
 
