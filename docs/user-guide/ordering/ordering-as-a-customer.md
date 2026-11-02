@@ -91,8 +91,8 @@ messages carry a **Track Order** (or **View Order**) button that opens their ord
 | Order placed | "We have received your order", the total, and that you will confirm it |
 | You accept it | "Good news! Your order has been accepted and is being prepared" |
 | Ready for pickup | Ready at your outlet, with the collection code |
-| Rider on the way | The rider's name and the delivery code |
-| Delivered or collected | Thanks, with a link to rate the order (and to review you on Google, when set up) |
+| Rider on the way | The rider's name and phone number, with **Track Delivery** |
+| Delivered or collected | Thanks, with **Leave Feedback** and, when you have set up your Google review link, **Review us on Google** |
 | Rejected or cancelled | The reason, for example "payment not completed in time" |
 
 ### On WhatsApp
@@ -101,15 +101,19 @@ The first messages are the same for every order: received with the total, then a
 
 ![WhatsApp: order received and accepted, above an unpaid order cancelled](assets/notifications/whatsapp-received-accepted.png)
 
-A pickup order is then ready at your outlet, and finally complete, with **Leave Feedback**.
+A pickup order is then ready at your outlet, with the outlet's name.
 
 ![WhatsApp: ready for pickup at the outlet](assets/notifications/whatsapp-ready-for-pickup.png)
-
-![WhatsApp: order complete, with Leave Feedback](assets/notifications/whatsapp-completed.png)
 
 A delivery order tells the customer when it is ready and waiting for the rider.
 
 ![WhatsApp: a delivery order received, accepted and ready](assets/notifications/whatsapp-delivery-ready.png)
+
+When the rider collects it, the customer gets the rider's name and phone number with **Track
+Delivery**. Once it is delivered, the last message thanks them and offers **Leave Feedback** and,
+when you have set up your Google review link, **Review us on Google**.
+
+![WhatsApp: out for delivery with the rider's details, then delivered with Leave Feedback and Review us on Google](assets/notifications/whatsapp-completed.png)
 
 When you reject an order, the message gives your reason.
 

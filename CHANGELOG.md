@@ -2,6 +2,13 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.14.2] - 2026-11-03
+
+### Changed
+- **Ordering as a customer** and **Delivery orders**: the WhatsApp delivered message now shows
+  **Leave Feedback** and **Review us on Google**; the on-the-way message gives the rider's name
+  and phone with Track Delivery.
+
 ## [1.14.1] - 2026-11-03
 
 ### Added

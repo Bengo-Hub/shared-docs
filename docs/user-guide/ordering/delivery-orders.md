@@ -100,3 +100,8 @@ itself; a card still on the queue shows **Close order**.
 ## What the customer sees
 
 ![The customer's order page while on the way](assets/delivery/08-customer-on-the-way.png)
+
+On WhatsApp the customer gets the rider's name and phone when the order leaves, and a thank-you
+with **Leave Feedback** and **Review us on Google** once it is delivered.
+
+![WhatsApp: out for delivery, then delivered with Review us on Google](assets/notifications/whatsapp-completed.png)
