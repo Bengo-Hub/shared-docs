@@ -2,6 +2,24 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.14.0] - 2026-11-03
+
+### Added
+- **Online Ordering** user guide: setting up (order acceptance, delivery areas, riders, dispatch),
+  ordering as a customer, pickup orders, delivery orders and when things go wrong. Screenshots of
+  real orders on the demo business in Kisumu across the storefront, POS, Logistics and the rider
+  app, including the shop's own steps (To pick & pack, Packed & ready) and the WhatsApp and email
+  messages a customer receives.
+
+### Changed
+- **Delivery orders** are delivered only through Logistics: the rider enters the customer's
+  6-digit code, a dispatcher can enter it for the rider, and an admin can mark a delivery
+  delivered as an override with a reason. The POS no longer marks deliveries delivered; staff who
+  deliver for you are added as riders.
+- **POS online orders** links to the Online Ordering guide for delivery and hand-over.
+- **Online order fulfilment** (architecture): delivered comes only from Logistics; the POS
+  hand-over and ordering's staff status change refuse it for delivery orders.
+
 ## [1.13.8] - 2026-10-19
 
 ### Changed

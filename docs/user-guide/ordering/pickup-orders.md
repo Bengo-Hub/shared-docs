@@ -10,8 +10,9 @@ the header shows the outlet the order is for.
 
 ## 1. Accept or reject
 
-A new order rings and shows **New · accept?** under **Click & Collect**. It keeps ringing every
-30 seconds until someone acts.
+A new order rings and shows **New · accept?** under **Pickup & Takeaway** (called **Click &
+Collect** in a shop), numbered after the online order (online order 000009 is **CC-000009**). It
+keeps ringing every 30 seconds until someone acts.
 
 ![A new order waiting to be accepted](assets/pickup/01-new-order.png)
 
@@ -55,7 +56,8 @@ When the customer arrives, press **Hand over** on the card.
    POS checks it; it never shows you the code.
 2. For an order paid at the counter, choose **Cash** or **M-Pesa** (with the M-Pesa code) for the
    amount shown. The order cannot be released until the money is recorded.
-3. Press **Handed over**.
+3. Press **Received Ksh 160.00** (the amount you took). For an order already paid online the
+   button reads **Handed over**.
 
 If the customer cannot show the code (phone off, message deleted), choose **Customer does not
 have the code** and write how you checked them, for example their name and phone number. This is

@@ -11,9 +11,17 @@ a [pickup order](pickup-orders.md#1-accept-or-reject).
 
 ![A new delivery order](assets/delivery/01-new-order.png)
 
-A shop packs the order and presses **Ready** on the card; a restaurant's kitchen presses **Ready**
-on the kitchen screen. Either way the customer is told it is ready and a delivery job is created
-for your riders.
+In a shop the accepted order becomes a pick list under **To pick & pack**. The counter picks the
+items, bags them and presses **Packed & ready**.
+
+![Packing the order in a shop](assets/delivery/01b-pack-and-ready.png)
+
+A restaurant's kitchen works from its tickets and presses **Ready** on the kitchen screen (or the
+counter presses **Ready** on the card when the kitchen prints chits instead). Either way the
+customer is told it is ready, the card moves to **Ready for the rider**, and a delivery job is
+created for your riders.
+
+![Ready for the rider](assets/delivery/01c-ready-for-rider.png)
 
 ## 2. Getting a rider
 
@@ -22,7 +30,7 @@ The job goes to a rider in one of three ways, depending on your
 
 - **Automatically** to the nearest available rider on shift.
 - **By a dispatcher**, from **Logistics, Deliveries** (or **Assign rider** on the POS card).
-- **By a rider** taking it from **Open jobs** in the rider app. Only one rider can take a job.
+- **By a rider** taking it from **Available Work** in the rider app (**Take job**). Only one rider can take a job.
 
 ![The job on the Logistics deliveries board](assets/delivery/02-logistics-job.png)
 
@@ -36,20 +44,26 @@ they switch themselves **online**, which also shares their location while they w
 
 ![Going online in the rider app](assets/delivery/03-rider-online.png)
 
-**Open jobs** lists jobs waiting for a rider, with the outlet, the area and the fee.
+**Available Work** on the rider app home lists jobs waiting for a rider, with the outlet, the area and the fee. **Take job** gives it to that rider.
 
-![Open jobs](assets/delivery/04-rider-open-jobs.png)
+![Available Work](assets/delivery/04-rider-open-jobs.png)
 
-After taking a job the rider sees the route to the outlet, then:
+After taking a job the rider works through it one button at a time (on the way to the outlet, at the outlet, picked up, on the way, at the customer), with the route on the map:
 
 1. **At the counter**, checks the bag against the order on screen and marks it **Picked up**. The
    customer's page changes to *On the way* and shows the rider on the map. Any kitchen tickets
    still open for the order close.
-2. **At the door**, asks for the customer's **6-digit delivery code** and enters it.
+2. **At the door**, asks for the customer's **6-digit delivery code**, enters it and writes who
+   received the order. The code is checked by the system, not the phone; after five wrong codes
+   the job stops taking codes and the dispatcher is alerted.
 3. For **pay on delivery**, records how the customer paid: cash, or M-Pesa with the code. The app
    says **Collect payment at the door** with the amount.
-4. Submits the proof of delivery. The order is delivered, the customer is told, and the stock is
+4. Presses **Confirm & Complete**. The order is delivered, the customer is told, and the stock is
    taken off.
+
+If the customer cannot find the code, the rider presses **Customer can't find the code? Ask the
+dispatcher**. The rider cannot finish the delivery without the code; see
+[The customer has no code](when-things-go-wrong.md#the-customer-has-no-code).
 
 ![The active delivery](assets/delivery/05-rider-active.png)
 
@@ -69,8 +83,10 @@ the record for a manager to follow up.
 
 ## Delivering with your own staff
 
-If you deliver without the rider app, press **Delivered (own staff)** on the POS card once the
-order has reached the customer.
+Staff who deliver for you are added as riders in **Logistics, Riders** and use the rider app like
+anyone else. Every delivery ends with the customer's delivery code in the rider app, so the POS
+has no button to mark a delivery as delivered. Once the rider has delivered, the order closes by
+itself; a card still on the queue shows **Close order**.
 
 ## What the customer sees
 

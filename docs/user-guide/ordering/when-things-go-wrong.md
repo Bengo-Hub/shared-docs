@@ -24,7 +24,9 @@ Either way, the kitchen tickets are voided, a paid order is refunded and the ite
 When a pay-now payment is cancelled or times out, the order stays open for 30 minutes (your
 **payment retry** setting) with its items reserved, and the customer can retry from the order
 page. The POS shows it as **Awaiting payment** without an Accept button. If nobody pays within
-the window, the order is cancelled and the items are released.
+the window, the order is cancelled and the items are released. The customer is told why (the WhatsApp message
+reads "Reason: payment not completed in time"), as shown in
+[Messages your customer gets](ordering-as-a-customer.md#5-messages-your-customer-gets).
 
 ## The customer is outside your delivery areas
 
@@ -34,10 +36,20 @@ it in **Logistics, Delivery areas**.
 
 A customer whose pin is inside your outlet (within 200 metres) is offered pickup instead.
 
-## The customer has no code
+## The customer has no code {: #the-customer-has-no-code }
 
-At the counter or the door, choose **Customer does not have the code** and write how you checked
+**At the counter** (pickup), choose **Customer does not have the code** and write how you checked
 who they are. Never hand over an order with no record.
+
+**At the door** (delivery), the rider presses **Ask the dispatcher** and the dispatch board is
+alerted. In **Logistics, Deliveries**, open the job:
+
+- **Confirm delivery** lets the dispatcher enter the customer's code for the rider, for example
+  when the customer reads it out over the phone or the rider's phone has died. The same code
+  check applies.
+- **Mark delivered (override)** is for admins only, when there is no code at all. It needs a
+  reason, and for pay on delivery the payment taken. The override, who made it and why are kept
+  on the job and shown on its proof of delivery.
 
 ## A rider cannot take a job
 

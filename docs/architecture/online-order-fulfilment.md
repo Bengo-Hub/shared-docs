@@ -72,7 +72,11 @@ Last reviewed 2026-11-01.
    conditional update so only one rider wins). `logistics.task.picked_up` moves the order to `out_for_delivery`; the rider submits proof
    of delivery with the customer's code and, for pay on delivery, the cash or M-Pesa code taken.
    `logistics.task.completed` delivers the order, settles it with the method used and consumes
-   stock. An outlet delivering with its own staff marks it delivered from the POS queue instead.
+   stock. This is the only way a delivery order becomes delivered: pos-api's hand-over refuses a
+   delivery order until `dispatch_status` is `delivered`, and ordering's admin status endpoint
+   refuses `out_for_delivery`, `delivered` and `completed` on a delivery order that logistics has
+   not delivered (pos-api `ef307e7`, ordering-backend `c85970e`; the old
+   `pos.online_order.delivered` own-staff event is gone).
    Assignment from every path (dispatcher, auto-dispatch, batching, self-claim) is one
    conditional update, so a job never ends up with two riders. Auto-dispatch only uses riders
    whose last GPS fix is under 10 minutes old and never offers a job back to a rider who

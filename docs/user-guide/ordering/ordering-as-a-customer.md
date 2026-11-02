@@ -79,9 +79,62 @@ The payment choices come from your payment settings in Treasury:
 
 ![Payment method and placing the order](assets/customer/08-payment.png)
 
-The customer places the order by sliding the button (or pressing Enter on a keyboard).
+The customer places the order with **Place Order**, which shows the total. On a phone it is a button they slide to confirm, so an order is never placed by a stray tap.
 
-## 5. Following the order
+## 5. Messages your customer gets
+
+Every step sends the customer a message by WhatsApp and email, from your business name. WhatsApp
+messages carry a **Track Order** (or **View Order**) button that opens their order page.
+
+| When | Message |
+|---|---|
+| Order placed | "We have received your order", the total, and that you will confirm it |
+| You accept it | "Good news! Your order has been accepted and is being prepared" |
+| Ready for pickup | Ready at your outlet, with the collection code |
+| Rider on the way | The rider's name and the delivery code |
+| Delivered or collected | Thanks, with a link to rate the order (and to review you on Google, when set up) |
+| Rejected or cancelled | The reason, for example "payment not completed in time" |
+
+### On WhatsApp
+
+The first messages are the same for every order: received with the total, then accepted.
+
+![WhatsApp: order received and accepted, above an unpaid order cancelled](assets/notifications/whatsapp-received-accepted.png)
+
+A pickup order is then ready at your outlet, and finally complete, with **Leave Feedback**.
+
+![WhatsApp: ready for pickup at the outlet](assets/notifications/whatsapp-ready-for-pickup.png)
+
+![WhatsApp: order complete, with Leave Feedback](assets/notifications/whatsapp-completed.png)
+
+A delivery order tells the customer when it is ready and waiting for the rider.
+
+![WhatsApp: a delivery order received, accepted and ready](assets/notifications/whatsapp-delivery-ready.png)
+
+When you reject an order, the message gives your reason.
+
+![WhatsApp: an order cancelled by the outlet, with the reason](assets/notifications/whatsapp-cancelled-by-outlet.png)
+
+### By email
+
+The order email adds the details a delivery customer wants to check: the delivery fee, the area
+it was priced by, the distance by road, the estimated time, and the 6-digit code to give the
+rider.
+
+![Order email with the delivery details and the delivery code](assets/notifications/email-order-placed-delivery.png)
+
+A pickup customer gets the collection code when you accept the order, and again when it is ready.
+
+![Email: order accepted, with the collection code](assets/notifications/email-accepted-pickup.png)
+
+![Email: order ready for pickup, with the outlet and the collection code](assets/notifications/email-ready-for-pickup.png)
+
+The last email thanks the customer and, when you have set up your Google review link, asks for a
+review with **Review us on Google**.
+
+![Email: order complete, with Leave Review and Review us on Google](assets/notifications/email-completed-review.png)
+
+## 6. Following the order
 
 After placing the order the customer gets a confirmation by email and WhatsApp, and lands on
 their order page. The page updates on its own as the order moves: placed, accepted, preparing,

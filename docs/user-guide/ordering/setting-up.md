@@ -111,7 +111,7 @@ with their own account, so give them an email they can open.
 | Setting | On | Off |
 |---|---|---|
 | Auto-assign new deliveries (Growth plans and up) | The nearest available rider on shift gets the job | Jobs wait for a dispatcher |
-| Riders can take open jobs | Riders on shift see unassigned jobs under Open jobs and take one; only one rider gets each job | Riders only get jobs given to them |
+| Riders can take open jobs | Riders on shift see unassigned jobs under Available Work and take one; only one rider gets each job | Riders only get jobs given to them |
 | Require proof of delivery | Riders finish a job with the customer's code or a photo | Riders can mark a job delivered without proof |
 
 ![Dispatch and delivery settings](assets/admin/07-dispatch-settings.png)

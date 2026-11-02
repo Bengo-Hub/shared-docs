@@ -75,8 +75,8 @@ The rider checks the bag against the order at the counter, delivers, asks the cu
 **delivery code**, and records cash or the M-Pesa code for pay-on-delivery orders. Riders get a
 phone alert when a job is assigned to them once notifications are enabled in the rider app.
 
-If you deliver with your own staff and no rider app, press **Delivered (own staff)** on the queue
-card.
+The queue cannot mark a delivery as delivered: that happens only when the rider enters the
+customer's code in the rider app. Staff who deliver for you are added as riders in Logistics.
 
 The **Delivery** tab groups orders by where they are: waiting for a rider, ready for the rider,
 **Out for delivery** and **Delivered, to settle or close**. Each card shows the rider's name and
