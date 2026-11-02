@@ -6,7 +6,7 @@ The 2026-08 platform gap analysis flagged WAF/DDoS protection as zero-config bey
 
 ## Which zone / hosts
 
-`codevertexafrica.com` (zone ID `dbbf1a40cb82ffd43dbc1405d3d8a4b1`, confirmed via `.claude/memory/reference_cloudflare_zone_id_mixup.md` — **not** the ID recorded for `codevertexitsolutions.com`, they were previously mixed up). This covers every proxied subdomain, including the 5 critical services' public hostnames — see `reference_production_service_hosts.md` (`sso`, `posapi`, `inventoryapi`, `booksapi`, `pricingapi`).
+`codevertexafrica.com` (zone ID `dbbf1a40cb82ffd43dbc1405d3d8a4b1`, confirmed via `.claude/memory/reference_cloudflare_zone_id_mixup.md` — **not** the ID previously recorded, which belonged to the retired old domain). This covers every proxied subdomain, including the 5 critical services' public hostnames — see `reference_production_service_hosts.md` (`sso`, `posapi`, `inventoryapi`, `booksapi`, `pricingapi`).
 
 ## Important: the zone is on Cloudflare's Free plan
 
