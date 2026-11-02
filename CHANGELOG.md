@@ -2,6 +2,12 @@
 
 All notable changes to the Codevertex Africa platform documentation are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions are published via [mike](https://github.com/jimporter/mike) and selectable from the version dropdown on the published site.
 
+## [1.14.1] - 2026-11-03
+
+### Added
+- **Delivery orders**: the restaurant's own steps, the kitchen screen ticket marked Online
+  delivery and the order waiting for the rider, next to the shop's pick and pack steps.
+
 ## [1.14.0] - 2026-11-03
 
 ### Added

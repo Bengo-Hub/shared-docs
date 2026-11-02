@@ -16,12 +16,21 @@ items, bags them and presses **Packed & ready**.
 
 ![Packing the order in a shop](assets/delivery/01b-pack-and-ready.png)
 
-A restaurant's kitchen works from its tickets and presses **Ready** on the kitchen screen (or the
-counter presses **Ready** on the card when the kitchen prints chits instead). Either way the
-customer is told it is ready, the card moves to **Ready for the rider**, and a delivery job is
-created for your riders.
+In a restaurant the accepted order goes to the kitchen as a ticket marked **Online delivery**.
+The kitchen presses **Start**, then **Ready** when the food is packed. A kitchen that works from
+printed chits instead presses **Ready** on the queue card.
 
-![Ready for the rider](assets/delivery/01c-ready-for-rider.png)
+![The delivery ticket on the kitchen screen](assets/delivery/hotel-01-kds-ticket.png)
+
+Either way the customer is told it is ready, the card moves to **Ready for the rider**, and a
+delivery job is created for your riders.
+
+![A shop's order ready for the rider](assets/delivery/01c-ready-for-rider.png)
+
+![A restaurant's order ready for the rider](assets/delivery/hotel-02-ready-for-rider.png)
+
+The kitchen ticket closes by itself when the rider collects the order. From here on a
+restaurant delivery works exactly like a shop's.
 
 ## 2. Getting a rider
 
