@@ -328,6 +328,14 @@ Services address each other via Kubernetes DNS internally and HTTPS externally:
 
 Config is env-var driven per service — each service holds the URLs of the services it calls (e.g. `AUTH_SERVICE_URL`, `TREASURY_SERVICE_URL`).
 
+**Calling auth-api from another service.** Service-to-service calls (tenant lookups, API-key validation, user sync, role registry pushes) use the cluster Service, `http://auth-api.auth.svc.cluster.local:4000`, never the public `https://sso.codevertexafrica.com`: the public hostname sends the request out through the node and back through ingress-nginx for nothing. Three rules:
+
+- The JWT issuer (`AUTH_ISSUER`, `JWT_ISSUER` and similar) and the JWKS URL stay on the public hostname: the issuer must match the `iss` claim inside the tokens. Keep them in their own variables.
+- auth-api only accepts in-cluster traffic from namespaces listed in `devops-k8s/manifests/network-policies/auth-api-ingress.yaml`. A new caller adds its namespace there first; otherwise its calls are silently dropped.
+- Set the URL explicitly in `apps/<service>/values.yaml`. Code defaults point at the public hostname, so an unset variable quietly takes the long route.
+
+Every Go service follows this since 2026-11-07. `NEXT_PUBLIC_*` URLs are sent to browsers and stay public.
+
 Calls go through the shared HTTP client (`shared-service-client`), which adds:
 - Circuit breaker (gobreaker) — opens after 5 consecutive failures
 - Retry with exponential backoff — 100ms to 5s, max 30s
@@ -338,7 +346,7 @@ Calls go through the shared HTTP client (`shared-service-client`), which adds:
 **Usage**:
 ```go
 client := serviceclient.New(serviceclient.DefaultConfig(
-    "http://auth-api.auth.svc.cluster.local:4101",
+    "http://auth-api.auth.svc.cluster.local:4000",
     "auth-service",
     logger,
 ))
