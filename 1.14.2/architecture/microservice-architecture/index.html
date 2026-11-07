@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -7668,6 +7668,13 @@
 - Internal: <code>http://{service}.{namespace}.svc.cluster.local:{port}</code>
 - External: <code>https://{domain}.codevertexafrica.com</code></p>
 <p>Config is env-var driven per service — each service holds the URLs of the services it calls (e.g. <code>AUTH_SERVICE_URL</code>, <code>TREASURY_SERVICE_URL</code>).</p>
+<p><strong>Calling auth-api from another service.</strong> Service-to-service calls (tenant lookups, API-key validation, user sync, role registry pushes) use the cluster Service, <code>http://auth-api.auth.svc.cluster.local:4000</code>, never the public <code>https://sso.codevertexafrica.com</code>: the public hostname sends the request out through the node and back through ingress-nginx for nothing. Three rules:</p>
+<ul>
+<li>The JWT issuer (<code>AUTH_ISSUER</code>, <code>JWT_ISSUER</code> and similar) and the JWKS URL stay on the public hostname: the issuer must match the <code>iss</code> claim inside the tokens. Keep them in their own variables.</li>
+<li>auth-api only accepts in-cluster traffic from namespaces listed in <code>devops-k8s/manifests/network-policies/auth-api-ingress.yaml</code>. A new caller adds its namespace there first; otherwise its calls are silently dropped.</li>
+<li>Set the URL explicitly in <code>apps/&lt;service&gt;/values.yaml</code>. Code defaults point at the public hostname, so an unset variable quietly takes the long route.</li>
+</ul>
+<p>Every Go service follows this since 2026-11-07. <code>NEXT_PUBLIC_*</code> URLs are sent to browsers and stay public.</p>
 <p>Calls go through the shared HTTP client (<code>shared-service-client</code>), which adds:
 - Circuit breaker (gobreaker) — opens after 5 consecutive failures
 - Retry with exponential backoff — 100ms to 5s, max 30s
@@ -7676,7 +7683,7 @@
 - Configurable timeouts (default 10s)</p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><span class="nx">client</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">serviceclient</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">serviceclient</span><span class="p">.</span><span class="nx">DefaultConfig</span><span class="p">(</span>
-<span class="w">    </span><span class="s">"http://auth-api.auth.svc.cluster.local:4101"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"http://auth-api.auth.svc.cluster.local:4000"</span><span class="p">,</span>
 <span class="w">    </span><span class="s">"auth-service"</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">logger</span><span class="p">,</span>
 <span class="p">))</span>
@@ -9066,7 +9073,7 @@ If cart/hold expires without checkout:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 18, 2026 09:47:40 UTC">October 18, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 7, 2026 21:44:39 UTC">November 7, 2026</span>
   </span>
 
     
@@ -9134,7 +9141,7 @@ If cart/hold expires without checkout:
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
