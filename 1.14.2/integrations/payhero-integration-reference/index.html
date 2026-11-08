@@ -4100,6 +4100,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#proving-a-rail-on-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proving a rail on staging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proving a rail on staging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#offline-paybill-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline paybill (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-rails-still-to-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global rails (still to run)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-the-money-lands-in-the-books" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4489,6 +4528,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#proving-a-rail-on-staging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proving a rail on staging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proving a rail on staging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#offline-paybill-done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline paybill (done)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-rails-still-to-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global rails (still to run)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#where-the-money-lands-in-the-books" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4844,10 +4922,57 @@ available the payment is refused rather than charged in the wrong currency.</p>
 <p><strong>Offline paybill.</strong> For payers who cannot take a phone prompt. The pay page shows PayHero's
 paybill and an account number; the payer pays from the M-Pesa menu and the payment settles like
 any other when PayHero's callback arrives.</p>
+<p>The offline paybill was confirmed with a live payment on 8 November 2026 (Hadia staging, KES 10)
+and <code>payhero.offline_paybill_verified</code> is <code>true</code> on the platform.</p>
+<p><strong>A cancelled prompt.</strong> PayHero's callback for a cancelled or failed prompt can arrive while its
+status lookup still says pending (seen live: the lookup lagged more than six minutes). Treasury
+looks again after 2, 4, 8, 15, 30 and 30 seconds, and keeps the callback's failure on the still-open
+intent as <code>metadata.payhero_callback</code>. That hint never settles anything, because callbacks are not
+signed and a failed intent could no longer take a real payment; the app that started the payment
+reads it to tell the payer at once and offer the paybill.</p>
 <p><strong>Prompt guard.</strong> Every gateway that sends a prompt to the payer's phone goes through one guard:
 after repeated failed or cancelled prompts to the same phone (or many for the same tenant) in a
 short window, further prompts pause and the payer is pointed to the offline paybill. A successful
 payment clears the count for that phone.</p>
+<h2 id="proving-a-rail-on-staging">Proving a rail on staging<a class="headerlink" href="#proving-a-rail-on-staging" title="Permanent link">&para;</a></h2>
+<p>A rail is switched on for everyone only after one live payment settles on it. Each test uses a
+real phone and a small amount on staging, with the business owner's go-ahead, and someone reading
+treasury's log while it runs (<code>kubectl logs -n treasury -l app=treasury-api -f</code>, filtered for
+<code>payhero</code>). The steps below are the ones the offline paybill passed on 8 November 2026.</p>
+<h3 id="offline-paybill-done">Offline paybill (done)<a class="headerlink" href="#offline-paybill-done" title="Permanent link">&para;</a></h3>
+<ol>
+<li>On a published registry (or any pay page with the paybill switched on), start an M-Pesa payment
+   of KES 10 and cancel the prompt on the phone.</li>
+<li>Checkpoint: within seconds the page says the payment did not go through and offers Pay by paybill.
+   Treasury's log shows the callback, <code>status not final yet</code> and the follow-up lookups.</li>
+<li>Choose Pay by paybill. Checkpoint: the page shows business number 756756, an account number of
+   the form <code>553125#&lt;checkout id&gt;</code> and the same total as the prompt.</li>
+<li>Pay those details from the M-Pesa menu.</li>
+<li>Checkpoint: treasury logs the callback and the intent moves to <code>succeeded</code>; the registry shows the
+   gift and the receipt reaches the guest.</li>
+<li>Acceptance: one settled intent with <code>payment_method</code> <code>payhero_offline</code>, the paybill intent linked
+   to the cancelled prompt (<code>fallback_of</code>), no refund case, and the ledger entry posted once.</li>
+<li>Then set the platform config <code>payhero.offline_paybill_verified</code> to <code>true</code>.</li>
+</ol>
+<h3 id="global-rails-still-to-run">Global rails (still to run)<a class="headerlink" href="#global-rails-still-to-run" title="Permanent link">&para;</a></h3>
+<p>Airtel Money, MTN and other mobile money, card, bank and other countries run on
+<code>POST /api/global/payments</code>, which has not been seen to settle. The run needs the owner, a phone or
+card for the rail, and the provider's <code>merchant_id</code> once PayHero supplies it.</p>
+<ol>
+<li>In treasury-ui, Settings, PayHero, Test a country: pick the country and method and run the dry
+   run. Checkpoint: the network, the currency and amount charged, the fee and the route are what
+   the business expects. Nothing is charged.</li>
+<li>With the platform config still <code>false</code>, start a KES 1 (or the country's smallest) payment from a
+   platform-billed test intent on the chosen rail.</li>
+<li>Checkpoint: PayHero accepts the request (no <code>merchant_id</code> refusal) and the payer is prompted or
+   redirected.</li>
+<li>Checkpoint: the callback arrives, the status lookup answers final, and the intent settles with
+   the converted amount recorded in <code>fx_charge</code>.</li>
+<li>Acceptance: one settled intent per rail tried, the ledger posted in the intent's currency, and the
+   provider's charge seen in the relay costs.</li>
+<li>Then set <code>payhero.global_rails_verified</code> to <code>true</code>. Payouts on those rails stay refused until
+   discovery lists a withdraw network.</li>
+</ol>
 <h2 id="where-the-money-lands-in-the-books">Where the money lands in the books<a class="headerlink" href="#where-the-money-lands-in-the-books" title="Permanent link">&para;</a></h2>
 <p>Each synced channel maps to one of the tenant's financial accounts (Banking, Accounts). On sync,
 an unmapped channel is matched by account number, or to the only account at the bank named in the
@@ -5065,7 +5190,7 @@ writes <code>treasury.gateways.manage</code>):</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 9, 2026 06:46:46 UTC">October 9, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 8, 2026 10:13:18 UTC">November 8, 2026</span>
   </span>
 
     
