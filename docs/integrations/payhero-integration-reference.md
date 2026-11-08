@@ -196,10 +196,62 @@ available the payment is refused rather than charged in the wrong currency.
 paybill and an account number; the payer pays from the M-Pesa menu and the payment settles like
 any other when PayHero's callback arrives.
 
+The offline paybill was confirmed with a live payment on 8 November 2026 (Hadia staging, KES 10)
+and `payhero.offline_paybill_verified` is `true` on the platform.
+
+**A cancelled prompt.** PayHero's callback for a cancelled or failed prompt can arrive while its
+status lookup still says pending (seen live: the lookup lagged more than six minutes). Treasury
+looks again after 2, 4, 8, 15, 30 and 30 seconds, and keeps the callback's failure on the still-open
+intent as `metadata.payhero_callback`. That hint never settles anything, because callbacks are not
+signed and a failed intent could no longer take a real payment; the app that started the payment
+reads it to tell the payer at once and offer the paybill.
+
 **Prompt guard.** Every gateway that sends a prompt to the payer's phone goes through one guard:
 after repeated failed or cancelled prompts to the same phone (or many for the same tenant) in a
 short window, further prompts pause and the payer is pointed to the offline paybill. A successful
 payment clears the count for that phone.
+
+## Proving a rail on staging
+
+A rail is switched on for everyone only after one live payment settles on it. Each test uses a
+real phone and a small amount on staging, with the business owner's go-ahead, and someone reading
+treasury's log while it runs (`kubectl logs -n treasury -l app=treasury-api -f`, filtered for
+`payhero`). The steps below are the ones the offline paybill passed on 8 November 2026.
+
+### Offline paybill (done)
+
+1. On a published registry (or any pay page with the paybill switched on), start an M-Pesa payment
+   of KES 10 and cancel the prompt on the phone.
+2. Checkpoint: within seconds the page says the payment did not go through and offers Pay by paybill.
+   Treasury's log shows the callback, `status not final yet` and the follow-up lookups.
+3. Choose Pay by paybill. Checkpoint: the page shows business number 756756, an account number of
+   the form `553125#<checkout id>` and the same total as the prompt.
+4. Pay those details from the M-Pesa menu.
+5. Checkpoint: treasury logs the callback and the intent moves to `succeeded`; the registry shows the
+   gift and the receipt reaches the guest.
+6. Acceptance: one settled intent with `payment_method` `payhero_offline`, the paybill intent linked
+   to the cancelled prompt (`fallback_of`), no refund case, and the ledger entry posted once.
+7. Then set the platform config `payhero.offline_paybill_verified` to `true`.
+
+### Global rails (still to run)
+
+Airtel Money, MTN and other mobile money, card, bank and other countries run on
+`POST /api/global/payments`, which has not been seen to settle. The run needs the owner, a phone or
+card for the rail, and the provider's `merchant_id` once PayHero supplies it.
+
+1. In treasury-ui, Settings, PayHero, Test a country: pick the country and method and run the dry
+   run. Checkpoint: the network, the currency and amount charged, the fee and the route are what
+   the business expects. Nothing is charged.
+2. With the platform config still `false`, start a KES 1 (or the country's smallest) payment from a
+   platform-billed test intent on the chosen rail.
+3. Checkpoint: PayHero accepts the request (no `merchant_id` refusal) and the payer is prompted or
+   redirected.
+4. Checkpoint: the callback arrives, the status lookup answers final, and the intent settles with
+   the converted amount recorded in `fx_charge`.
+5. Acceptance: one settled intent per rail tried, the ledger posted in the intent's currency, and the
+   provider's charge seen in the relay costs.
+6. Then set `payhero.global_rails_verified` to `true`. Payouts on those rails stay refused until
+   discovery lists a withdraw network.
 
 ## Where the money lands in the books
 
