@@ -115,6 +115,14 @@ press **Report a problem** beside it.
 Switch on **Pay out automatically** to be paid by itself once the registry reaches an amount you
 choose.
 
+### Check your M-Pesa name (optional)
+
+Before the first payout of a registry you can tick **Check my M-Pesa name before my first payout**.
+Hadia then compares the name M-Pesa holds for your payout number with yours, so a typing mistake
+cannot send your gifts to a stranger. The box shows what the check costs. It comes out of that first
+payout as its own line, apart from Hadia's commission, and is taken only once. If the check gets no
+answer, nothing is charged. If the names differ, the payout waits until Hadia's team has looked at it.
+
 ### What fees mean
 
 Guests pay a handling fee for their payment and see it with the exact total before paying. Hadia also
