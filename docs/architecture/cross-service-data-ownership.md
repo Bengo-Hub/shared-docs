@@ -133,18 +133,41 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 
 **Integration pattern (no duplication):**
 - `marketflow-worker` subscribes to `ordering.order.created`, `pos.sale.finalized`, `treasury.payment.succeeded`, `pos.appointment.completed` — when `crm_contact_id` is set on the event payload, logs an Activity on the CRM contact timeline
-- Other services query contact details via `GET /api/v1/contacts/{crm_contact_id}` on marketflow-api using `X-API-Key: INTERNAL_SERVICE_KEY` when they need contact name/email for display
+- Other services load contact details through `GET /api/v1/internal/contacts/{id}` or, for many ids at once, `POST /api/v1/internal/contacts/batch` (at most 200 ids), using `X-API-Key: INTERNAL_SERVICE_KEY`
 - `GET /api/v1/contacts/{id}/360` on marketflow-api aggregates cross-service data (orders from ordering-backend, payments from treasury-api, loyalty from pos-api) in one response
 
 **Events published by marketflow-api (via NATS outbox):**
 - `crm.lead.created`, `crm.lead.qualified`, `crm.lead.converted`
-- `crm.contact.created`, `crm.contact.updated`, `crm.contact.enriched`
+- `crm.contact.created`, `crm.contact.updated`, `crm.contact.deleted`, `crm.contact.enriched`
 - `crm.deal.created`, `crm.deal.stage_moved`, `crm.deal.won`, `crm.deal.lost`
 - `crm.activity.logged`
 - `crm.task.created`, `crm.task.overdue`
 - `crm.agent.action_taken`
 
 **Other services reference**: `crm_contact_id`, `crm_lead_id`; contact/deal data via marketflow-api REST when needed.
+
+**Customer identity rules (November 2026):**
+
+The CRM is the only place a customer's identity is created. Where a service keeps a name, phone or email beside a `crm_contact_id`, that value is a read-only snapshot and is never edited locally.
+
+- **One client.** Go services call the CRM only through `github.com/Bengo-Hub/shared-service-client/crm` (v0.5.0). It normalises phones to E.164, sends the service key, and reports failures as a `*crm.Error` with the CRM's status and code.
+- **Events carry ids only.** `crm.contact.created`, `crm.contact.updated` and `crm.contact.deleted` hold the contact id and tenant, never a name, email or phone. A subscriber that wants the details loads the contact through the internal API above.
+- **Snapshots follow updates.** On `crm.contact.updated` a service refreshes the snapshot on its linked rows from the CRM. It never writes the snapshot back.
+- **Deletes are final.** On `crm.contact.deleted` a service clears the link and marks the row, so the background linker never re-creates a contact someone deleted. Staff creating or editing the record explicitly clears the mark and links again. Loyalty points are never destroyed by a customer delete: an account that still holds points is unlinked and kept.
+- **Refusal versus outage.** A CRM answer of 400 or 422 means the CRM refused the customer, and the service shows that message to the user. Any other failure (401, 403, 429, 5xx, no answer) is an outage: the service saves the record unlinked, within its own time budget, and a reconciler links it later. A sale, check-in, registration or member signup never waits on the CRM.
+- **A contact needs an identifier.** marketflow `POST /contacts` requires an email or phone and a known `contact_type`, because a contact with neither can never be deduplicated.
+- **Tenant is taken from the token.** On marketflow a tenant user always acts for the tenant in their token, whatever `X-Tenant-ID` they send. Only platform owners and service keys choose a tenant.
+
+**Per-service decisions:**
+
+| Service | Rule |
+|---|---|
+| pos-api | Loyalty accounts and client records link to the CRM. A phone lookup matches every common spelling of a number, and among duplicate accounts the one with the most points wins. The hotel guest register keeps the details typed at check-in and never takes data from the CRM, because it is a legal record taken from the guest's ID. |
+| library-api | Members link to the CRM and the local name, phone and email are a snapshot. |
+| hospital-api | A patient links only with consent (`crm_consent_at`), and only name and phone are shared. A patient who declines never reaches the CRM, and withdrawing consent removes the link and is written to the audit log. |
+| maskani-api | Only billed parties link. Anonymising a party unlinks it and emits `privacy.party_anonymised`, but never deletes the CRM contact, since the same contact may carry loyalty points, balances or orders in other services. |
+| subscriptions-api | Subscriber contacts are filed in the platform tenant's CRM, because they are the platform's customers and not the subscriber's. |
+| treasury-api | Exposes an S2S `sync-crm` route so TruLoad can link a transporter when it is created. |
 
 ---
 
@@ -311,7 +334,7 @@ Quotations in treasury-api reference CRM customers from marketflow-api. The owne
 3. UI posts `POST /api/v1/{tenant}/quotations` with all three fields.
 4. treasury-api stores them; `customer_id` is the authoritative FK.
 
-**Access pattern for display:** treasury-api returns `customer_name` and `customer_email` from the quotation row (snapshot). For live CRM data (phone, address, 360 view), call `GET /api/v1/marketflow/{tenant}/contacts/{customer_id}`.
+**Access pattern for display:** treasury-api returns `customer_name` and `customer_email` from the quotation row (snapshot). For live CRM data (phone, address, 360 view), call `GET /api/v1/marketflow/{tenant}/contacts/{customer_id}`. Snapshots are read-only and are refreshed from `crm.contact.updated`; see the customer identity rules in the CRM section above.
 
 **Services that must NOT store customer master data:** treasury-api, pos-api, ordering-backend, logistics-api, inventory-api. These services store only `crm_contact_id` (nullable UUID FK) and optional snapshot fields (`customer_name`, `customer_email`) for audit/display.
 
