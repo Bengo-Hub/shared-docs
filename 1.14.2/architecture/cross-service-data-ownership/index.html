@@ -5527,16 +5527,62 @@
 - All FKs are <strong>nullable</strong> — existing records function without CRM; linkage is opt-in</p>
 <p><strong>Integration pattern (no duplication):</strong>
 - <code>marketflow-worker</code> subscribes to <code>ordering.order.created</code>, <code>pos.sale.finalized</code>, <code>treasury.payment.succeeded</code>, <code>pos.appointment.completed</code> — when <code>crm_contact_id</code> is set on the event payload, logs an Activity on the CRM contact timeline
-- Other services query contact details via <code>GET /api/v1/contacts/{crm_contact_id}</code> on marketflow-api using <code>X-API-Key: INTERNAL_SERVICE_KEY</code> when they need contact name/email for display
+- Other services load contact details through <code>GET /api/v1/internal/contacts/{id}</code> or, for many ids at once, <code>POST /api/v1/internal/contacts/batch</code> (at most 200 ids), using <code>X-API-Key: INTERNAL_SERVICE_KEY</code>
 - <code>GET /api/v1/contacts/{id}/360</code> on marketflow-api aggregates cross-service data (orders from ordering-backend, payments from treasury-api, loyalty from pos-api) in one response</p>
 <p><strong>Events published by marketflow-api (via NATS outbox):</strong>
 - <code>crm.lead.created</code>, <code>crm.lead.qualified</code>, <code>crm.lead.converted</code>
-- <code>crm.contact.created</code>, <code>crm.contact.updated</code>, <code>crm.contact.enriched</code>
+- <code>crm.contact.created</code>, <code>crm.contact.updated</code>, <code>crm.contact.deleted</code>, <code>crm.contact.enriched</code>
 - <code>crm.deal.created</code>, <code>crm.deal.stage_moved</code>, <code>crm.deal.won</code>, <code>crm.deal.lost</code>
 - <code>crm.activity.logged</code>
 - <code>crm.task.created</code>, <code>crm.task.overdue</code>
 - <code>crm.agent.action_taken</code></p>
 <p><strong>Other services reference</strong>: <code>crm_contact_id</code>, <code>crm_lead_id</code>; contact/deal data via marketflow-api REST when needed.</p>
+<p><strong>Customer identity rules (November 2026):</strong></p>
+<p>The CRM is the only place a customer's identity is created. Where a service keeps a name, phone or email beside a <code>crm_contact_id</code>, that value is a read-only snapshot and is never edited locally.</p>
+<ul>
+<li><strong>One client.</strong> Go services call the CRM only through <code>github.com/Bengo-Hub/shared-service-client/crm</code> (v0.5.0). It normalises phones to E.164, sends the service key, and reports failures as a <code>*crm.Error</code> with the CRM's status and code.</li>
+<li><strong>Events carry ids only.</strong> <code>crm.contact.created</code>, <code>crm.contact.updated</code> and <code>crm.contact.deleted</code> hold the contact id and tenant, never a name, email or phone. A subscriber that wants the details loads the contact through the internal API above.</li>
+<li><strong>Snapshots follow updates.</strong> On <code>crm.contact.updated</code> a service refreshes the snapshot on its linked rows from the CRM. It never writes the snapshot back.</li>
+<li><strong>Deletes are final.</strong> On <code>crm.contact.deleted</code> a service clears the link and marks the row, so the background linker never re-creates a contact someone deleted. Staff creating or editing the record explicitly clears the mark and links again. Loyalty points are never destroyed by a customer delete: an account that still holds points is unlinked and kept.</li>
+<li><strong>Refusal versus outage.</strong> A CRM answer of 400 or 422 means the CRM refused the customer, and the service shows that message to the user. Any other failure (401, 403, 429, 5xx, no answer) is an outage: the service saves the record unlinked, within its own time budget, and a reconciler links it later. A sale, check-in, registration or member signup never waits on the CRM.</li>
+<li><strong>A contact needs an identifier.</strong> marketflow <code>POST /contacts</code> requires an email or phone and a known <code>contact_type</code>, because a contact with neither can never be deduplicated.</li>
+<li><strong>Tenant is taken from the token.</strong> On marketflow a tenant user always acts for the tenant in their token, whatever <code>X-Tenant-ID</code> they send. Only platform owners and service keys choose a tenant.</li>
+</ul>
+<p><strong>Per-service decisions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pos-api</td>
+<td>Loyalty accounts and client records link to the CRM. A phone lookup matches every common spelling of a number, and among duplicate accounts the one with the most points wins. The hotel guest register keeps the details typed at check-in and never takes data from the CRM, because it is a legal record taken from the guest's ID.</td>
+</tr>
+<tr>
+<td>library-api</td>
+<td>Members link to the CRM and the local name, phone and email are a snapshot.</td>
+</tr>
+<tr>
+<td>hospital-api</td>
+<td>A patient links only with consent (<code>crm_consent_at</code>), and only name and phone are shared. A patient who declines never reaches the CRM, and withdrawing consent removes the link and is written to the audit log.</td>
+</tr>
+<tr>
+<td>maskani-api</td>
+<td>Only billed parties link. Anonymising a party unlinks it and emits <code>privacy.party_anonymised</code>, but never deletes the CRM contact, since the same contact may carry loyalty points, balances or orders in other services.</td>
+</tr>
+<tr>
+<td>subscriptions-api</td>
+<td>Subscriber contacts are filed in the platform tenant's CRM, because they are the platform's customers and not the subscriber's.</td>
+</tr>
+<tr>
+<td>treasury-api</td>
+<td>Exposes an S2S <code>sync-crm</code> route so TruLoad can link a transporter when it is created.</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h3 id="inventory-service-inventory-api">Inventory-Service (inventory-api)<a class="headerlink" href="#inventory-service-inventory-api" title="Permanent link">&para;</a></h3>
 <p><strong>Owns</strong> (single source of truth for product master and stock):
@@ -5675,7 +5721,7 @@ record.</p>
 2. User selects a contact → UI populates <code>customer_id</code> (UUID), <code>customer_name</code>, <code>customer_email</code> in the form.
 3. UI posts <code>POST /api/v1/{tenant}/quotations</code> with all three fields.
 4. treasury-api stores them; <code>customer_id</code> is the authoritative FK.</p>
-<p><strong>Access pattern for display:</strong> treasury-api returns <code>customer_name</code> and <code>customer_email</code> from the quotation row (snapshot). For live CRM data (phone, address, 360 view), call <code>GET /api/v1/marketflow/{tenant}/contacts/{customer_id}</code>.</p>
+<p><strong>Access pattern for display:</strong> treasury-api returns <code>customer_name</code> and <code>customer_email</code> from the quotation row (snapshot). For live CRM data (phone, address, 360 view), call <code>GET /api/v1/marketflow/{tenant}/contacts/{customer_id}</code>. Snapshots are read-only and are refreshed from <code>crm.contact.updated</code>; see the customer identity rules in the CRM section above.</p>
 <p><strong>Services that must NOT store customer master data:</strong> treasury-api, pos-api, ordering-backend, logistics-api, inventory-api. These services store only <code>crm_contact_id</code> (nullable UUID FK) and optional snapshot fields (<code>customer_name</code>, <code>customer_email</code>) for audit/display.</p>
 <h4 id="financial-documents-cross-service-integration-patterns-may-2026">Financial Documents ↔ Cross-Service Integration Patterns (May 2026)<a class="headerlink" href="#financial-documents-cross-service-integration-patterns-may-2026" title="Permanent link">&para;</a></h4>
 <p>All financial document types (Quotation, Invoice, Proforma Invoice, Credit Note, Sales Order, Delivery Challan, Payment Receipt) in treasury-api follow these data ownership rules for cross-service references:</p>
@@ -6443,7 +6489,7 @@ record.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 06:50:57 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 10, 2026 20:59:41 UTC">November 10, 2026</span>
   </span>
 
     
