@@ -109,6 +109,11 @@ nav:
               - Reports: user-guide/maskani/reports.md
               - The Resident Portal: user-guide/maskani/resident-portal.md
               - Privacy and Personal Data: user-guide/maskani/privacy-and-data.md
+          - Hadia (Gift Registry):
+              - user-guide/hadia/index.md
+              - For Registry Owners: user-guide/hadia/owners.md
+              - For Guests: user-guide/hadia/guests.md
+              - Staying Safe: user-guide/hadia/safety.md
           - Online Ordering:
               - user-guide/ordering/index.md
               - Setting Up: user-guide/ordering/setting-up.md
