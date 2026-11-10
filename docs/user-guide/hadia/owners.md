@@ -71,6 +71,11 @@ log and send thank-yous. Payouts, your payout number, Premium and cancelling sta
 
 You can remove a co-owner at any time from the same page, and a co-owner can leave on their own.
 
+**Hand the registry over.** To make a co-owner the owner, choose **Make owner** next to them, then
+**Send me a code** and enter the code you receive. They choose **Accept** on the same page and confirm
+with their own code. You stay on as a co-owner, and payouts pause for 48 hours after the handover so
+nobody is caught out. You can withdraw the handover until they accept.
+
 ## Gift log, thank-yous and statements
 
 Open **Gift log** from the registry to see every gift, who sent it, what it was for and the message.
