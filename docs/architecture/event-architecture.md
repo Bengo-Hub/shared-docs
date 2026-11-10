@@ -130,7 +130,7 @@ Subject derivation: `{aggregate_type}.{event_type}` (e.g., `treasury.payment.suc
 | `subscription.upgraded` | Plan tier increased | tenant_id, new_plan_code, old_plan_id, direction |
 | `subscription.downgraded` | Plan tier decreased | tenant_id, new_plan_code, old_plan_id, direction |
 | `subscription.cancelled` | Subscription cancelled | tenant_id, reason |
-| `subscription.renewed` | Subscription renewed | tenant_id |
+| `subscription.renewed` | Subscription renewed; with a payment it is also the payment confirmation | tenant_id, plan_code, plan_name, billing_cycle, period_end, amount_paid?, currency?, payment_method?, payment_reference?, intent_id? |
 
 ### ticketing-api (JetStream, stream: `ticketing`)
 
