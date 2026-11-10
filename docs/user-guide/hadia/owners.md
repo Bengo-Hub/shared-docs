@@ -59,6 +59,18 @@ If the registry holds a child's name, photo or birth details, tick **This regist
 about a child**. It then cannot be public, and photos stay off the guest page until you record
 consent as a parent or guardian.
 
+## Co-owners
+
+Share the work with a partner or family member. A co-owner can edit gifts and details, see the gift
+log and send thank-yous. Payouts, your payout number, Premium and cancelling stay with you.
+
+1. Open your registry, choose **Settings**, then **Co-owners**.
+2. Enter their phone number and choose **Invite**. A registry can have up to 3 co-owners.
+3. Choose **Send on WhatsApp** to tell them. They sign in to Hadia with that number and the
+   registry appears in their account.
+
+You can remove a co-owner at any time from the same page, and a co-owner can leave on their own.
+
 ## Gift log, thank-yous and statements
 
 Open **Gift log** from the registry to see every gift, who sent it, what it was for and the message.
