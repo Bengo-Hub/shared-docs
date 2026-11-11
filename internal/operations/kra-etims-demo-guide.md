@@ -28,6 +28,8 @@ It builds on these treasury-api documents and does not repeat them:
 | Route | Real traffic goes straight to `etims-api-sbx.kra.go.ke/etims-api` with the device `tin`, `bhfId` and `cmcKey` headers. The certification wizard alone uses the GavaConnect proxy, because the portal only scores that route |
 | Auto send on codevertex-demo | Off. Every new document needs **Transmit to eTIMS** by hand, and a POS sale needs **Generate ETR receipt** (section 4, step 5) |
 | Environment | Both demo devices on sandbox. Production go-live is a per-device switch that has not been used |
+| Signing channel | OSCU only on codevertex-demo (checked 2026-11-11) |
+| Live check 2026-11-11 | Branch 00 counter 220 equals KRA's latest sale; branch 01 at 86; 51 of 51 documents in 30 days signed. The 11 dead letters in full history date from 22 September to 10 October, the GavaConnect proxy outage before the direct route; say so if the Dead letter filter is opened, and do not requeue them |
 
 ## 2. Run sheet for the day
 
@@ -45,8 +47,9 @@ Certification). The old "Tax & Compliance" tabs are gone; old `?tab=` links stil
 2. Tax, eTIMS, **Devices**. The activation card shows all four steps green and both devices
    active (branch 00 and branch 01). Both must say **Sandbox**. If one says Live or Mixed, stop
    and investigate before the demo: the invoice counter is kept per PIN, branch and environment.
-3. Tax, **Tax settings**, eTIMS connection: eTIMS on, Auto send off, signing channel Automatic,
-   Mode Sandbox. Change nothing.
+3. Tax, **Tax settings**, eTIMS connection: eTIMS on, Auto send off, signing channel OSCU only,
+   Mode Sandbox. Change nothing. OSCU only is deliberate for the demo: no VSCU unit is provisioned
+   and KRA has not yet ruled on OSCU and VSCU sharing a branch (section 12).
 4. Tax, eTIMS, **Transmissions**: invcNo 209 and 210 show as transmitted, each with a CU number.
 5. Open invoice INV-261016-000102. The KRA eTIMS panel shows the CU invoice number, the signature
    and the QR. Download the PDF once to make sure the docs engine answers.
@@ -56,6 +59,9 @@ Certification). The old "Tax & Compliance" tabs are gone; old `?tab=` links stil
    catalogue.
 8. Check that the two items planned for the demo sale are registered (Tax, eTIMS, Items, badge
    Registered) and carry a tax code.
+9. The dashboard shows KRA's current notices in a banner. Open one with **Read the full notice**;
+   it lands on Tax, eTIMS, Branch tools with that notice highlighted. Notice 12 (the new
+   `/initialize` path) is a good opening for the questions in section 12.
 
 If step 6 times out, KRA's sandbox is slow. Try once more after five minutes. If it still fails,
 plan to use the fallback in section 8.
@@ -158,6 +164,10 @@ that outlet. Then switch the top bar back to All outlets when showing Transmissi
    - Optional: the VAT on the invoice, in the books and in what KRA received now come from one
      shared calculator, so they agree to the cent. Tax, VAT return shows books, ledger and eTIMS
      side by side.
+   - Leave the document discount empty. The 2026-10-31 discount handling (a document discount
+     shared across the lines before VAT) has not yet been sent to KRA for a discounted invoice or
+     POS sale. A line discount is fine. I show a discounted sale only after a branch 01 dry run
+     passes on the morning of the demo.
 5. **POS sale (3 min).** Ring up two items on the branch 01 till and take payment. Because auto
    send is off on this tenant, the receipt prints **unsigned** at the till; this is by design and
    the sale is queued, not lost. Then in treasury open **Transactions**, find the sale, open it
@@ -365,6 +375,7 @@ the live sale and credit note from today, and the Transmissions audit trail.
 | Invoice receipt has no KRA block | The send has not finished. Wait for the page to refresh, or open the invoice from Transmissions |
 | "the invoice has no outlet, so its KRA branch can't be resolved" | Raise the invoice with the branch 01 outlet selected |
 | Transmissions looks empty | The top bar outlet filters it. Switch to All outlets |
+| A KRA notice link opens a 404 page | KRA's own notice pages (`etims-sbx.kra.go.ke/.../indexEbmNotice`) answer 404 on KRA's side (checked 2026-11-11). The dashboard banner now opens the full notice in Tax, eTIMS, Branch tools instead |
 | The sandbox is down entirely | Show the 23/23 certification history, open the go-live invoice and credit note, scan their QR, and open their rows on Transmissions to show the CU number, signature and receipt KRA returned |
 
 ## 9. Do not do during the demo
@@ -523,6 +534,15 @@ at the end of the demo or in the follow-up email. Each line says what we do unti
    while the direct eTIMS host answered. Live traffic now goes direct, but the portal still scores
    certification only through the proxy. Ask them to raise the proxy timeout, or to accept
    direct-route evidence for scoring.
+
+2a. **Notice 12, "OSCU Initialization path suffix: /initialize"** (posted 2026-11-05, with a sample
+   body `tin`, `bhfId`, `dvcSrlNo`). On 2026-11-11 I probed both direct hosts: `/initialize`
+   answers 404 on `etims-api-sbx` and `etims-api`, while `selectInitOsdcInfo` still answers. Ask
+   which route the new path belongs to (the GavaConnect proxy, or a coming release of the direct
+   host), when `selectInitOsdcInfo` stops working, and whether the response changes. Until then
+   device initialisation keeps `selectInitOsdcInfo` (`kra_client.go`, `SelectInitOsdcInfo`).
+2b. **Notice detail links.** Every `dtlUrl` in the notice list answers 404 (a page titled "MyRRA").
+   Ask them to fix the links. We show the full notice text in our own Branch tools page.
 
 ### Rules we have assumed and want confirmed
 
