@@ -56,6 +56,17 @@ Points to say when showing these:
   "B-16%" and "E-8%". This is KRA's layout, not ours.
 - A credit note's time on KRA's page reads twelve hours off (CN-000046 shows 10:39 for a note
   raised at 22:39 EAT). This is the sandbox refund time display we have already reported.
+- A discount on the whole document reaches KRA shared across the lines, because KRA has no
+  document discount field, only a discount per line. On INV-261112-000123 the 50.00 document
+  discount puts 11.09 on the hair set (KRA shows 822.34), 7.70 on demo service 3 (492.30, still
+  band C) and so on. Since 2026-11-13 our PDF and screens print each line the same way: the
+  SUBTOTAL and AMOUNT columns take the line's share off, a grey note under the description names
+  the share, and the lines add up to the grand total exactly as KRA's do.
+- KRA's receipt page prints each line with its VAT included; the tax band table on our
+  document shows the taxable value without VAT. They reconcile line by line: B 822.34 less VAT
+  113.43 is the 708.91 in our B row, E 619.94 less 45.92 is 574.02.
+- The DISC column shows "10%" for a percentage discount and the amount for a flat one; the
+  rate and the amount it came to are in grey under the description.
 - Every date we send KRA is now East Africa Time, whatever the server clock says.
 - A discount KRA can't hold as a whole percent goes over as the net price, and where that price
   needs more than two decimals the line is split into two lines with the same item code, so the
