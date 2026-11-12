@@ -62,6 +62,11 @@ Points to say when showing these:
   band C) and so on. Since 2026-11-13 our PDF and screens print each line the same way: the
   SUBTOTAL and AMOUNT columns take the line's share off, a grey note under the description names
   the share, and the lines add up to the grand total exactly as KRA's do.
+- Check on 2026-11-13: of the 47 documents codevertex-demo signed in the 30 days before, 44 match
+  KRA's receipt page line by line. The three that do not (INV-261111-000112, its credit note
+  CN-000041, INV-261111-000118) were signed during the 11 November demo, before the discount fix,
+  when a line discount went to KRA as a rounded whole percent. Signed records cannot be edited,
+  so they stay as the record of the bug that was fixed.
 - KRA's receipt page prints each line with its VAT included; the tax band table on our
   document shows the taxable value without VAT. They reconcile line by line: B 822.34 less VAT
   113.43 is the 708.91 in our B row, E 619.94 less 45.92 is 574.02.
