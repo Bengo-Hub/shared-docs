@@ -26,10 +26,50 @@ It builds on these treasury-api documents and does not repeat them:
 | Demo tenant | `codevertex-demo` on books.codevertexafrica.com (treasury) and pos.codevertexafrica.com (POS) |
 | Test buyer | CRM contact "Test Customer", PIN P318295670X |
 | Route | Real traffic goes straight to `etims-api-sbx.kra.go.ke/etims-api` with the device `tin`, `bhfId` and `cmcKey` headers. The certification wizard alone uses the GavaConnect proxy, because the portal only scores that route |
-| Auto send on codevertex-demo | Off. Every new document needs **Transmit to eTIMS** by hand, and a POS sale needs **Generate ETR receipt** (section 4, step 5) |
+| Auto send on codevertex-demo | On as of 2026-11-12: sending an invoice or raising a credit note signed it with KRA at once in every run below. **Transmit to eTIMS** stays for a document that failed, and a POS sale still needs **Generate ETR receipt** (section 4, step 5) |
 | Environment | Both demo devices on sandbox. Production go-live is a per-device switch that has not been used |
 | Signing channel | OSCU only on codevertex-demo (checked 2026-11-11) |
 | Live check 2026-11-11 | Branch 00 counter 220 equals KRA's latest sale; branch 01 at 86; 51 of 51 documents in 30 days signed. The 11 dead letters in full history date from 22 September to 10 October, the GavaConnect proxy outage before the direct route; say so if the Dead letter filter is opened, and do not requeue them |
+
+## 1a. What changed after the 2026-11-11 review, and the proof
+
+I fixed every point the KRA team raised on 2026-11-11 and deployed the fixes on 2026-11-12
+(treasury, inventory, POS and SSO, back end and screens). The same evening I ran each review
+scenario on codevertex-demo, branch 01 (sandbox), and read every document back from KRA's own
+receipt page. Every total, every tax amount and every tax band matched to the cent.
+
+| Scenario | Our document | KRA receipt | Result |
+|---|---|---|---|
+| Goods in all five bands, A to E | INV-261112-000121 | KRACU0400001232/95 | A, B, C, D and E all shown; 4,135.68, tax 199.68 |
+| Services only, bands A to E | INV-261112-000122 | branch 01 | 2,620.00, tax 120.00 |
+| Goods and services mixed, a 10% and a 7.5% line discount, flat line discounts, a 50.00 document discount | INV-261112-000123 | branch 01 | 3,356.52, tax 159.35 |
+| Recipe items (no stock of their own) | INV-261112-000124 | branch 01 | 679.30, tax 93.70; no out of stock error |
+| First partial credit note (1 of 2 on two lines) | CN-000046 | KRACU0400001232/99 | B and D, minus 611.20, tax minus 51.20, against receipt 95 |
+| Second partial credit note on the same invoice | refused | | 409 with KRA's rule: one partial per invoice, then credit everything left |
+| Credit for everything left, part quantities included | CN-000047 | branch 01 | A to E, 3,524.48, tax 148.48 |
+| A further credit note once nothing is left | refused | | "nothing is left to credit" |
+| Half paid invoice credited in full, the paid half refunded by M-Pesa | INV-261112-000126, CN-000049 | branch 01 | 1,972.00 both; 986.00 recorded as refunded by M-Pesa, with its own journal entry |
+| Print copy | INV-261112-000121 PDF | | Original prints NS with no COPY mark; the Print copy button prints COPY and CS |
+
+Points to say when showing these:
+- KRA's receipt page prints bands C and D as "TAX C" and "TAX D", and A, B and E as "A-EX",
+  "B-16%" and "E-8%". This is KRA's layout, not ours.
+- A credit note's time on KRA's page reads twelve hours off (CN-000046 shows 10:39 for a note
+  raised at 22:39 EAT). This is the sandbox refund time display we have already reported.
+- Every date we send KRA is now East Africa Time, whatever the server clock says.
+- A discount KRA can't hold as a whole percent goes over as the net price, and where that price
+  needs more than two decimals the line is split into two lines with the same item code, so the
+  line totals agree with ours exactly.
+- An item's band comes from the line's tax code. When it differs from the band the item was
+  registered with, the item is re-registered with the new band before the sale goes over.
+- One signing unit per branch: a branch with an OSCU device refuses a VSCU set-up, and the
+  other way round.
+- Customer copies say COPY only when printed with the Print copy button; a plain print or a
+  download stays the original.
+- Document lists show the SCU invoice number and filter by date and time, number, SCU number,
+  customer and amount. Credit notes show the SCU numbers on top and the TIS numbers, with the
+  original invoice's number, in the box at the bottom.
+- Queued sales that miss a period go into the next period, inside KRA's six month window.
 
 ## 2. Run sheet for the day
 
@@ -164,10 +204,11 @@ that outlet. Then switch the top bar back to All outlets when showing Transmissi
    - Optional: the VAT on the invoice, in the books and in what KRA received now come from one
      shared calculator, so they agree to the cent. Tax, VAT return shows books, ledger and eTIMS
      side by side.
-   - Leave the document discount empty. The 2026-10-31 discount handling (a document discount
-     shared across the lines before VAT) has not yet been sent to KRA for a discounted invoice or
-     POS sale. A line discount is fine. I show a discounted sale only after a branch 01 dry run
-     passes on the morning of the demo.
+   - Discounts: a line can take a percentage or a flat amount, and the document a global discount.
+     The PDF shows each discount as given (a flat amount, or "10% (40.00)"), with SUBTOTAL and VAT
+     columns, and KRA's receipt page shows the same line totals as ours (since 2026-11-12, runbook
+     section 3.39). I run one discounted sale on branch 01 on the morning of the demo and compare it
+     with KRA's QR page before showing one.
 5. **POS sale (3 min).** Ring up two items on the branch 01 till and take payment. Because auto
    send is off on this tenant, the receipt prints **unsigned** at the till; this is by design and
    the sale is queued, not lost. Then in treasury open **Transactions**, find the sale, open it
@@ -480,7 +521,7 @@ Every code below is in the cached code lists: **04 Items and code lists, Cached 
 | `taxTyCd` / `tax_ty_cd` (TAX_TY) | A exempt, B VAT 16, C zero rated, D non-VAT, E VAT 8 | Must match the band the item was registered with |
 | `itemTyCd` / `item_ty_cd` (ITEM_TY) | 1 raw material, 2 finished good, 3 service | |
 | `pkgUnitCd` (PKG_UNIT) | e.g. NT, CT, BX | Two characters |
-| `qtyUnitCd` (QTY_UNIT) | e.g. NO (number), KG | Two characters; it is part of the itemCd |
+| `qtyUnitCd` (QTY_UNIT) | e.g. NO (number), KG | Two characters; it is part of the itemCd. KRA's list also has 1-character codes such as U (pieces) that the item code cannot carry; since 2026-11-11 the pickers hide them and treasury sends NO instead |
 | `itemClsCd` | 10 digits from the item class list | treasury uses the item's own class, else its category's, else the nearest parent category's. `1000000000` is the general fallback; avoid it for real items |
 | `sarTyCd` (SAR_TY) | 02 purchase in, 03 return in, 06 adjustment in, 11 sale out, 12 return to supplier, 16 adjustment out | One reason per movement |
 | `regTyCd` | M manual, A automatic | M for a call typed by hand |
