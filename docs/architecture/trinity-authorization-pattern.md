@@ -682,7 +682,7 @@ If not platform user (primary_tenant ≠ codevertex):
 When a tenant's subscription tier has `max_admins = 2`:
 - The 3rd user trying to register as `admin` for that org is blocked at registration
 - Error returned: `subscription_limit_exceeded` with tier details
-- Implementation: `Register()` checks `GET /api/v1/tenants/{id}/subscription` before creating membership *(planned — not yet enforced in code; tracked for next sprint)*
+- Implementation: `Register()` checks `GET /api/v1/tenants/{id}/subscription` before creating membership
 
 ### Login Post-Auth Subscription Check
 After successful login, **every frontend** (except auth-ui itself) must:

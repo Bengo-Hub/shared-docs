@@ -215,8 +215,7 @@ payment clears the count for that phone.
 
 A rail is switched on for everyone only after one live payment settles on it. Each test uses a
 real phone and a small amount on staging, with the business owner's go-ahead, and someone reading
-treasury's log while it runs (`kubectl logs -n treasury -l app=treasury-api -f`, filtered for
-`payhero`). The steps below are the ones the offline paybill passed on 8 November 2026.
+treasury-api's log while it runs, filtered for `payhero`. The steps below are the ones the offline paybill passed on 8 November 2026.
 
 ### Offline paybill (done)
 

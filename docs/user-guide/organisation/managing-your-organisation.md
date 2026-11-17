@@ -6,7 +6,6 @@ support. Only admins see this page — everyone else manages their own account u
 instead.
 
 > **Direct link:** `https://accounts.codevertexafrica.com/dashboard/my-tenant`
-> (the demo organisation: sign in as `admin@demo.codevertexafrica.com`, then open the same link)
 
 ![My Organization — Overview tab](assets/managing-your-organisation/01-overview.png)
 

@@ -505,13 +505,10 @@ func generateSecurityCredential(initiatorPassword, certPath string) (string, err
 }
 ```
 
-**Where the certificate actually comes from** (checked live 2026-08-22): `cert_pem` credential
-(inline PEM, preferred — no file mount needed) → `cert_path` credential (filesystem path) →
-`MPESA_SANDBOX_CERT_PATH`/`MPESA_PROD_CERT_PATH` env vars → **if none of those are set, silently
-falls back to sending the initiator password UNENCRYPTED (base64 only)**. Confirmed none are
-currently configured in the treasury-api deployment (no matching env vars, no volume mounts) — every
-initiator-authenticated call has been running on the unencrypted fallback, which sandbox tolerates
-but production would reject.
+**Where the certificate comes from.** treasury-api looks for it in this order: the `cert_pem`
+credential (inline PEM, preferred because it needs no file mount), the `cert_path` credential (a
+filesystem path), then the `MPESA_SANDBOX_CERT_PATH` or `MPESA_PROD_CERT_PATH` environment
+variable. One of them must be set for every environment that uses initiator-authenticated calls.
 
 **This is environment-scoped (sandbox vs production), not per-tenant or per-app** — it's Safaricom's
 own infrastructure public key, identical for every developer/tenant in that environment, so it's set

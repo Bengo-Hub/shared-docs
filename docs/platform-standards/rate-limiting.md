@@ -96,5 +96,4 @@ ISPBilling (FastAPI) keeps its counters in Redis (`app/core/rate_limit.py`, one 
 hit, so the limit holds across replicas). Credential endpoints (admin login, onboarding codes,
 hotspot login, voucher redeem, PPPoE login) get two layers: per client IP at
 `RATE_LIMIT_REQUESTS` per `RATE_LIMIT_WINDOW`, kept generous because hotspot customers often share
-one public IP, and per account or email at 10 per 5 minutes. `RATE_LIMIT_ENABLED=false` turns it
-off; a Redis outage lets requests through.
+one public IP, and per account or email at 10 per 5 minutes.

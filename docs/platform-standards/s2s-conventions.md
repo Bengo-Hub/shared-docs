@@ -4,11 +4,9 @@
 
 All Codevertex microservices share a single S2S API key environment variable: `INTERNAL_SERVICE_KEY`, sent as `X-API-Key: {INTERNAL_SERVICE_KEY}` on every S2S request. Never create per-service variants (`TREASURY_API_KEY`, `INVENTORY_SERVICE_API_KEY`, etc.) — every receiving service validates the incoming key against its own copy of the same shared value. Per-service *URL* env vars (`TREASURY_SERVICE_URL`, `INVENTORY_SERVICE_URL`, ...) are still separate, as expected.
 
-## The recurring footgun: an API key alone does not identify a tenant
+## An API key does not identify a tenant
 
-**A valid `X-API-Key` tells a service the caller is trusted — it does not tell it which tenant the call is for.** Services that resolve tenant context from auth claims first (rather than from an explicit header) will silently fall back to the *platform* tenant for an API-key-only call, with no error. This is a recurring failure mode anywhere tenant resolution checks JWT claims before an explicit tenant header — data written by an API-key-only caller can land on the wrong tenant with no error raised anywhere.
-
-**Always send `X-Tenant-ID` (and ideally `X-Tenant-Slug`) explicitly on every S2S call** — never assume the URL slug or the API key alone is sufficient. This also means testing an S2S endpoint against a specific tenant via raw curl requires either a real tenant JWT or these explicit headers, not just the shared key.
+A valid service key tells the receiving service that the caller is trusted. It does not say which tenant the call is for, so every S2S call names its tenant explicitly: send `X-Tenant-ID` (and ideally `X-Tenant-Slug`) on every request, and never rely on the URL slug or the key alone.
 
 ## Subscription checks: use the tenant-scoped endpoint
 
