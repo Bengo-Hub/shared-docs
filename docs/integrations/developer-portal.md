@@ -62,8 +62,29 @@ Developer Portal UI without full tenant-admin access. It doesn't currently carry
 permission beyond that. `App` management itself is tenant-membership-scoped, not role-scoped.
 
 **OAuth clients.** Full Authorization Code plus PKCE flow, with `client_secret_basic` for
-confidential clients. There's no `client_credentials` grant yet for pure server-to-server
-integrations with no user in the loop.
+confidential clients.
+
+**Consumer key and secret (client_credentials).** Every tenant App has a consumer key (its
+`client_id`) and a consumer secret, shown once on creation or from **Generate consumer secret**
+in the console, and stored only as a hash. `POST /api/v1/token` with
+`grant_type=client_credentials` (HTTP Basic or form fields) returns a 15 minute RS256 access
+token. Its audience is `codevertex-api`, so no service that accepts user sessions accepts it,
+and it carries the App's scopes (or a requested subset), tenant and environment, with no roles.
+Only tenant Apps can use the grant. Status, expiry and the IP allowlist (single addresses or
+CIDR ranges) are checked when the token is issued. Revoking, suspending, changing scopes,
+promoting or issuing a new secret is broadcast to every service, which then refuses tokens issued
+before the change. treasury-api's external eTIMS routes accept these tokens alongside the older
+`X-API-Key`.
+
+**Access model.** A developer only ever sees their own tenant's Apps and the simple form: one
+service, read or read and write. The type selector, the tenant list and free-form scopes are
+the platform owner's form, used to issue partner credentials. Every App starts in sandbox:
+sandbox calls run against simulated or KRA sandbox data, are not charged, and touch no
+production data. A sandbox App may widen its own scopes for testing; a production App cannot
+gain a scope without a platform admin. Production needs a go-live request, a platform admin's
+promotion and a funded token wallet (an active eTIMS API plan or the bundled tier). Developer
+accounts must sign in with an authenticator app in every tenant
+(`AUTH_SECURITY_MFA_ALWAYS_REQUIRED_ROLES`, default `developer`).
 
 **Rate limiting.** A tenant's effective requests-per-minute ceiling is resolved from their plan's
 `tier_limits_json` first, falling back to a per-service `RateLimitConfig` row, then a hardcoded
@@ -86,8 +107,6 @@ conversation and, once one exists, a head start on the credential.
 
 ## Roadmap (documented, not yet built)
 
-- **`client_credentials` OAuth grant.** Pure server-to-server, no user in the loop, for
-  integrations that don't need Authorization Code's browser redirect.
 - **Generalized certification framework.** Extract the eTIMS go-live checklist pattern, an
   automated check plus a human reviewer, the same two-layer gate KRA itself uses, into something
   any service can register its own checklist against, instead of copy-pasting treasury-api's

@@ -24,10 +24,12 @@ self-serve request typically gets a sandbox credential provisioned automatically
 
 ## How it works
 
-1. **Get your API key.** Once your request is approved, you receive an `X-API-Key` credential
-   scoped to `etims:read`/`etims:write`.
+1. **Get your credentials.** Once your request is approved, we email your consumer key and a link
+   to the developer console. Sign in (developer accounts use an authenticator app), open your
+   sandbox app and generate a consumer secret. It is shown once. We never send secrets by email.
 2. **Sandbox first.** Register a virtual device, register a couple of items, record a stock
-   movement, and transmit a few test sales, all against KRA's own sandbox, at no risk.
+   movement, and transmit a few test sales, all against KRA's own sandbox, at no risk. Sandbox
+   calls are not charged.
 3. **Check your certification status.** A single endpoint tells you exactly what's left before
    you can request production access.
 4. **Request go-live.** Once your checklist is green, one call notifies our platform team for a
@@ -35,6 +37,35 @@ self-serve request typically gets a sandbox credential provisioned automatically
    an automated check followed by a human reviewer.
 5. **Go live.** You're on a prepaid token bucket. Call the API as long as you have a balance, and
    top up any time.
+
+## Authentication
+
+Exchange your consumer key and secret for an access token, then send the token on every call.
+
+```bash
+curl -s -X POST https://sso.codevertexafrica.com/api/v1/token \
+  -u "$CONSUMER_KEY:$CONSUMER_SECRET" \
+  -d grant_type=client_credentials
+```
+
+```json
+{ "access_token": "eyJ...", "token_type": "Bearer", "expires_in": 900, "scope": "etims:read etims:write" }
+```
+
+```bash
+curl -s https://booksapi.codevertexafrica.com/api/v1/external/etims/certification-status \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+- Tokens last 15 minutes. Request a new one when it expires; there is no refresh token.
+- Add `scope=etims:read` to the token request for a read-only token.
+- You can also send `client_id` and `client_secret` as form fields instead of HTTP Basic auth.
+- Generating a new secret, suspending or revoking the app makes its existing tokens stop working
+  straight away.
+- If you set an IP allowlist on the app (single addresses or ranges such as `41.90.12.0/24`),
+  tokens are only issued to those addresses.
+- The older `X-API-Key` header still works but is being retired. New integrations should use
+  access tokens.
 
 ## Pricing: prepaid tokens, not a flat monthly quota
 
