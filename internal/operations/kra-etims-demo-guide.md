@@ -383,8 +383,35 @@ the Transmissions screen.
 its serial and branch, initialise to get the CMC key, refresh code lists, then register items. The
 activation card shows each step. Until all four are green, no document is sent to KRA.
 
-**Can third parties use your integration?** Yes. An external eTIMS API takes an API key scoped to
-eTIMS, with per-plan rate limits and usage billing. It goes through the same fiscalisation code.
+**Can third parties use your integration?** Yes. An external eTIMS API takes a consumer key and
+secret, exchanged for a 15 minute access token scoped to eTIMS, with per-plan rate limits and
+prepaid usage billing. Each integrator starts in a sandbox and goes live only after our review.
+Device credentials stay per taxpayer PIN, branch and device, registered under the integrator's
+own PIN. It goes through the same fiscalisation code.
+
+**Can an item be deregistered?** OSCU has no delete for items. The specification offers `useYn=N`
+on `saveItem`, and we send it, but the sandbox answered "Invalid itemCd Sequence" when we tried,
+so we have asked KRA for the supported way (question 5 in section 12). Until KRA confirms one, we
+retire an item in our own system. We first send a stock adjustment out (reason 16) for whatever
+KRA still holds, so no stock is left on that code. We then hide the item from sales and from
+every later sync, and keep its code on record so it is never minted twice.
+
+**What happens when an item's tax type changes?** The item keeps its item code. We send
+`saveItem` again for the same code with the new tax type, and KRA accepts it as an update. We
+proved this on 2026-10-17 with item `KE3NTNO00280530`, then on 158 more items. Every later sale
+goes out under the new band, and sales already signed keep the band they were signed with. A
+credit note always uses the band of the sale it reverses, so we move the registration back for
+that credit note when it has changed since. When a person picks a different tax code on an
+invoice line, we save it on the catalogue item too, so POS, online orders and eTIMS agree. An
+item with no tax code at all is treated as non-VAT (band D) until someone chooses one.
+
+**How do you keep stock in sync with eTIMS if an item can't be deregistered?** A change of tax
+type needs no new code, so the stock stays on the same item at KRA. A new code is needed only when
+the item type or unit changes, because those are part of the code. Then we send a stock adjustment
+out (reason 16) on the old code and in (reason 06) on the new one, and keep a link between the two
+codes. Past invoices and their credit notes keep the old code; new sales, purchases and stock
+movements use the new one. The stock master for each code always matches the movements we have
+sent for it.
 
 **What are the known limits?** Answer these honestly if asked:
 - VSCU is built but not provisioned for any customer.
@@ -551,7 +578,9 @@ Every code below is in the cached code lists: **04 Items and code lists, Cached 
 then an 8-digit sequence that is the next number for the PIN. Example: `KE2NTNO00000012` is a
 Kenyan finished good, packaging NT, unit NO, item number 12. Leave `item_cd` empty when
 registering and treasury mints it under a per-PIN lock. KRA rejects a code that was already
-sent, so never re-send an existing one to change an item.
+sent as a new item. Re-sending an existing code updates the item, for example its tax type (KRA
+answered 000 for this on 2026-10-17). The item type and units are part of the code, so changing
+those needs a new code.
 
 ### Amounts on a line
 
@@ -610,9 +639,11 @@ at the end of the demo or in the follow-up email. Each line says what we do unti
 4. **Scope of `sarNo`.** `invcNo` was confirmed per PIN and branch on 2026-09-24. KRA has never
    told us the scope of the stock `sarNo`, because the OutOfMemoryError comes back before any
    "Expected N" hint. We keep one counter per PIN and will switch to per branch if KRA says so.
-5. **Deactivating an item.** `saveItem` validates every call as a new insert, so re-sending an
-   item code with `useYn=N` is rejected with "Invalid itemCd Sequence". Ask for the supported
-   way to retire an item. Until then we retire items locally only.
+5. **Deactivating an item.** Re-sending an item code with a changed tax type is accepted as an
+   update, but re-sending it with `useYn=N` was rejected with "Invalid itemCd Sequence" when we
+   tried it in July. Ask for the supported way to retire an item, and whether `useYn=N` on an
+   existing code should work. Until then we zero the item's stock with a reason 16 adjustment and
+   retire it locally only.
 6. **Item codes in production.** Production codes follow KRA's per-PIN sequence. Our automatic
    correction to KRA's "expected sequence" is proven in the sandbox only. Ask whether production
    behaves the same, and whether items registered in the sandbox carry over (we assume they do
