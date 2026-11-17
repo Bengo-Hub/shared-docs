@@ -223,34 +223,51 @@ transaction/fee stream exists.
 
 > **External eTIMS API pricing.** This is a separate product from the "Treasury / Finance" row
 > above. That row's bundled eTIMS is one feature inside an onboarded tenant's own back-office
-> suite, their own KRA fiscalization, with no metering. The standalone eTIMS fiscalization API,
-> for a third-party company with no other Codevertex relationship, or an existing tenant wanting
-> external API access for a downstream integration, is a distinct, separately priced product on a
-> prepaid token bucket rather than a flat monthly quota. It's priced below every comparable
-> Starter, Growth, and Enterprise figure in this document, since it comes with only eTIMS and none
-> of the platform's other features.
+> suite, their own KRA fiscalization, with no metering. The standalone eTIMS fiscalization API
+> serves a company with its own software and no other Codevertex relationship, or an existing
+> tenant that wants API access for a downstream system. It runs on a prepaid token bucket.
 >
-> | Plan | Monthly (KES) | Included tokens/mo | Roughly this many sales transmissions | Top-up |
-> |---|---|---|---|---|
-> | `ETIMS_API_BASIC` | 1,500 | 5,000 | ~500 | KES 0.80/token |
-> | `ETIMS_API_GROWTH` | 4,000 | 20,000 | ~2,000 | KES 0.60/token |
-> | `ETIMS_API_SCALE` | 8,000 | 100,000 | ~10,000 | KES 0.40/token |
-> | `ETIMS_API_BUNDLED` (cross-sell) | 0 | 5,000 | ~500 | KES 0.80/token |
+> | Plan | Monthly (KES) | Included tokens/mo | About this many sales | Top-up | Included KES per sale | Top-up KES per sale |
+> |---|---|---|---|---|---|---|
+> | `ETIMS_API_BASIC` | 2,500 | 5,000 | 500 | KES 0.60/token | 5.00 | 6.00 |
+> | `ETIMS_API_GROWTH` | 4,000 | 20,000 | 2,000 | KES 0.45/token | 2.00 | 4.50 |
+> | `ETIMS_API_SCALE` | 8,000 | 100,000 | 10,000 | KES 0.30/token | 0.80 | 3.00 |
+> | `ETIMS_API_BUNDLED` (cross-sell) | 0 | 5,000 | 500 | KES 0.60/token | 0 | 6.00 |
 >
-> Every call is weighted by real cost: a cached lookup is 1 token, a device or item write is 3,
-> and a sales, credit-note, or stock-io transmission that actually reaches KRA's signing infra is
-> 10. The included-token figures are the original per-transaction quotas multiplied by 10, so a
-> subscriber's sales-transmission capacity is unchanged in KES-per-transmission terms from the
-> prior flat-tier pricing. Cheaper calls, previously unmetered entirely, are now metered but far
-> more cheaply. It's enforced in real time, blocking before the KRA call rather than billing after
-> the fact, via `ApiTokenWallet` in subscriptions-api. See `docs/integrations/etims-api.md` for the
-> customer-facing version.
+> Calls are weighted by what they cost to serve: a cached lookup is 1 token, a device or item
+> write is 3, and a sales, credit-note or stock-io transmission that reaches KRA's signing service
+> is 10. The wallet blocks a call before it reaches KRA when the balance is empty, through
+> `ApiTokenWallet` in subscriptions-api. A tenant with no matching plan tops up at the highest
+> public rate, so skipping a plan never beats subscribing. The plan rows are the source of truth:
+> platform admins edit `price`, `included_tokens` and `token_price_kes` there, and the seed in
+> `cmd/seed/etims_api.go` must match.
 >
-> `ETIMS_API_BUNDLED` covers a different case: a tenant who already pays for bundled
-> `etims_integration` on their main plan gets external API access at the same token pricing as
-> Basic but no extra monthly fee. It's admin or support assigned only, gated on the tenant already
-> holding `etims_integration`, not self-serve, so it can't be claimed by a tenant who doesn't
-> qualify.
+> `ETIMS_API_BUNDLED` is for a tenant who already pays for `etims_integration` on their main plan.
+> It gives API access at Basic's token pricing with no extra monthly fee. Support or a platform
+> admin assigns it after checking the tenant holds `etims_integration`; it is never self-serve.
+>
+> **Assisted integration (one-time).** Self-serve integrators pay nothing up front. When our team
+> does the setup, the fee is invoiced once as a `CustomAddon` (`billing_cycle=one_time`) after the
+> IntegrationRequest is approved as assisted. It is separate from the token plan.
+>
+> | Tier | One-time fee (KES) | Scope |
+> |---|---|---|
+> | Standard | 35,000 | One KRA PIN, one branch, one OSCU device. Item and stock sync, sales and credit notes, sandbox testing and go-live support. |
+> | Multi-branch | 85,000 | Up to 5 branches or devices under one PIN. Mapping to the client's ERP or POS fields, purchases and imports, staff training. |
+> | Enterprise | 180,000 | Several PINs or entities, VSCU, SAP, Odoo, Sage or legacy systems, custom middleware, on-site work. |
+> | Extra branch or device | 7,500 each | Beyond the tier's allowance. KRA issues credentials per PIN, branch and device. |
+> | Annual support (optional) | 15% of the setup fee a year | KRA spec changes, device re-registration, priority help. |
+>
+> **Market reference (read 2026-11-17, vendor pages, weak evidence).** KRA's own eTIMS software is
+> free, and integrators set their own prices; none publish a standard rate card. Standalone eTIMS
+> setup is quoted at KES 40,000 to 120,000 (itkenya.com), heavier ERP work at KES 50,000 to
+> 300,000 and above (leadspro.co.ke), a VSCU integration was listed at KES 50,000 (carlnkyle.co.ke)
+> and small plugins sell for about KES 15,000. Monthly eTIMS software runs KES 999 (Zoho Books
+> Standard) to KES 2,999 to 24,999 (veirahq.com tiers), and one API vendor lists KES 15,000 a
+> month capped at 1,000 transactions, about KES 15 a sale. No vendor publishes per-invoice API
+> pricing. Our Basic plan sits under the cheapest dedicated eTIMS plan we found, every tier's
+> per-sale cost sits well under KES 15, and the assisted tiers sit inside the market band, with
+> Standard just under its floor.
 
 **Bundles** (`POS_SUITE_*`, `POWERSUITE_*`) remain available and combine product lines at a discount.
 

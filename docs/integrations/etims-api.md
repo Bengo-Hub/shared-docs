@@ -8,8 +8,10 @@ POS/treasury suite, this API is for you.
 
 - **Self-serve.** You have your own developers. No integration fee. Sandbox test, pass the
   go-live certification checklist, move to production, and pay only for API usage.
-- **Assisted.** You'd rather our team handle the setup. A one-time fee applies, scoped to your
-  device/branch count and support needs. Ongoing usage billing is the same either way.
+- **Assisted.** You'd rather our team handle the setup. A one-time fee applies, from KES 35,000
+  depending on how many branches and devices you have and which system we connect. See
+  [assisted integration](#assisted-integration-one-time) below. Ongoing usage billing is the same
+  either way.
 
 ## Request access
 
@@ -39,24 +41,50 @@ self-serve request typically gets a sandbox credential provisioned automatically
 Every call spends a small number of tokens, weighted by what it actually costs to serve. A cached
 lookup costs far less than a call that reaches KRA's live signing infrastructure.
 
-| Plan | Monthly | Included tokens/month | Roughly this many sales transmissions | Top-up price |
+| Plan | Monthly | Included tokens/month | About this many sales | Top-up price |
 |---|---|---|---|---|
-| API Basic | KES 1,500 | 5,000 | ~500 | KES 0.80/token |
-| API Growth | KES 4,000 | 20,000 | ~2,000 | KES 0.60/token |
-| API Scale | KES 8,000 | 100,000 | ~10,000 | KES 0.40/token |
+| API Basic | KES 2,500 | 5,000 | 500 | KES 0.60/token |
+| API Growth | KES 4,000 | 20,000 | 2,000 | KES 0.45/token |
+| API Scale | KES 8,000 | 100,000 | 10,000 | KES 0.30/token |
 
-Included tokens accumulate every renewal and never reset or expire. A call that fails before
-doing real work, such as a malformed request or KRA itself rejecting or timing out, is refunded
-automatically. Not sure which plan fits? `POST /tokens/estimate` needs no API key and turns your
-expected call volume into an exact monthly token figure and a plan recommendation. See the
+A sale sent to KRA costs 10 tokens. Writes such as registering a device or an item cost 3, and a
+lookup costs 1. So a sale works out to:
+
+| Plan | Per sale within your plan | Per sale on a top-up |
+|---|---|---|
+| API Basic | KES 5.00 | KES 6.00 |
+| API Growth | KES 2.00 | KES 4.50 |
+| API Scale | KES 0.80 | KES 3.00 |
+
+Top-up tokens cost more than the tokens your plan includes, so if you regularly top up, a bigger
+plan is usually cheaper. Included tokens accumulate every renewal and never reset or expire. A
+call that fails before doing real work, such as a malformed request or KRA itself rejecting or
+timing out, is refunded automatically.
+
+Not sure which plan fits? `POST /tokens/estimate` needs no API key. Give it your expected volume
+and it returns your monthly token need, what each plan would cost you in total including
+top-ups, and the cheapest plan for that volume. See the
 [full API reference](#full-api-reference) for the endpoint.
 
 Already a Codevertex customer whose main plan bundles eTIMS? You don't pay the standalone fee
 twice. Ask support about the `ETIMS_API_BUNDLED` tier: the same token pricing as API Basic, with
 no monthly base fee.
 
-A one-time assisted-integration fee applies only if you choose to have our team do the setup for
-you instead of your own developers.
+## Assisted integration (one-time)
+
+If you'd like our team to do the setup instead of your own developers, a one-time fee applies. It
+is invoiced once when we start and is separate from your token plan.
+
+| Package | One-time fee | What's included |
+|---|---|---|
+| Standard | KES 35,000 | One KRA PIN, one branch, one device. Item and stock sync, sales and credit notes, sandbox testing and go-live support. |
+| Multi-branch | KES 85,000 | Up to 5 branches or devices under one PIN. Mapping to your ERP or POS fields, purchases and imports, staff training. |
+| Enterprise | KES 180,000 | Several PINs or companies, VSCU, SAP, Odoo, Sage or older in-house systems, custom middleware, on-site work. |
+| Extra branch or device | KES 7,500 each | Beyond your package's allowance. KRA issues credentials per PIN, branch and device, so each one is set up separately. |
+| Annual support (optional) | 15% of your setup fee a year | We handle KRA specification changes and device re-registration, with priority help. |
+
+Not sure which package fits? Describe your setup in the request form and we'll confirm the
+package and price before any work starts.
 
 ## What's KRA's requirement vs. our own go-live gate
 
