@@ -22,8 +22,8 @@ external-developer API surface.
 
 **Credentials.** `App` (auth-api) is the credential every integration issues today, a
 GitHub-App-style `bng_app_*` token with scopes, an IP allowlist, and suspend, resume, rotate, and
-revoke lifecycle actions. `APIKey`, an older and more hard-gated credential type, still exists but
-new integrations should use `App`. A tenant-type `App` is enforced server-side to carry scopes for
+revoke lifecycle actions. The older `APIKey` credential type was retired on 2026-11-18; every
+credential is now an `App`. A tenant-type `App` is enforced server-side to carry scopes for
 exactly one service. A hand-crafted request spanning two service prefixes is rejected, not just
 discouraged by the picker UI.
 
@@ -72,9 +72,34 @@ token. Its audience is `codevertex-api`, so no service that accepts user session
 and it carries the App's scopes (or a requested subset), tenant and environment, with no roles.
 Only tenant Apps can use the grant. Status, expiry and the IP allowlist (single addresses or
 CIDR ranges) are checked when the token is issued. Revoking, suspending, changing scopes,
-promoting or issuing a new secret is broadcast to every service, which then refuses tokens issued
-before the change. treasury-api's external eTIMS routes accept these tokens alongside the older
-`X-API-Key`.
+promoting or rotating a secret with immediate effect is broadcast to every service, which then
+refuses tokens issued before the change. treasury-api's external eTIMS routes accept these
+tokens alongside the older `X-API-Key`.
+
+**Rotation grace period.** Rotating the consumer secret (`POST /admin/apps/{id}/rotate-secret`)
+or the API key (`POST /admin/apps/{id}/rotate`) keeps the replaced value working for a grace
+period, as Stripe does, so an integration can switch over without downtime. The optional body
+`{"grace_hours": n}` sets it: the default comes from `AUTH_TOKEN_CLIENT_SECRET_GRACE` (24 hours),
+the most allowed from `AUTH_TOKEN_CLIENT_SECRET_MAX_GRACE` (168 hours), and `0` stops the old
+value at once. The replaced value's hash and end time are kept in `App.metadata`
+(`previous_client_secret`, `previous_key`); the token grant and API key validation accept it
+until then, and the App response reports `previous_client_secret_expires_at` and
+`previous_key_expires_at`. Only one previous value is kept, so a second rotation inside the grace
+period ends the first one immediately. With a grace period, tokens already issued are not cut
+(they last 15 minutes anyway); with `0` the rotation is broadcast as above and they stop at once.
+The console asks each time: keep the old one for 24 hours (the default) or stop it now. A
+replaced API key is found through a GIN index on `apps.metadata`, so a valid current key still
+costs one lookup on `key_hash`, and only a miss pays for the second, indexed query. The same
+grace applies to the fleet's internal service key, so it can be rolled out across every service
+without a gap.
+
+**Sandbox and live prefixes.** New consumer secrets start with `bng_cs_test_` for sandbox Apps
+and `bng_cs_live_` for production Apps; new API keys with `bng_app_test_` and `bng_app_live_`.
+Platform Apps always get live values, since they are production fleet credentials. Older values
+without the marker keep working because every lookup is by hash. Promotion does not change an
+App's existing values: a credential generated during promotion would be shown to the platform
+admin who promotes, not to the developer. The developer rotates from the console after go-live,
+with the grace period, to get live-marked values.
 
 **Developer sign-in and sign-up.** Developers never use the business sign-up. They request
 access at `/developer/apply` and, once approved, sign in at `/developer/login`, which offers no

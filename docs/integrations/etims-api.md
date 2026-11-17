@@ -60,12 +60,43 @@ curl -s https://booksapi.codevertexafrica.com/api/v1/external/etims/certificatio
 - Tokens last 15 minutes. Request a new one when it expires; there is no refresh token.
 - Add `scope=etims:read` to the token request for a read-only token.
 - You can also send `client_id` and `client_secret` as form fields instead of HTTP Basic auth.
-- Generating a new secret, suspending or revoking the app makes its existing tokens stop working
-  straight away.
+- Suspending or revoking the app makes its existing tokens stop working straight away.
 - If you set an IP allowlist on the app (single addresses or ranges such as `41.90.12.0/24`),
   tokens are only issued to those addresses.
 - The older `X-API-Key` header still works but is being retired. New integrations should use
   access tokens.
+
+### Sandbox and live secrets
+
+New consumer secrets show which environment they belong to, the way Stripe keys do: a sandbox
+app's secret starts with `bng_cs_test_` and a production app's with `bng_cs_live_`. API keys
+follow the same pattern (`bng_app_test_` and `bng_app_live_`). Secrets issued before this change
+start with plain `bng_cs_` and keep working.
+
+Promotion to production leaves your existing secret as it is, so nothing breaks on go-live day.
+To get a `bng_cs_live_` secret, rotate it from the console after promotion, keeping the old one
+for 24 hours while you switch over. We do not rotate automatically on promotion because the new
+secret would then be shown to the reviewer who promotes the app rather than to you.
+
+### Rotating your secret
+
+Open your app in the developer console and choose **New secret**. You then pick one of two
+options:
+
+- **Keep the old secret working for 24 hours** (the default). Both secrets can get access
+  tokens until the time shown in the console, so you can roll the new one out with no downtime.
+  Tokens already issued are left to run out on their own within 15 minutes.
+- **Stop it now.** Use this if the secret may have leaked. The old secret is refused straight
+  away, and so is every access token already issued for the app.
+
+Only one old secret is kept. Rotating again while an old secret is still in its grace period
+ends that older secret at once. Rotating the API key offers the same two options.
+
+Over the API, send `POST /api/v1/admin/apps/{id}/rotate-secret` (or `/rotate` for the API key)
+with an optional body such as `{"grace_hours": 24}`. The default is 24 hours, the most is 168
+hours (7 days), and `0` stops the old secret immediately. The response carries the new secret
+once and `previous_client_secret_expires_at` (or `previous_key_expires_at`) with the time the
+old one stops working.
 
 ## Pricing: prepaid tokens, not a flat monthly quota
 
