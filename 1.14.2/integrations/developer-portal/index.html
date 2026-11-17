@@ -4449,8 +4449,8 @@ product with its own purchase flow (see <a href="../email-hosting/">Email Hostin
 external-developer API surface.</p>
 <p><strong>Credentials.</strong> <code>App</code> (auth-api) is the credential every integration issues today, a
 GitHub-App-style <code>bng_app_*</code> token with scopes, an IP allowlist, and suspend, resume, rotate, and
-revoke lifecycle actions. <code>APIKey</code>, an older and more hard-gated credential type, still exists but
-new integrations should use <code>App</code>. A tenant-type <code>App</code> is enforced server-side to carry scopes for
+revoke lifecycle actions. The older <code>APIKey</code> credential type was retired on 2026-11-18; every
+credential is now an <code>App</code>. A tenant-type <code>App</code> is enforced server-side to carry scopes for
 exactly one service. A hand-crafted request spanning two service prefixes is rejected, not just
 discouraged by the picker UI.</p>
 <p><strong>Environments.</strong> <code>App.environment</code> is <code>sandbox</code> or <code>production</code>, defaulting to <code>sandbox</code>. New
@@ -4493,9 +4493,32 @@ token. Its audience is <code>codevertex-api</code>, so no service that accepts u
 and it carries the App's scopes (or a requested subset), tenant and environment, with no roles.
 Only tenant Apps can use the grant. Status, expiry and the IP allowlist (single addresses or
 CIDR ranges) are checked when the token is issued. Revoking, suspending, changing scopes,
-promoting or issuing a new secret is broadcast to every service, which then refuses tokens issued
-before the change. treasury-api's external eTIMS routes accept these tokens alongside the older
-<code>X-API-Key</code>.</p>
+promoting or rotating a secret with immediate effect is broadcast to every service, which then
+refuses tokens issued before the change. treasury-api's external eTIMS routes accept these
+tokens alongside the older <code>X-API-Key</code>.</p>
+<p><strong>Rotation grace period.</strong> Rotating the consumer secret (<code>POST /admin/apps/{id}/rotate-secret</code>)
+or the API key (<code>POST /admin/apps/{id}/rotate</code>) keeps the replaced value working for a grace
+period, as Stripe does, so an integration can switch over without downtime. The optional body
+<code>{"grace_hours": n}</code> sets it: the default comes from <code>AUTH_TOKEN_CLIENT_SECRET_GRACE</code> (24 hours),
+the most allowed from <code>AUTH_TOKEN_CLIENT_SECRET_MAX_GRACE</code> (168 hours), and <code>0</code> stops the old
+value at once. The replaced value's hash and end time are kept in <code>App.metadata</code>
+(<code>previous_client_secret</code>, <code>previous_key</code>); the token grant and API key validation accept it
+until then, and the App response reports <code>previous_client_secret_expires_at</code> and
+<code>previous_key_expires_at</code>. Only one previous value is kept, so a second rotation inside the grace
+period ends the first one immediately. With a grace period, tokens already issued are not cut
+(they last 15 minutes anyway); with <code>0</code> the rotation is broadcast as above and they stop at once.
+The console asks each time: keep the old one for 24 hours (the default) or stop it now. A
+replaced API key is found through a GIN index on <code>apps.metadata</code>, so a valid current key still
+costs one lookup on <code>key_hash</code>, and only a miss pays for the second, indexed query. The same
+grace applies to the fleet's internal service key, so it can be rolled out across every service
+without a gap.</p>
+<p><strong>Sandbox and live prefixes.</strong> New consumer secrets start with <code>bng_cs_test_</code> for sandbox Apps
+and <code>bng_cs_live_</code> for production Apps; new API keys with <code>bng_app_test_</code> and <code>bng_app_live_</code>.
+Platform Apps always get live values, since they are production fleet credentials. Older values
+without the marker keep working because every lookup is by hash. Promotion does not change an
+App's existing values: a credential generated during promotion would be shown to the platform
+admin who promotes, not to the developer. The developer rotates from the console after go-live,
+with the grace period, to get live-marked values.</p>
 <p><strong>Developer sign-in and sign-up.</strong> Developers never use the business sign-up. They request
 access at <code>/developer/apply</code> and, once approved, sign in at <code>/developer/login</code>, which offers no
 business sign-up or social sign-in and opens the developer console. An account whose only role
@@ -4576,7 +4599,7 @@ conversation and, once one exists, a head start on the credential.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 20:49:20 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:09:29 UTC">November 17, 2026</span>
   </span>
 
     

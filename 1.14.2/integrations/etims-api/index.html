@@ -4259,6 +4259,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sandbox-and-live-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sandbox and live secrets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotating-your-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating your secret
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4464,6 +4492,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sandbox-and-live-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sandbox and live secrets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotating-your-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating your secret
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -4592,13 +4648,38 @@ self-serve request typically gets a sandbox credential provisioned automatically
 <li>Tokens last 15 minutes. Request a new one when it expires; there is no refresh token.</li>
 <li>Add <code>scope=etims:read</code> to the token request for a read-only token.</li>
 <li>You can also send <code>client_id</code> and <code>client_secret</code> as form fields instead of HTTP Basic auth.</li>
-<li>Generating a new secret, suspending or revoking the app makes its existing tokens stop working
-  straight away.</li>
+<li>Suspending or revoking the app makes its existing tokens stop working straight away.</li>
 <li>If you set an IP allowlist on the app (single addresses or ranges such as <code>41.90.12.0/24</code>),
   tokens are only issued to those addresses.</li>
 <li>The older <code>X-API-Key</code> header still works but is being retired. New integrations should use
   access tokens.</li>
 </ul>
+<h3 id="sandbox-and-live-secrets">Sandbox and live secrets<a class="headerlink" href="#sandbox-and-live-secrets" title="Permanent link">&para;</a></h3>
+<p>New consumer secrets show which environment they belong to, the way Stripe keys do: a sandbox
+app's secret starts with <code>bng_cs_test_</code> and a production app's with <code>bng_cs_live_</code>. API keys
+follow the same pattern (<code>bng_app_test_</code> and <code>bng_app_live_</code>). Secrets issued before this change
+start with plain <code>bng_cs_</code> and keep working.</p>
+<p>Promotion to production leaves your existing secret as it is, so nothing breaks on go-live day.
+To get a <code>bng_cs_live_</code> secret, rotate it from the console after promotion, keeping the old one
+for 24 hours while you switch over. We do not rotate automatically on promotion because the new
+secret would then be shown to the reviewer who promotes the app rather than to you.</p>
+<h3 id="rotating-your-secret">Rotating your secret<a class="headerlink" href="#rotating-your-secret" title="Permanent link">&para;</a></h3>
+<p>Open your app in the developer console and choose <strong>New secret</strong>. You then pick one of two
+options:</p>
+<ul>
+<li><strong>Keep the old secret working for 24 hours</strong> (the default). Both secrets can get access
+  tokens until the time shown in the console, so you can roll the new one out with no downtime.
+  Tokens already issued are left to run out on their own within 15 minutes.</li>
+<li><strong>Stop it now.</strong> Use this if the secret may have leaked. The old secret is refused straight
+  away, and so is every access token already issued for the app.</li>
+</ul>
+<p>Only one old secret is kept. Rotating again while an old secret is still in its grace period
+ends that older secret at once. Rotating the API key offers the same two options.</p>
+<p>Over the API, send <code>POST /api/v1/admin/apps/{id}/rotate-secret</code> (or <code>/rotate</code> for the API key)
+with an optional body such as <code>{"grace_hours": 24}</code>. The default is 24 hours, the most is 168
+hours (7 days), and <code>0</code> stops the old secret immediately. The response carries the new secret
+once and <code>previous_client_secret_expires_at</code> (or <code>previous_key_expires_at</code>) with the time the
+old one stops working.</p>
 <h2 id="pricing-prepaid-tokens-not-a-flat-monthly-quota">Pricing: prepaid tokens, not a flat monthly quota<a class="headerlink" href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" title="Permanent link">&para;</a></h2>
 <p>Every call spends a small number of tokens, weighted by what it actually costs to serve. A cached
 lookup costs far less than a call that reaches KRA's live signing infrastructure.</p>
@@ -4764,7 +4845,7 @@ the full internal spec.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 20:28:59 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:09:29 UTC">November 17, 2026</span>
   </span>
 
     
