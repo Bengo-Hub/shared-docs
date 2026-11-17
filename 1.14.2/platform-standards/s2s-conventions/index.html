@@ -3739,10 +3739,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-recurring-footgun-an-api-key-alone-does-not-identify-a-tenant" class="md-nav__link">
+  <a href="#an-api-key-does-not-identify-a-tenant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The recurring footgun: an API key alone does not identify a tenant
+        An API key does not identify a tenant
       
     </span>
   </a>
@@ -4401,10 +4401,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-recurring-footgun-an-api-key-alone-does-not-identify-a-tenant" class="md-nav__link">
+  <a href="#an-api-key-does-not-identify-a-tenant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The recurring footgun: an API key alone does not identify a tenant
+        An API key does not identify a tenant
       
     </span>
   </a>
@@ -4478,9 +4478,8 @@
 <h1 id="service-to-service-s2s-conventions">Service-to-Service (S2S) Conventions<a class="headerlink" href="#service-to-service-s2s-conventions" title="Permanent link">&para;</a></h1>
 <h2 id="auth-one-shared-key-always">Auth: one shared key, always<a class="headerlink" href="#auth-one-shared-key-always" title="Permanent link">&para;</a></h2>
 <p>All Codevertex microservices share a single S2S API key environment variable: <code>INTERNAL_SERVICE_KEY</code>, sent as <code>X-API-Key: {INTERNAL_SERVICE_KEY}</code> on every S2S request. Never create per-service variants (<code>TREASURY_API_KEY</code>, <code>INVENTORY_SERVICE_API_KEY</code>, etc.) — every receiving service validates the incoming key against its own copy of the same shared value. Per-service <em>URL</em> env vars (<code>TREASURY_SERVICE_URL</code>, <code>INVENTORY_SERVICE_URL</code>, ...) are still separate, as expected.</p>
-<h2 id="the-recurring-footgun-an-api-key-alone-does-not-identify-a-tenant">The recurring footgun: an API key alone does not identify a tenant<a class="headerlink" href="#the-recurring-footgun-an-api-key-alone-does-not-identify-a-tenant" title="Permanent link">&para;</a></h2>
-<p><strong>A valid <code>X-API-Key</code> tells a service the caller is trusted — it does not tell it which tenant the call is for.</strong> Services that resolve tenant context from auth claims first (rather than from an explicit header) will silently fall back to the <em>platform</em> tenant for an API-key-only call, with no error. This is a recurring failure mode anywhere tenant resolution checks JWT claims before an explicit tenant header — data written by an API-key-only caller can land on the wrong tenant with no error raised anywhere.</p>
-<p><strong>Always send <code>X-Tenant-ID</code> (and ideally <code>X-Tenant-Slug</code>) explicitly on every S2S call</strong> — never assume the URL slug or the API key alone is sufficient. This also means testing an S2S endpoint against a specific tenant via raw curl requires either a real tenant JWT or these explicit headers, not just the shared key.</p>
+<h2 id="an-api-key-does-not-identify-a-tenant">An API key does not identify a tenant<a class="headerlink" href="#an-api-key-does-not-identify-a-tenant" title="Permanent link">&para;</a></h2>
+<p>A valid service key tells the receiving service that the caller is trusted. It does not say which tenant the call is for, so every S2S call names its tenant explicitly: send <code>X-Tenant-ID</code> (and ideally <code>X-Tenant-Slug</code>) on every request, and never rely on the URL slug or the key alone.</p>
 <h2 id="subscription-checks-use-the-tenant-scoped-endpoint">Subscription checks: use the tenant-scoped endpoint<a class="headerlink" href="#subscription-checks-use-the-tenant-scoped-endpoint" title="Permanent link">&para;</a></h2>
 <p><code>GET /api/v1/tenants/{tenantID}/subscription</code> — <strong>never</strong> the bare <code>/api/v1/subscription</code>, which resolves its tenant from JWT claims and will 404 (→ "subscription inactive" → requests blocked) on a pure API-key call with no JWT. Using the bare form on an S2S path with no JWT is a reliable way to silently block otherwise-valid requests.</p>
 <h2 id="internal-dns-not-public-hostnames">Internal DNS, not public hostnames<a class="headerlink" href="#internal-dns-not-public-hostnames" title="Permanent link">&para;</a></h2>
@@ -4514,7 +4513,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 20, 2026 07:37:37 UTC">August 20, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 21:49:12 UTC">November 17, 2026</span>
   </span>
 
     
