@@ -4262,6 +4262,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#assisted-integration-one-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assisted integration (one-time)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#whats-kras-requirement-vs-our-own-go-live-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4445,6 +4456,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#assisted-integration-one-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assisted integration (one-time)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#whats-kras-requirement-vs-our-own-go-live-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4505,8 +4527,10 @@ POS/treasury suite, this API is for you.</p>
 <ul>
 <li><strong>Self-serve.</strong> You have your own developers. No integration fee. Sandbox test, pass the
   go-live certification checklist, move to production, and pay only for API usage.</li>
-<li><strong>Assisted.</strong> You'd rather our team handle the setup. A one-time fee applies, scoped to your
-  device/branch count and support needs. Ongoing usage billing is the same either way.</li>
+<li><strong>Assisted.</strong> You'd rather our team handle the setup. A one-time fee applies, from KES 35,000
+  depending on how many branches and devices you have and which system we connect. See
+  <a href="#assisted-integration-one-time">assisted integration</a> below. Ongoing usage billing is the same
+  either way.</li>
 </ul>
 <h2 id="request-access">Request access<a class="headerlink" href="#request-access" title="Permanent link">&para;</a></h2>
 <p>Apply at <a href="https://accounts.codevertexafrica.com/developer/apply">accounts.codevertexafrica.com/developer/apply</a>
@@ -4538,44 +4562,114 @@ lookup costs far less than a call that reaches KRA's live signing infrastructure
 <th>Plan</th>
 <th>Monthly</th>
 <th>Included tokens/month</th>
-<th>Roughly this many sales transmissions</th>
+<th>About this many sales</th>
 <th>Top-up price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>API Basic</td>
-<td>KES 1,500</td>
+<td>KES 2,500</td>
 <td>5,000</td>
-<td>~500</td>
-<td>KES 0.80/token</td>
+<td>500</td>
+<td>KES 0.60/token</td>
 </tr>
 <tr>
 <td>API Growth</td>
 <td>KES 4,000</td>
 <td>20,000</td>
-<td>~2,000</td>
-<td>KES 0.60/token</td>
+<td>2,000</td>
+<td>KES 0.45/token</td>
 </tr>
 <tr>
 <td>API Scale</td>
 <td>KES 8,000</td>
 <td>100,000</td>
-<td>~10,000</td>
-<td>KES 0.40/token</td>
+<td>10,000</td>
+<td>KES 0.30/token</td>
 </tr>
 </tbody>
 </table>
-<p>Included tokens accumulate every renewal and never reset or expire. A call that fails before
-doing real work, such as a malformed request or KRA itself rejecting or timing out, is refunded
-automatically. Not sure which plan fits? <code>POST /tokens/estimate</code> needs no API key and turns your
-expected call volume into an exact monthly token figure and a plan recommendation. See the
+<p>A sale sent to KRA costs 10 tokens. Writes such as registering a device or an item cost 3, and a
+lookup costs 1. So a sale works out to:</p>
+<table>
+<thead>
+<tr>
+<th>Plan</th>
+<th>Per sale within your plan</th>
+<th>Per sale on a top-up</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API Basic</td>
+<td>KES 5.00</td>
+<td>KES 6.00</td>
+</tr>
+<tr>
+<td>API Growth</td>
+<td>KES 2.00</td>
+<td>KES 4.50</td>
+</tr>
+<tr>
+<td>API Scale</td>
+<td>KES 0.80</td>
+<td>KES 3.00</td>
+</tr>
+</tbody>
+</table>
+<p>Top-up tokens cost more than the tokens your plan includes, so if you regularly top up, a bigger
+plan is usually cheaper. Included tokens accumulate every renewal and never reset or expire. A
+call that fails before doing real work, such as a malformed request or KRA itself rejecting or
+timing out, is refunded automatically.</p>
+<p>Not sure which plan fits? <code>POST /tokens/estimate</code> needs no API key. Give it your expected volume
+and it returns your monthly token need, what each plan would cost you in total including
+top-ups, and the cheapest plan for that volume. See the
 <a href="#full-api-reference">full API reference</a> for the endpoint.</p>
 <p>Already a Codevertex customer whose main plan bundles eTIMS? You don't pay the standalone fee
 twice. Ask support about the <code>ETIMS_API_BUNDLED</code> tier: the same token pricing as API Basic, with
 no monthly base fee.</p>
-<p>A one-time assisted-integration fee applies only if you choose to have our team do the setup for
-you instead of your own developers.</p>
+<h2 id="assisted-integration-one-time">Assisted integration (one-time)<a class="headerlink" href="#assisted-integration-one-time" title="Permanent link">&para;</a></h2>
+<p>If you'd like our team to do the setup instead of your own developers, a one-time fee applies. It
+is invoiced once when we start and is separate from your token plan.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>One-time fee</th>
+<th>What's included</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standard</td>
+<td>KES 35,000</td>
+<td>One KRA PIN, one branch, one device. Item and stock sync, sales and credit notes, sandbox testing and go-live support.</td>
+</tr>
+<tr>
+<td>Multi-branch</td>
+<td>KES 85,000</td>
+<td>Up to 5 branches or devices under one PIN. Mapping to your ERP or POS fields, purchases and imports, staff training.</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>KES 180,000</td>
+<td>Several PINs or companies, VSCU, SAP, Odoo, Sage or older in-house systems, custom middleware, on-site work.</td>
+</tr>
+<tr>
+<td>Extra branch or device</td>
+<td>KES 7,500 each</td>
+<td>Beyond your package's allowance. KRA issues credentials per PIN, branch and device, so each one is set up separately.</td>
+</tr>
+<tr>
+<td>Annual support (optional)</td>
+<td>15% of your setup fee a year</td>
+<td>We handle KRA specification changes and device re-registration, with priority help.</td>
+</tr>
+</tbody>
+</table>
+<p>Not sure which package fits? Describe your setup in the request form and we'll confirm the
+package and price before any work starts.</p>
 <h2 id="whats-kras-requirement-vs-our-own-go-live-gate">What's KRA's requirement vs. our own go-live gate<a class="headerlink" href="#whats-kras-requirement-vs-our-own-go-live-gate" title="Permanent link">&para;</a></h2>
 <p>Under KRA's own OSCU specification, device credentials (<code>cmcKey</code>, <code>sdcId</code>, <code>mrcNo</code>, <code>dvcId</code>) are
 issued per taxpayer PIN, branch, and device serial. They can't be pooled at an aggregator level.
@@ -4624,7 +4718,7 @@ the full internal spec.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 23, 2026 17:25:49 UTC">September 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 19:51:43 UTC">November 17, 2026</span>
   </span>
 
     
