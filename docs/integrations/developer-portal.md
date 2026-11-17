@@ -76,6 +76,12 @@ promoting or issuing a new secret is broadcast to every service, which then refu
 before the change. treasury-api's external eTIMS routes accept these tokens alongside the older
 `X-API-Key`.
 
+**Developer sign-in and sign-up.** Developers never use the business sign-up. They request
+access at `/developer/apply` and, once approved, sign in at `/developer/login`, which offers no
+business sign-up or social sign-in and opens the developer console. An account whose only role
+is `developer` lands on the console, and its top bar has no Join Organization button or app
+switcher. The approval email links to `/developer/login`.
+
 **Access model.** A developer only ever sees their own tenant's Apps and the simple form: one
 service, read or read and write. The type selector, the tenant list and free-form scopes are
 the platform owner's form, used to issue partner credentials. Every App starts in sandbox:
