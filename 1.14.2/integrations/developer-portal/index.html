@@ -4484,8 +4484,27 @@ and others, that a tenant admin can grant via the existing team-invite flow, sco
 Developer Portal UI without full tenant-admin access. It doesn't currently carry any extra backend
 permission beyond that. <code>App</code> management itself is tenant-membership-scoped, not role-scoped.</p>
 <p><strong>OAuth clients.</strong> Full Authorization Code plus PKCE flow, with <code>client_secret_basic</code> for
-confidential clients. There's no <code>client_credentials</code> grant yet for pure server-to-server
-integrations with no user in the loop.</p>
+confidential clients.</p>
+<p><strong>Consumer key and secret (client_credentials).</strong> Every tenant App has a consumer key (its
+<code>client_id</code>) and a consumer secret, shown once on creation or from <strong>Generate consumer secret</strong>
+in the console, and stored only as a hash. <code>POST /api/v1/token</code> with
+<code>grant_type=client_credentials</code> (HTTP Basic or form fields) returns a 15 minute RS256 access
+token. Its audience is <code>codevertex-api</code>, so no service that accepts user sessions accepts it,
+and it carries the App's scopes (or a requested subset), tenant and environment, with no roles.
+Only tenant Apps can use the grant. Status, expiry and the IP allowlist (single addresses or
+CIDR ranges) are checked when the token is issued. Revoking, suspending, changing scopes,
+promoting or issuing a new secret is broadcast to every service, which then refuses tokens issued
+before the change. treasury-api's external eTIMS routes accept these tokens alongside the older
+<code>X-API-Key</code>.</p>
+<p><strong>Access model.</strong> A developer only ever sees their own tenant's Apps and the simple form: one
+service, read or read and write. The type selector, the tenant list and free-form scopes are
+the platform owner's form, used to issue partner credentials. Every App starts in sandbox:
+sandbox calls run against simulated or KRA sandbox data, are not charged, and touch no
+production data. A sandbox App may widen its own scopes for testing; a production App cannot
+gain a scope without a platform admin. Production needs a go-live request, a platform admin's
+promotion and a funded token wallet (an active eTIMS API plan or the bundled tier). Developer
+accounts must sign in with an authenticator app in every tenant
+(<code>AUTH_SECURITY_MFA_ALWAYS_REQUIRED_ROLES</code>, default <code>developer</code>).</p>
 <p><strong>Rate limiting.</strong> A tenant's effective requests-per-minute ceiling is resolved from their plan's
 <code>tier_limits_json</code> first, falling back to a per-service <code>RateLimitConfig</code> row, then a hardcoded
 default (subscriptions-api <code>GET /tenants/{id}/rate-limit</code>). It was built for the eTIMS API, but the
@@ -4503,8 +4522,6 @@ something this request flow hides. Applying still gets a prospective developer a
 conversation and, once one exists, a head start on the credential.</p>
 <h2 id="roadmap-documented-not-yet-built">Roadmap (documented, not yet built)<a class="headerlink" href="#roadmap-documented-not-yet-built" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong><code>client_credentials</code> OAuth grant.</strong> Pure server-to-server, no user in the loop, for
-  integrations that don't need Authorization Code's browser redirect.</li>
 <li><strong>Generalized certification framework.</strong> Extract the eTIMS go-live checklist pattern, an
   automated check plus a human reviewer, the same two-layer gate KRA itself uses, into something
   any service can register its own checklist against, instead of copy-pasting treasury-api's
@@ -4554,7 +4571,7 @@ conversation and, once one exists, a head start on the credential.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 26, 2026 11:58:10 UTC">August 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 20:28:59 UTC">November 17, 2026</span>
   </span>
 
     

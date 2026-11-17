@@ -4251,6 +4251,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4445,6 +4456,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4541,10 +4563,12 @@ your request to our team. Our support team is notified immediately and follows u
 self-serve request typically gets a sandbox credential provisioned automatically once approved.</p>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Get your API key.</strong> Once your request is approved, you receive an <code>X-API-Key</code> credential
-   scoped to <code>etims:read</code>/<code>etims:write</code>.</li>
+<li><strong>Get your credentials.</strong> Once your request is approved, we email your consumer key and a link
+   to the developer console. Sign in (developer accounts use an authenticator app), open your
+   sandbox app and generate a consumer secret. It is shown once. We never send secrets by email.</li>
 <li><strong>Sandbox first.</strong> Register a virtual device, register a couple of items, record a stock
-   movement, and transmit a few test sales, all against KRA's own sandbox, at no risk.</li>
+   movement, and transmit a few test sales, all against KRA's own sandbox, at no risk. Sandbox
+   calls are not charged.</li>
 <li><strong>Check your certification status.</strong> A single endpoint tells you exactly what's left before
    you can request production access.</li>
 <li><strong>Request go-live.</strong> Once your checklist is green, one call notifies our platform team for a
@@ -4553,6 +4577,28 @@ self-serve request typically gets a sandbox credential provisioned automatically
 <li><strong>Go live.</strong> You're on a prepaid token bucket. Call the API as long as you have a balance, and
    top up any time.</li>
 </ol>
+<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
+<p>Exchange your consumer key and secret for an access token, then send the token on every call.</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://sso.codevertexafrica.com/api/v1/token<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-u<span class="w"> </span><span class="s2">"</span><span class="nv">$CONSUMER_KEY</span><span class="s2">:</span><span class="nv">$CONSUMER_SECRET</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="nv">grant_type</span><span class="o">=</span>client_credentials
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJ..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"token_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span><span class="w"> </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"etims:read etims:write"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>https://booksapi.codevertexafrica.com/api/v1/external/etims/certification-status<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+<ul>
+<li>Tokens last 15 minutes. Request a new one when it expires; there is no refresh token.</li>
+<li>Add <code>scope=etims:read</code> to the token request for a read-only token.</li>
+<li>You can also send <code>client_id</code> and <code>client_secret</code> as form fields instead of HTTP Basic auth.</li>
+<li>Generating a new secret, suspending or revoking the app makes its existing tokens stop working
+  straight away.</li>
+<li>If you set an IP allowlist on the app (single addresses or ranges such as <code>41.90.12.0/24</code>),
+  tokens are only issued to those addresses.</li>
+<li>The older <code>X-API-Key</code> header still works but is being retired. New integrations should use
+  access tokens.</li>
+</ul>
 <h2 id="pricing-prepaid-tokens-not-a-flat-monthly-quota">Pricing: prepaid tokens, not a flat monthly quota<a class="headerlink" href="#pricing-prepaid-tokens-not-a-flat-monthly-quota" title="Permanent link">&para;</a></h2>
 <p>Every call spends a small number of tokens, weighted by what it actually costs to serve. A cached
 lookup costs far less than a call that reaches KRA's live signing infrastructure.</p>
@@ -4718,7 +4764,7 @@ the full internal spec.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 19:51:43 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 20:28:59 UTC">November 17, 2026</span>
   </span>
 
     
