@@ -4389,8 +4389,27 @@
 
 <h1 id="secrets-management">Secrets Management<a class="headerlink" href="#secrets-management" title="Permanent link">&para;</a></h1>
 <h2 id="platform-level-secrets">Platform-level secrets<a class="headerlink" href="#platform-level-secrets" title="Permanent link">&para;</a></h2>
-<p>Every service's runtime secrets (database credentials, API keys, signing keys) are provisioned as Kubernetes Secrets via <code>devops-k8s/scripts/infrastructure/create-service-secrets.sh</code>. The script is "generate-or-preserve": it creates required keys if they're absent and never overwrites an existing value, so re-running it is always safe. For a new service, it defaults <code>POSTGRES_URL</code> to point at PgBouncer (<code>pgbouncer.infra.svc.cluster.local:6432</code>) and derives <code>DB_NAME</code>/<code>DB_USER</code> from the service name automatically — see <a href="../connection-pooling-pgbouncer/">Connection Pooling &amp; PgBouncer</a>.</p>
-<p><strong>New service checklist:</strong> run <code>create-service-secrets.sh &lt;service-name&gt;</code> (or use the standard ArgoCD template, which references it) rather than hand-crafting a Secret manifest. This keeps every service's secret provisioning consistent and means the defaults above are applied automatically.</p>
+<p>Every service's runtime secrets (database credentials, signing keys, the shared service-to-service
+key) are Kubernetes Secrets produced from SealedSecrets kept in the devops-k8s repository. A
+SealedSecret is encrypted with the cluster's public key and can only be decrypted inside the
+cluster, under its own name and namespace, so the encrypted file is safe to keep in git. Git is the
+single source of truth: the cluster's Secrets are always rebuilt from it, and nothing edits a live
+Secret directly.</p>
+<p><code>devops-k8s/scripts/infrastructure/create-service-secrets.sh</code> provisions a service's Secret on every
+deploy. It is generate-or-preserve: required keys are created when absent and never overwritten once
+set, so re-running it is safe. When it has something new to store, it seals the whole Secret and
+commits the encrypted file; when nothing changed it does nothing. For a new service it points
+<code>POSTGRES_URL</code> at PgBouncer, adds <code>POSTGRES_MIGRATE_URL</code> on the direct PostgreSQL connection for
+migrations, and derives <code>DB_NAME</code> and <code>DB_USER</code> from the service name. See
+<a href="../connection-pooling-pgbouncer/">Connection Pooling &amp; PgBouncer</a>.</p>
+<p>Shared values (the service-to-service key, the platform database and Redis password, object storage
+credentials) have one source each and are sealed into every namespace that needs them by one
+script, so a rotation is a single commit followed by restarting the listed workloads.</p>
+<p>The keys that decrypt SealedSecrets are backed up daily, encrypted, to offsite storage, and a
+recovery drill proves the backup opens the newest files.</p>
+<p><strong>New service checklist:</strong> let <code>create-service-secrets.sh</code> create the Secret on the first deploy;
+add any extra key with <code>scripts/sealing/seal-keys.sh</code>; never commit a plain <code>Secret</code> manifest or add
+a key with <code>kubectl patch</code>.</p>
 <h2 id="tenant-level-secrets">Tenant-level secrets<a class="headerlink" href="#tenant-level-secrets" title="Permanent link">&para;</a></h2>
 <p>Tenant-scoped credentials — payment gateway API keys, backup destination credentials — are handled differently from platform secrets: they're encrypted at rest in each service's own database, using a platform-owner-configurable encryption key. Key resolution is DB-first with an environment-variable fallback, and decryption supports multiple keys at once so rotating the active key never orphans data encrypted under a previous one. Keys themselves are never returned in API responses or logged — only a fingerprint (a hash of the key) is ever exposed, to confirm which key is active without revealing it.</p>
 <p>This is a separate mechanism from platform-level Kubernetes Secrets above — don't conflate the two. Platform secrets are how a service authenticates to its own infrastructure (its database, its S2S peers); tenant secrets are how a service stores a <em>customer's</em> third-party credentials safely.</p>
@@ -4416,7 +4435,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 4, 2026 12:08:08 UTC">August 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 18, 2026 02:18:17 UTC">November 18, 2026</span>
   </span>
 
     
