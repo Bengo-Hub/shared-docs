@@ -116,7 +116,7 @@ All services must use the generic `outlet_id` to refer to physical/logical locat
 - **Funnel** — multi-step landing pages for lead capture and qualification
 - **NurtureSequence** — automated multi-channel follow-up sequences (email/SMS/WhatsApp)
 - **ChatSession** — AI chatbot conversations (web widget, WhatsApp, funnel)
-- **ScheduledMeeting** — Cal.com meeting bookings linked to leads/contacts
+- **ScheduledMeeting**: meetings booked on MarketFlow's booking page (the business's Google Calendar), linked to leads/contacts. Cal.com was removed on 2026-11-22.
 - **CustomFieldDef / CustomFieldValue** — per-tenant extensible fields for leads/contacts/deals
 - **LeadScoringRule** — configurable rule-based lead scoring conditions
 - **CustomAgent / AgentRun** — tenant-defined AI automation agents and their execution logs
