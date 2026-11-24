@@ -1,18 +1,28 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Redirecting</title>
-  <noscript>
-    <meta http-equiv="refresh" content="1; url=latest/" />
-  </noscript>
-  <script>
-    window.location.replace(
-      "latest/" + window.location.search + window.location.hash
-    );
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Codevertex docs have moved</title>
+<link rel="canonical" href="https://docs.codevertexafrica.com/">
+<meta http-equiv="refresh" content="3; url=https://docs.codevertexafrica.com/">
+<script>
+  // Old links were https://bengo-hub.github.io/shared-docs/<version>/<page>/. Keep the page path,
+  // drop the repo folder and any version folder (latest, 1.2.3), and go to the same page on the
+  // docs site.
+  (function () {
+    var p = location.pathname.replace(/^\/shared-docs/, "");
+    p = p.replace(/^\/(latest|\d+\.\d+\.\d+)(?=\/|$)/, "");
+    location.replace("https://docs.codevertexafrica.com" + (p || "/") + location.search + location.hash);
+  })();
+</script>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; background: #fff; color: #2b1a27; }
+  a { color: #801E68; font-weight: 600; }
+</style>
 </head>
 <body>
-  Redirecting to <a href="latest/">latest/</a>...
+  <p>Codevertex docs have moved to <a href="https://docs.codevertexafrica.com/">docs.codevertexafrica.com</a>.</p>
 </body>
 </html>
