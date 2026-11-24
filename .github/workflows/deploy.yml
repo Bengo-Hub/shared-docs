@@ -32,6 +32,13 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Informational only: links to sibling service repos (outside this repo) always warn, so
+      # only a warning about a path inside docs/ needs attention. The published site is
+      # docs.codevertexafrica.com (this workflow); GitHub Pages was retired on 2026-11-24.
+      - name: Check for broken links
+        run: mkdocs build --strict
+        continue-on-error: true
+
       - name: Build
         run: mkdocs build
 

@@ -1,0 +1,74 @@
+@font-face { font-family: "Poppins"; src: url("fonts/Poppins-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "Poppins"; src: url("fonts/Poppins-Medium.ttf"); font-weight: 500; }
+@font-face { font-family: "Poppins"; src: url("fonts/Poppins-SemiBold.ttf"); font-weight: 600; }
+@font-face { font-family: "DM Sans"; src: url("fonts/DMSans-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "DM Sans"; src: url("fonts/DMSans-SemiBold.ttf"); font-weight: 600; }
+
+/* Brand family from the Codevertex logo purple (#801E68). The yellow accent (--sun) is unchanged. */
+:root {
+  --brand: #801E68;       /* logo purple: headings accents, table heads, stat tiles */
+  --brand-deep: #5B1549;  /* cover panel shadow, phone frame, hover-dark accents */
+  --brand-soft: #F7EEF4;  /* light tint for notes, totals and tags */
+  --brand-line: #E3CCDC;  /* soft border on tinted boxes */
+  --ink: #2A1024;         /* headings and strong text */
+  --body: #4A3A45;        /* running text */
+  --muted: #6E5F69;       /* captions, labels */
+  --cream: #FBF7FA;       /* box backgrounds, zebra rows */
+  --line: #EADDE6;        /* rules and table lines */
+  --amber: #B45309;       /* secondary accent in the orange family */
+  --sun: #F4B41A;         /* brand yellow */
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "DM Sans", sans-serif; font-size: 9.6pt; line-height: 1.55; color: var(--body); background: #fff; }
+b, strong { color: var(--ink); font-weight: 600; }
+
+/* One topic per page: every section starts a new page (Chromium cannot keep a flowing heading with
+   its content reliably). Tables and screenshots are sized so a section fills its page. */
+section { break-before: page; }
+h2 { font-family: "Poppins", sans-serif; font-weight: 600; font-size: 21pt; line-height: 1.08; color: var(--ink); margin: 0 0 6px; break-after: avoid; }
+.kicker { font-size: 7.6pt; letter-spacing: .26em; text-transform: uppercase; color: var(--brand); font-weight: 600; margin-bottom: 4px; }
+.rule { height: 3px; width: 54px; background: linear-gradient(90deg, var(--brand) 0 60%, var(--sun) 60% 100%); margin: 9px 0 13px; }
+h3 { font-family: "Poppins", sans-serif; font-weight: 600; font-size: 12pt; color: var(--ink); margin: 14px 0 5px; break-after: avoid; }
+p { margin: 0 0 8px; }
+p.lead { font-size: 10.8pt; line-height: 1.5; color: var(--ink); }
+ul { margin: 0 0 10px; padding-left: 16px; }
+li { margin: 3px 0; }
+li::marker { color: var(--brand); }
+
+table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 8.5pt; line-height: 1.34; }
+tr { break-inside: avoid; }
+th { text-align: left; padding: 6px 9px; background: var(--brand); color: #fff; font-weight: 500; font-size: 8pt; letter-spacing: .04em; }
+td { padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: var(--cream); }
+td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.k { font-weight: 600; color: var(--ink); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.box { background: var(--cream); border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: 8px; padding: 10px 12px; break-inside: avoid; }
+.box h4 { margin: 0 0 3px; font-size: 9.8pt; color: var(--ink); font-weight: 600; font-family: "Poppins", sans-serif; }
+.box p { margin: 0; font-size: 8.7pt; line-height: 1.45; }
+.box.sun { border-top-color: var(--sun); }
+.stat { background: var(--brand); color: #fff; border-radius: 10px; padding: 11px 14px; }
+.stat span { font-size: 7.4pt; letter-spacing: .14em; text-transform: uppercase; color: #F3E2EE; }
+.stat b { display: block; color: #fff; font-family: "Poppins", sans-serif; font-size: 17pt; line-height: 1.15; margin-top: 2px; }
+.stat small { font-size: 8.2pt; color: #F3E2EE; }
+.stat.deep { background: var(--brand-deep); }
+.stat.deep b { color: var(--sun); }
+.note { background: var(--brand-soft); border-left: 3px solid var(--sun); padding: 8px 12px; border-radius: 0 8px 8px 0; font-size: 8.9pt; margin: 8px 0 12px; break-inside: avoid; color: var(--ink); }
+.tag { display: inline-block; font-size: 7pt; padding: 1px 7px; border-radius: 10px; background: var(--brand-soft); border: 1px solid var(--brand-line); color: var(--brand); font-weight: 600; margin-right: 4px; }
+
+figure { margin: 8px 0 10px; break-inside: avoid; text-align: center; }
+figure img { display: block; width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+/* The guide's screenshots are full app screens with empty space at the bottom: show the top band. */
+figure img.crop { height: 60mm; object-fit: cover; object-position: left top; }
+figure img.crop-short { height: 50mm; object-fit: cover; object-position: left top; }
+figure img.crop-tall { height: 46mm; object-fit: cover; object-position: left top; }
+figure.phone img { width: auto; max-width: 100%; max-height: 118mm; margin: 0 auto; border-radius: 16px; border: 3px solid var(--brand-deep); }
+figcaption { font-size: 7.8pt; color: var(--muted); margin-top: 4px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+
+.mermaid { margin: 6px 0 4px; text-align: center; break-inside: avoid; }
+.mermaid svg { max-width: 100%; max-height: 62mm; height: auto; }
+.mermaid.short svg { max-height: 44mm; }

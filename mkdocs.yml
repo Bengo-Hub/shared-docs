@@ -1,7 +1,7 @@
 site_name: Codevertex Africa — Platform Documentation
 site_description: Ecosystem-wide architecture, integration, and engineering-standards documentation for the Codevertex Africa microservices platform.
 site_author: Codevertex Africa
-site_url: https://bengo-hub.github.io/shared-docs/
+site_url: https://docs.codevertexafrica.com/
 repo_url: https://github.com/Bengo-Hub/shared-docs
 repo_name: Bengo-Hub/shared-docs
 edit_uri: edit/master/docs/
@@ -19,9 +19,6 @@ theme:
     repo: fontawesome/brands/github
 
 extra:
-  version:
-    provider: mike
-    default: latest
   palette:
     - scheme: default
       primary: indigo
@@ -96,6 +93,24 @@ nav:
               - Accepting payments with PayHero: user-guide/treasury/payhero.md
               - Vouchers & Approvals: user-guide/treasury/vouchers-and-approvals.md
               - Reports: user-guide/treasury/reports.md
+          - ERP (People, Time and Payroll):
+              - user-guide/erp/index.md
+              - 1. Getting Started: user-guide/erp/getting-started.md
+              - 2. Employees: user-guide/erp/employees.md
+              - 3. Leave: user-guide/erp/leave.md
+              - 4. Time and Attendance: user-guide/erp/time-and-attendance.md
+              - 5. Biometric Devices and Access Control: user-guide/erp/devices-and-access.md
+              - 6. Payroll: user-guide/erp/payroll.md
+              - 7. Claims, Advances and Other Pay: user-guide/erp/payroll-extras.md
+              - 8. Statutory Returns: user-guide/erp/statutory-returns.md
+              - 9. Appraisals and Performance: user-guide/erp/appraisals-and-performance.md
+              - 10. Training: user-guide/erp/training.md
+              - 11. Recruitment: user-guide/erp/recruitment.md
+              - 12. Staff Self-Service: user-guide/erp/self-service.md
+              - 13. Approvals: user-guide/erp/approvals.md
+              - 14. Reports: user-guide/erp/reports.md
+              - 15. Integrated Services: user-guide/erp/integrated-services.md
+              - 16. Plans, Support and Customisation: user-guide/erp/plans-and-support.md
           - Maskani (Property Management):
               - user-guide/maskani/index.md
               - Getting Started: user-guide/maskani/onboarding.md

@@ -1,3 +1,7 @@
 site/
 __pycache__/
 *.pyc
+# Brochure build intermediates (the merged PDF lives under docs/)
+brochures/*/cover.pdf
+brochures/*/body.pdf
+brochures/*/.*.html
