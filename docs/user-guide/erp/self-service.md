@@ -24,9 +24,9 @@ At the top is a greeting and the **clock in** card. Below it are three tiles:
 
 | Tile | Shows |
 |---|---|
-| Leave Balance (days) | Your remaining days across all leave types |
+| Leave Balance (days) | Your remaining days this year across all leave types |
 | Recent Payslips | How many payslips you have |
-| Leave Types | How many leave types you can take |
+| Leave Types | How many leave types you have a balance for this year |
 
 Then a set of quick actions. You only see the ones your role allows.
 
@@ -57,10 +57,15 @@ on your company's settings; see [Time and Attendance](time-and-attendance.md).
 
 ## Leave
 
-Tap **Apply for Leave**, choose the leave type, the start and end dates and add a reason. Your
-request goes to your approvers and shows as Pending until they decide. You get a notification
-when it is approved or rejected, and approved days come off your balance. Tap **My Leave** to
-see your requests and how many days you have left. See [Leave](leave.md).
+**Apply for Leave** and **My Leave** both open your own leave page, with your requests and your
+balances for the year. Tap **Apply for Leave** there, choose the leave type and the start and end
+dates, and add a reason if you want. The form shows how many days it takes, which public holidays
+and days off are not counted, and your remaining balance. You can only apply for yourself.
+
+Your request shows as Pending until it is decided. You get a notification when it is approved or
+rejected, and approved days come off your balance. While it is pending you can cancel it with the
+cross on its row; once it is approved, ask HR. Your account must be linked to your employee record;
+if the page says it is not, ask HR. See [Leave](leave.md).
 
 ## Payslips and P9
 

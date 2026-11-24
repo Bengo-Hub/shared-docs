@@ -33,8 +33,16 @@ Go to **HRM → Leave → Types**.
 | Max days | The default number of days a year for this type, used when a person has no entitlement of their own |
 | Paid | Whether the leave is paid |
 | Carry forward | Whether unused days move into next year |
-| Requires approval | Whether requests need an approver |
 | Description | Notes for staff |
+
+The **Days counted** column sets how a request of that type is counted. HR picks it per type in
+the list, and it applies to requests filed from then on:
+
+- **Working days** skips the person's own days off and the public holidays that apply to them. A
+  half-day shift override counts as half a day.
+- **Calendar days** counts every date from the start to the end.
+
+Maternity and paternity leave start on calendar days, every other type on working days.
 
 ## Entitlements
 
@@ -53,7 +61,8 @@ leave type in the current year:
   have none, plus any days carried forward from last year (capped at the type's carryover
   limit, and only for types that allow carry forward).
 - **Used** is the days taken on approved leave.
-- **Remaining** is entitled less used, never below zero.
+- **Remaining** is entitled less used. It can drop below zero when more days are approved than
+  the person has; the daily job then shows it as zero.
 
 Running it again never undoes days already taken; it only refreshes what each person is
 entitled to. If you have just changed an entitlement and want the balances updated straight
@@ -69,15 +78,26 @@ Go to **HRM → Leave → Requests**.
 
 ![Leave requests](assets/hrm-leave-requests.png)
 
-**Staff** apply from **My Dashboard → Apply for Leave**. **HR** can apply on someone's behalf
-with **Apply for Leave** on the requests page. The form asks for:
+**Staff** apply from **My Dashboard → Apply for Leave**; any account linked to an employee record
+can. **HR** (the permission to manage leave) can apply on anyone's behalf with **Apply for Leave**
+on the requests page. The form asks for:
 
 | Field | Notes |
 |---|---|
-| Employee | The person going on leave |
+| Employee | The person going on leave. Only shown to HR; staff always apply for themselves |
 | Leave type | One of your leave types |
 | Start date, end date | The end date cannot be before the start date |
 | Reason | Optional |
+
+You do not type the number of days. Once the dates are in, the form shows how many days the
+request takes, the public holidays and days off it skips, and the remaining balance. Days off come
+from the person's planned shifts: a shift override first, then their roster, their own work shift
+and the company default shift. With no shift at all, the default working days in the attendance
+settings apply. Dates with nothing to count are refused, and so are dates that overlap another
+pending or approved request of the same person. A request for more days than the balance is
+allowed; the form warns about it and the approver decides.
+
+Staff can cancel their own request in **My Leave** while it is pending. Once it is approved, ask HR.
 
 A new request starts as **Pending**. The page has two tabs: **All Requests**, which you can
 filter by status (Pending, Approved, Rejected), and **Approvals Queue**, which shows only what
@@ -93,8 +113,21 @@ buttons. Rejecting asks for a reason, which the employee sees.
   until the last step approves it. A rejection at any step ends it.
 - **Without a workflow**, anyone with permission to approve leave decides it in one step.
 
+Nobody can approve their own request.
+
 When a request is approved, its days are taken off the person's balance for that year. The
 employee is notified of the decision either way. See [Approvals](approvals.md).
+
+## Public holidays
+
+Go to **HRM → Leave → Public Holidays** to keep the company's holiday calendar. Each holiday has a
+name and a date, and is either national (it applies to everyone) or a county holiday (it applies
+only to staff whose HR region is that county). Add, edit or delete holidays here, and pick a year
+at the top to see that year's list. The calendar belongs to your company alone: the ERP does not
+ship a shared national list, so add each year's gazetted holidays yourself. Holidays matter
+beyond leave: the overnight absence check never marks anyone absent on a holiday that applies to
+them, hours worked on one earn the holiday rate when overtime is paid through payroll, leave
+counted in working days skips them, and they come off staff working capacity in project planning.
 
 ## Leave logs
 
