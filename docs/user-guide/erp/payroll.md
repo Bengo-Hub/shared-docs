@@ -53,7 +53,11 @@ to date by Codevertex. You do not copy or recreate them:
   switches on the **Tax & Statutory** tab.
 - Items payroll manages itself, such as basic pay, overtime, loans and claims, are on and locked.
 - Everything else, such as allowances, SACCO, HELB and staff benefits, is **Opt-in**: turn it on
-  with the **Applies** switch when your company uses it.
+  with the **Applies** switch when your company uses it. Then give it to each person it applies to
+  on their profile, tab **Earnings and deductions**. Payroll adds earnings to gross pay, taxed or
+  not as the item says, and takes deductions after the statutory items, loans and advances. A
+  deduction never takes net pay below zero: payroll takes what is left and the preview shows the
+  rest as not deducted. Turning an item off stops it for everyone.
 - The **Source** column shows *Platform default* or *Customised*. Editing a platform item saves your
   own values for your company only; **Restore platform default** brings the platform values back.
 
@@ -108,7 +112,7 @@ The national rates in force are:
 | PAYE (secondary employee) | 35% on the whole amount, with no relief |
 | Personal relief | KES 2,400 a month, set under **Tax Reliefs** on the Formulas tab |
 | NSSF (from 1 February 2026) | 6% on Tier I up to KES 9,000 and Tier II from 9,001 to 108,000, matched by the employer; at most KES 6,480 each side |
-| SHIF | 2.75% of gross pay, employee only |
+| SHIF | 2.75% of gross pay, at least KES 300 a month, employee only |
 | Affordable Housing Levy | 1.5% of gross pay, matched 1.5% by the employer |
 | NITA | KES 50 per employee per month, paid by the employer only |
 

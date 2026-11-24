@@ -81,6 +81,7 @@ badge for directors and shareholders. **Edit** opens the same two step form.
 |---|---|
 | Overview | Contact details, national ID, KRA PIN, department, job title, job group, employment type, date joined and basic salary. Also the **Work shift** and **Biometric device** cards (below) |
 | Salary | Basic salary, currency, pay frequency, payment method, effective date, PAYE category, payout channel and mobile money number, and the KRA tax reliefs: insurance premium, pension contribution, mortgage interest and the disability exemption |
+| Earnings and deductions | Allowances, SACCO, HELB and other items your company has switched on in payroll settings. Choose **Assign**, pick the item, enter a monthly amount or a percentage of pay, the months it runs and, where needed, the membership or account number. Payroll applies it from the next run |
 | Bank | Bank accounts: bank, branch, account name and number |
 | Next of Kin | Name, relationship, phone, email and address |
 | Education | Institution, qualification, field of study, grade, dates and a certificate link |
