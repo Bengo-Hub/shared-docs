@@ -29,6 +29,13 @@ Go to **HRM → Attendance**.
 
 ![Off days](assets/hrm-attendance-off-days.png)
 
+To change an override, open **HRM → Attendance → Overrides** and use the pencil on its row; the
+trash icon deletes it. A changed shift or half day needs a start and end time, while a day off
+has none. Days painted in the shift planner can be edited here too: while one stays a changed
+shift it keeps its planner shift, so you can leave the times blank to use that shift's own hours.
+The planner and this list share the same records, so an edit shows in the planner at once, and
+deleting a planner day clears that cell. The employee then falls back to their usual schedule.
+
 For each punch the ERP decides which shift applies, in this order: an approved override for that
 day, the roster, the person's shift assignment, the person's standard shift, then the company
 default shift.
