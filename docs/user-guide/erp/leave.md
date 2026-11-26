@@ -44,18 +44,35 @@ the list, and it applies to requests filed from then on:
 
 Maternity and paternity leave start on calendar days, every other type on working days.
 
+The **Beyond the balance** column sets what happens to a request for more days than the person has
+left: **Refuse**, or **Allow with a warning**. Paid types start on refuse, unpaid types on allow.
+
+### Platform defaults, customised and own types
+
+Annual, Sick, Maternity, Paternity, Compassionate, Study and Unpaid leave come with the ERP as
+**Platform default** types that every company shares. Editing one changes it for this company only:
+the badge turns to **Customised**, and the **Restore platform values** button next to it drops the
+company's changes. A platform type keeps its name and cannot be deleted; switch it off instead by
+turning off **Active** (a switched-off type takes no new requests, while requests already filed on
+it stay). A type added here is the company's **Own**. An own type with the same name as a platform
+type (capitals and spaces ignored) takes that type's place for this company.
+
+The two columns are set per company for every type, platform ones included.
+
 ## Entitlements
 
 Go to **HRM → Leave → Entitlement** to give a person a different number of days from the
 default, for example more annual leave for long service. Each entitlement is one employee, one
-leave type, a number of days and a year.
+leave type, a number of days and a year. Deleting one puts the person's balance back to the type's
+default days; days already taken stay.
 
 ![Leave entitlement](assets/hrm-leave-entitlement.png)
 
 ## Accrual and balances
 
 A background job runs once a day and builds every active employee's balance for each active
-leave type in the current year:
+leave type the company uses in the current year, platform types included (with the company's
+changes to them):
 
 - **Entitled** is the person's entitlement for the year, or the type's default days if they
   have none, plus any days carried forward from last year (capped at the type's carryover
@@ -94,14 +111,19 @@ request takes, the public holidays and days off it skips, and the remaining bala
 from the person's planned shifts: a shift override first, then their roster, their own work shift
 and the company default shift. With no shift at all, the default working days in the attendance
 settings apply. Dates with nothing to count are refused, and so are dates that overlap another
-pending or approved request of the same person. A request for more days than the balance is
-allowed; the form warns about it and the approver decides.
+pending or approved request of the same person.
+
+A request is also held against the balance of its type and year, less the days already in the
+person's pending requests. When it takes more, the type's rule decides: the form either shows the
+reason and does not let you submit, or warns and lets you. With no balance set for that year the
+request is allowed. The balance is checked again when the request is approved. The rule binds HR
+too: to let someone go over, change the rule or give them an entitlement.
 
 Staff can cancel their own request in **My Leave** while it is pending. Once it is approved, ask HR.
 
 A new request starts as **Pending**. The page has two tabs: **All Requests**, which you can
 filter by status (Pending, Approved, Rejected), and **Approvals Queue**, which shows only what
-is waiting for a decision.
+is waiting for a decision. The search box finds people by name or staff number.
 
 ## Approving and rejecting
 
@@ -113,18 +135,25 @@ buttons. Rejecting asks for a reason, which the employee sees.
   until the last step approves it. A rejection at any step ends it.
 - **Without a workflow**, anyone with permission to approve leave decides it in one step.
 
-Nobody can approve their own request.
+Nobody can approve their own request. A decision made on the **Approvals** screen and one made here
+do the same thing.
 
 When a request is approved, its days are taken off the person's balance for that year. The
 employee is notified of the decision either way. See [Approvals](approvals.md).
 
 ## Public holidays
 
-Go to **HRM → Leave → Public Holidays** to keep the company's holiday calendar. Each holiday has a
+Go to **HRM → Leave → Public Holidays** to see the company's holiday calendar. Each holiday has a
 name and a date, and is either national (it applies to everyone) or a county holiday (it applies
-only to staff whose HR region is that county). Add, edit or delete holidays here, and pick a year
-at the top to see that year's list. The calendar belongs to your company alone: the ERP does not
-ship a shared national list, so add each year's gazetted holidays yourself. Holidays matter
+only to staff whose HR region is that county). Pick a year at the top to see that year's list.
+
+Kenya's national holidays come with the ERP as **Platform default** rows, following the Public
+Holidays Act (Cap. 110): New Year's Day, Good Friday, Easter Monday, Labour Day, Madaraka Day,
+Mazingira Day, Mashujaa Day, Jamhuri Day, Christmas and Boxing Day. When one falls on a Sunday the
+next Monday is the holiday, marked "(observed)". Idd-ul-Fitr and other days declared in the Kenya
+Gazette are added once declared. A company that works on one of them turns off its **Observed**
+switch, and turns it on again to restore it; platform holidays cannot be edited or deleted. The
+company's own holidays (a county day, a company day) are added, edited and deleted here. Holidays matter
 beyond leave: the overnight absence check never marks anyone absent on a holiday that applies to
 them, hours worked on one earn the holiday rate when overtime is paid through payroll, leave
 counted in working days skips them, and they come off staff working capacity in project planning.
