@@ -80,8 +80,8 @@ badge for directors and shareholders. **Edit** opens the same two step form.
 | Tab | What it holds |
 |---|---|
 | Overview | Contact details, national ID, KRA PIN, department, job title, job group, employment type, date joined and basic salary. Also the **Work shift** and **Biometric device** cards (below) |
-| Salary | Basic salary, currency, pay frequency, payment method, effective date, PAYE category, payout channel and mobile money number, and the KRA tax reliefs: insurance premium, pension contribution, mortgage interest and the disability exemption |
-| Earnings and deductions | Allowances, SACCO, HELB and other items your company has switched on in payroll settings. Choose **Assign**, pick the item, enter a monthly amount or a percentage of pay, the months it runs and, where needed, the membership or account number. Payroll applies it from the next run |
+| Salary | Basic salary, currency, pay frequency, PAYE category, payment method and mobile money number, and the KRA tax reliefs: insurance premium, pension contribution, mortgage interest and the disability exemption |
+| Earnings and deductions | **What payroll applies** lists every statutory, automatic and assigned item that counts for the month you pick. Below it are allowances, SACCO, HELB and other items your company has switched on in payroll settings. Choose **Assign**, pick the item, enter a monthly amount or a percentage of pay, the months it runs and, where needed, the membership or account number. Payroll applies it from the next run |
 | Bank | Bank accounts: bank, branch, account name and number |
 | Next of Kin | Name, relationship, phone, email and address |
 | Education | Institution, qualification, field of study, grade, dates and a certificate link |
@@ -120,7 +120,11 @@ If you switch the contract type with unsaved changes, the ERP asks before discar
 ### The contracts list
 
 Go to **HRM → Employees → Contracts** to see every contract in one place, with start and end
-dates, salary, pay type (monthly, hourly, daily or fixed) and status.
+dates, agreed salary, pay type (monthly, hourly, daily or fixed) and status. The contract in
+force has a **Current** badge, and **Payroll pays** shows what the person is paid today.
+
+A new contract starts with the person's payroll salary as the **Agreed salary**. If you enter a
+different figure, the ERP offers to update the payroll salary too, so the two stay in step.
 
 ![Contracts](assets/hrm-contracts.png)
 
@@ -161,7 +165,7 @@ confirm.
 ## When someone leaves
 
 1. Open **HRM → Employees → Contracts**, edit the person's current contract and set its status
-   to **Terminated**, with the end date and a note.
+   to **Terminated**, with the end date.
 2. Run their final pay in payroll.
 3. Remove their device PIN so they can no longer use the biometric terminals, and deactivate
    their login under **Administration → Users & Security → Users**.
