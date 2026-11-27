@@ -71,8 +71,36 @@ to date by Codevertex. You do not copy or recreate them:
 | Checkoff | Deductions only: the employer deducts on the employee's behalf and remits it |
 | Unit, Rate per Unit, Quantity | Earnings only: pay by days, hours or pieces |
 | Non-cash | Benefits only: an in-kind benefit that is taxed but not paid in cash |
-| Taxable | Whether the amount counts towards PAYE |
+| Taxable | Deductions and benefits: whether the amount counts towards PAYE |
+| Tax treatment | Earnings: Taxable, Tax free, Gratuity on a contract of 3 years or more, or Gratuity paid into a registered pension scheme (see below) |
 | Active, Effective From, Effective To | When the component applies |
+
+#### Gratuity
+
+Gratuity is taxed by the rule its tax treatment names:
+
+- **Gratuity on a contract of 3 years or more.** From July 2026, gratuity on a contract of at least
+  three continuous years is tax free up to 31% of the pay earned over the contract. Payroll reads
+  the contract dates from the employee's **Contracts** and the pay from their payslips, and taxes
+  only what goes over the limit. A shorter contract is taxed in full.
+- **Gratuity paid into a registered pension scheme.** Tax free up to KES 360,000 for each full year
+  of service. It does not apply to someone who already contributes to a registered pension scheme.
+
+#### Which levies an earning counts for
+
+Each earning counts for PAYE, NSSF, SHIF and the Housing Levy, or not, and is pensionable or not.
+Unless set otherwise, a taxable earning counts for all four levies and a tax-free one for none,
+which is how payroll has always worked. Only basic pay is pensionable.
+
+Pensionable pay matters for the pension relief. From the December 2026 payroll, the pension
+contribution an employee can deduct before tax is capped at 30% of pensionable pay, not of gross
+pay. For example, with basic pay of KES 50,000, a house allowance of KES 10,000 and a pension
+contribution of KES 20,000, the deductible amount falls from KES 18,000 (30% of 60,000) to
+KES 15,000 (30% of 50,000), so PAYE rises by KES 900.
+
+These settings are dated: a change applies from the month you choose, and months already paid
+keep what applied to them. Codevertex keeps the national defaults, and your company can set its
+own for an earning.
 
 ### Loans
 
@@ -108,13 +136,29 @@ The national rates in force are:
 
 | Item | Rate |
 | --- | --- |
-| PAYE (primary employee) | 10% up to KES 24,000; 25% to 32,333; 30% to 500,000; 32.5% to 799,999; 35% above |
+| PAYE (primary employee) | 10% up to KES 24,000; 25% to 32,333; 30% to 500,000; 32.5% to 800,000; 35% above |
 | PAYE (secondary employee) | 35% on the whole amount, with no relief |
 | Personal relief | KES 2,400 a month, set under **Tax Reliefs** on the Formulas tab |
 | NSSF (from 1 February 2026) | 6% on Tier I up to KES 9,000 and Tier II from 9,001 to 108,000, matched by the employer; at most KES 6,480 each side |
 | SHIF | 2.75% of gross pay, at least KES 300 a month, employee only |
 | Affordable Housing Levy | 1.5% of gross pay, matched 1.5% by the employer |
 | NITA | KES 50 per employee per month, paid by the employer only |
+| Per diem | Tax free up to KES 10,000 a day away on duty (from July 2025); payroll taxes what a per diem claim pays above that |
+| Fringe benefit tax | Paid by the employer at 30% on the interest a staff loan saves against KRA's market rate for the quarter (9% for October to December 2026) |
+
+Besides personal and insurance relief, these apply under **Tax Reliefs**:
+
+| Relief | Amount |
+| --- | --- |
+| Pension contribution | Deductible up to KES 30,000 a month and 30% of pensionable pay |
+| Mortgage interest | Deductible up to KES 30,000 a month |
+| Post-retirement medical fund | Deductible up to KES 15,000 a month; give the employee the **Post-Retirement Medical Fund** deduction |
+| Non-cash benefits | Taxed in full once their total reaches KES 5,000 in a month; below that, not taxed |
+| Employer meals | The first KES 5,000 a month of meals served in an employer or registered canteen is tax free |
+| Affordable Housing Relief | Inactive: repealed from December 2024, when the levy itself became deductible before tax |
+
+A proposed set of PAYE bands from the Tax Laws (Amendment) Bill 2026 is listed as inactive. It is
+not law, and it applies only if Codevertex turns it on with a start date once it is enacted.
 
 The **Tax Reliefs** panel on the same tab lists each relief with its status, amount and effective
 date. Reliefs that the law repealed are marked inactive, so months after the repeal get no relief

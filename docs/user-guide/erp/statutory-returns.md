@@ -95,8 +95,8 @@ Payable*.
 
 ## NSSF
 
-**Reports → Statutory (KRA) → NSSF** shows each employee's gross pay, NSSF contribution and the
-member and employer rates for the month. Upload it to the NSSF employer portal and pay the total,
+**Reports → Statutory (KRA) → NSSF** shows each employee's gross pay, pensionable earnings (the pay
+NSSF was charged on), NSSF contribution and the member and employer rates for the month. Upload it to the NSSF employer portal and pay the total,
 which is the employee and employer shares together.
 
 ![NSSF](assets/reports-nssf.png)
@@ -104,16 +104,27 @@ which is the employee and employer shares together.
 ## NHIF (SHA)
 
 **Reports → Statutory (KRA) → NHIF (SHA)** shows each employee's SHIF (formerly NHIF) number,
-contribution and coverage type for the month. SHIF is paid by the employee only. File and pay it on
+gross pay, the gross salary SHIF was charged on, contribution and coverage type for the month. SHIF is paid by the employee only. File and pay it on
 the Social Health Authority (SHA) employer portal.
 
 ![NHIF (SHA)](assets/reports-nhif.png)
 
 ## Housing Levy
 
-**Reports → Statutory (KRA) → Housing Levy** shows each employee's gross pay, the employee's 1.5%, the
-employer's matching 1.5% and the total levy. The levy is declared on KRA iTax (Sheet M of the P10)
-and paid with it.
+**Reports → Statutory (KRA) → Housing Levy** shows each employee's ID number, gross pay, the gross
+salary the levy was charged on, the employee's 1.5%, the employer's 1.5% and the total levy. The
+levy is declared on KRA iTax (Sheet M of the P10) and paid with it.
+
+### Which pay each levy is charged on
+
+Each earning can count for some levies and not others (see
+[Payroll](payroll.md#which-levies-an-earning-counts-for)), so the pay a levy is charged on can
+differ from gross pay. The NSSF return shows **pensionable earnings**, and the SHIF and Housing Levy
+returns show the **gross salary** each levy was charged on. Sheet M of the P10 uses the same Housing
+Levy figure, and its employer column is what payroll charged the employer.
+
+Payslips processed before payroll recorded these figures show gross pay in those columns, and the
+employer's Housing Levy equal to the employee's, as the returns always did.
 
 ![Housing Levy](assets/reports-housing-levy.png)
 
