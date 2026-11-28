@@ -55,9 +55,10 @@ to date by Codevertex. You do not copy or recreate them:
 - Everything else, such as allowances, SACCO, HELB and staff benefits, is **Opt-in**: turn it on
   with the **Applies** switch when your company uses it. Then give it to each person it applies to
   on their profile, tab **Earnings and deductions**. Payroll adds earnings to gross pay, taxed or
-  not as the item says, and takes deductions after the statutory items, loans and advances. A
-  deduction never takes net pay below zero: payroll takes what is left and the preview shows the
-  rest as not deducted. Turning an item off stops it for everyone.
+  not as the item says, and takes deductions after the statutory items, within the legal limit on
+  deductions (see [Deduction limits](#deduction-limits)). A deduction never takes net pay below
+  zero: payroll takes what is left and the preview shows the rest as not deducted. Turning an item
+  off stops it for everyone.
 - The **Source** column shows *Platform default* or *Customised*. Editing a platform item saves your
   own values for your company only; **Restore platform default** brings the platform values back.
 
@@ -109,6 +110,26 @@ be cancelled there with **Cancel** before that month starts; a change already in
 amount and repayment period in months. An employee's loan is recovered from pay each month after
 PAYE until it is repaid, and then it closes on its own. See
 [Payroll extras](payroll-extras.md#salary-advances-and-loans).
+
+### Deduction limits
+
+The Employment Act (Cap. 226) limits what an employer may deduct from wages. Section 19(3) caps all
+deductions together at two-thirds of the month's wages, and section 19(1)(h) caps the repayment of a
+loan from the employer at half of what is left after the other deductions. Payroll applies both
+limits, in this order:
+
+1. PAYE, NSSF, SHIF and the Housing Levy, then the deductions another law requires, such as HELB
+   repayments and court orders. These are always taken in full.
+2. The other deductions, such as SACCO and union dues.
+3. Losses and damages, staff purchases, salary advances and, last, loans from the employer.
+
+What the limits leave unrecovered stays on the loan, advance or purchase balance and is recovered in
+later months. The payslip and the run summary show it as **deferred**, so the employee and HR can
+see why less was taken. Net pay never goes below zero.
+
+The limits are two-thirds and one half by default, as the Act sets them. A company can set its own
+limits, and can add its own deductions to the list that is always taken in full (for example a
+second court order).
 
 ### Formulas: versioned statutory rates
 
