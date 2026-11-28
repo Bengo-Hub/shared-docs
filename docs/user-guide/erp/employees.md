@@ -80,7 +80,7 @@ badge for directors and shareholders. **Edit** opens the same two step form.
 | Tab | What it holds |
 |---|---|
 | Overview | Contact details, national ID, KRA PIN, department, job title, job group, employment type, date joined and basic salary. Also the **Work shift** and **Biometric device** cards (below) |
-| Salary | Basic salary, currency, pay frequency, PAYE category, payment method and mobile money number, and the KRA tax reliefs: insurance premium, pension contribution, mortgage interest and the disability exemption |
+| Salary | Basic salary, currency, pay frequency, PAYE category, payment method and mobile money number, and the KRA tax reliefs: insurance premium, pension contribution, mortgage interest and the disability exemption. **Applies from** schedules a change for a later month: payroll pays the current salary until then. Scheduled changes are listed on the tab, each with **Cancel** until its month starts |
 | Earnings and deductions | **What payroll applies** lists every statutory, automatic and assigned item that counts for the month you pick. Below it are allowances, SACCO, HELB and other items your company has switched on in payroll settings. Choose **Assign**, pick the item, enter a monthly amount or a percentage of pay, the months it runs and, where needed, the membership or account number. Payroll applies it from the next run |
 | Bank | Bank accounts: bank, branch, account name and number |
 | Next of Kin | Name, relationship, phone, email and address |

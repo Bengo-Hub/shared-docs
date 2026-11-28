@@ -100,7 +100,8 @@ KES 15,000 (30% of 50,000), so PAYE rises by KES 900.
 
 These settings are dated: a change applies from the month you choose, and months already paid
 keep what applied to them. Codevertex keeps the national defaults, and your company can set its
-own for an earning.
+own for an earning on **Settings → Payroll → Levy bases**. A change you set for a later month can
+be cancelled there with **Cancel** before that month starts; a change already in force stays.
 
 ### Loans
 
