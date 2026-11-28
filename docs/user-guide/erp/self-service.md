@@ -59,12 +59,15 @@ on your company's settings; see [Time and Attendance](time-and-attendance.md).
 
 **Apply for Leave** and **My Leave** both open your own leave page, with your requests and your
 balances for the year. Tap **Apply for Leave** there, choose the leave type and the start and end
-dates, and add a reason if you want. The form shows how many days it takes, which public holidays
-and days off are not counted, and your remaining balance. You can only apply for yourself.
+dates, and add a reason if you want. For a half day, pick **Morning only** or **Afternoon only**
+on a one-day request, or let the first day start at midday or the last day end at midday. The form
+shows how many days it takes, which public holidays and days off are not counted, and your
+remaining balance. You can only apply for yourself.
 
 Your request shows as Pending until it is decided. You get a notification when it is approved or
-rejected, and approved days come off your balance. While it is pending you can cancel it with the
-cross on its row; once it is approved, ask HR. Your account must be linked to your employee record;
+rejected, and approved days come off your balance. While it is pending you can change it with the
+pencil on its row (type, dates, half days, reason; the days are counted again) or cancel it with
+the cross; once it is approved, ask HR. Your account must be linked to your employee record;
 if the page says it is not, ask HR. See [Leave](leave.md).
 
 ## Payslips and P9

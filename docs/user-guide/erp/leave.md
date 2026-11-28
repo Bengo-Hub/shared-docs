@@ -104,7 +104,22 @@ on the requests page. The form asks for:
 | Employee | The person going on leave. Only shown to HR; staff always apply for themselves |
 | Leave type | One of your leave types |
 | Start date, end date | The end date cannot be before the start date |
+| Part of the day | One day: **Full day**, **Morning only** or **Afternoon only**. Several days: the **First day** can start at midday and the **Last day** can end at midday |
 | Reason | Optional |
+
+### Half days
+
+A half day counts as 0.5 of that day, under the leave type's count mode. A half on a day that does
+not count (a day off or a public holiday) takes nothing off, and a half on a half working day stays
+at its half. The morning of a day and its afternoon can be two separate requests, for example the
+morning as sick leave and the afternoon as annual leave; any other overlap is refused.
+
+I allow half days because the Employment Act (Cap. 226) lets annual leave be split into parts by
+agreement with the employee: section 28(1) gives at least 21 working days with full pay after every
+twelve consecutive months, section 28(2) lets the employer divide that leave into parts with the
+employee's consent, and section 28(3) asks that one part be at least two uninterrupted working
+weeks unless the contract or a collective agreement says otherwise. The ERP does not enforce the
+two-week part; HR keeps an eye on it when approving.
 
 You do not type the number of days. Once the dates are in, the form shows how many days the
 request takes, the public holidays and days off it skips, and the remaining balance. Days off come
@@ -118,6 +133,14 @@ person's pending requests. When it takes more, the type's rule decides: the form
 reason and does not let you submit, or warns and lets you. With no balance set for that year the
 request is allowed. The balance is checked again when the request is approved. The rule binds HR
 too: to let someone go over, change the rule or give them an entitlement.
+
+### Changing a pending request
+
+While a request is pending, the person who filed it changes it from **My Leave** with the pencil
+button, and HR changes anyone's from **HRM → Leave → Requests**. The leave type, the dates, the
+half days and the reason can change; the employee cannot. The form counts the days again and checks
+the balance as for a new request, leaving the request's own old days out of the pending total. Each
+change is written to the leave logs. An approved, rejected or cancelled request cannot be changed.
 
 Staff can cancel their own request in **My Leave** while it is pending. Once it is approved, ask HR.
 
@@ -157,6 +180,11 @@ company's own holidays (a county day, a company day) are added, edited and delet
 beyond leave: the overnight absence check never marks anyone absent on a holiday that applies to
 them, hours worked on one earn the holiday rate when overtime is paid through payroll, leave
 counted in working days skips them, and they come off staff working capacity in project planning.
+
+As the platform owner I keep the national calendar itself under **Platform → Platform Holidays**:
+the same list without the Observed switch, where a holiday is added, edited or deleted for every
+company at once. A holiday gazetted at short notice, such as a national day of mourning, goes in
+there.
 
 ## Leave logs
 

@@ -92,7 +92,10 @@ postings.
 
 Go to **Administration → HR Settings → Job Groups**. A job group is a pay grade: a name, a
 grade, and a minimum and maximum salary. Assign one to each employee to keep salaries inside an
-agreed band.
+agreed band. The minimum cannot be above the maximum. The list starts with the platform's job
+groups, marked **Platform default**; changing one's grade, range or description keeps the change
+for your company only (marked **Customised**), and the restore button brings back the platform's
+values. A job group of your own with the same name takes the platform one's place.
 
 ![Job groups](assets/settings-hrm-job-groups.png)
 
@@ -118,6 +121,12 @@ services. Inside the ERP you decide what each person can do through roles.
 Permissions are grouped by area, such as viewing employees, managing leave, approving leave,
 managing appraisals and managing attendance. A menu item only shows for people who hold the
 permission behind it, so staff with no HR role see only **My Dashboard**.
+
+The **outlet filter** at the top of the page belongs to administrators, head office staff and any
+role holding the **Hrm Outlets View All** permission (hrm.outlets.view_all). Someone whose account
+is tied to one branch sees only that branch's employees and payroll; give their role that permission and they
+can pick any branch, or all of them. A person limited to a list of branches in their account stays
+limited to that list whatever their role.
 
 ## 10. Approval workflows
 

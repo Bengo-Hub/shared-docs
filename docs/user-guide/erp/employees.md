@@ -125,6 +125,8 @@ force has a **Current** badge, and **Payroll pays** shows what the person is pai
 
 A new contract starts with the person's payroll salary as the **Agreed salary**. If you enter a
 different figure, the ERP offers to update the payroll salary too, so the two stay in step.
+**Notes** keeps anything else agreed for this contract, such as the probation period or a notice
+term; clearing the box clears them.
 
 ![Contracts](assets/hrm-contracts.png)
 

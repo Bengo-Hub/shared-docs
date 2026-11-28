@@ -35,8 +35,9 @@ status: **Pending**, **Approved** or **Paid**.
 
 ![New claim](assets/payroll-claims-new.png)
 
-4. Add the detail for the claim type: **Expense Lines** (one per receipt, each with a category and
-   amount), **Mileage Routes** (from, to and distance), or the **Per-Diem** days and rate. The total
+4. Add the detail for the claim type: **Expense Lines** (one per receipt, each with the date of the
+   expense, a category and amount), **Mileage Routes** (date, from, to and distance), or the
+   **Per-Diem** days and rate. The total
    updates from the lines as you go.
 5. Under **Attachment**, click **Upload receipt** to attach the receipt or supporting document.
 6. **Save claim**.
